@@ -1,0 +1,124 @@
+@model DAL.Models.Userlogin
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+
+<div class="container-fluid bg-dark min-vw-100   min-vh-100 d-flex">
+    <div class="row min-vw-100  min-vh-100">
+
+        <!-- image -->
+        <div class="image_main_div col-md-6 col-sm-12 bg-light p-0 d-none d-md-block ">
+            <img src="~/images/dominos_background.jpg" class="h-100 w-100" alt="">
+        </div>
+
+        <!-- login details -->
+        <div
+            class="login_details_main_div col-md-6 col-sm-12  d-flex flex-column justify-content-center align-items-center">
+            <div class=" row">
+                <!-- logo -->
+                <div class="logo-main-div d-flex justify-content-center">
+                    <div class="logo-image  me-2">
+                        <img src="images/logos/pizzashop_logo.png" width="50px" alt="">
+                    </div>
+                    <div class="logo-text text-primary fs-3 fw-semibold">PIZZASHOP</div>
+                </div>
+
+                <!-- welcome -->
+                <div class="welcome-text-div fs-4 row mt-4 ">
+                    <div class="col-2"></div>
+                    <div class="col-7 ms-2">Welcome,</div>
+                    <!-- <div class="col-2"></div> -->
+
+                </div>
+
+                <!-- imput fields -->
+                <!-- login form -->
+                <div class="form-main-div mt-1">
+            
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row fs-5 mt-2">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <!-- ?username -->
+                                <div class="username-div mt-2 form-group">
+                                     <label asp-for="Email" class="control-label"></label>
+                                    <input asp-for="Email" type="email" class="w-100 border-dark p-2 border border-end-0"
+                                        placeholder="Email" required />
+                                    <i class="bi bi-person-fill"></i>
+                                     <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- error message -->
+                        <div class="row">
+                            <span class="col-2"></span>
+                            <span class="col-8 error-message text-danger"></span>
+                        </div>
+
+                        <div class="row fs-5 mt-2">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <!-- ?password -->
+                                <p class="password-div mt-2 ">
+                                    <label asp-for="Password" class="control-label"></label>
+                                    <input asp-for="Password" type="password" class="w-100 border-dark p-2 border border-end-0"
+                                        placeholder="Password" id="password" required />
+                                    <i class="bi bi-eye-slash-fill" id="togglepassword"
+                                        onclick="toggle_fnction('togglepassword', 'password')"></i>
+                                         <span asp-validation-for="Password" class="text-danger"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- error message -->
+                        <div class="row">
+                            <span class="col-2"></span>
+                            <span class="col-8 error-message text-danger"></span>
+                        </div>
+
+                        <!-- buttons -->
+                        <div class="row  mt-3">
+                            <div class="col-2"></div>
+                            <div class="col-5">
+                                <!-- checkbox -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label fs-6" for="flexCheckDefault">
+                                        Remember Me
+                                    </label>
+                                </div>
+
+                            </div>
+                            <div class="col-4"> <a href="forgot_password.html"
+                                    class="text-decoration-none text-small ms-3 forgot-pass-atag ">Forgot
+                                    Password?</a></div>
+                        </div>
+
+                        <div class="row fs-5 mt-5">
+                            <div class="col-2"></div>
+                            <div class="col-8">
+                                <input type="submit" value="Login"
+                                    class="btn btn-danger login-btn-btn bg-primary border-primary w-100">
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+@* <script src="/js/index.js"></script> *@
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

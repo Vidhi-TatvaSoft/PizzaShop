@@ -1,0 +1,38 @@
+.login_details_main_div{
+  background-color: rgb(173, 217, 223);
+}
+.image_main_div img{
+  object-fit: cover;
+}
+
+@media (max-width:767px) {
+  .login_details_main_div {
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.743), rgba(255, 253, 253, 0.911)), url("/images/dominos_background.jpg");
+  }
+}
+
+@media (max-width:768px){
+  .two-cols{
+      flex-direction: column;
+   
+  }
+  .three-cols-div{
+      flex-direction: column;
+   
+  }
+  .four-cols{
+      flex-direction: column;
+
+  }
+}
+
+
+
+form i{
+  margin-left: -35px;
+  /* cursor: pointer; */
+}
+
