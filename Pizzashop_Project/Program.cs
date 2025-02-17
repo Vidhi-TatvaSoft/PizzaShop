@@ -1,3 +1,4 @@
+using BLL.Services;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -5,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var conn = builder.Configuration.GetConnectionString("PizzaDbConnection");
 builder.Services.AddDbContext<DAL.Models.PizzashopDbContext>(q=>q.UseNpgsql(conn));
+
+builder.Services.AddScoped<UserLoginService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -26,6 +29,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=UserLogin}/{action=Create}/{id?}");
+    pattern: "{controller=UserLogin}/{action=VerifyPassword}/{id?}");
 
 app.Run();

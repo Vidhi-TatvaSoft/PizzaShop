@@ -5,49 +5,39 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DAL.Models;
+using BLL.Services;
+using System.Net.Mail;
+using System.Net;
+using DAL.ViewModels;
+using NuGet.Common;
 
 namespace Pizzashop_Project.Controllers
 {
     public class UserLoginController : Controller
     {
-        private readonly PizzashopDbContext _context;
+        private readonly UserLoginService _userLoginService;
 
-        public UserLoginController(PizzashopDbContext context)
+        public UserLoginController(UserLoginService userLoginService)
         {
-            _context = context;
+            _userLoginService = userLoginService;
         }
 
-        // GET: UserLogin
         public async Task<IActionResult> Index()
         {
-            var pizzashopDbContext = _context.Userlogins.Include(u => u.Role);
-            return View(await pizzashopDbContext.ToListAsync());
+            
+            var userData = await _userLoginService.getusers();
+            return View(userData);
         }
 
-        // GET: UserLogin/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null || _context.Userlogins == null)
-            {
-                return NotFound();
-            }
 
-            var userlogin = await _context.Userlogins
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(m => m.UserloginId == id);
-            if (userlogin == null)
-            {
-                return NotFound();
-            }
-
-            return View(userlogin);
-        }
 
         // GET: UserLogin/Create
-        public IActionResult Create()
+        public IActionResult VerifyPassword()
         {
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId");
+            // ViewData["RoleId"] = new SelectList(_userLoginService.Roles, "RoleId", "RoleId");
+            if(Request.Cookies["email"] != null){
+                return RedirectToAction("Index","UserLogin");
+            }
             return View();
         }
 
@@ -56,109 +46,72 @@ namespace Pizzashop_Project.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Email,Password")] Userlogin userlogin)
+        public async Task<IActionResult> VerifyPassword(UserLoginViewModel userlogin)
         {
-            if(_context.Userlogins.FirstOrDefault(e=> e.Email == userlogin.Email && e.Password==userlogin.Password) != null){
+
+            var verifictionStatus = _userLoginService.VerifyUserPassword(userlogin);
+            if (verifictionStatus)
+            {
+                CookieOptions options = new CookieOptions();
+                options.Expires = DateTime.Now.AddMinutes(60);
+                Response.Cookies.Append("email",userlogin.Email, options);
                 return RedirectToAction("Index", "UserLogin");
             }
-            ViewBag.message ="Enter valid Credentials";
-          return View();
+            ViewBag.message = "Enter valid Credentials";
+            return View();
         }
 
-        // GET: UserLogin/Edit/5
-        public async Task<IActionResult> Edit(long? id)
+
+
+        public IActionResult ForgotPassword()
         {
-            if (id == null || _context.Userlogins == null)
-            {
-                return NotFound();
-            }
-
-            var userlogin = await _context.Userlogins.FindAsync(id);
-            if (userlogin == null)
-            {
-                return NotFound();
-            }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId", userlogin.RoleId);
-            return View(userlogin);
+            return View();
         }
 
-        // POST: UserLogin/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("UserloginId,RoleId,Email,Password")] Userlogin userlogin)
+        public String GetEmail(String Email)
         {
-            if (id != userlogin.UserloginId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(userlogin);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserloginExists(userlogin.UserloginId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleId", userlogin.RoleId);
-            return View(userlogin);
+            TempData["email"] = Email;
+            return Email;
         }
 
-        // GET: UserLogin/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null || _context.Userlogins == null)
-            {
-                return NotFound();
-            }
 
-            var userlogin = await _context.Userlogins
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(m => m.UserloginId == id);
-            if (userlogin == null)
-            {
-                return NotFound();
-            }
 
-            return View(userlogin);
-        }
+        // public ActionResult SendEmail()
+        // {
+        //     return View();
+        // }
 
-        // POST: UserLogin/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            if (_context.Userlogins == null)
-            {
-                return Problem("Entity set 'PizzashopDbContext.Userlogins'  is null.");
-            }
-            var userlogin = await _context.Userlogins.FindAsync(id);
-            if (userlogin != null)
-            {
-                _context.Userlogins.Remove(userlogin);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        [HttpPost]  
+public ActionResult SendEmail(string receiver, string subject, string message) {  
+    try {  
+        if (ModelState.IsValid) {  
+            var senderEmail = new MailAddress("test.dotnet@etatvasoft.com", "Jamil");  
+            var receiverEmail = new MailAddress("castulo30@theirer.com", "Receiver");  
+            var password = "P}N^{z-]7Ilp";  
+            var sub = "reset Password";  
+            var body = "reset password";  
+            var smtp = new SmtpClient {  
+                Host = "smtp.gmail.com",  
+                    Port = 587,  
+                    EnableSsl = true,  
+                    DeliveryMethod = SmtpDeliveryMethod.Network,  
+                    UseDefaultCredentials = false,  
+                    Credentials = new NetworkCredential(senderEmail.Address, password)  
+            };  
+            using(var mess = new MailMessage(senderEmail, receiverEmail) {  
+                Subject = sub,  
+                    Body = body  
+            }) {  
+                smtp.Send(mess);  
+            }  
 
-        private bool UserloginExists(long id)
-        {
-          return (_context.Userlogins?.Any(e => e.UserloginId == id)).GetValueOrDefault();
-        }
+            return View("VerifyPassword");  
+        }  
+    } catch (Exception) {  
+        ViewBag.Error = "Some Error";  
+    }  
+    return View();  
+}  
     }
 }
