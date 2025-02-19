@@ -11,6 +11,7 @@ using System.Net;
 using DAL.ViewModels;
 using NuGet.Common;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Pizzashop_Project.Controllers
 {
@@ -23,6 +24,7 @@ namespace Pizzashop_Project.Controllers
             _userLoginService = userLoginService;
         }
 
+        [Authorize(Roles = "Admin")]    
         public async Task<IActionResult> Index()
         {
 
@@ -51,13 +53,15 @@ namespace Pizzashop_Project.Controllers
         public async Task<IActionResult> VerifyPassword(UserLoginViewModel userlogin)
         {
 
-            var verifictionStatus = _userLoginService.VerifyUserPassword(userlogin);
-            if (verifictionStatus)
+            var verifictiontoken = _userLoginService.VerifyUserPassword(userlogin);
+            CookieOptions options = new CookieOptions();
+            options.Expires = DateTime.Now.AddMinutes(60);
+            if (verifictiontoken != null)
             {
+                Response.Cookies.Append("AuthToken", verifictiontoken, options);
                 if (userlogin.RememberMe)
                 {
-                    CookieOptions options = new CookieOptions();
-                    options.Expires = DateTime.Now.AddMinutes(60);
+                   
                     Response.Cookies.Append("email", userlogin.Email, options);
                     return RedirectToAction("Index", "UserLogin");
                 }
@@ -70,19 +74,18 @@ namespace Pizzashop_Project.Controllers
         }
 
 
-
-        public IActionResult ForgotPassword(string Email)
+        public string GetEmail(string Email){
+            ForgotPasswordViewModel forgotPasswordViewModel = new ForgotPasswordViewModel(); 
+            forgotPasswordViewModel.Email = Email;
+            TempData["Email"] = Email;  
+            return Email;
+        }
+        public IActionResult ForgotPassword()
         {
-            ViewBag.Email = Email;
+            
             return View();
         }
 
-        // [HttpPost]
-        // public String GetEmail(String Email)
-        // {
-        //     TempData["Email"] = Email;
-        //     return Email;
-        // }
 
         // public ActionResult SendEmail()
         // {
@@ -90,11 +93,21 @@ namespace Pizzashop_Project.Controllers
         // }
 
         [HttpPost]
-        public async Task<IActionResult> SendEmail(ForgotPasswordViewModel forgorpassword)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel forgorpassword)
         {
+            
                 if (ModelState.IsValid)
                 {
-                    var senderEmail = new MailAddress("tatva.pca155@outlook.com", "tatva.pca155@outlook.com");
+                    // if(forgorpassword.Email == null){
+                    //     ViewBag.message = "Enter Email to reset password";
+                    //     return View("ForgotPassword");
+                    // }
+                    var emailExistStatus = _userLoginService.CheckEmailExist(forgorpassword.Email);
+                    if(!emailExistStatus){
+                        ViewBag.message = "Email does not exist Enter Existing email toset password";
+                        return View("ForgotPassword");
+                    }
+                    var senderEmail = new MailAddress("test.dotnet@etatvasoft.com", "test.dotnet@etatvasoft.com");
                     var receiverEmail = new MailAddress(forgorpassword.Email, forgorpassword.Email);
                     var password = "P}N^{z-]7Ilp";
                     var sub = "reset Password sub";
@@ -141,16 +154,26 @@ namespace Pizzashop_Project.Controllers
             return View();
         }
 
+        // GET 
         public IActionResult ResetPassword(string Email)
         {
             ResetPasswordViewModel resetpassdata = new ResetPasswordViewModel();
             resetpassdata.Email = Email;
             return View(resetpassdata);
         }
+
+        // POST
         [HttpPost]
         public IActionResult ResetPassword(ResetPasswordViewModel resetpassdata){
             if (ModelState.IsValid)
-            {
+            {   
+                
+                var emailExistStatus = _userLoginService.CheckEmailExist(resetpassdata.Email);
+                if(!emailExistStatus){
+                    ViewBag.message = "Email does not exist Enter Existing email toset password";
+                    return View("ResetPassword");
+                }
+
                 if(resetpassdata.Password != resetpassdata.ConfirmPassword){
                     ViewBag.message = "Password and Confirm Password should be same";
                     return View("ResetPassword");
