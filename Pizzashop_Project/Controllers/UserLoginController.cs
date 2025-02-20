@@ -58,15 +58,16 @@ namespace Pizzashop_Project.Controllers
             options.Expires = DateTime.Now.AddMinutes(60);
             if (verifictiontoken != null)
             {
+                
                 Response.Cookies.Append("AuthToken", verifictiontoken, options);
                 if (userlogin.RememberMe)
                 {
                    
                     Response.Cookies.Append("email", userlogin.Email, options);
-                    return RedirectToAction("Index", "UserLogin");
+                    return RedirectToAction("MyProfile", "User");
                 }
                 else{
-                     return RedirectToAction("Index", "UserLogin");
+                     return RedirectToAction("MyProfile", "User");
                 }
             }
             ViewBag.message = "Enter valid Credentials";

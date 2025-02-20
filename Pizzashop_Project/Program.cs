@@ -6,6 +6,7 @@ using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using DAL.Models;
+using BLL.Service;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<DAL.Models.PizzashopDbContext>(q=>q.UseNpgsql(conn
 
 builder.Services.AddScoped<UserLoginService>();
 builder.Services.AddScoped<JWTTokenService>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddControllersWithViews();
 
@@ -54,6 +56,13 @@ builder.Services.AddAuthentication(x=>{
         };
     }
 );
+
+builder.Services.AddSession(
+    options => {
+        options.IdleTimeout = TimeSpan.FromSeconds(10);
+    }
+);
+builder.Services.AddSingleton<IHttpContextAccessor,HttpContextAccessor>();
 
 var app = builder.Build();
 

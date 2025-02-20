@@ -7,40 +7,182 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PizzaSshop_Project.styles.css" asp-append-version="true" />
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PizzaSshop_Project</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- sidebar -->
+            <div class="left-sidebar-main-div pt-0 col-sm-4 col-md-3 col-lg-3 col-xl-2 col-0 d-none d-sm-flex justify-content-start ">
+
+                <div class="row w-100 justify-content-center">
+                    <div class="sidebar-options-menu d-flex flex-column mt-2 ">
+                        <!-- logo -->
+                        <div class="logo-main-div d-flex justify-content-start mb-3">
+                            <div class="logo-image  me-2">
+                                <img src="images/logos/pizzashop_logo.png" width="60px" alt="">
+                            </div>
+                            <div class="logo-text text-primary fs-5 mt-2 fw-semibold">PIZZASHOP</div>
+                        </div>
+
+                        <!-- dashboard -->
+                        <div class="inactive-div d-flex ps-3">
+                            <img src="images/dashboard-default.svg" width="20px" class=" " alt>
+                            <p class="dashboard-text-active text-size-set mt-3 ms-3 ">Dashboard</p>
+                        </div>
+
+                        <!-- users -->
+                        <div class="active-div d-flex align-items-center p-3 ">
+                            <i class="fa-solid fa-users "></i>
+                            <p class="users-text-inactive text-size-set  m-0 ms-3">Users</p>
+                        </div>
+
+                        <!--Role and Permission  -->
+                        <div class="inactive-div d-flex align-items-center p-3">
+                            <i class="fa-solid fa-user-clock "></i>
+                            <p class="role-text-inactive  text-size-set   m-0 ms-3">Role and Permission</p>
+                        </div>
+
+                        <!-- menu -->
+                        <div class="inactive-div d-flex align-items-center  p-3">
+                            <i class="fa-solid fa-calendar-minus "></i>
+                            <p class="menu-text-inactive text-size-set m-0 ms-4">Menu</p>
+                        </div>
+
+                        <!-- Table and Section -->
+                        <div class="inactive-div d-flex p-3">
+                            <i class="fa-solid fa-table-cells-large "></i>
+                            <p class="table-text-inactive text-size-set  m-0 ms-3">Table and Section</p>
+                        </div>
+
+                        <!-- taxes and fees -->
+                        <div class="inactive-div d-flex p-3">
+                            <i class="fa-solid fa-money-check-dollar "></i>
+                            <p class="taxes-text-inactive text-size-set m-0 ms-3">Taxes And Fees</p>
+                        </div>
+
+                        <!-- orders -->
+                        <div class="inactive-div d-flex p-3">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            <p class="order-text-inactive text-size-set m-0 ms-4">Orders</p>
+                        </div>
+
+                        <!-- customer -->
+                        <div class="inactive-div d-flex p-3">
+                            <i class="fa-regular fa-id-card"></i>
+                            <p class="customer-text-inactive text-size-set m-0 ms-3">Customer</p>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+            <!-- rightside  -->
+            <div class="right-side-main-div col-sm-8 col-md-9 col-lg-9 col-xl-10 col-12 vh-100 ">
+                <div class="row">
+                    <!-- navbar -->
+                    <div class="header-line bg-primary d-flex justify-content-between">
+
+
+                        <div class="d-sm-block d-none"></div>
+                        <div class="left-elements d-flex">
+                            <!-- toggele btn -->
+                            <button class="btn d-sm-none" type="button" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                                <i class="fa-regular fa-square-caret-down"></i></button>
+
+
+                            <!-- offcanvas -->
+                            <div class="offcanvas d-sm-none offcanvas-start offcanvas-class" data-bs-scroll="true"
+                                data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling"
+                                aria-labelledby="offcanvasScrollingLabel">
+                                <div class="navbar-nav sidebar-options-menu  d-flex flex-column ">
+
+                                    <!-- dashboard -->
+                                    <div class="inactive-div d-flex ps-3 ">
+                                        <img src="images/dashboard-default.svg" width="20px" class=" " alt>
+                                        <p class="dashboard-text-active text-size-set mt-3 ms-3 ">Dashboard</p>
+                                    </div>
+
+                                    <!-- users -->
+                                    <div class="active-div d-flex align-items-center p-3 ">
+                                        <i class="fa-solid fa-users "></i>
+                                        <p class="users-text-inactive text-size-set  m-0 ms-3">Users</p>
+                                    </div>
+
+                                    <!--Role and Permission  -->
+                                    <div class="inactive-div d-flex align-items-center p-3">
+                                        <i class="fa-solid fa-user-clock "></i>
+                                        <p class="role-text-inactive  text-size-set   m-0 ms-3">Role and Permission</p>
+                                    </div>
+
+                                    <!-- menu -->
+                                    <div class="inactive-div d-flex align-items-center  p-3">
+                                        <i class="fa-solid fa-calendar-minus "></i>
+                                        <p class="menu-text-inactive text-size-set m-0 ms-4">Menu</p>
+                                    </div>
+
+                                    <!-- Table and Section -->
+                                    <div class="inactive-div d-flex p-3">
+                                        <i class="fa-solid fa-table-cells-large "></i>
+                                        <p class="table-text-inactive text-size-set  m-0 ms-3">Table and Section</p>
+                                    </div>
+
+                                    <!-- taxes and fees -->
+                                    <div class="inactive-div d-flex p-3">
+                                        <i class="fa-solid fa-money-check-dollar "></i>
+                                        <p class="taxes-text-inactive text-size-set m-0 ms-3">Taxes And Fees</p>
+                                    </div>
+
+                                    <!-- orders -->
+                                    <div class="inactive-div d-flex p-3">
+                                        <i class="fa-solid fa-clipboard-check"></i>
+                                        <p class="order-text-inactive text-size-set m-0 ms-4">Orders</p>
+                                    </div>
+
+                                    <!-- customer -->
+                                    <div class="inactive-div d-flex p-3">
+                                        <i class="fa-regular fa-id-card"></i>
+                                        <p class="customer-text-inactive text-size-set m-0 ms-3">Customer</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- logo -->
+                            <div class="logo-main-div d-flex justify-content-start mb-3 d-sm-none mt-2">
+                                <div class="logo-image  me-2">
+                                    <img src="images/logos/pizzashop_logo.png" width="50px" alt="">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- profile -->
+                        <div class="profilepic-div mt-2">
+                            
+                            <div class="dropdown">
+                                <div class=" dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="images/Default_pfp.svg.png" width="40px" alt="">
+                                </div>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                  <li><a class="dropdown-item" href="#">My Profile</a></li>
+                                  <li><a class="dropdown-item" href="#">Change Password</a></li>
+                                  <li><a class="dropdown-item" asp-action="Logout" asp-controller="User">Logout</a></li>
+                                </ul>
+                              </div>
+                        </div>
+                    </div>
+
+                @RenderBody()
+
+                    
+                </div>
+            </div>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - PizzaSshop_Project - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
