@@ -13,6 +13,31 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
+
+<div id="logout" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                @* <div class="modal-header">
+                    <h5 class="modal-title">Delete Conformation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div> *@
+                <div class="modal-body ">
+                    <div class="delete-cat-image d-flex flex-column  align-items-center">
+                        <img src="../images/toppng.com-warning-icon-2400x2400.png" width="50px" alt="">
+                        <p>Are you sure you want to Logout?</p>
+                    </div>
+
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <a type="submit" asp-action="Logout" asp-controller="User" class="btn btn-primary" >Yes</a>
+                    <button type="button" class="btn btn-outline-primary"data-bs-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <div class="container-fluid">
         <div class="row">
 
@@ -167,9 +192,9 @@
                                     <img src="images/Default_pfp.svg.png" width="40px" alt="">
                                 </div>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                  <li><a class="dropdown-item" href="#">My Profile</a></li>
-                                  <li><a class="dropdown-item" href="#">Change Password</a></li>
-                                  <li><a class="dropdown-item" asp-action="Logout" asp-controller="User">Logout</a></li>
+                                  <li><a class="dropdown-item" asp-action="MyProfile" asp-controller="User">My Profile</a></li>
+                                  <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="User">Change Password</a></li>
+                                  <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#logout">Logout</a></li>
                                 </ul>
                               </div>
                         </div>

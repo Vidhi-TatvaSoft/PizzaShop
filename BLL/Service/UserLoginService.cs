@@ -2,10 +2,11 @@ using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using BLL.Service.Interfaces;
 
 namespace BLL.Services
 {
-    public class UserLoginService
+    public class UserLoginService : UserLoginInterface
     {
         private readonly PizzashopDbContext _context;
         private readonly JWTTokenService _jwttokenService;
@@ -17,7 +18,7 @@ namespace BLL.Services
         }
 
 
-        public static string EncryptPassword(string password){
+        public  string EncryptPassword(string password){
             // byte[] passwordBytes = ASCIIEncoding.ASCII.GetBytes(password);
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: password,

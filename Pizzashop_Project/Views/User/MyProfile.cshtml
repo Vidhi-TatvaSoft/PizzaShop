@@ -73,7 +73,7 @@
                             </div> -->
 
 
-
+<form asp-action="MyProfile" method="post"  class="row">
         <!-- two cols -->
         <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
             <div class="form-floating ">
@@ -131,34 +131,19 @@
 
         <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
             <div class="form-floating">
-                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                    <option selected>Select Country</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
+                <select asp-for="CountryId" class="form-select" id="Countries" aria-label="Floating label select example" asp-items="@ViewBag.Countries"></select>       
                 <label for="floatingSelect text-secondary">Country</label>
             </div>
         </div>
         <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
             <div class="form-floating">
-                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                    <option selected>Select State</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
+                <select class="form-select" asp-for="StateId" asp-items="@ViewBag.States" id="States" aria-label="Floating label select example"> </select>
                 <label for="floatingSelect text-secondary">State</label>
             </div>
         </div>
         <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
             <div class="form-floating">
-                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                    <option selected>Select City</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
+                <select class="form-select" asp-for="CityId" asp-items="@ViewBag.Cities" id="Cities" aria-label="Floating label select example"></select>
                 <label for="floatingSelect text-secondary">City</label>
             </div>
         </div>
@@ -185,8 +170,8 @@
 
         <div class="d-flex mb-4 d-flex justify-content-end">
             <div class="craete-button mt-3">
-                <a href="#" class="btn btn-primary text-light  border text">
-                    Update</a>
+                <button  class="btn btn-primary text-light  border text" type="submit">
+                    Update</button>
             </div>
 
             <div class="craete-button mt-3 text-primary ms-3">
@@ -194,7 +179,85 @@
                     Cancel</a>
             </div>
         </div>
-
+</form>
     </div>
 
 </div>
+
+
+@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#Countries').change(function () {
+            var countryId = $(this).val();
+            $.getJSON('@Url.Action("GetState")', { countryId: countryId }, function (states) {
+                var statesSelect = $('#States');
+                statesSelect.empty();
+                $.each(states, function (index, state) {
+                    statesSelect.append($('<option/>', {
+                        value: state.value,
+                        text: state.text
+                    }));
+                });
+            });
+        });
+        $('#States').change(function () {
+            var stateId = $(this).val();
+            $.getJSON('@Url.Action("GetCity")', { stateId: stateId }, function (cities) {
+                var citiesSelect = $('#Cities');
+                citiesSelect.empty();
+                $.each(cities, function (index, city) {
+                    citiesSelect.append($('<option/>', {
+                        value: city.value,
+                        text: city.text
+                    }));
+                });
+            });
+        });
+    });
+</script> *@
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    
+    $(document).ready(function () {
+        $('#Countries').change(function () {
+            console.log("Country Changed");
+            var countryId = $(this).val();
+            $.getJSON('@Url.Action("GetStates")', { countryId: countryId }, function (states) {
+                var statesSelect = $('#States');
+                statesSelect.empty();
+                $("#Cities").empty();
+                statesSelect.append('<option selected value="">Select State</option>');
+                $("#Cities").append('<option selected value="">Select City</option>');
+                $.each(states, function (index, state) {
+                    statesSelect.append($('<option/>', {
+                        value: state.value,
+                        text: state.text
+                    }));
+                });
+            });
+        });
+        $('#States').change(function () {
+            var stateId = $(this).val();
+            $.getJSON('@Url.Action("GetCities")', { stateId: stateId }, function (cities) {
+                var citiesSelect = $('#Cities');
+                citiesSelect.empty();
+                citiesSelect.append('<option selected value="">Select City</option>');
+                $.each(cities, function (index, city) {
+                    citiesSelect.append($('<option/>', {
+                        value: city.value,
+                        text: city.text
+                    }));
+                });
+            });
+        });
+    });
+</script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

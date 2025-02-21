@@ -40,7 +40,7 @@ namespace Pizzashop_Project.Controllers
             // ViewData["RoleId"] = new SelectList(_userLoginService.Roles, "RoleId", "RoleId");
             if (Request.Cookies["email"] != null)
             {
-                return RedirectToAction("Index", "UserLogin");
+                return RedirectToAction("UsersList", "User");
             }
             return View();
         }
@@ -64,10 +64,10 @@ namespace Pizzashop_Project.Controllers
                 {
                    
                     Response.Cookies.Append("email", userlogin.Email, options);
-                    return RedirectToAction("MyProfile", "User");
+                    return RedirectToAction("UsersList", "User");
                 }
                 else{
-                     return RedirectToAction("MyProfile", "User");
+                     return RedirectToAction("UsersList", "User");
                 }
             }
             ViewBag.message = "Enter valid Credentials";

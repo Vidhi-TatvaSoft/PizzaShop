@@ -1,13 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using BLL.Service.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BLL.Services;
 
 
-public class JWTTokenService
+public class JWTTokenService : JWTTokenInterface
 {
     private readonly string _secretKey;
     private readonly int _tokenDuration;
