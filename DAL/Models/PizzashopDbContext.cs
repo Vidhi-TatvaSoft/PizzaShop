@@ -1042,6 +1042,7 @@ public partial class PizzashopDbContext : DbContext
 
             entity.Property(e => e.UserloginId).HasColumnName("userlogin_id");
             entity.Property(e => e.Email).HasColumnName("email");
+            entity.Property(e => e.IsDelete).HasColumnName("isDelete");
             entity.Property(e => e.Password).HasColumnName("password");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
 

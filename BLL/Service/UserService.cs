@@ -40,6 +40,11 @@ public class UserService : UserInterface
         return _context.Users.Include(x => x.Userlogin).Where(x => x.Userlogin.Email == Email).ToList();
     }
 
+    public List<Role> GetRole()
+    {
+        return _context.Roles.ToList();
+    }
+
     public List<Country> GetCountry()
     {
         return _context.Countries.ToList();
@@ -47,17 +52,11 @@ public class UserService : UserInterface
 
     public List<State> GetState(long? countryId)
     {
-        if(countryId == -100){
-            return _context.States.ToList();
-        }
         return _context.States.Where(x => x.CountryId == countryId).ToList();
     }
 
     public List<City> GetCity(long? StateId)
     {
-        if(StateId == -100){
-            return _context.Cities.ToList();
-        }
         return _context.Cities.Where(x => x.StateId == StateId).ToList();
     }
 
@@ -80,6 +79,86 @@ public class UserService : UserInterface
         userdetails.CityId = user.CityId;
 
         _context.Update(userdetails);
+        _context.SaveChanges();
+        return true;
+    }
+
+    public async Task<bool> AddUser(UserViewModel userVM , String Email)
+    {
+        if(_context.Userlogins.Any(x => x.Email == userVM.Email))
+        {
+            return false;
+        }
+        Userlogin userlogin = new Userlogin();
+        userlogin.Email = userVM.Email;
+        userlogin.Password = _userLoginService.EncryptPassword(userVM.Password);
+        userlogin.RoleId = userVM.RoleId;
+
+        await _context.AddAsync(userlogin);
+        await _context.SaveChangesAsync();
+
+        User user = new User();
+        user.UserloginId = userlogin.UserloginId;
+        user.FirstName = userVM.FirstName;
+        user.LastName = userVM.LastName;
+        user.Phone = userVM.Phone;
+        user.Username = userVM.Username;
+        user.RoleId = userVM.RoleId;
+
+        user.ProfileImage = userVM.Image;
+        // user.Status = userVM.Status;
+        user.CountryId = userVM.CountryId;
+        user.StateId = userVM.StateId;
+        user.CityId = userVM.CityId;
+        user.Address = userVM.Address;
+        user.Zipcode = userVM.Zipcode;
+
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
+        
+        return true;
+    }
+
+
+    public async Task<bool> EditUser(UserViewModel userVM , String Email)
+    {
+        if(_context.Userlogins.Any(x => x.Email == userVM.Email))
+        {
+            return false;
+        }
+        Userlogin userlogin = new Userlogin();
+        userlogin.Email = userVM.Email;
+        userlogin.Password = _userLoginService.EncryptPassword(userVM.Password);
+        userlogin.RoleId = userVM.RoleId;
+
+        await _context.AddAsync(userlogin);
+        await _context.SaveChangesAsync();
+
+        User user = new User();
+        user.UserloginId = userlogin.UserloginId;
+        user.FirstName = userVM.FirstName;
+        user.LastName = userVM.LastName;
+        user.Phone = userVM.Phone;
+        user.Username = userVM.Username;
+        user.RoleId = userVM.RoleId;
+
+        user.ProfileImage = userVM.Image;
+        // user.Status = userVM.Status;
+        user.CountryId = userVM.CountryId;
+        user.StateId = userVM.StateId;
+        user.CityId = userVM.CityId;
+        user.Address = userVM.Address;
+        user.Zipcode = userVM.Zipcode;
+
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
+        
+        return true;
+    }
+
+    public bool deleteUser(int id)
+    {
+        var user = _context.Users.FirstOrDefault(x => x.UserId == id).Isdelete = true;
         _context.SaveChanges();
         return true;
     }

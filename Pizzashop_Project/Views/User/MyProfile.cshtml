@@ -2,6 +2,24 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div id="delete-user" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+               
+                <div class="modal-body ">
+                    <div class="delete-cat-image d-flex flex-column  align-items-center">
+                        <img src="../images/toppng.com-warning-icon-2400x2400.png" width="50px" alt="">
+                        <p>Are you sure you want to Delete this User?</p>
+                    </div>
+
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <a type="submit" asp-action="Logout" asp-controller="User" class="btn btn-primary" >Yes</a>
+                    <button type="button" class="btn btn-outline-primary"data-bs-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 <!--Add new user  -->
@@ -49,213 +67,132 @@
             </div>
         </div>
 
-        <!-- profile pic -->
-        <!-- profile pic -->
-        <!-- <div class="row mt-3">
-                        
-                                <div class="position-relative">
-                                    <img src="./images/Default_pfp.svg.png"
-                                        class="user-profile position-absolute ms-3 " />
-                                    <img src="./images/camera.svg" class="camera-img ms-3 position-absolute round-"
-                                        alt="" />
-                                    <input type="file" class="form-control d-none" id="floatingInput"
-                                        placeholder="First Name">
-                                </div>
-
-                                <div class="ms-md-5 ">
-                                    <div class="d-flex flex-column ms-md-5 mt-1"><span
-                                            class="fs-3 fw-bold ms-md-4">Admin
-                                            admin</span><span class="ms-md-4">Admin</span></div>
-                                    <div class="fs-5 me-md-5 mailto:mt-2">admin@gmail.com</div>
-                                </div>
-                             
-
-                            </div> -->
-
-
-<form asp-action="MyProfile" method="post"  class="row">
-        <!-- two cols -->
-        <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
-            <div class="form-floating ">
-                <input type="text" class="form-control" id="floatingInput" asp-for="FirstName"  placeholder="First Name">
-                <label asp-for="FirstName" for="floatingInput" class="fs-6 text-secondary">First Name</label>
+        <form asp-action="MyProfile" method="post" class="row">
+            <!-- two cols -->
+            <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" id="floatingInput" asp-for="FirstName"
+                        placeholder="First Name">
+                    <label asp-for="FirstName" for="floatingInput" class="fs-6 text-secondary">First Name</label>
+                </div>
             </div>
-        </div>
-        <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
-            <div class="form-floating ">
-                <input asp-for="LastName" type="text" class="form-control" id="floatingInput" placeholder="Last Name">
-                <label asp-for="LastName" for="floatingInput" class="fs-6 text-secondary">Last Name</label>
-            </div>
-        </div>
-
-        <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
-            <div class="form-floating ">
-                <input asp-for="Username"  type="text" class="form-control" id="floatingInput" placeholder="John Deo">
-                <label asp-for="Username" for="floatingInput" class="fs-6 text-secondary">Username</label>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
-            <div class="form-floating">
-                <input asp-for="Phone" type="tel" class="form-control" id="floatingInput" placeholder="John Deo">
-                <label asp-for="Phone" for="floatingInput" class="fs-6 text-secondary">Phone</label>
-            </div>
-        </div>
-
-        <!-- <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
-                                <div class="form-floating ">
-                                    <input type="email" class="form-control" id="floatingInput"
-                                        placeholder="abc2gmail.com">
-                                    <label for="floatingInput" class="fs-6 text-secondary">Email</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3 ">
-                                <div class="form-floating text-secondary">
-                                    <input type="password" class="inputText form-control " id="password"
-                                        placeholder="Password" />
-                                    <label for="password">Password</label>
-                                    <span><i class="bi bi-eye-slash-fill password-icon" id="togglepassword"
-                                            onclick="toggle_fnction('togglepassword','password')"></i></span>
-                                    <span class="" id=""></span>
-                                </div>
-                            </div> -->
-
-        <!-- <div class="col-12 mt-3 d-flex justify-content-center align-content-center ">
-                                <div class="d-flex justify-content-center align-items-center  text-secondary browse-file-div bg-white"
-                                    style="height: 90px; width: 100%;  ">
-                                    <input type="file" class=" d-none " id="choose-file" />
-                                    <label for="choose-file">
-                                        <i class="fa-solid fa-cloud-arrow-up d-flex justify-content-center"></i> Browse
-                                        files</label>
-                                </div>
-                            </div> -->
-
-        <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
-            <div class="form-floating">
-                <select asp-for="CountryId" class="form-select" id="Countries" aria-label="Floating label select example" asp-items="@ViewBag.Countries"></select>       
-                <label for="floatingSelect text-secondary">Country</label>
-            </div>
-        </div>
-        <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
-            <div class="form-floating">
-                <select class="form-select" asp-for="StateId" asp-items="@ViewBag.States" id="States" aria-label="Floating label select example"> </select>
-                <label for="floatingSelect text-secondary">State</label>
-            </div>
-        </div>
-        <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
-            <div class="form-floating">
-                <select class="form-select" asp-for="CityId" asp-items="@ViewBag.Cities" id="Cities" aria-label="Floating label select example"></select>
-                <label for="floatingSelect text-secondary">City</label>
-            </div>
-        </div>
-
-        <div class="col-md-8 col-lg-8 col-xl-8 col-12 mt-3">
-            <div class="form-floating ">
-                <input asp-for="Address" type="text" class="form-control" id="floatingInput" placeholder="John Deo">
-                <label asp-for="Address" for="floatingInput" class="fs-6 text-secondary">Address</label>
-            </div>
-        </div>
-        <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
-            <div class="form-floating ">
-                <input asp-for="Zipcode" type="text" class="form-control" id="floatingInput" placeholder="John Deo">
-                <label asp-for="Zipcode" for="floatingInput" class="fs-6 text-secondary">Zipcode</label>
-            </div>
-        </div>
-
-        <!-- <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
-                                <div class="form-floating ">
-                                    <input type="text" class="form-control" id="floatingInput" placeholder="John Deo">
-                                    <label for="floatingInput" class="fs-6 text-secondary">Phone</label>
-                                </div>
-                            </div> -->
-
-        <div class="d-flex mb-4 d-flex justify-content-end">
-            <div class="craete-button mt-3">
-                <button  class="btn btn-primary text-light  border text" type="submit">
-                    Update</button>
+            <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
+                <div class="form-floating ">
+                    <input asp-for="LastName" type="text" class="form-control" id="floatingInput"
+                        placeholder="Last Name">
+                    <label asp-for="LastName" for="floatingInput" class="fs-6 text-secondary">Last Name</label>
+                </div>
             </div>
 
-            <div class="craete-button mt-3 text-primary ms-3">
-                <a href="#" class="btn  btn-outline-primary border border-primary  border ">
-                    Cancel</a>
+            <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
+                <div class="form-floating ">
+                    <input asp-for="Username" type="text" class="form-control" id="floatingInput"
+                        placeholder="John Deo">
+                    <label asp-for="Username" for="floatingInput" class="fs-6 text-secondary">Username</label>
+                </div>
             </div>
-        </div>
-</form>
+            <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
+                <div class="form-floating">
+                    <input asp-for="Phone" type="tel" class="form-control" id="floatingInput" placeholder="John Deo">
+                    <label asp-for="Phone" for="floatingInput" class="fs-6 text-secondary">Phone</label>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
+                <div class="form-floating">
+                    <select asp-for="CountryId" class="form-select" id="Countries"
+                        aria-label="Floating label select example" asp-items="@ViewBag.Countries"></select>
+                    <label for="floatingSelect text-secondary">Country</label>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
+                <div class="form-floating">
+                    <select class="form-select" asp-for="StateId" asp-items="@ViewBag.States" id="States"
+                        aria-label="Floating label select example"> </select>
+                    <label for="floatingSelect text-secondary">State</label>
+                    <span class="text-danger" >@TempData["stateErrorMessage"]</span>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
+                <div class="form-floating">
+                    <select class="form-select" asp-for="CityId" asp-items="@ViewBag.Cities" id="Cities"
+                        aria-label="Floating label select example"></select>
+                    <label for="floatingSelect text-secondary">City</label>
+                    <span class="text-danger" >@TempData["cityErrorMessage"]</span>
+                </div>
+            </div>
+
+            <div class="col-md-8 col-lg-8 col-xl-8 col-12 mt-3">
+                <div class="form-floating ">
+                    <input asp-for="Address" type="text" class="form-control" id="floatingInput" placeholder="John Deo">
+                    <label asp-for="Address" for="floatingInput" class="fs-6 text-secondary">Address</label>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4 col-xl-4 col-12 mt-3">
+                <div class="form-floating ">
+                    <input asp-for="Zipcode" type="text" class="form-control" id="floatingInput" placeholder="John Deo">
+                    <label asp-for="Zipcode" for="floatingInput" class="fs-6 text-secondary">Zipcode</label>
+                </div>
+            </div>
+
+            <div class="d-flex mb-4 d-flex justify-content-end">
+                <div class="craete-button mt-3">
+                    <button class="btn btn-primary text-light  border text" type="submit">
+                        Update</button>
+                </div>
+
+                <div class="craete-button mt-3 text-primary ms-3">
+                    <a href="#" class="btn  btn-outline-primary border border-primary  border ">
+                        Cancel</a>
+                </div>
+            </div>
+        </form>
     </div>
 
 </div>
 
 
-@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#Countries').change(function () {
-            var countryId = $(this).val();
-            $.getJSON('@Url.Action("GetState")', { countryId: countryId }, function (states) {
-                var statesSelect = $('#States');
-                statesSelect.empty();
-                $.each(states, function (index, state) {
-                    statesSelect.append($('<option/>', {
-                        value: state.value,
-                        text: state.text
-                    }));
-                });
-            });
-        });
-        $('#States').change(function () {
-            var stateId = $(this).val();
-            $.getJSON('@Url.Action("GetCity")', { stateId: stateId }, function (cities) {
-                var citiesSelect = $('#Cities');
-                citiesSelect.empty();
-                $.each(cities, function (index, city) {
-                    citiesSelect.append($('<option/>', {
-                        value: city.value,
-                        text: city.text
-                    }));
-                });
-            });
-        });
-    });
-</script> *@
-
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
-    
-    $(document).ready(function () {
-        $('#Countries').change(function () {
-            console.log("Country Changed");
-            var countryId = $(this).val();
-            $.getJSON('@Url.Action("GetStates")', { countryId: countryId }, function (states) {
-                var statesSelect = $('#States');
-                statesSelect.empty();
-                $("#Cities").empty();
-                statesSelect.append('<option selected value="">Select State</option>');
-                $("#Cities").append('<option selected value="">Select City</option>');
-                $.each(states, function (index, state) {
-                    statesSelect.append($('<option/>', {
-                        value: state.value,
-                        text: state.text
-                    }));
+    <script>
+
+        $(document).ready(function () {
+            $('#Countries').change(function () {
+                var countryId = $(this).val();
+                console.log(countryId);
+
+                $.getJSON('@Url.Action("GetStates","User")', { countryId: countryId }, function (states) {
+                    var statesSelect = $('#States');
+                    console.log(states);
+                    statesSelect.empty();
+                    $("#Cities").empty();
+                    statesSelect.append('<option selected value="-1">Select State</option>');
+                    $("#Cities").append('<option selected value="-1">Select City</option>');
+                    $.each(states, function (index, state) {
+                        statesSelect.append($('<option/>', {
+                            value: state.value,
+                            text: state.text
+                        }));
+                    });
+                });
+            });
+            $('#States').change(function () {
+                var stateId = $(this).val();
+                $.getJSON('@Url.Action("GetCities","User")', { stateId: stateId }, function (cities) {
+                    var citiesSelect = $('#Cities');
+                    citiesSelect.empty();
+                    citiesSelect.append('<option selected value="-1">Select City</option>');
+                    $.each(cities, function (index, city) {
+                        citiesSelect.append($('<option/>', {
+                            value: city.value,
+                            text: city.text
+                        }));
+                    });
                 });
             });
         });
-        $('#States').change(function () {
-            var stateId = $(this).val();
-            $.getJSON('@Url.Action("GetCities")', { stateId: stateId }, function (cities) {
-                var citiesSelect = $('#Cities');
-                citiesSelect.empty();
-                citiesSelect.append('<option selected value="">Select City</option>');
-                $.each(cities, function (index, city) {
-                    citiesSelect.append($('<option/>', {
-                        value: city.value,
-                        text: city.text
-                    }));
-                });
-            });
-        });
-    });
-</script>
+    </script>
 
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

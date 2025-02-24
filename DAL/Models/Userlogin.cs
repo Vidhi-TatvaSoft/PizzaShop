@@ -9,10 +9,11 @@ public partial class Userlogin
 
     public long RoleId { get; set; }
 
-
     public string Email { get; set; } = null!;
 
     public string Password { get; set; } = null!;
+
+    public bool IsDelete { get; set; }
 
     public virtual Role Role { get; set; } = null!;
 
