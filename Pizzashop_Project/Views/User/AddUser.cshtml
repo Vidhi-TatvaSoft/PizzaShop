@@ -14,7 +14,7 @@
     <div class="back-adduser-div d-flex align-items-center justify-content-between mt-2">
         <div class="back-button">
             <!-- <i class="fa-solid fa-angle-left left-icon-tag"></i> -->
-            <a href="user_list.html" class="btn btn-primary text-light p-2  ms-3 border text">
+            <a asp-action="UsersList" asp-controller="User" class="btn btn-primary text-light p-2  ms-3 border text">
                 < Back</a>
         </div>
 
@@ -22,8 +22,8 @@
 </div>
 
 <!-- form -->
-<form asp-action="AddUser" asp-controller="User">
-    <div class="form-main-div mt-3 mx-auto bg-light " style="width: 98%;">
+<form asp-action="AddUser" asp-controller="User" >
+    <div class="form-main-div mt-3 mx-auto bg-light p-4" style="width: 98%;">
         <div class="row d-flex ">
             <!-- two cols -->
             <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
@@ -73,7 +73,7 @@
                     <input type="password" asp-for="Password" class="inputText form-control " id="password"
                         placeholder="Password" />
                     <label for="password" asp-for="Password">Password</label>
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                    <span asp-validation-for="Password" class="text-danger"></span>
                     <span><i class="bi bi-eye-slash-fill password-icon" id="togglepassword"
                             onclick="toggle_fnction('togglepassword','password')"></i></span>
                     <span class="" id=""></span>
@@ -146,7 +146,7 @@
                 </div>
 
                 <div class="craete-button mt-3 text-primary ms-3">
-                    <a href="#" class="btn  btn-outline-primary border border-primary  border ">
+                    <a asp-action="UsersList" asp-controller="User" class="btn  btn-outline-primary border border-primary  border ">
                         Cancel</a>
                 </div>
             </div>

@@ -40,6 +40,11 @@ public class UserService : UserInterface
         return _context.Users.Include(x => x.Userlogin).Where(x => x.Userlogin.Email == Email).ToList();
     }
 
+    public List<User> getUserFromEmailWithoutToken(string Email)
+    {
+        return _context.Users.Include(x => x.Userlogin).Where(x => x.Userlogin.Email == Email).ToList();
+    }
+
     public List<Role> GetRole()
     {
         return _context.Roles.ToList();
@@ -65,7 +70,7 @@ public class UserService : UserInterface
         return _context.Users.Include(x => x.Userlogin).Include(x=>x.Role).ToList();
     }
 
-    public bool UpdateUser(User user, string Email)
+    public bool UpdateProfile(User user, string Email)
     {
         User userdetails = _context.Users.FirstOrDefault(x => x.Userlogin.Email == Email);
         userdetails.FirstName = user.FirstName;
@@ -83,7 +88,7 @@ public class UserService : UserInterface
         return true;
     }
 
-    public async Task<bool> AddUser(UserViewModel userVM , String Email)
+    public async Task<bool> AddUser(UserViewModel userVM )
     {
         if(_context.Userlogins.Any(x => x.Email == userVM.Email))
         {
@@ -122,26 +127,23 @@ public class UserService : UserInterface
 
     public async Task<bool> EditUser(UserViewModel userVM , String Email)
     {
-        if(_context.Userlogins.Any(x => x.Email == userVM.Email))
-        {
-            return false;
-        }
-        Userlogin userlogin = new Userlogin();
-        userlogin.Email = userVM.Email;
-        userlogin.Password = _userLoginService.EncryptPassword(userVM.Password);
+
+        Userlogin userlogin = _context.Userlogins.FirstOrDefault(x => x.Email == Email);
+        // userlogin.Email = userVM.Email;
+        // userlogin.Password = _userLoginService.EncryptPassword(userVM.Password);
         userlogin.RoleId = userVM.RoleId;
 
-        await _context.AddAsync(userlogin);
+         _context.Update(userlogin);
         await _context.SaveChangesAsync();
 
-        User user = new User();
-        user.UserloginId = userlogin.UserloginId;
+        User user = _context.Users.FirstOrDefault(x=>x.Userlogin.Email == Email);
+        // user.UserloginId = userlogin.UserloginId;
         user.FirstName = userVM.FirstName;
         user.LastName = userVM.LastName;
-        user.Phone = userVM.Phone;
         user.Username = userVM.Username;
+        user.Status = userVM.Status;
+        user.Phone = userVM.Phone;
         user.RoleId = userVM.RoleId;
-
         user.ProfileImage = userVM.Image;
         // user.Status = userVM.Status;
         user.CountryId = userVM.CountryId;
@@ -150,16 +152,28 @@ public class UserService : UserInterface
         user.Address = userVM.Address;
         user.Zipcode = userVM.Zipcode;
 
-        await _context.Users.AddAsync(user);
+         _context.Users.Update(user);
         await _context.SaveChangesAsync();
         
         return true;
     }
 
-    public bool deleteUser(int id)
+    public async Task<bool> deleteUser(string Email)
     {
-        var user = _context.Users.FirstOrDefault(x => x.UserId == id).Isdelete = true;
-        _context.SaveChanges();
+        // var user = _context.Users.FirstOrDefault(x => x.Userlogin.Email == Email).Isdelete = true;
+        // _context.SaveChanges();
+        // return true;
+
+        var userlogin = _context.Userlogins.FirstOrDefault(x => x.Email == Email);
+        var user = _context.Users.FirstOrDefault(x => x.Userlogin.Email == Email);
+
+        userlogin.IsDelete = true;
+        _context.Update(userlogin);
+
+        user.Isdelete = true;
+        _context.Update(user);
+
+        await _context.SaveChangesAsync();
         return true;
     }
 

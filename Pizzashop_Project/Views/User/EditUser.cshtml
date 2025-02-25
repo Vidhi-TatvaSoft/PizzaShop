@@ -14,7 +14,7 @@
     <div class="back-adduser-div d-flex align-items-center justify-content-between mt-2">
         <div class="back-button">
             <!-- <i class="fa-solid fa-angle-left left-icon-tag"></i> -->
-            <a href="user_list.html" class="btn btn-primary text-light p-2  ms-3 border text">
+            <a asp-action="UsersList" asp-controller="User" class="btn btn-primary text-light p-2  ms-3 border text">
                 < Back</a>
         </div>
 
@@ -66,21 +66,21 @@
 
             <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
                 <div class="form-floating ">
+                    <input type="hidden" asp-for="Email">
                     <input type="email" asp-for="Email" class="form-control" id="floatingInput"
-                        placeholder="abc2gmail.com">
+                        placeholder="abc2gmail.com" disabled>
                     <label for="floatingInput" asp-for="Email" class="fs-6 text-secondary">Email</label>
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3 ">
                 <div class="form-floating text-secondary">
-                    <input type="password" asp-for="Password" class="inputText form-control " id="password"
-                        placeholder="Password" />
-                    <label for="password" asp-for="Password">Password</label>
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                    <span><i class="bi bi-eye-slash-fill password-icon" id="togglepassword"
-                            onclick="toggle_fnction('togglepassword','password')"></i></span>
-                    <span class="" id=""></span>
+                    <label asp-for="Status" for="floatingInput" class="fs-6 text-secondary"></label>
+                    <select class="form-select" asp-for="Status"  id="Status"
+                        aria-label="Floating label select example">
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                         </select>
                 </div>
             </div>
             
@@ -146,7 +146,7 @@
             <div class="d-flex mb-4">
                 <div class="craete-button mt-3">
                     <button type="submit" class="btn btn-primary text-light  border text">
-                        Create User</button>
+                        Edit User</button>
                 </div>
 
                 <div class="craete-button mt-3 text-primary ms-3">

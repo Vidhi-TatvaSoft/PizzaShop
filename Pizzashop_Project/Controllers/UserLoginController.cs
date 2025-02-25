@@ -40,6 +40,7 @@ namespace Pizzashop_Project.Controllers
             // ViewData["RoleId"] = new SelectList(_userLoginService.Roles, "RoleId", "RoleId");
             if (Request.Cookies["email"] != null)
             {
+                TempData["SuccessMessage"] = "Login Successfully";
                 return RedirectToAction("UsersList", "User");
             }
             return View();
@@ -64,9 +65,11 @@ namespace Pizzashop_Project.Controllers
                 {
                    
                     Response.Cookies.Append("email", userlogin.Email, options);
+                    TempData["SuccessMessage"] = "Login Successfully";
                     return RedirectToAction("UsersList", "User");
                 }
                 else{
+                    TempData["SuccessMessage"] = "Login Successfully";
                      return RedirectToAction("UsersList", "User");
                 }
             }
@@ -105,10 +108,10 @@ namespace Pizzashop_Project.Controllers
                     // }
                     var emailExistStatus = _userLoginService.CheckEmailExist(forgorpassword.Email);
                     if(!emailExistStatus){
-                        ViewBag.message = "Email does not exist Enter Existing email toset password";
+                        ViewBag.message = "Email does not exist Enter Existing email to set password";
                         return View("ForgotPassword");
                     }
-                    var senderEmail = new MailAddress("test.dotnet@etatvasoft.com", "test.dotnet@etatvasoft.com");
+                    var senderEmail = new MailAddress("tatva.pca155@outlook.com", "tatva.pca155@outlook.com");
                     var receiverEmail = new MailAddress(forgorpassword.Email, forgorpassword.Email);
                     var password = "P}N^{z-]7Ilp";
                     var sub = "reset Password sub";

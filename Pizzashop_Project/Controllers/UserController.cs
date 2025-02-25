@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using BLL.Service;
 using BLL.Services;
@@ -70,7 +72,8 @@ public class UserController : Controller
         }
         var token = Request.Cookies["AuthToken"];
         var userEmail = _jwttokenService.GetClaimValue(token, "email");
-        _userService.UpdateUser(user, userEmail);
+        _userService.UpdateProfile(user, userEmail);
+        TempData["SuccessMessage"] = "Profile updated successfully";
         return RedirectToAction("MyProfile", "User");
     }
 
@@ -92,7 +95,7 @@ public class UserController : Controller
     [HttpPost]
     public async Task<IActionResult> AddUser(UserViewModel user)
     {
-        
+
         if (user.StateId == -1 && user.CityId == -1)
         {
             TempData["stateErrorMessage"] = "Please select a state";
@@ -109,14 +112,7 @@ public class UserController : Controller
             TempData["cityErrorMessage"] = "Please select a city";
             return RedirectToAction("AddUser", "User");
         }
-        var token = Request.Cookies["AuthToken"];
-        var Email = _jwttokenService.GetClaimValue(token, "email");
 
-        if (! await _userService.AddUser(user, Email))
-        {
-            ViewBag.Message = "Email already exists";
-            return View();
-        }
         // _userService.AddUser(user, Email);
         if (user.ProfileImage != null)
         {
@@ -134,16 +130,80 @@ public class UserController : Controller
                 user.ProfileImage.CopyTo(stream);
             }
             user.Image = $"/uploads/{fileName}";
+
+        }
+
+
+        if (!await _userService.AddUser(user))
+        {
+            ViewBag.Message = "Email already exists";
+            return View();
+        }
+        var senderEmail = new MailAddress("tatva.pca155@outlook.com", "tatva.pca155@outlook.com");
+        var receiverEmail = new MailAddress(user.Email, user.Email);
+        var password = "P}N^{z-]7Ilp";
+        var sub = "Add user";
+        var resetLink = Url.Action("ResetPassword", "UserLogin", new { Email = user.Email }, Request.Scheme);
+        var body = $@"     <div style='max-width: 500px; font-family: Arial, sans-serif; border: 1px solid #ddd;'>
+                <div style='background: #006CAC; padding: 10px; text-align: center; height:90px; max-width:100%; display: flex; justify-content: center; align-items: center;'>
+                    <img src='https://images.vexels.com/media/users/3/128437/isolated/preview/2dd809b7c15968cb7cc577b2cb49c84f-pizza-food-restaurant-logo.png' style='max-width: 50px;' />
+                    <span style='color: #fff; font-size: 24px; margin-left: 10px; font-weight: 600;'>PIZZASHOP</span>
+                </div>
+                <div style='padding: 20px 5px; background-color: #e8e8e8;'>
+                    <p>Welcome to Pizza shop,</p>
+                    <p>Please Find the details below to login to your account:</p><br>
+                    <h3>Login details</h3>
+                    <p>Email: {user.Email}</p>
+                    <p>Password: {user.Password}</p><br>
+                    <p>If you encounter any issues or have any questions, please do not hesitate to contact our support team.</p>
+                    
+                </div>
+                </div>";
+        var smtp = new SmtpClient
+        {
+            Host = "mail.etatvasoft.com",
+            Port = 587,
+            EnableSsl = true,
+            DeliveryMethod = SmtpDeliveryMethod.Network,
+            UseDefaultCredentials = false,
+            Credentials = new NetworkCredential(senderEmail.Address, password)
+        };
+        using (var mess = new MailMessage(senderEmail, receiverEmail)
+        {
+            Subject = sub,
+            Body = body,
+            IsBodyHtml = true
+
+        })
+        {
+            await smtp.SendMailAsync(mess);
         }
         return RedirectToAction("UsersList", "User");
         // return View();
     }
 
-    
-    public IActionResult EditUser()
+    // GET
+    public IActionResult EditUser(string Email)
     {
-        var token = Request.Cookies["AuthToken"];
-        var userData = _userService.getUserFromEmail(token);
+        // var token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmailWithoutToken(Email);
+        UserViewModel userViewModel = new UserViewModel()
+        {
+            UserId = userData[0].UserId,
+            UserloginId = userData[0].UserloginId,
+            RoleId = userData[0].RoleId,
+            FirstName = userData[0].FirstName,
+            LastName = userData[0].LastName,
+            Username = userData[0].Username,
+            Email = userData[0].Userlogin.Email,
+            Phone = userData[0].Phone,
+            Image = userData[0].ProfileImage,
+            CountryId = userData[0].CountryId,
+            StateId = userData[0].StateId,
+            CityId = userData[0].CityId,
+            Address = userData[0].Address,
+            Zipcode = userData[0].Zipcode
+        };
         var Roles = _userService.GetRole();
         var Countries = _userService.GetCountry();
         var States = _userService.GetState(userData[0].CountryId);
@@ -154,7 +214,7 @@ public class UserController : Controller
         ViewBag.Cities = new SelectList(Cities, "CityId", "CityName");
         // var data = userData[0].Userlogin.Email;
 
-        return View(userData[0]);
+        return View(userViewModel);
     }
 
 
@@ -177,15 +237,8 @@ public class UserController : Controller
             TempData["cityErrorMessage"] = "Please select a city";
             return RedirectToAction("AddUser", "User");
         }
-        var token = Request.Cookies["AuthToken"];
-        var Email = _jwttokenService.GetClaimValue(token, "email");
-
-        if (! await _userService.AddUser(user, Email))
-        {
-            ViewBag.Message = "Email already exists";
-            return View();
-        }
-        // _userService.AddUser(user, Email);
+        // var token = Request.Cookies["AuthToken"];
+        var Email = user.Email;
         if (user.ProfileImage != null)
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
@@ -203,6 +256,8 @@ public class UserController : Controller
             }
             user.Image = $"/uploads/{fileName}";
         }
+
+        await _userService.EditUser(user, Email);
         return RedirectToAction("UsersList", "User");
         // return View();
     }
@@ -241,9 +296,16 @@ public class UserController : Controller
             return View();
         }
     }
-    public IActionResult deleteUser(int id)
+   
+   
+    public async Task<IActionResult> deleteUser(string Email)
     {
-        var user = _userService.deleteUser(id);
+        var deleteStatus =await  _userService.deleteUser(Email);
+        if(!deleteStatus){
+            ViewBag.Message = "User not deleted";
+            return RedirectToAction("UsersList", "User");
+
+        }
         return RedirectToAction("UsersList", "User");
     }
 
