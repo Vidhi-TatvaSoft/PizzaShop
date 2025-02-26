@@ -22,9 +22,9 @@
 </div>
 
 <!-- form -->
-<form asp-action="EditUser" asp-controller="User">
+<form asp-action="EditUser" asp-controller="User" enctype="multipart/form-data">
     <div class="form-main-div mt-3 mx-auto bg-light " style="width: 98%;">
-        <div class="row d-flex ">
+        <div class="row d-flex p-3">
             <!-- two cols -->
             <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
                 <div class="form-floating ">
@@ -75,20 +75,20 @@
             </div>
             <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3 ">
                 <div class="form-floating text-secondary">
-                    <label asp-for="Status" for="floatingInput" class="fs-6 text-secondary"></label>
                     <select class="form-select" asp-for="Status"  id="Status"
                         aria-label="Floating label select example">
                         <option value="true">Active</option>
                         <option value="false">Inactive</option>
-                         </select>
+                    </select>
+                    <label for="floatingSelect text-secondary">State</label>
                 </div>
             </div>
             
             <div class="col-12 mt-3 d-flex justify-content-center align-content-center ">
                 <div class="d-flex justify-content-center align-items-center  text-secondary browse-file-div bg-white"
                     style="height: 90px; width: 100%;  ">
-                    <input type="file" asp-for="Image" class=" d-none " id="choose-file" />
-                    <label for="choose-file" asp-for="Image">
+                    <input type="file" asp-for="ProfileImage" class=" d-none " id="choose-file" />
+                    <label for="choose-file" asp-for="ProfileImage">
                         <i class="fa-solid fa-cloud-arrow-up d-flex justify-content-center"></i> Browse
                         files</label>
                 </div>
@@ -205,6 +205,21 @@
                 });
             });
         });
+    </script>
+
+        <script>
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+            console.log("successMessage",successMessage);
+            if (successMessage) {
+                toastr.success(successMessage);
+            }
+            if (errorMessage && errorMessage == "") 
+                {
+                    toastr.error(errorMessage);
+                }
+            })
     </script>
 
     @{

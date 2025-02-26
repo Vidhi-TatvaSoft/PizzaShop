@@ -11,4 +11,7 @@ public interface UserLoginInterface
     bool CheckEmailExist(string email);
     bool ResetPassword(ResetPasswordViewModel resetpassdata);
 
+    
+    public string GetProfileImage(string Email);
+
 }

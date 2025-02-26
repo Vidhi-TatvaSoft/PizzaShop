@@ -60,7 +60,16 @@ namespace BLL.Services
             }
             return false;
         }
+        
 
+      public string GetProfileImage(string Email)
+    {
+        return _context.Users.FirstOrDefault(x=>x.Userlogin.Email == Email).ProfileImage;
+    }
+
+    public string GetUsername(string Email){
+        return _context.Users.FirstOrDefault(x=>x.Userlogin.Email == Email).Username;
+    }
 
         public bool ResetPassword(ResetPasswordViewModel resetpassdata)
         {

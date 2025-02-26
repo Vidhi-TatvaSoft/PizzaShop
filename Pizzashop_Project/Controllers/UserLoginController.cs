@@ -24,10 +24,9 @@ namespace Pizzashop_Project.Controllers
             _userLoginService = userLoginService;
         }
 
-        [Authorize(Roles = "Admin")]    
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-
             var userData = await _userLoginService.getusers();
             return View(userData);
         }
@@ -40,15 +39,19 @@ namespace Pizzashop_Project.Controllers
             // ViewData["RoleId"] = new SelectList(_userLoginService.Roles, "RoleId", "RoleId");
             if (Request.Cookies["email"] != null)
             {
+                var email = Request.Cookies["email"];
+                // CookieOptions options = new CookieOptions();
+                // options.Expires = DateTime.Now.AddMinutes(60);
+                // Response.Cookies.Append("profileImage", _userLoginService.GetProfileImage(email), options);
+                // Response.Cookies.Append("username", _userLoginService.GetUsername(email), options);
+
                 TempData["SuccessMessage"] = "Login Successfully";
                 return RedirectToAction("UsersList", "User");
             }
             return View();
         }
 
-        // POST: UserLogin/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VerifyPassword(UserLoginViewModel userlogin)
@@ -59,18 +62,21 @@ namespace Pizzashop_Project.Controllers
             options.Expires = DateTime.Now.AddMinutes(60);
             if (verifictiontoken != null)
             {
-                
                 Response.Cookies.Append("AuthToken", verifictiontoken, options);
+                Response.Cookies.Append("profileImage", _userLoginService.GetProfileImage(userlogin.Email), options);
+                    Response.Cookies.Append("username", _userLoginService.GetUsername(userlogin.Email), options);
                 if (userlogin.RememberMe)
                 {
-                   
+
                     Response.Cookies.Append("email", userlogin.Email, options);
-                    TempData["SuccessMessage"] = "Login Successfully";
+                    ViewBag.ProfileImage = _userLoginService.GetProfileImage(userlogin.Email);
+                    TempData["SuccessMessage"] = "Login Successfully";   
                     return RedirectToAction("UsersList", "User");
                 }
-                else{
+                else
+                {
                     TempData["SuccessMessage"] = "Login Successfully";
-                     return RedirectToAction("UsersList", "User");
+                    return RedirectToAction("UsersList", "User");
                 }
             }
             ViewBag.message = "Enter valid Credentials";
@@ -78,45 +84,37 @@ namespace Pizzashop_Project.Controllers
         }
 
 
-        public string GetEmail(string Email){
-            ForgotPasswordViewModel forgotPasswordViewModel = new ForgotPasswordViewModel(); 
+        public string GetEmail(string Email)
+        {
+            ForgotPasswordViewModel forgotPasswordViewModel = new ForgotPasswordViewModel();
             forgotPasswordViewModel.Email = Email;
-            TempData["Email"] = Email;  
+            TempData["Email"] = Email;
             return Email;
         }
         public IActionResult ForgotPassword()
         {
-            
             return View();
         }
 
 
-        // public ActionResult SendEmail()
-        // {
-        //     return View();
-        // }
-
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel forgorpassword)
         {
-            
-                if (ModelState.IsValid)
+
+            if (ModelState.IsValid)
+            {
+                var emailExistStatus = _userLoginService.CheckEmailExist(forgorpassword.Email);
+                if (!emailExistStatus)
                 {
-                    // if(forgorpassword.Email == null){
-                    //     ViewBag.message = "Enter Email to reset password";
-                    //     return View("ForgotPassword");
-                    // }
-                    var emailExistStatus = _userLoginService.CheckEmailExist(forgorpassword.Email);
-                    if(!emailExistStatus){
-                        ViewBag.message = "Email does not exist Enter Existing email to set password";
-                        return View("ForgotPassword");
-                    }
-                    var senderEmail = new MailAddress("tatva.pca155@outlook.com", "tatva.pca155@outlook.com");
-                    var receiverEmail = new MailAddress(forgorpassword.Email, forgorpassword.Email);
-                    var password = "P}N^{z-]7Ilp";
-                    var sub = "reset Password sub";
-                    var resetLink = Url.Action("ResetPassword", "UserLogin", new { Email = forgorpassword.Email }, Request.Scheme);
-                    var body = $@"     <div style='max-width: 500px; font-family: Arial, sans-serif; border: 1px solid #ddd;'>
+                    ViewBag.message = "Email does not exist Enter Existing email to set password";
+                    return View("ForgotPassword");
+                }
+                var senderEmail = new MailAddress("tatva.pca155@outlook.com", "tatva.pca155@outlook.com");
+                var receiverEmail = new MailAddress(forgorpassword.Email, forgorpassword.Email);
+                var password = "P}N^{z-]7Ilp";
+                var sub = "reset Password sub";
+                var resetLink = Url.Action("ResetPassword", "UserLogin", new { Email = forgorpassword.Email }, Request.Scheme);
+                var body = $@"     <div style='max-width: 500px; font-family: Arial, sans-serif; border: 1px solid #ddd;'>
                 <div style='background: #006CAC; padding: 10px; text-align: center; height:90px; max-width:100%; display: flex; justify-content: center; align-items: center;'>
                     <img src='https://images.vexels.com/media/users/3/128437/isolated/preview/2dd809b7c15968cb7cc577b2cb49c84f-pizza-food-restaurant-logo.png' style='max-width: 50px;' />
                     <span style='color: #fff; font-size: 24px; margin-left: 10px; font-weight: 600;'>PIZZASHOP</span>
@@ -131,30 +129,28 @@ namespace Pizzashop_Project.Controllers
                     </p>
                 </div>
                 </div>";
-                    var smtp = new SmtpClient
-                    {
-                        Host = "mail.etatvasoft.com",
-                        Port = 587,
-                        EnableSsl = true,
-                        DeliveryMethod = SmtpDeliveryMethod.Network,
-                        UseDefaultCredentials = false,
-                        Credentials = new NetworkCredential(senderEmail.Address, password)
-                    };
-                    using (var mess = new MailMessage(senderEmail, receiverEmail)
-                    {
-                        Subject = sub,
-                        Body = body,
-                        IsBodyHtml = true
-                        
-                    })
-                    {
-                         await smtp.SendMailAsync(mess);
-                    }
+                var smtp = new SmtpClient
+                {
+                    Host = "mail.etatvasoft.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(senderEmail.Address, password)
+                };
+                using (var mess = new MailMessage(senderEmail, receiverEmail)
+                {
+                    Subject = sub,
+                    Body = body,
+                    IsBodyHtml = true
 
-                    return View("VerifyPassword");
+                })
+                {
+                    await smtp.SendMailAsync(mess);
                 }
-            
-            
+                TempData["SuccessMessage"] = "Reset Password link sent to your Email";
+                return View("VerifyPassword");
+            }
             return View();
         }
 
@@ -168,31 +164,34 @@ namespace Pizzashop_Project.Controllers
 
         // POST
         [HttpPost]
-        public IActionResult ResetPassword(ResetPasswordViewModel resetpassdata){
+        public IActionResult ResetPassword(ResetPasswordViewModel resetpassdata)
+        {
             if (ModelState.IsValid)
-            {   
-                
+            {
+
                 var emailExistStatus = _userLoginService.CheckEmailExist(resetpassdata.Email);
-                if(!emailExistStatus){
+                if (!emailExistStatus)
+                {
                     ViewBag.message = "Email does not exist Enter Existing email toset password";
                     return View("ResetPassword");
                 }
 
-                if(resetpassdata.Password != resetpassdata.ConfirmPassword){
+                if (resetpassdata.Password != resetpassdata.ConfirmPassword)
+                {
                     ViewBag.message = "Password and Confirm Password should be same";
                     return View("ResetPassword");
                 }
                 var resetStatus = _userLoginService.ResetPassword(resetpassdata);
                 if (resetStatus)
                 {
-                    ViewBag.message = "Password upated Successfully";
+                    TempData["SuccessMessage"] = "Password Reseted successfully";
                     return RedirectToAction("VerifyPassword");
                 }
             }
-            // ViewBag.message = "Password not updated";
+            ViewBag.message = "Password not updated. Try again";
             return View("ResetPassword");
         }
-                       
+
 
     }
 }

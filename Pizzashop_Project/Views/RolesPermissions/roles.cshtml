@@ -1,0 +1,14 @@
+@model DAL.ViewModels.RolesViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="roles">
+    <div class="form-floating">
+                    <select class="form-select" asp-for="RoleId" asp-items="@ViewBag.Roles" id="Roles"
+                        aria-label="Floating label select example">
+                    </select>
+                    <label for="floatingSelect text-secondary">Role</label>
+                </div>
+</div>

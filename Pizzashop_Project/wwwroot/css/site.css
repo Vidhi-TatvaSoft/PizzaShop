@@ -155,12 +155,12 @@ form i{
  }
 
  
-.camera-img{
+.camera-image{
   height: 25px;
   width: 25px;
   border-radius: 50%;
-  top: 40px;
-  left: 62px !important;
+  top: 12px;
+  left: 75px !important;
 }
 
 .user-profile{

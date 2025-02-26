@@ -65,12 +65,25 @@ public class UserService : UserInterface
         return _context.Cities.Where(x => x.StateId == StateId).ToList();
     }
 
-    public List<User> getuser(string Email)
+    // public List<User> getuser(string Email)
+    // {
+    //     return _context.Users.Include(x => x.Userlogin).Include(x => x.Role).ToList();
+    // }
+
+    public async Task<(List<User>, int)> GetUsers(int PageNo, int PageSize)
     {
-        return _context.Users.Include(x => x.Userlogin).Include(x=>x.Role).ToList();
+        var query = _context.Users.Include(x => x.Userlogin).ThenInclude(u => u.Role).Where(u => u.Isdelete == false);
+
+        int TotalRecord = await query.CountAsync();
+        var users = await query.Skip((PageNo - 1) * PageSize)
+                               .Take(PageSize)
+                               .ToListAsync();
+
+        return (users, TotalRecord);
     }
 
-    public bool UpdateProfile(User user, string Email)
+
+    public bool UpdateProfile(UserViewModel user, string Email)
     {
         User userdetails = _context.Users.FirstOrDefault(x => x.Userlogin.Email == Email);
         userdetails.FirstName = user.FirstName;
@@ -82,15 +95,22 @@ public class UserService : UserInterface
         userdetails.CountryId = user.CountryId;
         userdetails.StateId = user.StateId;
         userdetails.CityId = user.CityId;
+        if (user.Image != null)
+        {
+            userdetails.ProfileImage = user.Image;
+        }
+
 
         _context.Update(userdetails);
         _context.SaveChanges();
         return true;
     }
 
-    public async Task<bool> AddUser(UserViewModel userVM )
+
+
+    public async Task<bool> AddUser(UserViewModel userVM)
     {
-        if(_context.Userlogins.Any(x => x.Email == userVM.Email))
+        if (_context.Userlogins.Any(x => x.Email == userVM.Email))
         {
             return false;
         }
@@ -120,12 +140,12 @@ public class UserService : UserInterface
 
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
-        
+
         return true;
     }
 
 
-    public async Task<bool> EditUser(UserViewModel userVM , String Email)
+    public async Task<bool> EditUser(UserViewModel userVM, String Email)
     {
 
         Userlogin userlogin = _context.Userlogins.FirstOrDefault(x => x.Email == Email);
@@ -133,10 +153,10 @@ public class UserService : UserInterface
         // userlogin.Password = _userLoginService.EncryptPassword(userVM.Password);
         userlogin.RoleId = userVM.RoleId;
 
-         _context.Update(userlogin);
+        _context.Update(userlogin);
         await _context.SaveChangesAsync();
 
-        User user = _context.Users.FirstOrDefault(x=>x.Userlogin.Email == Email);
+        User user = _context.Users.FirstOrDefault(x => x.Userlogin.Email == Email);
         // user.UserloginId = userlogin.UserloginId;
         user.FirstName = userVM.FirstName;
         user.LastName = userVM.LastName;
@@ -144,7 +164,10 @@ public class UserService : UserInterface
         user.Status = userVM.Status;
         user.Phone = userVM.Phone;
         user.RoleId = userVM.RoleId;
-        user.ProfileImage = userVM.Image;
+        if (userVM.Image != null)
+        {
+            user.ProfileImage = userVM.Image;
+        }
         // user.Status = userVM.Status;
         user.CountryId = userVM.CountryId;
         user.StateId = userVM.StateId;
@@ -152,9 +175,9 @@ public class UserService : UserInterface
         user.Address = userVM.Address;
         user.Zipcode = userVM.Zipcode;
 
-         _context.Users.Update(user);
+        _context.Users.Update(user);
         await _context.SaveChangesAsync();
-        
+
         return true;
     }
 

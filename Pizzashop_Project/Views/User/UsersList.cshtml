@@ -39,11 +39,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model) {
-                     if(!item.Isdelete){
-                         <tr>
+        @foreach (var item in Model) {
+            if(!item.Isdelete){
+             <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
+                <img src="@item.ProfileImage" alt="" width="35px" style="border-radius: 50%;"> @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Userlogin.Email)
@@ -71,22 +71,45 @@
                 <a asp-action="EditUser" asp-controller="User" asp-route-Email="@item.Userlogin.Email"><i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0 text-dark" ></i></a>
                 <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#delete-user" data-email="@item.Userlogin.Email"></i>
                     <!-- delete item modal-->
-
-
             </td>
-        </tr>
-                     }
-      
-}
+             </tr>
+            }
+         }
+        </tbody>
+         </table>
+        <div class="d-flex justify-content-end align-items-center mb-3 mt-2 me-2">
+            <div class="d-flex align-items-center">
+                <label class="me-2">Items Per page:</label>
+                    <select id="PageSize" class="form-select form-select-sm w-auto" onchange="pageSizeChange(1)">
+                        <option value="5" selected="@(ViewBag.PageSize == 5)">5</option>
+                        <option value="10" selected="@(ViewBag.PageSize == 10)">10</option>
+                        <option value="15" selected="@(ViewBag.PageSize == 15)">15</option>
+                        <option value="20" selected="@(ViewBag.PageSize == 20)">20</option>
+                    </select>
+            </div>
 
+            <div>
+                &nbsp;Showing @(((ViewBag.PageNo - 1) * ViewBag.PageSize) + 1) -
+                @((ViewBag.PageNo * ViewBag.PageSize > ViewBag.TotalRecord ? ViewBag.TotalRecord : ViewBag.PageNo *
+                    ViewBag.PageSize))
+                of @ViewBag.TotalRecord &nbsp;&nbsp;
+            </div>
 
-                </tbody>
-            </table>
-
-        </div>
-      
+            <div>
+                <button class="btn btn-outline-dark btn-sm" onclick="changePage(@(ViewBag.PageNo - 1))"
+                    @(ViewBag.PageNo == 1 ? "disabled" : "")>
+                    &lt;
+                </button>
+                <button class="btn btn-outline-dark btn-sm" onclick="changePage(@(ViewBag.PageNo + 1))"
+                    @(ViewBag.PageNo * ViewBag.PageSize >= ViewBag.TotalRecord ? "disabled" : "")>
+                    &gt;
+                </button>
+            </div>
         </div>
     </div>
+      
+</div>
+    
 
 
     <div id="delete-user" class="modal" tabindex="-1">
@@ -130,6 +153,18 @@
         });
     </script> *@
     
+
+     <script>
+    function changePage(page) {
+      const PageSize = document.getElementById("PageSize").value;
+      window.location.href = `?PageNo=${page}&PageSize=${PageSize}`;
+    }
+
+    function pageSizeChange(page) {
+      const PageSize = document.getElementById("PageSize").value;
+      window.location.href = `?PageNo=${page}&PageSize=${PageSize}`;
+    }
+  </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

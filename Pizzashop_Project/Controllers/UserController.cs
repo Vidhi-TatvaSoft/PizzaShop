@@ -17,6 +17,8 @@ public class UserController : Controller
 {
     private readonly UserService _userService;
     private readonly JWTTokenService _jwttokenService;
+    private readonly IWebHostEnvironment _env;
+
 
     public UserController(UserService userService, JWTTokenService jwttokenService)
     {
@@ -38,6 +40,23 @@ public class UserController : Controller
     {
         var token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
+        UserViewModel userViewModel = new UserViewModel()
+        {
+            UserId = userData[0].UserId,
+            UserloginId = userData[0].UserloginId,
+            RoleId = userData[0].RoleId,
+            FirstName = userData[0].FirstName,
+            LastName = userData[0].LastName,
+            Username = userData[0].Username,
+            Email = userData[0].Userlogin.Email,
+            Phone = userData[0].Phone,
+            Image = userData[0].ProfileImage,
+            CountryId = userData[0].CountryId,
+            StateId = userData[0].StateId,
+            CityId = userData[0].CityId,
+            Address = userData[0].Address,
+            Zipcode = userData[0].Zipcode
+        };
         var Countries = _userService.GetCountry();
         var States = _userService.GetState(userData[0].CountryId);
         var Cities = _userService.GetCity(userData[0].StateId);
@@ -46,13 +65,13 @@ public class UserController : Controller
         ViewBag.Cities = new SelectList(Cities, "CityId", "CityName");
         // var data = userData[0].Userlogin.Email;
 
-        return View(userData[0]);
+        return View(userViewModel);
     }
 
     // post method
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public IActionResult MyProfile(User user)
+    public IActionResult MyProfile(UserViewModel user)
     {
         if (user.StateId == -1 && user.CityId == -1)
         {
@@ -72,15 +91,36 @@ public class UserController : Controller
         }
         var token = Request.Cookies["AuthToken"];
         var userEmail = _jwttokenService.GetClaimValue(token, "email");
+
+        if (user.ProfileImage != null)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads");
+
+            //create folder if not exist
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            string fileName = $"{Guid.NewGuid()}_{user.ProfileImage.FileName}";
+            string fileNameWithPath = Path.Combine(path, fileName);
+
+            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+            {
+                user.ProfileImage.CopyTo(stream);
+            }
+            user.Image = $"/uploads/{fileName}";
+        }
+
         _userService.UpdateProfile(user, userEmail);
+        CookieOptions options = new CookieOptions();
+        options.Expires = DateTime.Now.AddMinutes(60);
+        Response.Cookies.Append("profileImage", user.Image, options);
+        Response.Cookies.Append("username", user.Username, options);
         TempData["SuccessMessage"] = "Profile updated successfully";
         return RedirectToAction("MyProfile", "User");
     }
 
     public IActionResult AddUser()
     {
-
-
         var Roles = _userService.GetRole();
         var Countries = _userService.GetCountry();
         var States = _userService.GetState(-1);
@@ -116,7 +156,7 @@ public class UserController : Controller
         // _userService.AddUser(user, Email);
         if (user.ProfileImage != null)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads");
 
             //create folder if not exist
             if (!Directory.Exists(path))
@@ -130,7 +170,6 @@ public class UserController : Controller
                 user.ProfileImage.CopyTo(stream);
             }
             user.Image = $"/uploads/{fileName}";
-
         }
 
 
@@ -178,6 +217,8 @@ public class UserController : Controller
         {
             await smtp.SendMailAsync(mess);
         }
+        TempData["SuccessMessage"] = "User added successfully. Check your email for login details";
+
         return RedirectToAction("UsersList", "User");
         // return View();
     }
@@ -258,6 +299,7 @@ public class UserController : Controller
         }
 
         await _userService.EditUser(user, Email);
+        TempData["SuccessMessage"] = "User updated successfully";
         return RedirectToAction("UsersList", "User");
         // return View();
     }
@@ -282,7 +324,8 @@ public class UserController : Controller
             var changePasswordStatus = _userService.ChangepasswordService(changePassword, Email);
             if (changePasswordStatus)
             {
-                return RedirectToAction("MyProfile", "User");
+                TempData["SuccessMessage"] = "Password changed successfully";
+                return RedirectToAction("UsersList", "User");
             }
             else
             {
@@ -296,16 +339,18 @@ public class UserController : Controller
             return View();
         }
     }
-   
-   
+
+
     public async Task<IActionResult> deleteUser(string Email)
     {
-        var deleteStatus =await  _userService.deleteUser(Email);
-        if(!deleteStatus){
+        var deleteStatus = await _userService.deleteUser(Email);
+        if (!deleteStatus)
+        {
             ViewBag.Message = "User not deleted";
             return RedirectToAction("UsersList", "User");
 
         }
+        TempData["SuccessMessage"] = "User deleted successfully";
         return RedirectToAction("UsersList", "User");
     }
 
@@ -313,14 +358,21 @@ public class UserController : Controller
     {
         Response.Cookies.Delete("AuthToken");
         Response.Cookies.Delete("email");
+        Response.Cookies.Delete("profileImage");
+        Response.Cookies.Delete("username");
         return RedirectToAction("VerifyPassword", "UserLogin");
     }
 
-    public IActionResult UsersList()
+
+    public async Task<IActionResult> UsersList(int PageNo = 1, int PageSize = 5)
     {
-        var token = Request.Cookies["AuthToken"];
-        var Email = _jwttokenService.GetClaimValue(token, "email");
-        var users = _userService.getuser(Email);
+        var (users, TotalRecord) = await _userService.GetUsers(PageNo, PageSize);
+        int totalPages = (int)Math.Ceiling((double)TotalRecord / PageSize);
+
+        ViewBag.PageNo = PageNo;
+        ViewBag.PageSize = PageSize;
+        ViewBag.TotalPages = totalPages;
+        ViewBag.TotalRecord = TotalRecord;
         return View(users);
     }
 

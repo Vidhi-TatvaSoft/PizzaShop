@@ -22,7 +22,7 @@
 </div>
 
 <!-- form -->
-<form asp-action="AddUser" asp-controller="User" >
+<form asp-action="AddUser" asp-controller="User" enctype="multipart/form-data">
     <div class="form-main-div mt-3 mx-auto bg-light p-4" style="width: 98%;">
         <div class="row d-flex ">
             <!-- two cols -->
@@ -83,8 +83,8 @@
             <div class="col-12 mt-3 d-flex justify-content-center align-content-center ">
                 <div class="d-flex justify-content-center align-items-center  text-secondary browse-file-div bg-white"
                     style="height: 90px; width: 100%;  ">
-                    <input type="file" asp-for="Image" class=" d-none " id="choose-file" />
-                    <label for="choose-file" asp-for="Image">
+                    <input type="file" asp-for="ProfileImage" class=" d-none " id="choose-file" />
+                    <label for="choose-file" >
                         <i class="fa-solid fa-cloud-arrow-up d-flex justify-content-center"></i> Browse
                         files</label>
                 </div>
@@ -138,7 +138,9 @@
                 </div>
             </div>
 
-            <span>@TempData["EmailErrorMessage"]</span>
+            @* <span>@TempData["EmailErrorMessage"]</span>
+             *@
+             <span class="text-danger">@ViewBag.message</span>
             <div class="d-flex mb-4">
                 <div class="craete-button mt-3">
                     <button type="submit" class="btn btn-primary text-light  border text">
@@ -201,6 +203,21 @@
                 });
             });
         });
+    </script>
+
+        <script>
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+            console.log("successMessage",successMessage);
+            if (successMessage) {
+                toastr.success(successMessage);
+            }
+            if (errorMessage && errorMessage == "") 
+                {
+                    toastr.error(errorMessage);
+                }
+            })
     </script>
 
     @{

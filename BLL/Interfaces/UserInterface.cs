@@ -10,7 +10,7 @@ public interface UserInterface
     
     public List<User> getUserFromEmailWithoutToken(string Email);
 
-    bool UpdateProfile(User user, string Email);
+    public bool UpdateProfile(UserViewModel user, string Email);
 
     bool ChangepasswordService(ChangePasswordViewModel changePassword, string Email);
 
@@ -20,7 +20,10 @@ public interface UserInterface
 
     public List<City> GetCity(long? StateId);
 
-    public List<User> getuser(string Email);
+
+    // public List<User> getuser(string Email);
+
+    public Task<(List<User>, int)> GetUsers(int PageNo, int PageSize);
 
     public  Task<bool> EditUser(UserViewModel userVM , String Email);
 

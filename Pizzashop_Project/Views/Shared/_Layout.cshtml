@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using DAL.ViewModels
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -186,13 +188,14 @@
                             </div>
                         </div>
                         <!-- profile -->
-                        <div class="profilepic-div mt-2">
+                        <div class="profilepic-div mt-2 mb-2">
                             
                             <div class="dropdown">
                                 <div class=" dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="images/Default_pfp.svg.png" width="40px" alt="">
+                                    <img src="@(HttpContextAccessor.HttpContext.Request.Cookies["ProfileImage"])" style="border-radius: 50%;" width="40px" height="35px" alt="">
                                 </div>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                  <li><div class="dropdown-item" ><img src="@(HttpContextAccessor.HttpContext.Request.Cookies["ProfileImage"])" style="border-radius: 50%;" width="30px" height="25px" alt="">   @(HttpContextAccessor.HttpContext.Request.Cookies["username"])</div></li>
                                   <li><a class="dropdown-item" asp-action="MyProfile" asp-controller="User">My Profile</a></li>
                                   <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="User">Change Password</a></li>
                                   <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#logout">Logout</a></li>
