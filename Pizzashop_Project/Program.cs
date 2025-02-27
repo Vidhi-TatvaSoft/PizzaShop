@@ -17,6 +17,8 @@ builder.Services.AddDbContext<DAL.Models.PizzashopDbContext>(q=>q.UseNpgsql(conn
 builder.Services.AddScoped<UserLoginService>();
 builder.Services.AddScoped<JWTTokenService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<HttpContextAccessor>();
+builder.Services.AddScoped<RolesPermissionService>();
 
 builder.Services.AddControllersWithViews();
 

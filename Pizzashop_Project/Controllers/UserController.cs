@@ -113,12 +113,16 @@ public class UserController : Controller
         _userService.UpdateProfile(user, userEmail);
         CookieOptions options = new CookieOptions();
         options.Expires = DateTime.Now.AddMinutes(60);
-        Response.Cookies.Append("profileImage", user.Image, options);
+        if (user.Image != null)
+        {
+            Response.Cookies.Append("profileImage", user.Image, options);
+        }
         Response.Cookies.Append("username", user.Username, options);
         TempData["SuccessMessage"] = "Profile updated successfully";
         return RedirectToAction("MyProfile", "User");
     }
 
+    [Authorize(Roles = "Admin")]
     public IActionResult AddUser()
     {
         var Roles = _userService.GetRole();
@@ -133,6 +137,7 @@ public class UserController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddUser(UserViewModel user)
     {
 
@@ -172,18 +177,19 @@ public class UserController : Controller
             user.Image = $"/uploads/{fileName}";
         }
 
-
-        if (!await _userService.AddUser(user))
+        try
         {
-            ViewBag.Message = "Email already exists";
-            return View();
-        }
-        var senderEmail = new MailAddress("tatva.pca155@outlook.com", "tatva.pca155@outlook.com");
-        var receiverEmail = new MailAddress(user.Email, user.Email);
-        var password = "P}N^{z-]7Ilp";
-        var sub = "Add user";
-        var resetLink = Url.Action("ResetPassword", "UserLogin", new { Email = user.Email }, Request.Scheme);
-        var body = $@"     <div style='max-width: 500px; font-family: Arial, sans-serif; border: 1px solid #ddd;'>
+            if (!await _userService.AddUser(user))
+            {
+                ViewBag.Message = "Email already exists";
+                return View();
+            }
+            var senderEmail = new MailAddress("tatva.pca155@outlook.com", "tatva.pca155@outlook.com");
+            var receiverEmail = new MailAddress(user.Email, user.Email);
+            var password = "P}N^{z-]7Ilp";
+            var sub = "Add user";
+            var resetLink = Url.Action("ResetPassword", "UserLogin", new { Email = user.Email }, Request.Scheme);
+            var body = $@"     <div style='max-width: 500px; font-family: Arial, sans-serif; border: 1px solid #ddd;'>
                 <div style='background: #006CAC; padding: 10px; text-align: center; height:90px; max-width:100%; display: flex; justify-content: center; align-items: center;'>
                     <img src='https://images.vexels.com/media/users/3/128437/isolated/preview/2dd809b7c15968cb7cc577b2cb49c84f-pizza-food-restaurant-logo.png' style='max-width: 50px;' />
                     <span style='color: #fff; font-size: 24px; margin-left: 10px; font-weight: 600;'>PIZZASHOP</span>
@@ -198,32 +204,41 @@ public class UserController : Controller
                     
                 </div>
                 </div>";
-        var smtp = new SmtpClient
-        {
-            Host = "mail.etatvasoft.com",
-            Port = 587,
-            EnableSsl = true,
-            DeliveryMethod = SmtpDeliveryMethod.Network,
-            UseDefaultCredentials = false,
-            Credentials = new NetworkCredential(senderEmail.Address, password)
-        };
-        using (var mess = new MailMessage(senderEmail, receiverEmail)
-        {
-            Subject = sub,
-            Body = body,
-            IsBodyHtml = true
+            var smtp = new SmtpClient
+            {
+                Host = "mail.etatvasoft.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(senderEmail.Address, password)
+            };
+            using (var mess = new MailMessage(senderEmail, receiverEmail)
+            {
+                Subject = sub,
+                Body = body,
+                IsBodyHtml = true
 
-        })
-        {
-            await smtp.SendMailAsync(mess);
+            })
+            {
+                await smtp.SendMailAsync(mess);
+            }
+            TempData["SuccessMessage"] = "User added successfully. Check your email for login details";
+
+
         }
-        TempData["SuccessMessage"] = "User added successfully. Check your email for login details";
+        catch (Exception ex)
+        {
+            ViewBag.Message = ex.Message;
+        }
+
 
         return RedirectToAction("UsersList", "User");
         // return View();
     }
 
     // GET
+    [Authorize(Roles = "Admin")]
     public IActionResult EditUser(string Email)
     {
         // var token = Request.Cookies["AuthToken"];
@@ -260,6 +275,7 @@ public class UserController : Controller
 
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> EditUser(UserViewModel user)
     {
         if (user.StateId == -1 && user.CityId == -1)
@@ -364,6 +380,7 @@ public class UserController : Controller
     }
 
 
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UsersList(int PageNo = 1, int PageSize = 5)
     {
         var (users, TotalRecord) = await _userService.GetUsers(PageNo, PageSize);

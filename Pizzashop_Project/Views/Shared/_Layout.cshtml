@@ -70,10 +70,10 @@
                         </div>
 
                         <!--Role and Permission  -->
-                        <div class="inactive-div d-flex align-items-center p-3">
+                        <a class="inactive-div d-flex align-items-center p-3 " style="text-decoration: none;" asp-action="Roles" asp-controller="RolesPermission">
                             <i class="fa-solid fa-user-clock "></i>
                             <p class="role-text-inactive  text-size-set   m-0 ms-3">Role and Permission</p>
-                        </div>
+                        </a>
 
                         <!-- menu -->
                         <div class="inactive-div d-flex align-items-center  p-3">
@@ -216,6 +216,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

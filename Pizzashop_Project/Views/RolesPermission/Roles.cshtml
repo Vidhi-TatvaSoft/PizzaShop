@@ -1,0 +1,37 @@
+@model IEnumerable<DAL.Models.Role>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="Roles">
+    <div class="form-floating mt-5 ms-3">
+        @* <select class="form-select" asp-for="RoleId" asp-items="@ViewBag.Roles" id="Roles"
+                        aria-label="Floating label select example">
+                    </select>
+                    <label for="floatingSelect text-secondary">Role</label> *@
+    <table id="example"  class="table display w-50 bg-light ">
+                <thead >
+                    <tr  >
+                        <th scope="col">Role </th>
+                        <th scope="col" class="d-flex justify-content-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+        @foreach (var item in Model) {
+
+             <tr>
+        
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleName)
+            </td>
+            <td class="d-flex justify-content-end me-3">
+                <a asp-action="Permissions" asp-controller="RolesPermission" asp-route-id="@item.RoleId"><i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0 text-dark" ></i></a>
+            </td>
+             </tr>
+           
+         }
+        </tbody>
+         </table>
+    </div>
+</div>

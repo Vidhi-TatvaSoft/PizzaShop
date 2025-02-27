@@ -3,6 +3,7 @@ using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using BLL.Service.Interfaces;
+using NuGet.ProjectModel;
 
 namespace BLL.Services
 {
@@ -18,7 +19,8 @@ namespace BLL.Services
         }
 
 
-        public  string EncryptPassword(string password){
+        public string EncryptPassword(string password)
+        {
             // byte[] passwordBytes = ASCIIEncoding.ASCII.GetBytes(password);
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: password,
@@ -26,7 +28,7 @@ namespace BLL.Services
                 prf: KeyDerivationPrf.HMACSHA1,
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
-             return hashed;
+            return hashed;
         }
 
         public async Task<List<Userlogin>> getusers()
@@ -37,22 +39,22 @@ namespace BLL.Services
 
         public string VerifyUserPassword(UserLoginViewModel userlogin)
         {
-            var user = _context.Userlogins.Where(e => e.Email == userlogin.Email).FirstOrDefault();
+            var user = _context.Userlogins.Include(x => x.Users).FirstOrDefault(e => e.Email == userlogin.Email);
 
-        if (user != null)
-        {
-            if (user.Password == EncryptPassword(userlogin.Password))
+            if (user != null)
             {
-                var RoleObject = _context.Roles.Where(e => e.RoleId == user.RoleId).FirstOrDefault();
-                var token = _jwttokenService.GenerateToken(userlogin.Email, RoleObject.RoleName);
-                return token;
+                if (user.Password == EncryptPassword(userlogin.Password) && user.IsDelete == false && user.Users.ToList()[0].Status == true)
+                {
+                    var RoleObject = _context.Roles.Where(e => e.RoleId == user.RoleId).FirstOrDefault();
+                    var token = _jwttokenService.GenerateToken(userlogin.Email, RoleObject.RoleName);
+                    return token;
+                }
+                return null;
             }
             return null;
         }
-        return null;
-        }
 
-    public bool CheckEmailExist(string email)
+        public bool CheckEmailExist(string email)
         {
             if (_context.Userlogins.FirstOrDefault(e => e.Email == email) != null)
             {
@@ -60,16 +62,17 @@ namespace BLL.Services
             }
             return false;
         }
-        
 
-      public string GetProfileImage(string Email)
-    {
-        return _context.Users.FirstOrDefault(x=>x.Userlogin.Email == Email).ProfileImage;
-    }
 
-    public string GetUsername(string Email){
-        return _context.Users.FirstOrDefault(x=>x.Userlogin.Email == Email).Username;
-    }
+        public string GetProfileImage(string Email)
+        {
+            return _context.Users.FirstOrDefault(x => x.Userlogin.Email == Email).ProfileImage;
+        }
+
+        public string GetUsername(string Email)
+        {
+            return _context.Users.FirstOrDefault(x => x.Userlogin.Email == Email).Username;
+        }
 
         public bool ResetPassword(ResetPasswordViewModel resetpassdata)
         {
@@ -81,7 +84,7 @@ namespace BLL.Services
                 return true;
             }
             return false;
-        }  
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Models;
 
@@ -12,18 +11,12 @@ public partial class User
 
     public long RoleId { get; set; }
 
-    [Required(ErrorMessage = "First name is required.")]
     public string FirstName { get; set; } = null!;
 
-    [Required(ErrorMessage = "Last name is required.")]
     public string LastName { get; set; } = null!;
 
-
-    [Required(ErrorMessage = "phone number is required.")]
-    [Range(1000000000, 9999999999, ErrorMessage = "Phone number must be 10 digits long.")]
     public int Phone { get; set; }
 
-    [Required(ErrorMessage = "Username is required.")]
     public string Username { get; set; } = null!;
 
     public string? ProfileImage { get; set; }
@@ -38,8 +31,6 @@ public partial class User
 
     public string? Address { get; set; }
 
-    [Required(ErrorMessage = "Zipcode is required.")]
-    [Range(100000, 999999, ErrorMessage = "Zipcode must be 6 digits long.")]
     public long? Zipcode { get; set; }
 
     public DateTime? CreatedAt { get; set; }

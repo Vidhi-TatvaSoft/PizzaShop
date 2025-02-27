@@ -15,8 +15,6 @@ public partial class PizzashopDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Action> Actions { get; set; }
-
     public virtual DbSet<Assigntable> Assigntables { get; set; }
 
     public virtual DbSet<Category> Categories { get; set; }
@@ -53,6 +51,8 @@ public partial class PizzashopDbContext : DbContext
 
     public virtual DbSet<Permission> Permissions { get; set; }
 
+    public virtual DbSet<Permissionmanage> Permissionmanages { get; set; }
+
     public virtual DbSet<Rating> Ratings { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
@@ -77,65 +77,6 @@ public partial class PizzashopDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Action>(entity =>
-        {
-            entity.HasKey(e => e.ActionId).HasName("actions_pkey");
-
-            entity.ToTable("actions");
-
-            entity.Property(e => e.ActionId).HasColumnName("action_id");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("CURRENT_DATE")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_at");
-            entity.Property(e => e.Customers).HasColumnName("customers");
-            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
-            entity.Property(e => e.Menu).HasColumnName("menu");
-            entity.Property(e => e.ModifiedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("modified_at");
-            entity.Property(e => e.Orders).HasColumnName("orders");
-            entity.Property(e => e.Rolepermission).HasColumnName("rolepermission");
-            entity.Property(e => e.Tablesection).HasColumnName("tablesection");
-            entity.Property(e => e.Taxfee).HasColumnName("taxfee");
-            entity.Property(e => e.Users).HasColumnName("users");
-
-            entity.HasOne(d => d.CustomersNavigation).WithMany(p => p.ActionCustomersNavigations)
-                .HasForeignKey(d => d.Customers)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("actions_customers_fkey");
-
-            entity.HasOne(d => d.MenuNavigation).WithMany(p => p.ActionMenuNavigations)
-                .HasForeignKey(d => d.Menu)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("actions_menu_fkey");
-
-            entity.HasOne(d => d.OrdersNavigation).WithMany(p => p.ActionOrdersNavigations)
-                .HasForeignKey(d => d.Orders)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("actions_orders_fkey");
-
-            entity.HasOne(d => d.RolepermissionNavigation).WithMany(p => p.ActionRolepermissionNavigations)
-                .HasForeignKey(d => d.Rolepermission)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("actions_rolepermission_fkey");
-
-            entity.HasOne(d => d.TablesectionNavigation).WithMany(p => p.ActionTablesectionNavigations)
-                .HasForeignKey(d => d.Tablesection)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("actions_tablesection_fkey");
-
-            entity.HasOne(d => d.TaxfeeNavigation).WithMany(p => p.ActionTaxfeeNavigations)
-                .HasForeignKey(d => d.Taxfee)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("actions_taxfee_fkey");
-
-            entity.HasOne(d => d.UsersNavigation).WithMany(p => p.ActionUsersNavigations)
-                .HasForeignKey(d => d.Users)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("actions_users_fkey");
-        });
-
         modelBuilder.Entity<Assigntable>(entity =>
         {
             entity.HasKey(e => e.AssignId).HasName("assigntable_pkey");
@@ -766,6 +707,31 @@ public partial class PizzashopDbContext : DbContext
                 .HasColumnName("permissions_name");
         });
 
+        modelBuilder.Entity<Permissionmanage>(entity =>
+        {
+            entity.HasKey(e => e.PermissionmanageId).HasName("permissionmanage_pkey");
+
+            entity.ToTable("permissionmanage");
+
+            entity.Property(e => e.PermissionmanageId).HasColumnName("permissionmanage_id");
+            entity.Property(e => e.Candelete).HasColumnName("candelete");
+            entity.Property(e => e.Caneditadd).HasColumnName("caneditadd");
+            entity.Property(e => e.Canview).HasColumnName("canview");
+            entity.Property(e => e.PermissionId).HasColumnName("permission_id");
+            entity.Property(e => e.Permissioncheck).HasColumnName("permissioncheck");
+            entity.Property(e => e.RoleId).HasColumnName("role_id");
+
+            entity.HasOne(d => d.Permission).WithMany(p => p.Permissionmanages)
+                .HasForeignKey(d => d.PermissionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("permissionmanage_permission_id_fkey");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Permissionmanages)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("permissionmanage_role_id_fkey");
+        });
+
         modelBuilder.Entity<Rating>(entity =>
         {
             entity.HasKey(e => e.RatingId).HasName("rating_pkey");
@@ -816,7 +782,6 @@ public partial class PizzashopDbContext : DbContext
             entity.ToTable("roles");
 
             entity.Property(e => e.RoleId).HasColumnName("role_id");
-            entity.Property(e => e.ActionId).HasColumnName("action_id");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnType("timestamp without time zone")
@@ -827,11 +792,6 @@ public partial class PizzashopDbContext : DbContext
             entity.Property(e => e.RoleName)
                 .HasMaxLength(50)
                 .HasColumnName("role_name");
-
-            entity.HasOne(d => d.Action).WithMany(p => p.Roles)
-                .HasForeignKey(d => d.ActionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("roles_action_id_fkey");
         });
 
         modelBuilder.Entity<Section>(entity =>
