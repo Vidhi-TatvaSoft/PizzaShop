@@ -31,10 +31,10 @@
         <table id="example" class="table display">
             <thead>
                 <tr>
-                    <th scope="col">Name <i class="bi bi-arrow-down-up" id="sortable-name" data-column="Name" data-direction="asc"></i></th>
+                    <th scope="col">Name <i class="bi bi-arrow-down-up" id="sort-name" data-column="Name" data-direction="asc"></i></th>
                     <th scope="col">Email</th>
                     <th scope="col">Phone</th>
-                    <th scope="col">Role<i class="bi bi-arrow-down-up ms-1" id="sortable-role"  data-column="Name" data-direction="asc"></i></th>
+                    <th scope="col">Role<i class="bi bi-arrow-down-up ms-1" id="sort-role"  data-column="Name" data-direction="asc"></i></th>
                     <th scope="col">Status</th>
                     <th scope="col">Action </th>
                 </tr>
@@ -217,7 +217,7 @@
             });
 
             // Sorting functionality
-            $("#sortable-name").on("click", function () {
+            $("#sort-name").on("click", function () {
                 sortColumn = $(this).data("column");
                 console.log(sortColumn);
                 sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
@@ -225,7 +225,7 @@
                 loadTable(currentPage,searchText, sortColumn, sortDirection, pageSize);
             });
 
-            $("#sortable-role").on("click", function () {
+            $("#sort-role").on("click", function () {
                 sortColumn = $(this).data("column");
                 console.log(sortColumn);
                 sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
