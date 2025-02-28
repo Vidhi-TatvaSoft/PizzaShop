@@ -30,17 +30,18 @@ public class RolesPermissionController : Controller
     [HttpPost]
     public IActionResult Permissions(List<RolesPermissionViewModel> rolesPermissionViewModel)
     {
-        for(int i=0; i<rolesPermissionViewModel.Count;i++){
-        RolesPermissionViewModel rolesPermissionvm = new RolesPermissionViewModel();
-        rolesPermissionvm.PermissionmanageId = rolesPermissionViewModel[i].PermissionmanageId;
-        rolesPermissionvm.Canview = rolesPermissionViewModel[i].Canview;
-        rolesPermissionvm.Caneditadd = rolesPermissionViewModel[i].Caneditadd;
-        rolesPermissionvm.Candelete = rolesPermissionViewModel[i].Candelete;
-        rolesPermissionvm.Permissioncheck = rolesPermissionViewModel[i].Permissioncheck;
-        _rolesPermission.EditPermissionManage(rolesPermissionvm);
+        for (int i = 0; i < rolesPermissionViewModel.Count; i++)
+        {
+            RolesPermissionViewModel rolesPermissionvm = new RolesPermissionViewModel();
+            rolesPermissionvm.PermissionmanageId = rolesPermissionViewModel[i].PermissionmanageId;
+            rolesPermissionvm.Canview = rolesPermissionViewModel[i].Canview;
+            rolesPermissionvm.Caneditadd = rolesPermissionViewModel[i].Caneditadd;
+            rolesPermissionvm.Candelete = rolesPermissionViewModel[i].Candelete;
+            rolesPermissionvm.Permissioncheck = rolesPermissionViewModel[i].Permissioncheck;
+            _rolesPermission.EditPermissionManage(rolesPermissionvm);
         }
         return RedirectToAction("Permissions");
     }
-    
+
 
 }

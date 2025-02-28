@@ -6,6 +6,8 @@ public class RolesPermissionViewModel
 {
      public long PermissionmanageId { get; set; }
 
+     public string Name { get; set; }
+
      public bool Canview { get; set; }
 
     public bool Caneditadd { get; set; }

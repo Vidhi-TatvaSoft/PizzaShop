@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using BLL.Service.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Service;
 
-public class RolesPermissionService
+public class RolesPermissionService : IRolesPermission
 {
     private readonly PizzashopDbContext _context;
 
@@ -39,5 +40,9 @@ public class RolesPermissionService
         return true;
     }
 
-    
+    public bool EditPermissionManage(Permissionmanage permissionmanage)
+    {
+        throw new NotImplementedException();
+    }
+
 }

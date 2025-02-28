@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using BLL.Helpers;
 using BLL.Service.Interfaces;
 using BLL.Services;
 using DAL.Models;
@@ -70,16 +71,49 @@ public class UserService : UserInterface
     //     return _context.Users.Include(x => x.Userlogin).Include(x => x.Role).ToList();
     // }
 
-    public async Task<(List<User>, int)> GetUsers(int PageNo, int PageSize)
+    public PaginationHelper<User> GetUserList(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
     {
-        var query = _context.Users.Include(x => x.Userlogin).ThenInclude(u => u.Role).Where(u => u.Isdelete == false);
 
-        int TotalRecord = await query.CountAsync();
-        var users = await query.Skip((PageNo - 1) * PageSize)
-                               .Take(PageSize)
-                               .ToListAsync();
+        var query = _context.Users
+            .Include(u => u.Userlogin)
+            .ThenInclude(u => u.Role)
+            .Where(u => u.Isdelete == false)
+            .AsQueryable();
 
-        return (users, TotalRecord);
+        //search 
+        if (!string.IsNullOrEmpty(search))
+        {
+            string lowerSearchTerm = search.ToLower();
+            query = query.Where(u =>
+                u.FirstName.ToLower().Contains(lowerSearchTerm) ||
+                u.LastName.ToLower().Contains(lowerSearchTerm) ||
+                u.Userlogin.Email.ToLower().Contains(lowerSearchTerm) ||
+                u.Userlogin.Role.RoleName.ToLower().Contains(lowerSearchTerm)
+            );
+        }
+
+
+        //sorting
+        switch (sortColumn)
+        {
+            case "Name":
+                query = sortDirection == "asc" ? query.OrderBy(u => u.FirstName) : query.OrderByDescending(u => u.FirstName);
+                break;
+
+            case "Role":
+                query = sortDirection == "asc" ? query.OrderBy(u => u.Userlogin.Role.RoleName) : query.OrderByDescending(u => u.Userlogin.Role.RoleName);
+                break;
+        }
+
+
+
+        // Get total records count (before pagination)
+        int totalCount = query.Count();
+
+        // Apply pagination
+        var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+        return new PaginationHelper<User>(items, totalCount, pageNumber, pageSize);
     }
 
 

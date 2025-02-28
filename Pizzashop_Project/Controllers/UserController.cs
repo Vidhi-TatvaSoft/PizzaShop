@@ -380,19 +380,19 @@ public class UserController : Controller
     }
 
 
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> UsersList(int PageNo = 1, int PageSize = 5)
+    // [Authorize(Roles = "Admin")]
+    public IActionResult UsersList()
     {
-        var (users, TotalRecord) = await _userService.GetUsers(PageNo, PageSize);
-        int totalPages = (int)Math.Ceiling((double)TotalRecord / PageSize);
-
-        ViewBag.PageNo = PageNo;
-        ViewBag.PageSize = PageSize;
-        ViewBag.TotalPages = totalPages;
-        ViewBag.TotalRecord = TotalRecord;
+        var users = _userService.GetUserList();
         return View(users);
     }
 
+    public IActionResult PaginatedData(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
+    {
+        ViewBag.email = Request.Cookies["email"];
+        var users = _userService.GetUserList(search, sortColumn, sortDirection, pageNumber, pageSize);
+        return PartialView("_UserListPartial", users);
+    }
     // [HttpGet]
     // public IActionResult GetCountries()
     // {

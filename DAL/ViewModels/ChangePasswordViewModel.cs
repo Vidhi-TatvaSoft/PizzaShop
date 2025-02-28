@@ -11,7 +11,7 @@ public class ChangePasswordViewModel
     [Required(ErrorMessage = "New password is required.")]
     [DataType(DataType.Password)]
     [MinLength(6, ErrorMessage = "New password must be at least 6 characters long.")]
-    [MaxLength(100, ErrorMessage = "New password cannot exceed 100 characters.")]
+    [MaxLength(16, ErrorMessage = "New password cannot exceed 16 characters.")]
     [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$",
           ErrorMessage = "Password must contain at least one uppercase letter, one number, and one special character.")]
     public string NewPassword { get; set; }

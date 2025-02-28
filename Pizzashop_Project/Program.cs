@@ -19,6 +19,7 @@ builder.Services.AddScoped<JWTTokenService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<HttpContextAccessor>();
 builder.Services.AddScoped<RolesPermissionService>();
+builder.Services.AddScoped<MenuService>();
 
 builder.Services.AddControllersWithViews();
 
@@ -86,5 +87,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=UserLogin}/{action=VerifyPassword}/{id?}");
+
 
 app.Run();
