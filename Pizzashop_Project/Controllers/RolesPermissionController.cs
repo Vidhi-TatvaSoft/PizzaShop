@@ -21,10 +21,11 @@ public class RolesPermissionController : Controller
         return View(roles);
     }
 
-    public IActionResult Permissions(int id)
+
+    public IActionResult Permissions(string name)
     {
-        var role = _rolesPermission.permissionByRole(id);
-        return View(role);
+        List<RolesPermissionViewModel> permissions = _rolesPermission.permissionByRole(name);
+        return View(permissions);
     }
 
     [HttpPost]
@@ -40,7 +41,9 @@ public class RolesPermissionController : Controller
             rolesPermissionvm.Permissioncheck = rolesPermissionViewModel[i].Permissioncheck;
             _rolesPermission.EditPermissionManage(rolesPermissionvm);
         }
-        return RedirectToAction("Permissions");
+        TempData["SuccessMessage"]="Permissions Updated successfully.";
+        return RedirectToAction("Permissions", "RolesPermission", new { name = rolesPermissionViewModel[0].rolename });// 3rdpara ma obj create krvopade bcoz
+        //  redirectToAction ma 3rd para obj accept kre string nai..nd get method ma name pass krva mate ahiyathi name no ob banavvi moklvu
     }
 
 

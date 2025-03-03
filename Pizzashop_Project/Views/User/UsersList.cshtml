@@ -159,6 +159,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             var deleteModal = document.getElementById('delete-user');
             deleteModal.addEventListener('show.bs.modal', function (event) {
+                
                 var deletebtn = event.relatedTarget;
                 var email = deletebtn.getAttribute('data-email');
                 var deleteEmailInput = document.getElementById('deleteEmail');

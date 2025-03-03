@@ -1,7 +1,7 @@
-namespace DAL.ViewModels;
+// namespace DAL.ViewModels;
 
-public class RolesViewModel
-{
-    public string RoleId { get; set; }
-    public string RoleName { get; set; }
-}
+// public class RolesViewModel
+// {
+//     public string RoleId { get; set; }
+//     public string RoleName { get; set; }
+// }

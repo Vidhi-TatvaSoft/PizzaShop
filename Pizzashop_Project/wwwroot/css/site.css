@@ -143,7 +143,6 @@ form i{
  .left-sidebar-category-main-div{
   /* height: 350px; */
   overflow: auto;
-
  }
 
  .categories-main-div{
@@ -168,4 +167,9 @@ form i{
   width: 90px;
   border-radius: 50%;
   top: -40px;
+}
+
+.checkbox-headimg-tag{
+  position: relative;
+  left:35px;
 }

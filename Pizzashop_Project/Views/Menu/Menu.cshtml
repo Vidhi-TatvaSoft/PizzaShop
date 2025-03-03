@@ -1,3 +1,8 @@
+@model DAL.ViewModels.MenuViewModel;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 <!-- add category modal -->
 <div id="exampleModal-addcategory" class="modal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -6,20 +11,81 @@
                 <h5 class="modal-title">Add Category</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="name" required>
-                    <label for="floatingInput">Name</label>
+            <form asp-action="AddCategory" asp-controller="Menu">
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput"
+                            asp-for="@Model.category.CategoryName" placeholder="name" required>
+                        <label for="floatingInput">Name</label>
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Leave a comment here"
+                            asp-for="@Model.category.Description" id="floatingTextarea"></textarea>
+                        <label for="floatingTextarea">Description</label>
+                    </div>
                 </div>
-                <div class="form-floating">
-                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-                    <label for="floatingTextarea">Description</label>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">save</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Edit category modal -->
+<div id="exampleModal-editcategory" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="EditCategory" asp-controller="Menu">
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input type="hidden" asp-for="@Model.category.CategoryId" id="category-id">
+                        <input type="text" class="form-control" id="category-name"
+                            asp-for="@Model.category.CategoryName" placeholder="name" required>
+                        <label for="category-name">Name</label>
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Leave a comment here"
+                            asp-for="@Model.category.Description" id="category-description"></textarea>
+                        <label for="category-description">Description</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="updatebtn" class="btn btn-primary">save</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- delete category -->
+<div id="exampleModal-deleteCategory" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Conformation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+                <div class="delete-cat-image d-flex flex-column  align-items-center">
+                    <img src="images/toppng.com-warning-icon-2400x2400.png" width="50px" alt="">
+                    <p>Are you sure you want to delete this Category?</p>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">save</button>
-                <button type="button" class="btn btn-outline-primary">cancel</button>
-            </div>
+            <form asp-action="DeleteCategory" asp-controller="Menu" >
+                <input type="hidden" asp-for="@Model.category.CategoryId" id="category-id-fordelete" name="id">
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary" >Yes</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -225,10 +291,10 @@
                         <div
                             class="left-sidebar-category-main-div bg-light mt-2 pt-0 col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-md-start justify-content-center ">
 
-                            <div class="row w-100 justify-content-center">
+                            <div class=" w-100 justify-content-center">
 
                                 <!-- logo -->
-                                <div class="logo-main-div d-flex justify-content-between ">
+                                <div class="logo-main-div d-flex justify-content-between mb-3">
 
                                     <div class="logo-text text-primary fs-5 mt-2  ms-1 fw-semibold">
                                         Category
@@ -240,62 +306,26 @@
                                 </div>
 
                                 <!-- Sandwich -->
-                                <div class="category-active-div d-flex align-items-center col-md-12 col-6  p-2">
-                                    <i class="fa-solid fa-receipt mt-2"></i>
-                                    <p class="text-size-set   m-0 ms-3 ">Sandwich</p>
-                                </div>
+                                @foreach (var cat in Model.categories)
+                                {
+                                    <div class=" d-flex justify-content-between  col-md-12 col-6  p-1">
+                                        <div class="d-flex">
+                                            <i class="fa-solid fa-receipt mt-1"></i>
+                                            <p class="text-size-set mt-0  m-0 ms-3 ">@cat.CategoryName</p>
+                                        </div>
+                                        <div>
 
-                                <!-- Pasta -->
-                                <div class="category-inactive-div d-flex align-items-center  col-md-12 col-6 p-2 ">
-                                    <i class="fa-solid fa-receipt mt-2 "></i>
-                                    <p class="users-text-inactive text-size-set  m-0 ms-3 ">
-                                        Pasta</p>
-                                </div>
+                                            <input type="hidden" value="@cat.Description">
+                                            <i class="fa-solid fa-pen fs-6 demoClass" onclick="GetdetailsForUpdate(this)"
+                                                data-id="@cat.CategoryId" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal-editcategory"></i>
+                                            <i class="fa-solid fa-trash-can fs-6  ms-1" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal-deleteCategory" data-id="@cat.CategoryId"onclick="GetIdForDelete(this)"></i>
+                                        </div>
 
-                                <!--Sides And Appetizer -->
-                                <div class="category-inactive-div d-flex align-items-center col-md-12 col-6  p-2">
-                                    <i class="fa-solid fa-receipt mt-1 "></i>
-                                    <p class="role-text-inactive  text-size-set m-0 ms-3">
-                                        Sides And
-                                        Appetizer</p>
-                                </div>
+                                    </div>
+                                }
 
-                                <!-- Salads -->
-                                <div class="category-inactive-div d-flex align-items-center col-md-12 col-6 p-2 ">
-                                    <i class="fa-solid fa-receipt mt-1"></i>
-                                    <p class="menu-text-inactive text-size-set m-0 ms-3 ">
-                                        Salads</p>
-                                </div>
-
-                                <!-- Dips And Sauces-->
-                                <div class="category-inactive-div d-flex col-md-12 col-6 p-2">
-                                    <i class="fa-solid fa-receipt mt-1"></i>
-                                    <p class="table-text-inactive text-size-set   m-0 ms-3">
-                                        Dips And
-                                        Sauces
-                                    </p>
-                                </div>
-
-                                <!-- Pizza -->
-                                <div class="category-inactive-div d-flex col-md-12 col-6 p-2">
-                                    <i class="fa-solid fa-receipt mt-1"></i>
-                                    <p class="taxes-text-inactive text-size-set m-0 ms-3 ">
-                                        Pizza</p>
-                                </div>
-
-                                <!-- Deserts -->
-                                <div class="category-inactive-div d-flex col-md-12 col-6 p-2">
-                                    <i class="fa-solid fa-receipt mt-1"></i>
-                                    <p class="order-text-inactive text-size-set m-0 ms-3 ">
-                                        Deserts</p>
-                                </div>
-
-                                <!-- Burger -->
-                                <div class="category-inactive-div d-flex col-md-12 col-6 p-2">
-                                    <i class="fa-solid fa-receipt mt-1"></i>
-                                    <p class="customer-text-inactive text-size-set m-0 ms-3 ">
-                                        Burger</p>
-                                </div>
                             </div>
                         </div>
 
@@ -702,7 +732,7 @@
         </div>
 
 
-
+ 
 
     </div>
     <!-- item modifier text -->
@@ -718,8 +748,54 @@
                         </div> -->
 
 
-
-
-
-
 </div>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+            console.log("successMessage", successMessage);
+            if (successMessage) {
+                toastr.success(successMessage);
+            }
+            if (errorMessage && errorMessage == "") {
+                toastr.error(errorMessage);
+            }
+        })
+    </script>
+    @* 
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var editModal = document.getElementById('exampleModal-editcategor');
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                
+                var updatebtn = event.relatedTarget;
+                var id = deletebtn.getAttribute('data-id');
+                var editIdInput = document.getElementById('category-id');
+                deleteEmailInput.value = email;
+            });
+        });
+    </script> *@
+
+
+    <script>
+        let catid;
+        function GetdetailsForUpdate(tag) {
+            console.log(tag)
+            document.getElementById("category-id").value = tag.getAttribute("data-id");
+            @* console.log(tag.getAttribute("data-id")); *@
+            document.getElementById("category-name").value = tag.parentElement.parentElement.children[0].children[1].innerHTML;
+            document.getElementById("category-description").value = tag.parentElement.children[0].value;
+            @* console.log(tag.parentElement.parentElement.children[1].value;) *@
+            }
+
+        function GetIdForDelete(tag)
+        {
+            console.log("delete")
+             document.getElementById("category-id-fordelete").value = tag.getAttribute("data-id");
+             console.log(tag.getAttribute("data-id"));
+        }
+    </script>
+}

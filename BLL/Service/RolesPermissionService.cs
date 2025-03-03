@@ -20,9 +20,27 @@ public class RolesPermissionService : IRolesPermission
         return _context.Roles.ToList();
     }
 
-    public List<Permissionmanage> permissionByRole(int id)
+    // public List<Permissionmanage> permissionByRole(int id)
+    // {
+    //     return _context.Permissionmanages.Include(x=>x.Role).Where(x => x.RoleId == id).OrderBy(x => x.PermissionId).ToList();
+    // }
+
+    public List<RolesPermissionViewModel> permissionByRole(string name)
     {
-        return _context.Permissionmanages.Include(x=>x.Role).Where(x => x.RoleId == id).OrderBy(x => x.PermissionId).ToList();
+        List<Permissionmanage> data = _context.Permissionmanages.Include(x=>x.Role).Include(x=>x.Permission).Where(x => x.Role.RoleName == name).OrderBy(x => x.PermissionId).ToList();
+        List<RolesPermissionViewModel> permissions = new();
+        for(int i=0;i<data.Count;i++ ){
+            RolesPermissionViewModel obj = new();
+            obj.PermissionmanageId = data[i].PermissionmanageId;
+            obj.rolename = data[i].Role.RoleName;
+            obj.Name = data[i].Permission.PermissionsName;
+            obj.Canview = data[i].Canview;
+            obj.Caneditadd = data[i].Caneditadd;
+            obj.Candelete = data[i].Candelete;
+            obj.Permissioncheck = data[i].Permissioncheck;
+            permissions.Add(obj);
+        }
+        return permissions;
     }
 
     public bool EditPermissionManage(RolesPermissionViewModel permissionmanage)

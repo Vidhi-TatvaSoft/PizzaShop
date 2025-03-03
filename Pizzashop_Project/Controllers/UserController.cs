@@ -35,6 +35,7 @@ public class UserController : Controller
     //     return View();
     // }
 
+    #region MyProfile get
     [Authorize(Roles = "Admin")]
     public IActionResult MyProfile()
     {
@@ -67,7 +68,9 @@ public class UserController : Controller
 
         return View(userViewModel);
     }
+    #endregion
 
+    #region Myprofile post
     // post method
     [Authorize(Roles = "Admin")]
     [HttpPost]
@@ -121,7 +124,10 @@ public class UserController : Controller
         TempData["SuccessMessage"] = "Profile updated successfully";
         return RedirectToAction("MyProfile", "User");
     }
+    #endregion
 
+
+    #region Adduser get
     [Authorize(Roles = "Admin")]
     public IActionResult AddUser()
     {
@@ -135,7 +141,10 @@ public class UserController : Controller
         ViewBag.Cities = new SelectList(Cities, "CityId", "CityName");
         return View();
     }
+    #endregion
 
+
+    #region  addUser post
     [HttpPost]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddUser(UserViewModel user)
@@ -236,7 +245,10 @@ public class UserController : Controller
         return RedirectToAction("UsersList", "User");
         // return View();
     }
+    #endregion
 
+
+    #region  EditUser get
     // GET
     [Authorize(Roles = "Admin")]
     public IActionResult EditUser(string Email)
@@ -272,8 +284,10 @@ public class UserController : Controller
 
         return View(userViewModel);
     }
+    #endregion
 
 
+    #region EditUser post
     [HttpPost]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> EditUser(UserViewModel user)
@@ -319,16 +333,17 @@ public class UserController : Controller
         return RedirectToAction("UsersList", "User");
         // return View();
     }
+    #endregion
 
 
-
-
+    #region cangepassword get
     public IActionResult ChangePassword()
     {
         return View();
     }
+    #endregion
 
-
+    #region changepassword post
     [HttpPost]
     public IActionResult ChangePassword(ChangePasswordViewModel changePassword)
     {
@@ -355,8 +370,10 @@ public class UserController : Controller
             return View();
         }
     }
+    #endregion
 
 
+    #region deleteUser 
     public async Task<IActionResult> deleteUser(string Email)
     {
         var deleteStatus = await _userService.deleteUser(Email);
@@ -369,7 +386,9 @@ public class UserController : Controller
         TempData["SuccessMessage"] = "User deleted successfully";
         return RedirectToAction("UsersList", "User");
     }
+    #endregion
 
+    #region Logout
     public IActionResult Logout()
     {
         Response.Cookies.Delete("AuthToken");
@@ -378,27 +397,34 @@ public class UserController : Controller
         Response.Cookies.Delete("username");
         return RedirectToAction("VerifyPassword", "UserLogin");
     }
+    #endregion
 
-
+    #region Userlist
     // [Authorize(Roles = "Admin")]
     public IActionResult UsersList()
     {
         var users = _userService.GetUserList();
         return View(users);
     }
+    #endregion
 
+
+    #region PaginatedData
     public IActionResult PaginatedData(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
     {
         ViewBag.email = Request.Cookies["email"];
         var users = _userService.GetUserList(search, sortColumn, sortDirection, pageNumber, pageSize);
         return PartialView("_UserListPartial", users);
     }
+    #endregion
     // [HttpGet]
     // public IActionResult GetCountries()
     // {
     //     var countries = _userService.GetCountry();
     //     return Json(new SelectList(countries, "Id", "Name"));
     // }
+
+    #region Getstates
     [HttpGet]
     public IActionResult GetStates(long? countryId)
     {
@@ -406,11 +432,16 @@ public class UserController : Controller
         var states = _userService.GetState(countryId);
         return Json(new SelectList(states, "StateId", "StateName"));
     }
+    #endregion
+
+
+    #region Getcities
     [HttpGet]
     public IActionResult GetCities(long? stateId)
     {
         var cities = _userService.GetCity(stateId);
         return Json(new SelectList(cities, "CityId", "CityName"));
     }
+    #endregion
 
 }
