@@ -417,6 +417,8 @@ public class UserController : Controller
         return PartialView("_UserListPartial", users);
     }
     #endregion
+
+    
     // [HttpGet]
     // public IActionResult GetCountries()
     // {

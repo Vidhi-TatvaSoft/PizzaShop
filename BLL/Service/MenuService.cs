@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.Models;
+using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
@@ -66,7 +67,49 @@ public class MenuService: IMenuService
     }
 
     
+// items
+// public List<Item> GetItemsByCategory(long catID)
+// {
+//     return _context.Items.Where(x=>x.CategoryId == catID).ToList();
+// }
 
+    public PaginationViewModel<ItemsViewModel> GetItemsByCategory(long? catID, string search = "",  int pageNumber = 1, int pageSize = 5)
+    {
+
+        var query = _context.Items
+            .Include(x=>x.Category).Include(x=>x.ItemType)
+            .Where(x=>x.CategoryId == catID)
+            .Select(x=>new ItemsViewModel{
+                ItemId = x.ItemId,
+                ItemName = x.ItemName,
+                CategoryId = x.CategoryId,
+                ItemTypeId = x.ItemTypeId,
+                TypeImage = x.ItemType.TypeImage,
+                Rate = x.Rate,
+                Quantity = x.Quantity,
+                ItemImage = x.ItemImage,
+                Isavailable = x.Isavailable,
+                Isdelete = x.Isdelete
+            })
+            .AsQueryable();
+
+        //search 
+        if (!string.IsNullOrEmpty(search))
+        {
+            string lowerSearchTerm = search.ToLower();
+            query = query.Where(x =>
+                x.ItemName.ToLower().Contains(lowerSearchTerm) 
+            );
+        }
+
+        // Get total records count (before pagination)
+        int totalCount = query.Count();
+
+        // Apply pagination
+        var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+        return new PaginationViewModel<ItemsViewModel>(items, totalCount, pageNumber, pageSize);
+    }
 
    
 }

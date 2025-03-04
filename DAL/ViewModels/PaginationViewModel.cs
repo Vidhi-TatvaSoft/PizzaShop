@@ -1,6 +1,6 @@
-namespace BLL.Helpers;
+namespace DAL.ViewModels;
 
-public class PaginationHelper<T>
+public class PaginationViewModel<T>
 {
     public List<T> Items { get; set; }
     public int TotalCount { get; set; }
@@ -11,7 +11,7 @@ public class PaginationHelper<T>
     public bool HasNextPage => EndItem < TotalCount;
     public bool HasPreviousPage  => PageNumber > 1;
 
-    public PaginationHelper(IEnumerable<T> items, int totalCount, int pageNumber, int pageSize)
+    public PaginationViewModel(IEnumerable<T> items, int totalCount, int pageNumber, int pageSize)
     {
         Items = items.ToList();
         TotalCount = totalCount;
@@ -21,4 +21,3 @@ public class PaginationHelper<T>
 
 
 }
-

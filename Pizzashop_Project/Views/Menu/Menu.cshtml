@@ -16,6 +16,7 @@
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="floatingInput"
                             asp-for="@Model.category.CategoryName" placeholder="name" required>
+                        <span asp-validation-for="@Model.category.CategoryName" class="text-danger"></span>
                         <label for="floatingInput">Name</label>
                     </div>
                     <div class="form-floating">
@@ -33,7 +34,6 @@
     </div>
 </div>
 
-
 <!-- Edit category modal -->
 <div id="exampleModal-editcategory" class="modal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -48,6 +48,8 @@
                         <input type="hidden" asp-for="@Model.category.CategoryId" id="category-id">
                         <input type="text" class="form-control" id="category-name"
                             asp-for="@Model.category.CategoryName" placeholder="name" required>
+                        <span asp-validation-for="@Model.category.CategoryName" class="text-danger"></span>
+
                         <label for="category-name">Name</label>
                     </div>
                     <div class="form-floating">
@@ -79,10 +81,10 @@
                     <p>Are you sure you want to delete this Category?</p>
                 </div>
             </div>
-            <form asp-action="DeleteCategory" asp-controller="Menu" >
+            <form asp-action="DeleteCategory" asp-controller="Menu">
                 <input type="hidden" asp-for="@Model.category.CategoryId" id="category-id-fordelete" name="id">
                 <div class="modal-footer d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary" >Yes</button>
+                    <button type="submit" class="btn btn-primary">Yes</button>
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
                 </div>
             </form>
@@ -309,18 +311,19 @@
                                 @foreach (var cat in Model.categories)
                                 {
                                     <div class=" d-flex justify-content-between  col-md-12 col-6  p-1">
-                                        <div class="d-flex">
+                                        <a style="text-decoration: none;" class="d-flex" asp-action="Menu"
+                                            asp-controller="Menu" asp-route-catID="@cat.CategoryId">
                                             <i class="fa-solid fa-receipt mt-1"></i>
                                             <p class="text-size-set mt-0  m-0 ms-3 ">@cat.CategoryName</p>
-                                        </div>
+                                        </a>
                                         <div>
-
                                             <input type="hidden" value="@cat.Description">
                                             <i class="fa-solid fa-pen fs-6 demoClass" onclick="GetdetailsForUpdate(this)"
                                                 data-id="@cat.CategoryId" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal-editcategory"></i>
                                             <i class="fa-solid fa-trash-can fs-6  ms-1" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal-deleteCategory" data-id="@cat.CategoryId"onclick="GetIdForDelete(this)"></i>
+                                                data-bs-target="#exampleModal-deleteCategory" data-id="@cat.CategoryId"
+                                                onclick="GetIdForDelete(this)"></i>
                                         </div>
 
                                     </div>
@@ -330,6 +333,71 @@
                         </div>
 
                         <div
+                            class=" right-side-table-div bg-white mt-2 pt-0 com-sm-12 col-md-8 col-lg-9 col-xl-10 col-12 ">
+                            <div class="item-list-main-div  d-lg-flex justify-content-between mt-2">
+                                <!-- item txt -->
+                                <div class="item-div d-flex col-md-3">
+                                    <div class="item-text fs-3 fw-bold text-primary">Items</div>
+                                </div>
+
+                                <!-- search add itemr -->
+                                <div class="search-item-div d-flex  align-items-center justify-content-between mt-2">
+                                    <div class="search-button ">
+                                        <input type="text" id="searchbtn" placeholder="Search" class="p-1 border ">
+                                        <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                                    </div>
+                                    <div class="discard-button">
+                                        <a href="#" class="btn  p-1 ps-2 pe-2 ms-3 border"><i
+                                                class="fa-solid fa-trash-can "></i></a>
+
+                                    </div>
+                                    <div class="additem-button">
+                                        <a href="#" class="btn btn-primary text-light p-2 ms-3 border text">+ Add Item</a>
+                                        <input type="hidden" id="category-id-items"
+                                            value="@Model.Pagination.Items[0].CategoryId">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="table-main-div table-responsive mt-3 bg-white mx-auto w-100 ">
+                                <table class="table" id="demo1">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><input type="checkbox" name="" id="" class="me-3">
+                                                Name</th>
+                                            <th scope="col">Item Type</th>
+                                            <th scope="col">Rate</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Available</th>
+                                            <th scope="col">Action </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemListBody" style="white-space: nowrap; background-color: aqua;">
+
+                                        @await Html.PartialAsync("_ItemListPartal", Model.Pagination)
+
+                                    </tbody>
+                                </table>
+                                @*  Pagination div *@
+                                <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
+
+                                    <span class="mt-2">Items Per page:</span>
+
+                                    <select id="itemsperpage">
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                    </select>
+
+                                    <span class=" mt-2 ms-1" id="pagination-text"></span>
+                                    <a id="left-arrow" class="btn border border-dark bg-light ms-2">&lt;</a>
+                                    <a id="right-arrow" class="btn border border-dark bg-light ms-2">&gt;</a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        @* <div
                             class="right-side-table-div bg-white mt-2 pt-0 com-sm-12 col-md-8 col-lg-9 col-xl-10 col-12 ">
                             <div class="item-list-main-div  d-lg-flex justify-content-between mt-2">
                                 <!-- item txt -->
@@ -391,7 +459,7 @@
                                                     data-bs-target="#exampleModal-deleteItem"></i>
                                             </td>
                                         </tr>
-                                        <tr>
+                                         <tr>
                                             <td class="d-md-flex"><input type="checkbox" name="" id="" class="me-3">
                                                 <img src="images/dining-menu.png" alt="" class="d-lg-block d-none "
                                                     width="30px">Punjabi
@@ -472,7 +540,7 @@
                                                 <i class="fa-solid fa-trash-can" data-bs-toggle="modal"
                                                     data-bs-target="#exampleModal-deleteItem"></i>
                                             </td>
-                                        </tr>
+                                        </tr> 
 
 
                                     </tbody>
@@ -480,26 +548,8 @@
 
                             </div>
 
-                        </div>
-                        <!-- pagination -->
-                        <div class=" d-flex justify-content-end  mb-4 pb-3 pe-3 bg-white">
-                            <div class="item-per-page-text  ">Items Per Page</div>
-                            <div class="dropdown  ms-2 ">
-                                <select name="" class="rounded p-1  pe-3" id="">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
+                        </div> *@
 
-                            </div>
-
-                            <div class="show-twxt ms-4 mt-1">SHowing 1-5 of 13</div>
-                            <i
-                                class="fa-solid fa-angle-left btn border border-dark bg-light ms-2 d-flex align-content-center"></i>
-                            <i class="fa-solid fa-angle-right btn border border-dark bg-light ms-2 "></i>
-                        </div>
                     </div>
 
                 </div>
@@ -704,25 +754,7 @@
                             </div>
 
                         </div>
-                        <!-- pagination -->
-                        <div class=" d-flex justify-content-end  mb-4 pb-3 pe-3 bg-white">
-                            <div class="item-per-page-text  ">Items Per Page</div>
-                            <div class="dropdown  ms-2 ">
-                                <select name="" class="rounded p-1  pe-3" id="">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
 
-                            </div>
-
-                            <div class="show-twxt ms-4 mt-1">SHowing 1-5 of 13</div>
-                            <i
-                                class="fa-solid fa-angle-left btn border border-dark bg-light ms-2 d-flex align-content-center"></i>
-                            <i class="fa-solid fa-angle-right btn border border-dark bg-light ms-2 "></i>
-                        </div>
                     </div>
                 </div>
 
@@ -732,7 +764,7 @@
         </div>
 
 
- 
+
 
     </div>
     <!-- item modifier text -->
@@ -786,16 +818,93 @@
             console.log(tag)
             document.getElementById("category-id").value = tag.getAttribute("data-id");
             @* console.log(tag.getAttribute("data-id")); *@
-            document.getElementById("category-name").value = tag.parentElement.parentElement.children[0].children[1].innerHTML;
+                document.getElementById("category-name").value = tag.parentElement.parentElement.children[0].children[1].innerHTML;
             document.getElementById("category-description").value = tag.parentElement.children[0].value;
             @* console.log(tag.parentElement.parentElement.children[1].value;) *@
-            }
+                    }
 
-        function GetIdForDelete(tag)
-        {
+        function GetIdForDelete(tag) {
             console.log("delete")
-             document.getElementById("category-id-fordelete").value = tag.getAttribute("data-id");
-             console.log(tag.getAttribute("data-id"));
+            document.getElementById("category-id-fordelete").value = tag.getAttribute("data-id");
+            console.log(tag.getAttribute("data-id"));
         }
     </script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            let currentPage = 1;
+            let pageSize = $("#itemsperpage").val();
+            let searchText = $("#searchbtn").val();
+            let catID = $("#category-id-items").val();
+            console.log("c:", catID);
+            function loadTable(catID, search = "", page = 1, pageSize = 5) {
+                $.ajax({
+                    url: "/Menu/MenuItemPagination",
+                    type: "GET",
+                    data: { catID, search, pageNumber: page, pageSize },
+                    success: function (data) {
+                        $("#itemListBody").html(data);
+                        @* console.log(@Model.Pagination.Items) *@
+                            console.log(data)
+                        currentPage = page;
+                        @* console.log("s:",search) *@
+                            let startItem = (page - 1) * pageSize + 1;
+                        let totalRecords = @Model.Pagination.TotalCount;
+                        let endItem = Math.min(page * pageSize, totalRecords);
+
+                        $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
+                        $("#left-arrow").prop("disabled", page === 1);
+                        $("#right-arrow").prop("disabled", page * pageSize >= totalRecords);
+                    }
+                });
+            }
+            loadTable(catID, searchText, currentPage, pageSize);
+            // Search on keyup
+            $("#searchbtn").on("keyup", function () {
+                searchText = $(this).val().trim();
+                console.log(searchText);
+                loadTable(catID, searchText, currentPage, pageSize);
+            });
+
+
+            // Pagination buttons
+            $("#right-arrow").on("click", function () {
+                let rightarrow = !$(this).prop("disabled");
+                console.log(rightarrow);
+                if (rightarrow) {
+                    currentPage++;
+                    loadTable(catID, searchText, currentPage, pageSize);
+                }
+            });
+
+            $("#left-arrow").on("click", function () {
+                let leftarrow = !$(this).prop("disabled");
+                console.log(leftarrow);
+                if (leftarrow) {
+                    currentPage--;
+                    loadTable(catID, searchText, currentPage, pageSize);
+                }
+            });
+
+            // Items per page dropdown
+            $("#itemsperpage").on("change", function () {
+                pageSize = $(this).val();
+                console.log(pageSize);
+                loadTable(catID, searchText, currentPage, pageSize);
+            });
+
+            // Initial table load
+            loadTable();
+        });
+    </script>
+    @* <script>
+    console.log("hello");
+     $(document).ready(function () {
+            console.log("Hello world")});
+</script> *@
+
+
+
 }

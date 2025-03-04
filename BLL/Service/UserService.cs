@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using BLL.Helpers;
 using BLL.Service.Interfaces;
 using BLL.Services;
 using DAL.Models;
@@ -71,7 +70,7 @@ public class UserService : UserInterface
     //     return _context.Users.Include(x => x.Userlogin).Include(x => x.Role).ToList();
     // }
 
-    public PaginationHelper<User> GetUserList(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
+    public PaginationViewModel<User> GetUserList(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
     {
 
         var query = _context.Users
@@ -113,7 +112,7 @@ public class UserService : UserInterface
         // Apply pagination
         var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-        return new PaginationHelper<User>(items, totalCount, pageNumber, pageSize);
+        return new PaginationViewModel<User>(items, totalCount, pageNumber, pageSize);
     }
 
 

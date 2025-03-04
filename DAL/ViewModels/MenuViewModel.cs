@@ -1,5 +1,6 @@
 using DAL.Models;
 
+
 namespace DAL.ViewModels;
 
 public class MenuViewModel
@@ -8,5 +9,10 @@ public class MenuViewModel
 
     public Category category{get; set;}
 
-    public List<Item> items{get;set;}
+    // public List<ItemsViewModel> itemList{get;set;}
+
+    public ItemsViewModel item {get;set;}
+
+    public PaginationViewModel<ItemsViewModel> Pagination { get; set; }
 }
+
