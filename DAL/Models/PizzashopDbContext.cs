@@ -321,6 +321,9 @@ public partial class PizzashopDbContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.Democol)
+                .HasColumnType("char")
+                .HasColumnName("democol");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Isavailable)
                 .IsRequired()
@@ -344,7 +347,9 @@ public partial class PizzashopDbContext : DbContext
             entity.Property(e => e.Rate)
                 .HasPrecision(5, 2)
                 .HasColumnName("rate");
-            entity.Property(e => e.ShortCode).HasColumnName("short_code");
+            entity.Property(e => e.ShortCode)
+                .HasMaxLength(20)
+                .HasColumnName("short_code");
             entity.Property(e => e.TaxValue)
                 .HasPrecision(5, 2)
                 .HasColumnName("tax_value");

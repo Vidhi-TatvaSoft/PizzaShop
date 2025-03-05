@@ -1,8 +1,10 @@
 using System.Threading.Tasks;
 using BLL.Service;
+using BLL.Services;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Pizzashop_Project.Controllers;
 
@@ -11,11 +13,14 @@ public class MenuController : Controller
 
     private readonly MenuService _menuService;
 
+    private readonly UserLoginService _userLoginSerivce;
+
     // private readonly UserService _userservice;
 
-    public MenuController(MenuService menuService)
+    public MenuController(MenuService menuService, UserLoginService userLoginSerivce)
     {
         _menuService = menuService;
+        _userLoginSerivce = userLoginSerivce;
     }
 
     #region  Menu get
@@ -26,17 +31,22 @@ public class MenuController : Controller
         if (catID == null)
         {
             // menudata.itemList = _menuService.GetItemsByCategory(-100).Items;
+            ViewBag.catSelect = menudata.categories[0].CategoryId;
             menudata.Pagination = _menuService.GetItemsByCategory(menudata.categories[0].CategoryId, search, pageNumber, pageSize);
         }
 
         if (catID != null)
         {
+            ViewBag.catSelect = catID;
             menudata.Pagination = _menuService.GetItemsByCategory(catID, search, pageNumber, pageSize);
         }
+
+        ViewData["sidebar-active"] = "Menu";
         return View(menudata);
     }
     #endregion
 
+    #region menniItemPagination
     public IActionResult MenuItemPagination(long? catID, string search = "", int pageNumber = 1, int pageSize = 5)
     {
         MenuViewModel menudata = new();
@@ -48,12 +58,15 @@ public class MenuController : Controller
         }
         return PartialView("_ItemListPartal", menudata.Pagination);
     }
+    #endregion
 
 
     #region Add Category 
     public async Task<IActionResult> AddCategory(Category category)
     {
-        bool addcategoryStatus = await _menuService.AddCategory(category);
+        string email = Request.Cookies["Email"];
+        long userId = _userLoginSerivce.GetUserId(email);
+        bool addcategoryStatus = await _menuService.AddCategory(category, userId);
         if (addcategoryStatus)
         {
             TempData["SuccessMessage"] = "Category Added Successfully";
@@ -67,14 +80,16 @@ public class MenuController : Controller
     #region EditCategory
     public async Task<IActionResult> EditCategory(Category category)
     {
+        string email = Request.Cookies["Email"];
+        long userId = _userLoginSerivce.GetUserId(email);
         var catID = category.CategoryId;
-        bool editCategoryStatus = await _menuService.EditCategory(category, catID);
+        bool editCategoryStatus = await _menuService.EditCategory(category, catID,userId);
         if (editCategoryStatus)
         {
-            TempData["SuccessMessage"] = "Category Added Successfully";
+            TempData["SuccessMessage"] = "Category Edited Successfully";
             return RedirectToAction("Menu");
         }
-        TempData["ErrorMessage"] = "Failed to add Category. Try Again";
+        TempData["ErrorMessage"] = "Failed to Edit Category. Try Again";
         return RedirectToAction("Menu");
 
     }
@@ -95,7 +110,42 @@ public class MenuController : Controller
     }
     #endregion
 
-    #region items list
+    #region AddItems
+    [HttpPost]
+    public async Task<IActionResult> AddItem(MenuViewModel addItemViewModel)
+    {
+
+        // _userService.AddUser(user, Email);
+        String email = Request.Cookies["Email"];
+        long userId = _userLoginSerivce.GetUserId(email);
+
+        if (addItemViewModel.additem.ItemFormImage != null)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads");
+
+            //create folder if not exist
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            string fileName = $"{Guid.NewGuid()}_{addItemViewModel.additem.ItemFormImage.FileName}";
+            string fileNameWithPath = Path.Combine(path, fileName);
+
+            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+            {
+                addItemViewModel.additem.ItemFormImage.CopyTo(stream);
+            }
+            addItemViewModel.additem.ItemImage = $"/uploads/{fileName}";
+        }
+
+        var addItemStatus = await _menuService.AddItem(addItemViewModel.additem,userId);
+        if (addItemStatus)
+        {
+            TempData["SuccessMessage"] = "Item Added SuccessFully.";
+            return RedirectToAction("Menu");
+        }
+        TempData["ErrorMessage"] = "Error while ItemAdd. Try Again..";
+        return RedirectToAction("Menu");
+    }
 
     #endregion
 

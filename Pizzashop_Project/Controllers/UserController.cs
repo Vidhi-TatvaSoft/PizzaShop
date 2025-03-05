@@ -16,14 +16,17 @@ namespace Pizzashop_Project.Controllers;
 public class UserController : Controller
 {
     private readonly UserService _userService;
+
+    private readonly UserLoginService _userLoginService;
     private readonly JWTTokenService _jwttokenService;
     private readonly IWebHostEnvironment _env;
 
 
-    public UserController(UserService userService, JWTTokenService jwttokenService)
+    public UserController(UserService userService, JWTTokenService jwttokenService, UserLoginService userLoginService)
     {
         _userService = userService;
         _jwttokenService = jwttokenService;
+        _userLoginService = userLoginService;
     }
 
 
@@ -188,7 +191,9 @@ public class UserController : Controller
 
         try
         {
-            if (!await _userService.AddUser(user))
+            string email = Request.Cookies["Email"];
+            long userId = _userLoginService.GetUserId(email);
+            if (!await _userService.AddUser(user,userId))
             {
                 ViewBag.Message = "Email already exists";
                 return View();
@@ -404,8 +409,10 @@ public class UserController : Controller
     public IActionResult UsersList()
     {
         var users = _userService.GetUserList();
+        ViewData["sidebar-active"] = "UserList";
         return View(users);
     }
+
     #endregion
 
 

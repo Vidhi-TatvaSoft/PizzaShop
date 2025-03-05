@@ -18,6 +18,7 @@ public class RolesPermissionController : Controller
     public IActionResult Roles()
     {
         var roles = _rolesPermission.GetRoles();
+        ViewData["sidebar-active"] = "Roles";
         return View(roles);
     }
 

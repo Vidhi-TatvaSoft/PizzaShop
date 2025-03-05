@@ -7,7 +7,7 @@ public partial class Item
 {
     public long ItemId { get; set; }
 
-    public string ItemName { get; set; } = null!;
+    public string ItemName { get; set; } 
 
     public long CategoryId { get; set; }
 
@@ -20,8 +20,6 @@ public partial class Item
     public int? Quantity { get; set; }
 
     public string? ItemImage { get; set; }
-
-    public int? ShortCode { get; set; }
 
     public bool? Isavailable { get; set; }
 
@@ -40,6 +38,10 @@ public partial class Item
     public long? ModifiedBy { get; set; }
 
     public bool Isdelete { get; set; }
+
+    public string? ShortCode { get; set; }
+
+    public char? Democol { get; set; }
 
     public virtual Category Category { get; set; } = null!;
 

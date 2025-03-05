@@ -24,21 +24,26 @@ public class MenuService: IMenuService
 
 
 
-    public async Task<bool> AddCategory(Category category)
+    public async Task<bool> AddCategory(Category category, long userId)
     {
+        var ispresentcat =await _context.Categories.FirstOrDefaultAsync(x=>x.CategoryName == category.CategoryName);
+        if(ispresentcat != null){
+            return false;
+        }
         if(category == null){
            return false;
         }
         Category cat = new Category();
         cat.CategoryName = category.CategoryName;
         cat.Description = category.Description;
+        cat.CreatedBy = userId;
         await _context.Categories.AddAsync(cat);
         await _context.SaveChangesAsync();
         return true;
         
     }
 
-    public async Task<bool> EditCategory(Category category, long catID)
+    public async Task<bool> EditCategory(Category category, long catID, long userId)
     {
         if(category == null || catID==null){
            return false;
@@ -46,6 +51,8 @@ public class MenuService: IMenuService
         Category cat =await  _context.Categories.FirstOrDefaultAsync(x=> x.CategoryId == catID);
         cat.CategoryName = category.CategoryName;
         cat.Description = category.Description;
+        cat.ModifiedBy = userId;
+        cat.ModifiedAt = DateTime.Now;
          _context.Update(cat);
         await _context.SaveChangesAsync();
         return true;
@@ -109,6 +116,32 @@ public class MenuService: IMenuService
         var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
         return new PaginationViewModel<ItemsViewModel>(items, totalCount, pageNumber, pageSize);
+    }
+
+
+    public async Task<bool> AddItem(AddItemViewModel addItemvm, long userId)
+    {
+        if(addItemvm.CategoryId == null){
+            return false;
+        }
+        Item item = new();
+        item.CategoryId = addItemvm.CategoryId;
+        item.ItemName = addItemvm.ItemName;
+        item.ItemTypeId = addItemvm.ItemTypeId;
+        item.Rate = addItemvm.Rate;
+        item.Quantity = addItemvm.Quantity;
+        item.Unit = addItemvm.Unit;
+        item.Isavailable = addItemvm.Isavailable;
+        item.Isdefaulttax =  addItemvm.Isdefaulttax;
+        item.TaxValue = addItemvm.TaxValue;
+        item.ShortCode = addItemvm.ShortCode;
+        item.Description = addItemvm.Description;
+        item.ItemImage = addItemvm.ItemImage;
+        item.CreatedBy = userId;
+
+        await  _context.Items.AddAsync(item);
+        await  _context.SaveChangesAsync();
+        return true;
     }
 
    

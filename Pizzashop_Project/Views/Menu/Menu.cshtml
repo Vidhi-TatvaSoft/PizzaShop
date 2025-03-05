@@ -19,6 +19,7 @@
                         <span asp-validation-for="@Model.category.CategoryName" class="text-danger"></span>
                         <label for="floatingInput">Name</label>
                     </div>
+    
                     <div class="form-floating">
                         <textarea class="form-control" placeholder="Leave a comment here"
                             asp-for="@Model.category.Description" id="floatingTextarea"></textarea>
@@ -87,6 +88,173 @@
                     <button type="submit" class="btn btn-primary">Yes</button>
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
                 </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Items modal-->
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Menu Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="AddItem" enctype="multipart/form-data">
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <!-- Left Section (Form) -->
+                        <div class="col-lg-7 col-md-12">
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="floatingSelect" asp-for="@Model.additem.CategoryId" >
+                                            @foreach(var cat in Model.categories){
+                                                <option value="@cat.CategoryId">@cat.CategoryName</option>
+                                            }
+                                        </select>
+                                        <label for="floatingSelect">Categories*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.CategoryId"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="floatingInput" asp-for="@Model.additem.ItemName" placeholder="Name*">
+                                        <label for="floatingInput">Name*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.ItemName"></span>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="floatingSelect" asp-for="@Model.additem.ItemTypeId">
+                                            <option value="1" selected>veg</option>
+                                            <option value="2">Non-veg</option>
+                                            <option value="3">Vegan</option>
+                                        </select>
+                                        <label for="floatingSelect">Item Type*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.ItemTypeId"></span>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="floatingInput" placeholder="Rate*" asp-for="@Model.additem.Rate"
+                                           >
+                                        <label for="floatingInput">Rate*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.Rate"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="floatingInput" asp-for="@Model.additem.Quantity"
+                                            placeholder="Quantity*" >
+                                        <label for="floatingInput">Quantity*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.Quantity"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="floatingSelect" asp-for="@Model.additem.Unit">
+                                            <option value="pieces">Pieces</option>
+                                            <option value="cm">cm</option>
+                                        </select>
+                                        <label for="floatingSelect">Unit*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.Unit"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="available" asp-for="@Model.additem.Isavailable">
+                                        <label class="form-check-label" for="available">Available</label>
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="defaultTax" asp-for="@Model.additem.Isdefaulttax" >
+                                        <label class="form-check-label" for="defaultTax">Default Tax</label>
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="taxPercentage" asp-for="@Model.additem.TaxValue"
+                                            placeholder="Tax-Percentage*">
+                                        <label for="taxPercentage" style="text-wrap: noWrap;">Tax Percentage*</label>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="shortCode" asp-for="@Model.additem.ShortCode"
+                                            placeholder="Short Code*">
+                                        <label for="shortCode">Short Code*</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Description" id="description" asp-for="@Model.additem.Description"
+                                            style="height: 80px"></textarea>
+                                        <label for="description">Description</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <label for="uploadFile" class="border border-dashed rounded p-3 text-center w-100">
+                                        <span class="d-flex flex-column justify-content-center align-items-center">
+                                            <i class="fa-solid fa-cloud-arrow-up fs-2"></i>
+                                            <span>Drag & Drop or Browse files</span>
+                                        </span>
+                                    </label>
+                                    <input type="file" class="d-none" id="uploadFile" asp-for="@Model.additem.ItemFormImage">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Section (Modifiers) -->
+                        <div class="col-lg-5 col-md-12 bg-light p-3 rounded">
+                            <h6>Select Modifier Groups</h6>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="extraCheese">
+                                <label class="form-check-label" for="extraCheese">Extra Cheese</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="spicy">
+                                <label class="form-check-label" for="spicy">Spicy</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="noOnions">
+                                <label class="form-check-label" for="noOnions">No Onions</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="glutenFree">
+                                <label class="form-check-label" for="glutenFree">Gluten-Free</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+            </div>
             </form>
         </div>
     </div>
@@ -308,25 +476,30 @@
                                 </div>
 
                                 <!-- Sandwich -->
+                               @{var flag =true;
+
                                 @foreach (var cat in Model.categories)
                                 {
-                                    <div class=" d-flex justify-content-between  col-md-12 col-6  p-1">
-                                        <a style="text-decoration: none;" class="d-flex" asp-action="Menu"
-                                            asp-controller="Menu" asp-route-catID="@cat.CategoryId">
-                                            <i class="fa-solid fa-receipt mt-1"></i>
-                                            <p class="text-size-set mt-0  m-0 ms-3 ">@cat.CategoryName</p>
-                                        </a>
+                                    <div class="categories-div d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag?"active-category":"")"  data-id="@cat.CategoryId" >
+                                        
+                                        <div  class="d-flex "  >
+                                                <i class="fa-solid fa-receipt mt-1 "></i>
+                                                <p class="text-size-set mt-0  m-0 ms-3 ">@cat.CategoryName</p>
+   
+                                        </div>
                                         <div>
                                             <input type="hidden" value="@cat.Description">
-                                            <i class="fa-solid fa-pen fs-6 demoClass" onclick="GetdetailsForUpdate(this)"
+                                            <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdate(this)"
                                                 data-id="@cat.CategoryId" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal-editcategory"></i>
-                                            <i class="fa-solid fa-trash-can fs-6  ms-1" data-bs-toggle="modal"
+                                            <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal-deleteCategory" data-id="@cat.CategoryId"
                                                 onclick="GetIdForDelete(this)"></i>
                                         </div>
 
                                     </div>
+                                    flag=false;
+                                }
                                 }
 
                             </div>
@@ -343,8 +516,11 @@
                                 <!-- search add itemr -->
                                 <div class="search-item-div d-flex  align-items-center justify-content-between mt-2">
                                     <div class="search-button ">
+                                         @if(Model.Pagination.Items.Count != 0 ){
+                                        <input type="hidden" id="category-id-items" value="@Model.Pagination.Items[0].CategoryId">
                                         <input type="text" id="searchbtn" placeholder="Search" class="p-1 border ">
                                         <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                                        }
                                     </div>
                                     <div class="discard-button">
                                         <a href="#" class="btn  p-1 ps-2 pe-2 ms-3 border"><i
@@ -352,15 +528,19 @@
 
                                     </div>
                                     <div class="additem-button">
-                                        <a href="#" class="btn btn-primary text-light p-2 ms-3 border text">+ Add Item</a>
-                                        <input type="hidden" id="category-id-items"
-                                            value="@Model.Pagination.Items[0].CategoryId">
-                                    </div>
+                                        <button class="btn btn-primary text-light p-2 ms-3 border text"
+                                            data-bs-toggle="modal" data-bs-target="#addItemModal">+ Add Item</button>
+                                       
+                                        </div>
 
                                 </div>
                             </div>
                             <div class="table-main-div table-responsive mt-3 bg-white mx-auto w-100 ">
-                                <table class="table" id="demo1">
+                                @if(Model.Pagination.Items.Count == 0){
+                                    <h3 class="d-flex justify-content-center align-items-center text-danger">No data found</h3>
+                                }
+                                else{
+                                    <table class="table" id="demo1">
                                     <thead>
                                         <tr>
                                             <th scope="col"><input type="checkbox" name="" id="" class="me-3">
@@ -372,16 +552,18 @@
                                             <th scope="col">Action </th>
                                         </tr>
                                     </thead>
-                                    <tbody id="itemListBody" style="white-space: nowrap; background-color: aqua;">
+                                    <tbody id="itemListBody" style="white-space: nowrap; ">
 
                                         @await Html.PartialAsync("_ItemListPartal", Model.Pagination)
 
                                     </tbody>
                                 </table>
+                                }
                                 @*  Pagination div *@
                                 <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
 
-                                    <span class="mt-2">Items Per page:</span>
+                                   @if(Model.Pagination.Items.Count != 0){
+                                     <span class="mt-2">Items Per page:</span>
 
                                     <select id="itemsperpage">
                                         <option value="5">5</option>
@@ -392,171 +574,16 @@
                                     <span class=" mt-2 ms-1" id="pagination-text"></span>
                                     <a id="left-arrow" class="btn border border-dark bg-light ms-2">&lt;</a>
                                     <a id="right-arrow" class="btn border border-dark bg-light ms-2">&gt;</a>
+                                   }
                                 </div>
                             </div>
 
                         </div>
-
-                        @* <div
-                            class="right-side-table-div bg-white mt-2 pt-0 com-sm-12 col-md-8 col-lg-9 col-xl-10 col-12 ">
-                            <div class="item-list-main-div  d-lg-flex justify-content-between mt-2">
-                                <!-- item txt -->
-                                <div class="item-div d-flex col-md-3">
-                                    <div class="item-text fs-3 fw-bold text-primary">Items</div>
-                                </div>
-
-                                <!-- search add itemr -->
-                                <div class="search-item-div d-flex  align-items-center justify-content-between mt-2">
-                                    <div class="search-button ">
-                                        <input type="text" name="" id="" placeholder="Search" class="p-1 border ">
-                                        <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
-                                    </div>
-                                    <div class="discard-button">
-                                        <a href="#" class="btn  p-1 ps-2 pe-2 ms-3 border"><i
-                                                class="fa-solid fa-trash-can "></i></a>
-
-                                    </div>
-                                    <div class="additem-button">
-                                        <a href="#" class="btn btn-primary text-light p-2 ms-3 border text">+
-                                            Add
-                                            Item</a>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="table-main-div table-responsive mt-3 bg-white mx-auto w-100 ">
-                                <table class="table" id="demo">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"><input type="checkbox" name="" id="" class="me-3">
-                                                Name</th>
-                                            <th scope="col">Item Type</th>
-                                            <th scope="col">Rate</th>
-                                            <th scope="col">Quantity</th>
-                                            <th scope="col">Available</th>
-                                            <th scope="col">Action </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody style="white-space: nowrap;">
-                                        <tr>
-                                            <td class="d-md-flex"><input type="checkbox" name="" id="" class="me-3">
-                                                <img src="images/dining-menu.png" class="d-lg-block d-none " alt=""
-                                                    width="30px">Punjabi tadka sandwich
-                                            </td>
-                                            <td><img src="images/icons/non-veg-icon.svg" alt="" width="20px">
-                                            </td>
-                                            <td>200</td>
-                                            <td>1</td>
-                                            <td class="">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" role="switch"
-                                                        id="flexSwitchCheckChecked" checked="">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0"></i>
-                                                <i class="fa-solid fa-trash-can" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-deleteItem"></i>
-                                            </td>
-                                        </tr>
-                                         <tr>
-                                            <td class="d-md-flex"><input type="checkbox" name="" id="" class="me-3">
-                                                <img src="images/dining-menu.png" alt="" class="d-lg-block d-none "
-                                                    width="30px">Punjabi
-                                                tadka sandwich
-                                            </td>
-                                            <td><img src="images/icons/non-veg-icon.svg" alt="" width="20px">
-                                            </td>
-                                            <td>200</td>
-                                            <td>1</td>
-                                            <td class="">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" role="switch"
-                                                        id="flexSwitchCheckChecked" checked="">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0"></i>
-                                                <i class="fa-solid fa-trash-can" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-deleteItem"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="d-md-flex"><input type="checkbox" name="" id="" class="me-3"><img
-                                                    src="images/dining-menu.png" class="d-lg-block d-none " alt=""
-                                                    width="30px">Punjabi tadka sandwich</td>
-                                            <td><img src="images/icons/non-veg-icon.svg" alt="" width="20px">
-                                            </td>
-                                            <td>200</td>
-                                            <td>1</td>
-                                            <td class="">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" role="switch"
-                                                        id="flexSwitchCheckChecked" checked="">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0"></i>
-                                                <i class="fa-solid fa-trash-can" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-deleteItem"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="d-md-flex"><input type="checkbox" name="" id="" class="me-3"><img
-                                                    src="images/dining-menu.png" class="d-lg-block d-none " alt=""
-                                                    width="30px">Punjabi tadka sandwich</td>
-                                            <td><img src="images/icons/non-veg-icon.svg" alt="" width="20px">
-                                            </td>
-                                            <td>200</td>
-                                            <td>1</td>
-                                            <td class="">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" role="switch"
-                                                        id="flexSwitchCheckChecked" checked="">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0"></i>
-                                                <i class="fa-solid fa-trash-can" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-deleteItem"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="d-md-flex"><input type="checkbox" name="" id="" class="me-3"><img
-                                                    src="images/dining-menu.png" class="d-lg-block d-none " alt=""
-                                                    width="30px">Punjabi tadka sandwich</td>
-                                            <td><img src="images/icons/non-veg-icon.svg" alt="" width="20px">
-                                            </td>
-                                            <td>200</td>
-                                            <td>1</td>
-                                            <td class="">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" role="switch"
-                                                        id="flexSwitchCheckChecked" checked="">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0"></i>
-                                                <i class="fa-solid fa-trash-can" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-deleteItem"></i>
-                                            </td>
-                                        </tr> 
-
-
-                                    </tbody>
-                                </table>
-
-                            </div>
-
-                        </div> *@
-
                     </div>
-
                 </div>
-
-
-
             </div>
+
+            @* Modifier *@
             <div class="tab-pane fade" id="profile-tab-pane" role="tabpane2" aria-labelledby="profile-tab" tabindex="1">
                 <div class="div-for-tab-color">&nbsp</div>
                 <div class="categories-main-div container-fluid">
@@ -767,21 +794,7 @@
 
 
     </div>
-    <!-- item modifier text -->
-    <!-- <div class="item-modifier-div d-flex align-items-center justify-content-start bg-white  p-1">
-                            <div class="item-div d-flex align-items-center justify-content-start ms-3">
-                                <i class="fa-solid fa-list-ul  fs-5 text-primary"></i>
-                                <p class=" text-primary fs-5 ms-2 mt-2 fw-semibold">Items</p>
-                            </div>
-                            <div class="modifiers-div d-flex fs-5 ms-4 align-items-center ">
-                                <i class="fa-solid fa-table"></i>
-                                <p class="fs-5 ms-2 mt-2 fw-semibold">Modofiers</p>
-                            </div>
-                        </div> -->
-
-
 </div>
-
 
 @section scripts {
     <script>
@@ -792,7 +805,7 @@
             if (successMessage) {
                 toastr.success(successMessage);
             }
-            if (errorMessage && errorMessage == "") {
+            if (errorMessage) {
                 toastr.error(errorMessage);
             }
         })
@@ -821,7 +834,7 @@
                 document.getElementById("category-name").value = tag.parentElement.parentElement.children[0].children[1].innerHTML;
             document.getElementById("category-description").value = tag.parentElement.children[0].value;
             @* console.log(tag.parentElement.parentElement.children[1].value;) *@
-                    }
+                            }
 
         function GetIdForDelete(tag) {
             console.log("delete")
@@ -829,8 +842,6 @@
             console.log(tag.getAttribute("data-id"));
         }
     </script>
-
-
 
     <script>
         $(document).ready(function () {
@@ -860,6 +871,7 @@
                     }
                 });
             }
+
             loadTable(catID, searchText, currentPage, pageSize);
             // Search on keyup
             $("#searchbtn").on("keyup", function () {
@@ -868,6 +880,12 @@
                 loadTable(catID, searchText, currentPage, pageSize);
             });
 
+            $(".categories-div").on("click",function(){
+                $(".categories-div").removeClass("active-category");
+                $(this).addClass("active-category");
+                catID = $(this).data("id");
+                loadTable(catID, searchText, currentPage, pageSize);
+            })
 
             // Pagination buttons
             $("#right-arrow").on("click", function () {
@@ -878,6 +896,8 @@
                     loadTable(catID, searchText, currentPage, pageSize);
                 }
             });
+
+
 
             $("#left-arrow").on("click", function () {
                 let leftarrow = !$(this).prop("disabled");
@@ -896,7 +916,6 @@
             });
 
             // Initial table load
-            loadTable();
         });
     </script>
     @* <script>
@@ -905,6 +924,8 @@
             console.log("Hello world")});
 </script> *@
 
-
+ @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
 }

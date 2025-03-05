@@ -6,6 +6,7 @@ using DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace BLL.Service;
 
@@ -128,6 +129,7 @@ public class UserService : UserInterface
         userdetails.CountryId = user.CountryId;
         userdetails.StateId = user.StateId;
         userdetails.CityId = user.CityId;
+        userdetails.ModifiedBy = user.UserId;
         if (user.Image != null)
         {
             userdetails.ProfileImage = user.Image;
@@ -141,7 +143,7 @@ public class UserService : UserInterface
 
 
 
-    public async Task<bool> AddUser(UserViewModel userVM)
+    public async Task<bool> AddUser(UserViewModel userVM,long userId)
     {
         if (_context.Userlogins.Any(x => x.Email == userVM.Email))
         {
@@ -151,6 +153,7 @@ public class UserService : UserInterface
         userlogin.Email = userVM.Email;
         userlogin.Password = _userLoginService.EncryptPassword(userVM.Password);
         userlogin.RoleId = userVM.RoleId;
+        
 
         await _context.AddAsync(userlogin);
         await _context.SaveChangesAsync();
@@ -170,7 +173,7 @@ public class UserService : UserInterface
         user.CityId = userVM.CityId;
         user.Address = userVM.Address;
         user.Zipcode = userVM.Zipcode;
-
+        user.CreatedBy = userId;
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
 
@@ -197,6 +200,9 @@ public class UserService : UserInterface
         user.Status = userVM.Status;
         user.Phone = userVM.Phone;
         user.RoleId = userVM.RoleId;
+        user.ModifiedAt = DateTime.Now;
+        long userId = _userLoginService.GetUserId(Email);
+        user.ModifiedBy = userId;
         if (userVM.Image != null)
         {
             user.ProfileImage = userVM.Image;

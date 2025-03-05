@@ -61,11 +61,15 @@ form i{
   .sidebar-options-menu {
     list-style-type: none;
   }
+
+  a{
+    color:black;
+  }
   
   .active-div {
     /* / margin-top: 10px; / */
-    background-color: #d7e5f1;
-    color: #0058a0;
+    background-color: #bad3e9;
+    color: black;
     /* / margin-right: 30px; / */
   }
   
@@ -172,4 +176,20 @@ form i{
 .checkbox-headimg-tag{
   position: relative;
   left:35px;
+}
+
+
+
+.categories-div i.iconeditdelete{
+  opacity: 0;
+}
+
+.categories-div:hover i.iconeditdelete{
+  opacity: 1;
+  color: grey;
+}
+
+.active-category{
+  color:#1138b8 !important;
+  font-weight: bold;
 }

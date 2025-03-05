@@ -58,34 +58,34 @@
                         </div>
 
                         <!-- dashboard -->
-                        <div class="inactive-div d-flex ps-3">
+                        <div class=" d-flex ps-3">
                             <img src="images/dashboard-default.svg" width="20px" class=" " alt>
                             <p class="dashboard-text-active text-size-set mt-3 ms-3 ">Dashboard</p>
                         </div>
 
                         <!-- users -->
-                        <a class="active-div d-flex align-items-center p-3 " style="text-decoration: none;" asp-action="UsersList" asp-controller="User">
+                        <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "UserList" ? "active-div" : "")" style="text-decoration: none;" asp-action="UsersList" asp-controller="User">
                             <i class="fa-solid fa-users "></i>
                             <p class="users-text-inactive text-size-set  m-0 ms-3">Users</p>
                         </a>
 
                         <!--Role and Permission  -->
-                        <a class="inactive-div d-flex align-items-center p-3 " style="text-decoration: none;" asp-action="Roles" asp-controller="RolesPermission">
+                        <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "Roles" ? "active-div" : "")" style="text-decoration: none;" asp-action="Roles" asp-controller="RolesPermission">
                             <i class="fa-solid fa-user-clock "></i>
                             <p class="role-text-inactive  text-size-set   m-0 ms-3">Role and Permission</p>
                         </a>
 
                         <!-- menu -->
-                        <a class="inactive-div d-flex align-items-center  p-3"  style="text-decoration: none;" asp-action="Menu" asp-controller="Menu">
+                        <a class=" d-flex align-items-center  p-3 @((ViewData["sidebar-active"] as string) == "Menu" ? "active-div" : "")"  style="text-decoration: none;" asp-action="Menu" asp-controller="Menu">
                             <i class="fa-solid fa-calendar-minus "></i>
                             <p class="menu-text-inactive text-size-set m-0 ms-4">Menu</p>
                         </a>
 
                         <!-- Table and Section -->
-                        <div class="inactive-div d-flex p-3">
+                        <a class="inactive-div d-flex p-3 @((ViewData["sidebar-active"] as string) == "Menu" ? "active-div" : "")" asp-action="Menu" asp-controller="Menu" style="text-decoration: none;">
                             <i class="fa-solid fa-table-cells-large "></i>
                             <p class="table-text-inactive text-size-set  m-0 ms-3">Table and Section</p>
-                        </div>
+                        </a>
 
                         <!-- taxes and fees -->
                         <div class="inactive-div d-flex p-3">

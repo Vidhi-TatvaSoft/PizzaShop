@@ -14,5 +14,7 @@ public class MenuViewModel
     public ItemsViewModel item {get;set;}
 
     public PaginationViewModel<ItemsViewModel> Pagination { get; set; }
+
+    public AddItemViewModel additem {get; set;}
 }
 

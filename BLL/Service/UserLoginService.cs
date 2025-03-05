@@ -74,6 +74,10 @@ namespace BLL.Services
             return _context.Users.FirstOrDefault(x => x.Userlogin.Email == Email).Username;
         }
 
+        public long GetUserId(string Email){
+            return _context.Users.FirstOrDefault(x => x.Userlogin.Email == Email).UserId;
+        }
+
         public bool ResetPassword(ResetPasswordViewModel resetpassdata)
         {
             if (_context.Userlogins.FirstOrDefault(e => e.Email == resetpassdata.Email) != null)
