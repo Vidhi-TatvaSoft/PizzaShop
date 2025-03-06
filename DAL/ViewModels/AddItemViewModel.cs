@@ -16,7 +16,7 @@ public class AddItemViewModel
 
     public IFormFile ItemFormImage { get; set; }
 
-    public String? ItemImage {get; set;}
+    public string? ItemImage {get; set;}
 
     public decimal Rate { get; set; }
 
@@ -31,5 +31,7 @@ public class AddItemViewModel
     public bool Isdefaulttax { get; set; }
 
     public decimal? TaxValue { get; set; }
+
+    
 
 }

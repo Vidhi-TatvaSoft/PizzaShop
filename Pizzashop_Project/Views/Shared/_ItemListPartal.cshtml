@@ -1,7 +1,7 @@
 @using DAL.ViewModels;
 @model PaginationViewModel<ItemsViewModel>
 
-
+@* @{bool ismassdelete = false;} *@
 @if (Model.Items.Count == 0)
 {
     <tr>
@@ -13,7 +13,8 @@ else
     @foreach (var item in Model.Items)
     {
         <tr>
-            <td class="d-md-flex"><input type="checkbox" class="me-3">
+            <td class="d-md-flex"><input type="checkbox" class="massDeleteClass" data-checkid="@item.ItemId" class="me-3" > 
+                
                 <img src="@item.ItemImage" class="d-lg-block d-none " style="border-radius: 50%;" alt="" width="30px">
                 @item.ItemName
             </td>
@@ -36,7 +37,8 @@ else
             </td>
             <td>
                 <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0"></i>
-                <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteItem"></i>
+                <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteItem" data-id="@item.ItemId"
+                    onclick="getIdForDeleteItem(this)"></i>
             </td>
         </tr>
     }

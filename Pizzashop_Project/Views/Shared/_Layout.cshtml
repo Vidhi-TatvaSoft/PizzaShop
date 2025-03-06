@@ -58,10 +58,10 @@
                         </div>
 
                         <!-- dashboard -->
-                        <div class=" d-flex ps-3">
-                            <img src="images/dashboard-default.svg" width="20px" class=" " alt>
+                        <a class=" d-flex ps-3 @((ViewData["sidebar-active"] as string) == "Dashboard" ? "active-div" : "")" style="text-decoration: none;" asp-action="Dashboard" asp-controller="User">
+                            <img src="~/images/dashboard-default.svg" width="20px" class=" " alt>
                             <p class="dashboard-text-active text-size-set mt-3 ms-3 ">Dashboard</p>
-                        </div>
+                        </a>
 
                         <!-- users -->
                         <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "UserList" ? "active-div" : "")" style="text-decoration: none;" asp-action="UsersList" asp-controller="User">
@@ -82,10 +82,10 @@
                         </a>
 
                         <!-- Table and Section -->
-                        <a class="inactive-div d-flex p-3 @((ViewData["sidebar-active"] as string) == "Menu" ? "active-div" : "")" asp-action="Menu" asp-controller="Menu" style="text-decoration: none;">
+                        <div class="inactive-div d-flex p-3" >
                             <i class="fa-solid fa-table-cells-large "></i>
                             <p class="table-text-inactive text-size-set  m-0 ms-3">Table and Section</p>
-                        </a>
+                        </div>
 
                         <!-- taxes and fees -->
                         <div class="inactive-div d-flex p-3">

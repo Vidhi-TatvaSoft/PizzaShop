@@ -29,14 +29,13 @@ public class UserController : Controller
         _userLoginService = userLoginService;
     }
 
+    public IActionResult Dashboard()
+    {
+        ViewData["sidebar-active"] = "Dashboard";
+        return View();
+    }
 
-    [Authorize(Roles = "Admin")]
-    // public IActionResult Index()
-    // {
-
-    //     // var userData = await _userService.getuser();
-    //     return View();
-    // }
+  
 
     #region MyProfile get
     [Authorize(Roles = "Admin")]
@@ -125,7 +124,7 @@ public class UserController : Controller
         }
         Response.Cookies.Append("username", user.Username, options);
         TempData["SuccessMessage"] = "Profile updated successfully";
-        return RedirectToAction("MyProfile", "User");
+        return RedirectToAction("UsersList", "User");
     }
     #endregion
 
@@ -193,7 +192,7 @@ public class UserController : Controller
         {
             string email = Request.Cookies["Email"];
             long userId = _userLoginService.GetUserId(email);
-            if (!await _userService.AddUser(user,userId))
+            if (!await _userService.AddUser(user, userId))
             {
                 ViewBag.Message = "Email already exists";
                 return View();
@@ -341,7 +340,7 @@ public class UserController : Controller
     #endregion
 
 
-    #region cangepassword get
+    #region changepassword get
     public IActionResult ChangePassword()
     {
         return View();
@@ -425,7 +424,7 @@ public class UserController : Controller
     }
     #endregion
 
-    
+
     // [HttpGet]
     // public IActionResult GetCountries()
     // {

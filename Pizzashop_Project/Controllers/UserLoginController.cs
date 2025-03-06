@@ -24,6 +24,8 @@ namespace Pizzashop_Project.Controllers
             _userLoginService = userLoginService;
         }
 
+        
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
@@ -45,8 +47,9 @@ namespace Pizzashop_Project.Controllers
                 // Response.Cookies.Append("profileImage", _userLoginService.GetProfileImage(email), options);
                 // Response.Cookies.Append("username", _userLoginService.GetUsername(email), options);
 
-                TempData["SuccessMessage"] = "Login Successfully";
-                return RedirectToAction("UsersList", "User");
+               
+                ViewData["sidebar-active"] ="Dashboard";
+                return RedirectToAction("Dashboard", "User");
             }
             return View();
         }
@@ -71,12 +74,14 @@ namespace Pizzashop_Project.Controllers
                     Response.Cookies.Append("email", userlogin.Email, options);
                     ViewBag.ProfileImage = _userLoginService.GetProfileImage(userlogin.Email);
                     TempData["SuccessMessage"] = "Login Successfully";
-                    return RedirectToAction("UsersList", "User");
+                    ViewData["sidebar-active"] ="Dashboard";
+                    return RedirectToAction("Dashboard", "User");
                 }
                 else
                 {
                     TempData["SuccessMessage"] = "Login Successfully";
-                    return RedirectToAction("UsersList", "User");
+                    ViewData["sidebar-active"] ="Dashboard";
+                    return RedirectToAction("Dashboard", "User");
                 }
             }
             ViewBag.message = "Enter valid Credentials";

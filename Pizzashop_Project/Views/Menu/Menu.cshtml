@@ -301,13 +301,40 @@
                 </div>
 
             </div>
+            <form asp-action="DeleteItem" asp-controller="Menu">
             <div class="modal-footer d-flex justify-content-center">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Yes</button>
-                <button type="button" class="btn btn-outline-primary">No</button>
+                <input type="hidden"  id="deleteItemId" name="itemID">
+                <button type="submit" class="btn btn-primary" >Yes</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
+
+<!-- delete all item -->
+<div id="exampleModal-deleteAllItem" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Conformation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+                <div class="delete-cat-image d-flex flex-column  align-items-center">
+                    <img src="images/toppng.com-warning-icon-2400x2400.png" width="50px" alt="">
+                    <p>Are you sure you want to delete All These Items?</p>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary" id="deleteAllItemsModalYesButton" data-bs-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
 
 <!-- add new modifier modal -->
 <div id="exampleModal-addmodifier" class="modal" tabindex="-1">
@@ -523,7 +550,7 @@
                                         }
                                     </div>
                                     <div class="discard-button">
-                                        <a href="#" class="btn  p-1 ps-2 pe-2 ms-3 border"><i
+                                        <a href="#" class="btn  p-1 ps-2 pe-2 ms-3 border" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteAllItem" ><i
                                                 class="fa-solid fa-trash-can "></i></a>
 
                                     </div>
@@ -543,7 +570,7 @@
                                     <table class="table" id="demo1">
                                     <thead>
                                         <tr>
-                                            <th scope="col"><input type="checkbox" name="" id="" class="me-3">
+                                            <th scope="col"><input type="checkbox"  id="checkboxForSelectAllItem" onclick="SelectAllItem()" class="me-3">
                                                 Name</th>
                                             <th scope="col">Item Type</th>
                                             <th scope="col">Rate</th>
@@ -841,6 +868,36 @@
             document.getElementById("category-id-fordelete").value = tag.getAttribute("data-id");
             console.log(tag.getAttribute("data-id"));
         }
+
+        function getIdForDeleteItem(tag){
+            document.getElementById("deleteItemId").value = tag.getAttribute("data-id");
+            console.log( tag.getAttribute("data-id"));
+        }
+
+        function SelectAllItem(){
+            var classess=document.getElementsByClassName("massDeleteClass");
+            var deleteAllItemCkeckbboxId =document.getElementById("checkboxForSelectAllItem");
+            console.log(classess)
+
+            if(deleteAllItemCkeckbboxId.checked){
+
+            console.log("hiiiiiiiiiii");
+                for(i=0; i<classess.length;i++){
+                    console.log("gjeopw")
+                    classess[i].setAttribute("checked","checked");
+                }
+                @* classess.value=true; *@
+            }
+            if(!deleteAllItemCkeckbboxId.checked){
+                console.log("hellooooooo");
+                for(i=0; i<classess.length;i++){
+                    classess[i].removeAttribute("checked");
+                }
+                @* classess.value=true; *@
+            }
+        }
+
+        
     </script>
 
     <script>
@@ -850,6 +907,7 @@
             let searchText = $("#searchbtn").val();
             let catID = $("#category-id-items").val();
             console.log("c:", catID);
+
             function loadTable(catID, search = "", page = 1, pageSize = 5) {
                 $.ajax({
                     url: "/Menu/MenuItemPagination",
@@ -858,7 +916,7 @@
                     success: function (data) {
                         $("#itemListBody").html(data);
                         @* console.log(@Model.Pagination.Items) *@
-                            console.log(data)
+                            @* console.log(data) *@
                         currentPage = page;
                         @* console.log("s:",search) *@
                             let startItem = (page - 1) * pageSize + 1;
@@ -868,16 +926,21 @@
                         $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
                         $("#left-arrow").prop("disabled", page === 1);
                         $("#right-arrow").prop("disabled", page * pageSize >= totalRecords);
+                    SelectAllItem(); 
+                        
                     }
                 });
+               
             }
 
+            
             loadTable(catID, searchText, currentPage, pageSize);
             // Search on keyup
             $("#searchbtn").on("keyup", function () {
                 searchText = $(this).val().trim();
                 console.log(searchText);
                 loadTable(catID, searchText, currentPage, pageSize);
+                
             });
 
             $(".categories-div").on("click",function(){
@@ -894,9 +957,29 @@
                 if (rightarrow) {
                     currentPage++;
                     loadTable(catID, searchText, currentPage, pageSize);
+                    @* SelectAllItem();  *@
                 }
             });
 
+            $("#deleteAllItemsModalYesButton").on("click",function(){
+                 var classess=document.getElementsByClassName("massDeleteClass");
+                 console.log("delete all")
+                 for(i=0; i<classess.length;i++){
+                    if(classess[i].checked){
+
+                        let itemID = classess[i].getAttribute("data-checkid");
+                        console.log(itemID)
+                        $.ajax({
+                             url: `/Menu/DeleteItem?itemID=${itemID}`,
+                            type: "GET",
+                            success: function (data) {
+                                
+                                loadTable(catID, searchText, currentPage, pageSize);
+                            }
+                        })
+                    }
+                }
+            })
 
 
             $("#left-arrow").on("click", function () {
@@ -905,6 +988,7 @@
                 if (leftarrow) {
                     currentPage--;
                     loadTable(catID, searchText, currentPage, pageSize);
+                    @* SelectAllItem();  *@
                 }
             });
 
@@ -914,6 +998,7 @@
                 console.log(pageSize);
                 loadTable(catID, searchText, currentPage, pageSize);
             });
+           
 
             // Initial table load
         });
