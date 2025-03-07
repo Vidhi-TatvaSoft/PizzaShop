@@ -4,13 +4,19 @@ namespace DAL.ViewModels;
 
 public class MyProfileViewModel
 {
-    [Required(ErrorMessage = "First name is required.")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "First name is required and should not include whitespace")]
+    [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "FirstName must contain only alphabets")]
+    [StringLength(20, ErrorMessage = "First Name cannot exceed 20 characters.")]
     public string FirstName { get; set; }
 
-    [Required(ErrorMessage = "Lastname is required.")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Last name is required and should not include whitespace")]
+    [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Last Name must contain only alphabets")]
+    [StringLength(20, ErrorMessage = "Last Name cannot exceed 20 characters.")]
     public string LastName { get; set; }
 
-    [Required(ErrorMessage = "Username is required.")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "User name is required and should not include whitespace")]
+    [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "UserName must contain only alphabets")]
+    [StringLength(30, ErrorMessage = "User Name cannot exceed 30 characters.")]
     public string Username { get; set; }
 
 
@@ -22,9 +28,10 @@ public class MyProfileViewModel
     public string StateName { get; set; } = null!;
     public string CityName { get; set; } = null!;
 
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Address is required and should not include whitespace")]
     public string? Address { get; set; } = null!;
 
-    
+
     [Required(ErrorMessage = "Zipcode is required.")]
     [Range(100000, 999999, ErrorMessage = "Zipcode must be 6 digits long.")]
     public long? Zipcode { get; set; } = null!;

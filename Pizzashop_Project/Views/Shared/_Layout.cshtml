@@ -2,6 +2,7 @@
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,15 +10,16 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PizzaSshop_Project.styles.css" asp-append-version="true" />
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
-     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
 
-<div id="logout" class="modal" tabindex="-1">
+    <div id="logout" class="modal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 @* <div class="modal-header">
@@ -32,8 +34,8 @@
 
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
-                    <a type="submit" asp-action="Logout" asp-controller="User" class="btn btn-primary" >Yes</a>
-                    <button type="button" class="btn btn-outline-primary"data-bs-dismiss="modal">No</button>
+                    <a type="submit" asp-action="Logout" asp-controller="User" class="btn btn-primary">Yes</a>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
                 </div>
             </div>
         </div>
@@ -45,44 +47,49 @@
         <div class="row">
 
             <!-- sidebar -->
-            <div class="left-sidebar-main-div pt-0 col-sm-4 col-md-3 col-lg-3 col-xl-2 col-0 d-none d-sm-flex justify-content-start ">
+            <div
+                class="left-sidebar-main-div pt-0 col-sm-4 col-md-3 col-lg-3 col-xl-2 col-0 d-none d-sm-flex justify-content-start ">
 
                 <div class="row w-100 justify-content-center">
                     <div class="sidebar-options-menu d-flex flex-column mt-2 ">
                         <!-- logo -->
                         <div class="logo-main-div d-flex justify-content-start mb-3">
                             <div class="logo-image  me-2">
-                                <img src="images/logos/pizzashop_logo.png" width="60px" alt="">
+                                <img src="~/images/logos/pizzashop_logo.png" width="60px" alt="">
                             </div>
                             <div class="logo-text text-primary fs-5 mt-2 fw-semibold">PIZZASHOP</div>
                         </div>
 
                         <!-- dashboard -->
-                        <a class=" d-flex ps-3 @((ViewData["sidebar-active"] as string) == "Dashboard" ? "active-div" : "")" style="text-decoration: none;" asp-action="Dashboard" asp-controller="User">
+                        <a class=" d-flex ps-3 @((ViewData["sidebar-active"] as string) == "Dashboard" ? "active-div" : "")"
+                            style="text-decoration: none;" asp-action="Dashboard" asp-controller="User">
                             <img src="~/images/dashboard-default.svg" width="20px" class=" " alt>
                             <p class="dashboard-text-active text-size-set mt-3 ms-3 ">Dashboard</p>
                         </a>
 
                         <!-- users -->
-                        <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "UserList" ? "active-div" : "")" style="text-decoration: none;" asp-action="UsersList" asp-controller="User">
+                        <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "UserList" ? "active-div" : "")"
+                            style="text-decoration: none;" asp-action="UsersList" asp-controller="User">
                             <i class="fa-solid fa-users "></i>
                             <p class="users-text-inactive text-size-set  m-0 ms-3">Users</p>
                         </a>
 
                         <!--Role and Permission  -->
-                        <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "Roles" ? "active-div" : "")" style="text-decoration: none;" asp-action="Roles" asp-controller="RolesPermission">
+                        <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "Roles" ? "active-div" : "")"
+                            style="text-decoration: none;" asp-action="Roles" asp-controller="RolesPermission">
                             <i class="fa-solid fa-user-clock "></i>
                             <p class="role-text-inactive  text-size-set   m-0 ms-3">Role and Permission</p>
                         </a>
 
                         <!-- menu -->
-                        <a class=" d-flex align-items-center  p-3 @((ViewData["sidebar-active"] as string) == "Menu" ? "active-div" : "")"  style="text-decoration: none;" asp-action="Menu" asp-controller="Menu">
+                        <a class=" d-flex align-items-center  p-3 @((ViewData["sidebar-active"] as string) == "Menu" ? "active-div" : "")"
+                            style="text-decoration: none;" asp-action="Menu" asp-controller="Menu">
                             <i class="fa-solid fa-calendar-minus "></i>
                             <p class="menu-text-inactive text-size-set m-0 ms-4">Menu</p>
                         </a>
 
                         <!-- Table and Section -->
-                        <div class="inactive-div d-flex p-3" >
+                        <div class="inactive-div d-flex p-3">
                             <i class="fa-solid fa-table-cells-large "></i>
                             <p class="table-text-inactive text-size-set  m-0 ms-3">Table and Section</p>
                         </div>
@@ -131,92 +138,109 @@
                                 <div class="navbar-nav sidebar-options-menu  d-flex flex-column ">
 
                                     <!-- dashboard -->
-                                    <div class="inactive-div d-flex ps-3 ">
-                                        <img src="images/dashboard-default.svg" width="20px" class=" " alt>
+                                    <div class=" d-flex ps-3 @((ViewData["sidebar-active"] as string) == "Dashboard" ? "active-div" : "")"
+                                        style="text-decoration: none;" asp-action="Dashboard" asp-controller="User">
+                                        <img src="~/images/dashboard-default.svg" width="20px" class=" " alt>
                                         <p class="dashboard-text-active text-size-set mt-3 ms-3 ">Dashboard</p>
                                     </div>
 
                                     <!-- users -->
-                                    <div class="active-div d-flex align-items-center p-3 ">
+                                    <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "UserList" ? "active-div" : "")"
+                                        style="text-decoration: none;" asp-action="UsersList" asp-controller="User">
                                         <i class="fa-solid fa-users "></i>
                                         <p class="users-text-inactive text-size-set  m-0 ms-3">Users</p>
-                                    </div>
+                                    </a>
 
                                     <!--Role and Permission  -->
-                                    <div class="inactive-div d-flex align-items-center p-3">
+                                    <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "Roles" ? "active-div" : "")"
+                                        style="text-decoration: none;" asp-action="Roles"
+                                        asp-controller="RolesPermission">
                                         <i class="fa-solid fa-user-clock "></i>
                                         <p class="role-text-inactive  text-size-set   m-0 ms-3">Role and Permission</p>
-                                    </div>
+                                    </a>
 
                                     <!-- menu -->
-                                    <div class="inactive-div d-flex align-items-center  p-3">
+                                    <a class=" d-flex align-items-center  p-3 @((ViewData["sidebar-active"] as string) == "Menu" ? "active-div" : "")"
+                                        style="text-decoration: none;" asp-action="Menu" asp-controller="Menu">
                                         <i class="fa-solid fa-calendar-minus "></i>
                                         <p class="menu-text-inactive text-size-set m-0 ms-4">Menu</p>
-                                    </div>
+                                    </a>
 
                                     <!-- Table and Section -->
-                                    <div class="inactive-div d-flex p-3">
+                                    <adiv class=" d-flex p-3">
                                         <i class="fa-solid fa-table-cells-large "></i>
                                         <p class="table-text-inactive text-size-set  m-0 ms-3">Table and Section</p>
-                                    </div>
+                                </div>
 
-                                    <!-- taxes and fees -->
-                                    <div class="inactive-div d-flex p-3">
-                                        <i class="fa-solid fa-money-check-dollar "></i>
-                                        <p class="taxes-text-inactive text-size-set m-0 ms-3">Taxes And Fees</p>
-                                    </div>
+                                <!-- taxes and fees -->
+                                <div class=" d-flex p-3">
+                                    <i class="fa-solid fa-money-check-dollar "></i>
+                                    <p class="taxes-text-inactive text-size-set m-0 ms-3">Taxes And Fees</p>
+                                </div>
 
-                                    <!-- orders -->
-                                    <div class="inactive-div d-flex p-3">
-                                        <i class="fa-solid fa-clipboard-check"></i>
-                                        <p class="order-text-inactive text-size-set m-0 ms-4">Orders</p>
-                                    </div>
+                                <!-- orders -->
+                                <div class=" d-flex p-3">
+                                    <i class="fa-solid fa-clipboard-check"></i>
+                                    <p class="order-text-inactive text-size-set m-0 ms-4">Orders</p>
+                                </div>
 
-                                    <!-- customer -->
-                                    <div class="inactive-div d-flex p-3">
-                                        <i class="fa-regular fa-id-card"></i>
-                                        <p class="customer-text-inactive text-size-set m-0 ms-3">Customer</p>
-                                    </div>
+                                <!-- customer -->
+                                <div class=" d-flex p-3">
+                                    <i class="fa-regular fa-id-card"></i>
+                                    <p class="customer-text-inactive text-size-set m-0 ms-3">Customer</p>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- logo -->
-                            <div class="logo-main-div d-flex justify-content-start mb-3 d-sm-none mt-2">
-                                <div class="logo-image  me-2">
-                                    <img src="images/logos/pizzashop_logo.png" width="50px" alt="">
-                                </div>
+                        <!-- logo -->
+                        <div class="logo-main-div d-flex justify-content-start mb-3 d-sm-none mt-2">
+                            <div class="logo-image  me-2">
+                                <img src="images/logos/pizzashop_logo.png" width="50px" alt="">
                             </div>
                         </div>
                         <!-- profile -->
                         <div class="profilepic-div mt-2 mb-2">
-                            
+
                             <div class="dropdown">
-                                <div class=" dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="@(HttpContextAccessor.HttpContext.Request.Cookies["ProfileImage"])" style="border-radius: 50%;" width="40px" height="35px" alt="">
+                                <div class=" dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="@(HttpContextAccessor.HttpContext.Request.Cookies["ProfileImage"])"
+                                        style="border-radius: 50%;" width="40px" height="35px" alt="">
                                 </div>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                  <li><div class="dropdown-item" ><img src="@(HttpContextAccessor.HttpContext.Request.Cookies["ProfileImage"])" style="border-radius: 50%;" width="30px" height="25px" alt="">   @(HttpContextAccessor.HttpContext.Request.Cookies["username"])</div></li>
-                                  <li><a class="dropdown-item" asp-action="MyProfile" asp-controller="User">My Profile</a></li>
-                                  <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="User">Change Password</a></li>
-                                  <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#logout">Logout</a></li>
+                                    <li>
+                                        <div class="dropdown-item"><img
+                                                src="@(HttpContextAccessor.HttpContext.Request.Cookies["ProfileImage"])"
+                                                style="border-radius: 50%;" width="30px" height="25px" alt="">
+                                            @(HttpContextAccessor.HttpContext.Request.Cookies["username"])</div>
+                                    </li>
+                                    <li><a class="dropdown-item" asp-action="MyProfile" asp-controller="User">My
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" asp-action="ChangePassword"
+                                            asp-controller="User">Change Password</a></li>
+                                    <li><a class="dropdown-item" data-bs-toggle="modal"
+                                            data-bs-target="#logout">Logout</a></li>
                                 </ul>
-                              </div>
+                            </div>
                         </div>
                     </div>
-
-                @RenderBody()
-
-                    
+                    @RenderBody()
                 </div>
+
+
+
+
             </div>
         </div>
+    </div>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

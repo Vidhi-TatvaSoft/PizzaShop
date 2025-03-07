@@ -45,8 +45,9 @@
 
             <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
                 <div class="form-floating ">
+                    @* <input type="hidden" asp-for="Username"> *@
                     <input type="text" asp-for="Username" class="form-control" id="floatingInput"
-                        placeholder="John Deo">
+                        placeholder="Username" >
                     <label for="floatingInput" asp-for="Username" class="fs-6 text-secondary">Username</label>
                     <span asp-validation-for="Username" class="text-danger"></span>
                 </div>

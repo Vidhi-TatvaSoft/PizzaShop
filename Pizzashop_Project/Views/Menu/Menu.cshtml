@@ -880,21 +880,32 @@
             console.log(classess)
 
             if(deleteAllItemCkeckbboxId.checked){
-
-            console.log("hiiiiiiiiiii");
                 for(i=0; i<classess.length;i++){
-                    console.log("gjeopw")
-                    classess[i].setAttribute("checked","checked");
+                    classess[i].checked=true;;
                 }
-                @* classess.value=true; *@
             }
             if(!deleteAllItemCkeckbboxId.checked){
-                console.log("hellooooooo");
                 for(i=0; i<classess.length;i++){
-                    classess[i].removeAttribute("checked");
+                    classess[i].checked=false;;
                 }
-                @* classess.value=true; *@
             }
+        }
+
+        function checkboxTickManage(){  
+            var classess=document.getElementsByClassName("massDeleteClass");
+            var deleteAllItemCkeckbboxId =document.getElementById("checkboxForSelectAllItem");
+            flag=true;
+            for(i=0;i<classess.length;i++){
+                if(!classess[i].checked){
+                    flag=false;
+                }
+            }
+            @* for(i=0;i<classess.length;i++){
+                if(classess[i].checked){
+                    flag=true;
+                }
+            } *@
+            deleteAllItemCkeckbboxId.checked =flag
         }
 
         
@@ -926,7 +937,8 @@
                         $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
                         $("#left-arrow").prop("disabled", page === 1);
                         $("#right-arrow").prop("disabled", page * pageSize >= totalRecords);
-                    SelectAllItem(); 
+                        SelectAllItem(); 
+                        checkboxTickManage();
                         
                     }
                 });

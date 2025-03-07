@@ -1,6 +1,32 @@
 .login_details_main_div{
   background-color: rgb(173, 217, 223);
 }
+
+.login_details_main_div{
+  background-color: rgb(208, 232, 243);
+}
+.text-primary{
+  color:#0084C3 !important;
+}
+.bg-primary{
+  background-color: #0084C3 !important;
+} 
+
+.btn-primary{
+  background-color: #0084C3 !important;
+  color: #ffffff !important;
+}
+
+.btn-outline-primary{
+  color: #0084C3 !important;
+  background-color: #ffffff !important;
+  border:  1px solid #0084C3 !important;
+}
+
+
+.logo-text{
+  font-weight: 700;
+} 
 .image_main_div img{
   object-fit: cover;
 }
@@ -117,6 +143,8 @@ form i{
   margin-top: 10px;
   margin-left: 15px;
  }
+
+
 /* 
  .form-main-div{
   margin-left: 100px !important;
@@ -128,6 +156,24 @@ form i{
   right: 20px;
  }
 
+
+ .password-icon-changepass{
+  position: absolute;
+  top: 5px;
+  right: 15px;
+ }
+
+ .password-icon-login{
+
+  position: absolute;
+  top: 3px;
+  right: 10px;
+  z-index: 1 !important;
+ }
+
+ .inputText-login{
+  z-index: 0 !important;
+ } 
  .browse-file-div{
   border-style: dashed;
   border-width: 2px;

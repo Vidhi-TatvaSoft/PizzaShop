@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -114,7 +115,10 @@ public class UserController : Controller
             }
             user.Image = $"/uploads/{fileName}";
         }
-
+        if(_userService.IsUserNameExistsForEdit(user.Username,userEmail)){
+            TempData["ErrorMessage"] = "UserName Already Exists. Try Another Username";
+            return RedirectToAction("MyProfile","User",new {Email = userEmail});
+        }
         _userService.UpdateProfile(user, userEmail);
         CookieOptions options = new CookieOptions();
         options.Expires = DateTime.Now.AddMinutes(60);
@@ -192,10 +196,14 @@ public class UserController : Controller
         {
             string email = Request.Cookies["Email"];
             long userId = _userLoginService.GetUserId(email);
+            if(_userService.IsUserNameExists(user.Username)){
+                 TempData["ErrorMessage"] = "username already exists";
+                 return  RedirectToAction("AddUser","User");
+            }
             if (!await _userService.AddUser(user, userId))
             {
-                ViewBag.Message = "Email already exists";
-                return View();
+                TempData["ErrorMessage"] = "Email already exists";
+                return RedirectToAction("AddUser","User");
             }
             var senderEmail = new MailAddress("tatva.pca155@outlook.com", "tatva.pca155@outlook.com");
             var receiverEmail = new MailAddress(user.Email, user.Email);
@@ -242,7 +250,8 @@ public class UserController : Controller
         }
         catch (Exception ex)
         {
-            ViewBag.Message = ex.Message;
+            TempData["addUserErrorMessage"] = ex.Message;
+            return View();
         }
 
 
@@ -331,6 +340,10 @@ public class UserController : Controller
             }
             user.Image = $"/uploads/{fileName}";
         }
+        if(_userService.IsUserNameExistsForEdit(user.Username,Email)){
+            TempData["ErrorMessage"] = "UserName Already Exists. Try Another Username";
+            return RedirectToAction("EditUser","User",new {Email = user.Email});
+        }
 
         await _userService.EditUser(user, Email);
         TempData["SuccessMessage"] = "User updated successfully";
@@ -399,12 +412,13 @@ public class UserController : Controller
         Response.Cookies.Delete("email");
         Response.Cookies.Delete("profileImage");
         Response.Cookies.Delete("username");
+        TempData["SuccessMessage"]="Logout Successfully.";
         return RedirectToAction("VerifyPassword", "UserLogin");
     }
     #endregion
 
     #region Userlist
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public IActionResult UsersList()
     {
         var users = _userService.GetUserList();
@@ -416,6 +430,7 @@ public class UserController : Controller
 
 
     #region PaginatedData
+       [Authorize(Roles = "Admin")]
     public IActionResult PaginatedData(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
     {
         ViewBag.email = Request.Cookies["email"];

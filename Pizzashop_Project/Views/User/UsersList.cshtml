@@ -214,7 +214,7 @@
             // Search on keyup
             $("#searchbtn").on("keyup", function () {
                 searchText = $(this).val().trim();
-                loadTable(currentPage, searchText, sortColumn, sortDirection,pageSize);
+                loadTable(1, searchText, sortColumn, sortDirection,pageSize);
             });
 
             // Sorting functionality

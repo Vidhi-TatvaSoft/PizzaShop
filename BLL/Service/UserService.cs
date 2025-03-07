@@ -134,26 +134,43 @@ public class UserService : UserInterface
         {
             userdetails.ProfileImage = user.Image;
         }
-
-
         _context.Update(userdetails);
         _context.SaveChanges();
         return true;
     }
 
 
+    public bool IsUserNameExists(string Username)
+    {
+        if (_context.Users.FirstOrDefaultAsync(x => x.Username == Username) != null)
+        {
+            return true;
+        }
+        return false;
+    }
 
-    public async Task<bool> AddUser(UserViewModel userVM,long userId)
+    public bool IsUserNameExistsForEdit(string Username, string Email)
+    {
+        List<User> duplicateUsername = _context.Users.Where(x => x.Username == Username && x.Userlogin.Email != Email).ToList();
+        if (duplicateUsername.Count >= 1)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public async Task<bool> AddUser(UserViewModel userVM, long userId)
     {
         if (_context.Userlogins.Any(x => x.Email == userVM.Email))
         {
             return false;
         }
+
         Userlogin userlogin = new Userlogin();
         userlogin.Email = userVM.Email;
         userlogin.Password = _userLoginService.EncryptPassword(userVM.Password);
         userlogin.RoleId = userVM.RoleId;
-        
+
 
         await _context.AddAsync(userlogin);
         await _context.SaveChangesAsync();

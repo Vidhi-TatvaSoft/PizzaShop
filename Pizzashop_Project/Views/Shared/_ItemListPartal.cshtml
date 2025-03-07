@@ -13,14 +13,14 @@ else
     @foreach (var item in Model.Items)
     {
         <tr>
-            <td class="d-md-flex"><input type="checkbox" class="massDeleteClass" data-checkid="@item.ItemId" class="me-3" > 
-                
-                <img src="@item.ItemImage" class="d-lg-block d-none " style="border-radius: 50%;" alt="" width="30px">
+            <td class="d-md-flex"><input type="checkbox" class="massDeleteClass" data-checkid="@item.ItemId" class="me-3" onclick="checkboxTickManage()">
+
+                <img src="@item.ItemImage" class="ms-3 d-lg-block d-none me-2 " style="border-radius: 50%;" alt="" width="30px">
                 @item.ItemName
             </td>
             <td><img src="@item.TypeImage" width="20px">
             </td>
-            <td>@item.Rate</td>
+            <td>@Convert.ToInt32(item.Rate)</td>
             <td>@item.Quantity</td>
             <td class="">
                 <div class="form-check form-switch">
@@ -37,8 +37,8 @@ else
             </td>
             <td>
                 <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0"></i>
-                <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteItem" data-id="@item.ItemId"
-                    onclick="getIdForDeleteItem(this)"></i>
+                <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteItem"
+                    data-id="@item.ItemId" onclick="getIdForDeleteItem(this)"></i>
             </td>
         </tr>
     }

@@ -246,6 +246,11 @@
         $(document).ready(function () {
             var successMessage = '@TempData["SuccessMessage"]';
             var errorMessage = '@TempData["ErrorMessage"]';
+             toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "timeOut": "2000"
+            };
             console.log("successMessage", successMessage);
             if (successMessage) {
                 toastr.success(successMessage);

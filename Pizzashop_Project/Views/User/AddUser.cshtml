@@ -79,14 +79,14 @@
                     <span class="" id=""></span>
                 </div>
             </div>
-            
+
             <div class="col-12 mt-3 d-flex justify-content-center align-content-center ">
                 <div class="d-flex justify-content-center align-items-center  text-secondary browse-file-div bg-white"
                     style="height: 90px; width: 100%;  ">
                     <input type="file" asp-for="ProfileImage" class=" d-none " id="choose-file" />
-                    <label for="choose-file" >
-                        <i class="fa-solid fa-cloud-arrow-up d-flex justify-content-center"></i> Browse
-                        files</label>
+                    <label for="choose-file">
+                        <i class="fa-solid fa-cloud-arrow-up ms-1 d-flex justify-content-center"></i><span id="browseFileText">Browse
+                        files</span> </label>
                 </div>
             </div>
 
@@ -95,7 +95,7 @@
                     <select asp-for="CountryId" class="form-select" id="Countries"
                         aria-label="Floating label select example" asp-items="@ViewBag.Countries">
                         <option value="-1">Select Country</option>
-                        </select>
+                    </select>
                     <label for="floatingSelect text-secondary">Country</label>
                 </div>
             </div>
@@ -140,7 +140,7 @@
 
             @* <span>@TempData["EmailErrorMessage"]</span>
              *@
-             <span class="text-danger">@ViewBag.message</span>
+            <span class="text-danger">@TempData["addUserErrorMessage"]</span>
             <div class="d-flex mb-4">
                 <div class="craete-button mt-3">
                     <button type="submit" class="btn btn-primary text-light  border text">
@@ -148,7 +148,8 @@
                 </div>
 
                 <div class="craete-button mt-3 text-primary ms-3">
-                    <a asp-action="UsersList" asp-controller="User" class="btn  btn-outline-primary border border-primary  border ">
+                    <a asp-action="AddUser" asp-controller="User"
+                        class="btn  btn-outline-primary border border-primary  border ">
                         Cancel</a>
                 </div>
             </div>
@@ -205,19 +206,25 @@
         });
     </script>
 
-        <script>
+    <script>
+        $("#choose-file").change(function () {
+            const file = this.files[0];
+            $("#browseFileText").text(file.name);
+        });
+    </script>
+
+    <script>
         $(document).ready(function () {
             var successMessage = '@TempData["SuccessMessage"]';
             var errorMessage = '@TempData["ErrorMessage"]';
-            console.log("successMessage",successMessage);
+            console.log("successMessage", successMessage);
             if (successMessage) {
                 toastr.success(successMessage);
             }
-            if (errorMessage) 
-                {
-                    toastr.error(errorMessage);
-                }
-            })
+            if (errorMessage) {
+                toastr.error(errorMessage);
+            }
+        })
     </script>
 
     @{
