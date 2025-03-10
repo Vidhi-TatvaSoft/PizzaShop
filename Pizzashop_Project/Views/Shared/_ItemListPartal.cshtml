@@ -26,20 +26,22 @@ else
                 <div class="form-check form-switch">
                     @if (item.Isavailable == true)
                     {
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked disabled>
                     }
                     else
                     {
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" disabled>
                     }
 
                 </div>
             </td>
             <td>
-                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0"></i>
+                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" data-id="@item.ItemId" onclick="getDetailsForEditItem(this)" data-bs-toggle="modal" data-bs-target="#EditItemModal"></i>
                 <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteItem"
                     data-id="@item.ItemId" onclick="getIdForDeleteItem(this)"></i>
             </td>
+            
         </tr>
     }
 }
+<input type="hidden" value="@Model.TotalCount" id="totalCount">

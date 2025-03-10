@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using BLL.Service;
+using BLL.Service.Interfaces;
 using BLL.Services;
 using DAL.Models;
 using DAL.ViewModels;
@@ -13,17 +14,17 @@ using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Pizzashop_Project.Controllers;
-
+[Authorize(Roles = "Admin")]
 public class UserController : Controller
 {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
 
-    private readonly UserLoginService _userLoginService;
-    private readonly JWTTokenService _jwttokenService;
+    private readonly IUserLoginService _userLoginService;
+    private readonly IJWTTokenService _jwttokenService;
     private readonly IWebHostEnvironment _env;
 
 
-    public UserController(UserService userService, JWTTokenService jwttokenService, UserLoginService userLoginService)
+    public UserController(IUserService userService, IJWTTokenService jwttokenService, IUserLoginService userLoginService)
     {
         _userService = userService;
         _jwttokenService = jwttokenService;
@@ -36,10 +37,10 @@ public class UserController : Controller
         return View();
     }
 
-  
+
 
     #region MyProfile get
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public IActionResult MyProfile()
     {
         var token = Request.Cookies["AuthToken"];
@@ -75,7 +76,7 @@ public class UserController : Controller
 
     #region Myprofile post
     // post method
-    [Authorize(Roles = "Admin")]
+
     [HttpPost]
     public IActionResult MyProfile(UserViewModel user)
     {
@@ -100,24 +101,32 @@ public class UserController : Controller
 
         if (user.ProfileImage != null)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads");
-
-            //create folder if not exist
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            string fileName = $"{Guid.NewGuid()}_{user.ProfileImage.FileName}";
-            string fileNameWithPath = Path.Combine(path, fileName);
-
-            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+            var extension = user.ProfileImage.FileName.Split(".");
+            if (extension[extension.Length -1] == "jpg" || extension[extension.Length -1] == "jpeg" || extension[extension.Length -1] == "png")
             {
-                user.ProfileImage.CopyTo(stream);
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+                //create folder if not exist
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                string fileName = $"{Guid.NewGuid()}_{user.ProfileImage.FileName}";
+                string fileNameWithPath = Path.Combine(path, fileName);
+
+                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                {
+                    user.ProfileImage.CopyTo(stream);
+                }
+                user.Image = $"/uploads/{fileName}";
+            }else{
+                TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
+                return RedirectToAction("EditUser", "User", new { Email = user.Email });
             }
-            user.Image = $"/uploads/{fileName}";
         }
-        if(_userService.IsUserNameExistsForEdit(user.Username,userEmail)){
+        if (_userService.IsUserNameExistsForEdit(user.Username, userEmail))
+        {
             TempData["ErrorMessage"] = "UserName Already Exists. Try Another Username";
-            return RedirectToAction("MyProfile","User",new {Email = userEmail});
+            return RedirectToAction("MyProfile", "User", new { Email = userEmail });
         }
         _userService.UpdateProfile(user, userEmail);
         CookieOptions options = new CookieOptions();
@@ -134,7 +143,7 @@ public class UserController : Controller
 
 
     #region Adduser get
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public IActionResult AddUser()
     {
         var Roles = _userService.GetRole();
@@ -152,7 +161,7 @@ public class UserController : Controller
 
     #region  addUser post
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddUser(UserViewModel user)
     {
 
@@ -176,34 +185,43 @@ public class UserController : Controller
         // _userService.AddUser(user, Email);
         if (user.ProfileImage != null)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads");
-
-            //create folder if not exist
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            string fileName = $"{Guid.NewGuid()}_{user.ProfileImage.FileName}";
-            string fileNameWithPath = Path.Combine(path, fileName);
-
-            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+            var extension = user.ProfileImage.FileName.Split(".");
+            if (extension[extension.Length -1] == "jpg" || extension[extension.Length -1] == "jpeg" || extension[extension.Length -1] == "png")
             {
-                user.ProfileImage.CopyTo(stream);
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+                //create folder if not exist
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                string fileName = $"{Guid.NewGuid()}_{user.ProfileImage.FileName}";
+                string fileNameWithPath = Path.Combine(path, fileName);
+
+                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                {
+                    user.ProfileImage.CopyTo(stream);
+                }
+                user.Image = $"/uploads/{fileName}";
+            }else{
+                TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
+                return RedirectToAction("EditUser", "User", new { Email = user.Email });
             }
-            user.Image = $"/uploads/{fileName}";
         }
 
         try
         {
-            string email = Request.Cookies["Email"];
-            long userId = _userLoginService.GetUserId(email);
-            if(_userService.IsUserNameExists(user.Username)){
-                 TempData["ErrorMessage"] = "username already exists";
-                 return  RedirectToAction("AddUser","User");
+            string token = Request.Cookies["AuthToken"];
+            var userData = _userService.getUserFromEmail(token);
+            long userId = _userLoginService.GetUserId(userData[0].Userlogin.Email);
+            if (await _userService.IsUserNameExists(user.Username))
+            {
+                TempData["ErrorMessage"] = "username already exists";
+                return RedirectToAction("AddUser", "User");
             }
             if (!await _userService.AddUser(user, userId))
             {
                 TempData["ErrorMessage"] = "Email already exists";
-                return RedirectToAction("AddUser","User");
+                return RedirectToAction("AddUser", "User");
             }
             var senderEmail = new MailAddress("tatva.pca155@outlook.com", "tatva.pca155@outlook.com");
             var receiverEmail = new MailAddress(user.Email, user.Email);
@@ -262,8 +280,6 @@ public class UserController : Controller
 
 
     #region  EditUser get
-    // GET
-    [Authorize(Roles = "Admin")]
     public IActionResult EditUser(string Email)
     {
         // var token = Request.Cookies["AuthToken"];
@@ -302,7 +318,7 @@ public class UserController : Controller
 
     #region EditUser post
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> EditUser(UserViewModel user)
     {
         if (user.StateId == -1 && user.CityId == -1)
@@ -322,30 +338,42 @@ public class UserController : Controller
             return RedirectToAction("AddUser", "User");
         }
         // var token = Request.Cookies["AuthToken"];
-        var Email = user.Email;
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginService.GetUserId(userData[0].Userlogin.Email);
+        // var Email = user.Email;
         if (user.ProfileImage != null)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-
-            //create folder if not exist
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            string fileName = $"{Guid.NewGuid()}_{user.ProfileImage.FileName}";
-            string fileNameWithPath = Path.Combine(path, fileName);
-
-            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+            var extension = user.ProfileImage.FileName.Split(".");
+            if (extension[extension.Length -1] == "jpg" || extension[extension.Length -1] == "jpeg" || extension[extension.Length -1] == "png")
             {
-                user.ProfileImage.CopyTo(stream);
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+                //create folder if not exist
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                string fileName = $"{Guid.NewGuid()}_{user.ProfileImage.FileName}";
+                string fileNameWithPath = Path.Combine(path, fileName);
+
+                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                {
+                    user.ProfileImage.CopyTo(stream);
+                }
+                user.Image = $"/uploads/{fileName}";
+            }else{
+                TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
+                return RedirectToAction("EditUser", "User", new { Email = user.Email });
             }
-            user.Image = $"/uploads/{fileName}";
+
         }
-        if(_userService.IsUserNameExistsForEdit(user.Username,Email)){
+        if (_userService.IsUserNameExistsForEdit(user.Username, user.Email))
+        {
             TempData["ErrorMessage"] = "UserName Already Exists. Try Another Username";
-            return RedirectToAction("EditUser","User",new {Email = user.Email});
+            return RedirectToAction("EditUser", "User", new { Email = user.Email });
         }
 
-        await _userService.EditUser(user, Email);
+        await _userService.EditUser(user, user.Email);
         TempData["SuccessMessage"] = "User updated successfully";
         return RedirectToAction("UsersList", "User");
         // return View();
@@ -412,13 +440,13 @@ public class UserController : Controller
         Response.Cookies.Delete("email");
         Response.Cookies.Delete("profileImage");
         Response.Cookies.Delete("username");
-        TempData["SuccessMessage"]="Logout Successfully.";
+        TempData["SuccessMessage"] = "Logout Successfully.";
         return RedirectToAction("VerifyPassword", "UserLogin");
     }
     #endregion
 
     #region Userlist
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public IActionResult UsersList()
     {
         var users = _userService.GetUserList();
@@ -430,7 +458,7 @@ public class UserController : Controller
 
 
     #region PaginatedData
-       [Authorize(Roles = "Admin")]
+    //    [Authorize(Roles = "Admin")]
     public IActionResult PaginatedData(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
     {
         ViewBag.email = Request.Cookies["email"];

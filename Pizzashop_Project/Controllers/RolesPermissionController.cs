@@ -3,14 +3,15 @@ using BLL.Service;
 using Microsoft.AspNetCore.Mvc;
 using DAL.ViewModels;
 using DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Pizzashop_Project.Controllers;
-
+[Authorize(Roles = "Admin")]
 public class RolesPermissionController : Controller
 {
-    private readonly RolesPermissionService _rolesPermission;
+    private readonly IRolesPermission _rolesPermission;
 
-    public RolesPermissionController(RolesPermissionService rolesPermission)
+    public RolesPermissionController(IRolesPermission rolesPermission)
     {
         _rolesPermission = rolesPermission;
     }

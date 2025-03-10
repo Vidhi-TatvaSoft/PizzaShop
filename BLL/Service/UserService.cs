@@ -10,14 +10,14 @@ using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace BLL.Service;
 
-public class UserService : UserInterface
+public class UserService : IUserService
 {
     private readonly PizzashopDbContext _context;
-    private readonly JWTTokenService _jwttokenService;
+    private readonly IJWTTokenService _jwttokenService;
 
-    private readonly UserLoginService _userLoginService;
+    private readonly IUserLoginService _userLoginService;
 
-    public UserService(PizzashopDbContext context, JWTTokenService jwttokenService, UserLoginService userLoginService)
+    public UserService(PizzashopDbContext context, IJWTTokenService jwttokenService, IUserLoginService userLoginService)
     {
         _context = context;
         _jwttokenService = jwttokenService;
@@ -130,6 +130,7 @@ public class UserService : UserInterface
         userdetails.StateId = user.StateId;
         userdetails.CityId = user.CityId;
         userdetails.ModifiedBy = user.UserId;
+        userdetails.ModifiedAt=DateTime.Now;
         if (user.Image != null)
         {
             userdetails.ProfileImage = user.Image;
@@ -140,9 +141,9 @@ public class UserService : UserInterface
     }
 
 
-    public bool IsUserNameExists(string Username)
+    public async Task<bool> IsUserNameExists(string Username)
     {
-        if (_context.Users.FirstOrDefaultAsync(x => x.Username == Username) != null)
+        if (await _context.Users.FirstOrDefaultAsync(x => x.Username == Username && x.Isdelete==false) != null)
         {
             return true;
         }
@@ -151,7 +152,7 @@ public class UserService : UserInterface
 
     public bool IsUserNameExistsForEdit(string Username, string Email)
     {
-        List<User> duplicateUsername = _context.Users.Where(x => x.Username == Username && x.Userlogin.Email != Email).ToList();
+        List<User> duplicateUsername = _context.Users.Where(x => x.Username == Username && x.Userlogin.Email != Email && x.Isdelete==false).ToList();
         if (duplicateUsername.Count >= 1)
         {
             return true;
@@ -263,6 +264,8 @@ public class UserService : UserInterface
         if (userpassword == _userLoginService.EncryptPassword(changePassword.CurrentPassword))
         {
             userdetails.Userlogin.Password = _userLoginService.EncryptPassword(changePassword.NewPassword);
+            userdetails.ModifiedAt = DateTime.Now;
+            userdetails.ModifiedBy=_userLoginService.GetUserId(Email);
             _context.Update(userdetails);
             _context.SaveChanges();
             return true;

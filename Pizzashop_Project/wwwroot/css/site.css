@@ -77,6 +77,12 @@ form i{
       /* margin-left: 30px; */
     }
   }
+
+  @media (max-width:576px){
+    .profile-details-div{
+      margin-top: 25px;
+    }
+  }
   
  
   .offcanvas-class {
@@ -195,9 +201,9 @@ form i{
   overflow: auto;
  }
 
- .categories-main-div{
+ /* .categories-main-div{
   height: 350px;
- }
+ } */
 
  .gradient-color{
   background: linear-gradient(90deg, #3033e9 0%,#1138b8 25%,#090cb1 50%,  #0c021f 100%);

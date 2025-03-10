@@ -47,7 +47,7 @@
                 <div class="form-floating ">
                     @* <input type="hidden" asp-for="Username"> *@
                     <input type="text" asp-for="Username" class="form-control" id="floatingInput"
-                        placeholder="Username" >
+                        placeholder="Username">
                     <label for="floatingInput" asp-for="Username" class="fs-6 text-secondary">Username</label>
                     <span asp-validation-for="Username" class="text-danger"></span>
                 </div>
@@ -76,22 +76,22 @@
             </div>
             <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3 ">
                 <div class="form-floating text-secondary">
-                    <select class="form-select" asp-for="Status"  id="Status"
-                        aria-label="Floating label select example">
+                    <select class="form-select" asp-for="Status" id="Status" aria-label="Floating label select example">
                         <option value="true">Active</option>
                         <option value="false">Inactive</option>
                     </select>
                     <label for="floatingSelect text-secondary">State</label>
                 </div>
             </div>
-            
+
             <div class="col-12 mt-3 d-flex justify-content-center align-content-center ">
                 <div class="d-flex justify-content-center align-items-center  text-secondary browse-file-div bg-white"
                     style="height: 90px; width: 100%;  ">
                     <input type="file" asp-for="ProfileImage" class=" d-none " id="choose-file" />
                     <label for="choose-file" asp-for="ProfileImage">
-                        <i class="fa-solid fa-cloud-arrow-up d-flex justify-content-center"></i> Browse
-                        files</label>
+                        <i class="fa-solid fa-cloud-arrow-up d-flex justify-content-center"></i><span
+                            id="browseFileText"> Browse
+                            files</span></label>
                 </div>
             </div>
 
@@ -100,7 +100,7 @@
                     <select asp-for="CountryId" class="form-select" id="Countries"
                         aria-label="Floating label select example" asp-items="@ViewBag.Countries">
                         <option value="-1">Select Country</option>
-                        </select>
+                    </select>
                     <label for="floatingSelect text-secondary">Country</label>
                 </div>
             </div>
@@ -208,19 +208,30 @@
         });
     </script>
 
-        <script>
+    <script>
+        $("#choose-file").change(function () {
+            const file = this.files[0];
+            $("#browseFileText").text(file.name);
+        });
+    </script>
+
+    <script>
         $(document).ready(function () {
             var successMessage = '@TempData["SuccessMessage"]';
             var errorMessage = '@TempData["ErrorMessage"]';
-            console.log("successMessage",successMessage);
+            console.log("successMessage", successMessage);
+             toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "timeOut": "2000"
+            };
             if (successMessage) {
                 toastr.success(successMessage);
             }
-            if (errorMessage) 
-                {
-                    toastr.error(errorMessage);
-                }
-            })
+            if (errorMessage) {
+                toastr.error(errorMessage);
+            }
+        })
     </script>
 
     @{

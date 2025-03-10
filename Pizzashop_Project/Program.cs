@@ -6,6 +6,8 @@ using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using DAL.Models;
+using BLL.Service.Interfaces;
+using BLL.Interfaces;
 using BLL.Service;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,12 +16,12 @@ var builder = WebApplication.CreateBuilder(args);
 var conn = builder.Configuration.GetConnectionString("PizzaDbConnection");
 builder.Services.AddDbContext<DAL.Models.PizzashopDbContext>(q=>q.UseNpgsql(conn));
 
-builder.Services.AddScoped<UserLoginService>();
-builder.Services.AddScoped<JWTTokenService>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IUserLoginService,UserLoginService>();
+builder.Services.AddScoped<IJWTTokenService,JWTTokenService>();
+builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddScoped<HttpContextAccessor>();
-builder.Services.AddScoped<RolesPermissionService>();
-builder.Services.AddScoped<MenuService>();
+builder.Services.AddScoped<IRolesPermission,RolesPermissionService>();
+builder.Services.AddScoped<IMenuService,MenuService>();
 
 builder.Services.AddControllersWithViews();
 
@@ -50,15 +52,44 @@ builder.Services.AddAuthentication(x=>{
             {
                 // Check for the token in cookies
                 var token = context.Request.Cookies["AuthToken"]; // Change "AuthToken" to your cookie name if it's different
+                // if (!string.IsNullOrEmpty(token))
+                // {
+                //     context.Request.Headers["Authorization"] = "Bearer " + token;
+                // }
                 if (!string.IsNullOrEmpty(token))
                 {
-                    context.Request.Headers["Authorization"] = "Bearer " + token;
+                    context.Token = token;
                 }
+                return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                // Redirect to login page when unauthorized 
+                context.HandleResponse();
+                context.Response.Redirect("/UserLogin/VerifyPassword");
+                return Task.CompletedTask;
+            },
+            OnForbidden = context =>
+            {
+                // Redirect to login when access is forbidden (403)
+                context.Response.Redirect("/UserLogin/VerifyPassword");
                 return Task.CompletedTask;
             }
         };
     }
 );
+
+builder.Services.AddAuthorization();
+
+// app.Use(async (context, next) =>
+// {
+//     context.Response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
+//     context.Response.Headers.Add("Pragma", "no-cache");
+//     context.Response.Headers.Add("Expires", "0");
+
+//     await next();
+// });
+
 
 builder.Services.AddSession(
     options => {

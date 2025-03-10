@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace BLL.Services;
 
 
-public class JWTTokenService : JWTTokenInterface
+public class JWTTokenService : IJWTTokenService
 {
     private readonly string _secretKey;
     private readonly int _tokenDuration;

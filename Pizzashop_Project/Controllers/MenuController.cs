@@ -1,26 +1,34 @@
 using System.Threading.Tasks;
+using BLL.Interfaces;
 using BLL.Service;
-using BLL.Services;
+using BLL.Service.Interfaces;
+
+// using BLL.Services;
+
 using DAL.Models;
 using DAL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Pizzashop_Project.Controllers;
-
+[Authorize(Roles = "Admin")]
 public class MenuController : Controller
 {
 
-    private readonly MenuService _menuService;
+    private readonly IMenuService _menuService;
 
-    private readonly UserLoginService _userLoginSerivce;
+    private readonly IUserLoginService _userLoginSerivce;
+
+    private readonly IUserService _userService;
 
     // private readonly UserService _userservice;
 
-    public MenuController(MenuService menuService, UserLoginService userLoginSerivce)
+    public MenuController(IMenuService menuService, IUserLoginService userLoginSerivce, IUserService userService)
     {
         _menuService = menuService;
         _userLoginSerivce = userLoginSerivce;
+        _userService = userService;
     }
 
     #region  Menu get
@@ -62,11 +70,12 @@ public class MenuController : Controller
 
 
     #region Add Category 
-    public async Task<IActionResult> AddCategory(Category category)
+    public async Task<IActionResult> AddCategory(MenuViewModel menuvm)
     {
-        string email = Request.Cookies["Email"];
-        long userId = _userLoginSerivce.GetUserId(email);
-        bool addcategoryStatus = await _menuService.AddCategory(category, userId);
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        bool addcategoryStatus = await _menuService.AddCategory(menuvm.category, userId);
         if (addcategoryStatus)
         {
             TempData["SuccessMessage"] = "Category Added Successfully";
@@ -78,18 +87,19 @@ public class MenuController : Controller
     #endregion
 
     #region EditCategory
-    public async Task<IActionResult> EditCategory(Category category)
+    public async Task<IActionResult> EditCategory(MenuViewModel menuvm)
     {
-        string email = Request.Cookies["Email"];
-        long userId = _userLoginSerivce.GetUserId(email);
-        var catID = category.CategoryId;
-        bool editCategoryStatus = await _menuService.EditCategory(category, catID,userId);
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        var catID = menuvm.category.CategoryId;
+        bool editCategoryStatus = await _menuService.EditCategory(menuvm.category, catID,userId);
         if (editCategoryStatus)
         {
-            TempData["SuccessMessage"] = "Category Edited Successfully";
+            TempData["SuccessMessage"] = "Category Updated Successfully";
             return RedirectToAction("Menu");
         }
-        TempData["ErrorMessage"] = "Failed to Edit Category. Try Again";
+        TempData["ErrorMessage"] = "Failed to Update Category. Try Again";
         return RedirectToAction("Menu");
 
     }
@@ -113,32 +123,39 @@ public class MenuController : Controller
 
     #region AddItems
     [HttpPost]
-    public async Task<IActionResult> AddItem(AddItemViewModel addItemViewModel)
+    public async Task<IActionResult> AddItem(MenuViewModel addItemViewModel)
     {
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
 
-        // _userService.AddUser(user, Email);
-        string email = Request.Cookies["Email"];
-        long userId = _userLoginSerivce.GetUserId(email);
-
-        if (addItemViewModel.ItemFormImage != null)
+        if (addItemViewModel.additem.ItemFormImage != null)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads");
 
-            //create folder if not exist
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            string fileName = $"{Guid.NewGuid()}_{addItemViewModel.ItemFormImage.FileName}";
-            string fileNameWithPath = Path.Combine(path, fileName);
-
-            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+            var extension = addItemViewModel.additem.ItemFormImage.FileName.Split(".");
+            if (extension[extension.Length -1] == "jpg" || extension[extension.Length -1] == "jpeg" || extension[extension.Length -1] == "png")
             {
-                addItemViewModel.ItemFormImage.CopyTo(stream);
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+                //create folder if not exist
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                string fileName = $"{Guid.NewGuid()}_{addItemViewModel.additem.ItemFormImage.FileName}";
+                string fileNameWithPath = Path.Combine(path, fileName);
+
+                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                {
+                    addItemViewModel.additem.ItemFormImage.CopyTo(stream);
+                }
+                addItemViewModel.additem.ItemImage = $"/uploads/{fileName}";
+            }else{
+                TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
+                return RedirectToAction("AddItem", "Menu");
             }
-            addItemViewModel.ItemImage = $"/uploads/{fileName}";
         }
 
-        var addItemStatus = await _menuService.AddItem(addItemViewModel,userId);
+        var addItemStatus = await _menuService.AddItem(addItemViewModel.additem,userId);
         if (addItemStatus)
         {
             TempData["SuccessMessage"] = "Item Added SuccessFully.";
@@ -150,6 +167,55 @@ public class MenuController : Controller
     #endregion
 
 
+    #region  edirt item Get
+    public IActionResult EditItem(long itemID){
+        return Json(_menuService.GetItemByItemID(itemID));
+    }
+    #endregion
+
+
+    #region  edititem post
+    [HttpPost]
+    public async Task<IActionResult> EditItem(MenuViewModel menuvm){
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        if (menuvm.additem.ItemFormImage != null)
+        {
+
+
+ var extension = menuvm.additem.ItemFormImage.FileName.Split(".");
+            if (extension[extension.Length -1] == "jpg" || extension[extension.Length -1] == "jpeg" || extension[extension.Length -1] == "png")
+            {
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+                //create folder if not exist
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                string fileName = $"{Guid.NewGuid()}_{menuvm.additem.ItemFormImage.FileName}";
+                string fileNameWithPath = Path.Combine(path, fileName);
+
+                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                {
+                    menuvm.additem.ItemFormImage.CopyTo(stream);
+                }
+                menuvm.additem.ItemImage = $"/uploads/{fileName}";
+            }else{
+                TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
+                return RedirectToAction("AddItem", "Menu");
+            }
+        }
+        if(await _menuService.EditItem(menuvm.additem,userId)){
+            TempData["SuccessMessage"] = "Item Updated Successfully";
+            return RedirectToAction("Menu");
+        }
+        TempData["ErrorMessage"] = "Failed to Update Item. Try Again!";
+        return RedirectToAction("Menu");
+        
+    }
+    #endregion
+
     public async Task<IActionResult> DeleteItem(long itemID){
          var CategoryDeleteStatus =await _menuService.DeleteItem(itemID);
         if (CategoryDeleteStatus)
@@ -160,8 +226,5 @@ public class MenuController : Controller
         TempData["ErrorMessage"] = "Failed to delete Category. Try Again";
         return RedirectToAction("Menu");
     }
-
-    
-
 
 }

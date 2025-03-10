@@ -1,9 +1,12 @@
+using System.Numerics;
 using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Service;
@@ -26,7 +29,7 @@ public class MenuService : IMenuService
 
     public async Task<bool> AddCategory(Category category, long userId)
     {
-        var ispresentcat = await _context.Categories.FirstOrDefaultAsync(x => x.CategoryName == category.CategoryName);
+        var ispresentcat = await _context.Categories.FirstOrDefaultAsync(x =>x.Isdelete==false && x.CategoryName == category.CategoryName);
         if (ispresentcat != null)
         {
             return false;
@@ -148,6 +151,54 @@ public class MenuService : IMenuService
         await _context.SaveChangesAsync();
         return true;
     }
+
+
+    public AddItemViewModel GetItemByItemID(long itemID){
+        var items = _context.Items.Where(x=>x.ItemId==itemID).ToList();
+        AddItemViewModel editItemvm = new AddItemViewModel()
+        {
+            CategoryId = items[0].CategoryId,
+            ItemId =items[0].ItemId,
+            ItemName=items[0].ItemName,
+            ItemTypeId = items[0].ItemTypeId,
+            Rate = items[0].Rate,
+            Quantity = items[0].Quantity,
+            Unit = items[0].Unit,
+            Isavailable = (bool)items[0].Isavailable,
+            Isdefaulttax = (bool)items[0].Isdefaulttax,
+            TaxValue = items[0].TaxValue,
+            ShortCode = items[0].ShortCode,
+            Description=items[0].Description,
+        };
+        // editItemvm.CategoryId = items[0].CategoryId;
+        // Assign other properties as needed
+        return editItemvm;
+    }
+
+    public async Task<bool> EditItem(AddItemViewModel editvm, long userId){
+        Item item=await _context.Items.FirstOrDefaultAsync(x=>x.ItemId==editvm.ItemId);
+        if(item == null){
+            return false;
+        }
+        item.CategoryId = editvm.CategoryId;
+        item.ItemName=editvm.ItemName;
+        item.ItemTypeId =editvm.ItemTypeId;
+        item.Rate=editvm.Rate;
+        item.Quantity=editvm.Quantity;
+        item.Unit=editvm.Unit;
+        item.Isavailable=editvm.Isavailable;
+        item.Isdefaulttax=editvm.Isdefaulttax;
+        item.TaxValue=editvm.TaxValue;
+        item.ShortCode=editvm.ShortCode;
+        item.Description=editvm.Description;
+        item.ItemImage = editvm.ItemImage;
+        item.ModifiedBy=userId;
+        item.ModifiedAt=DateTime.Now;
+        _context.Update(item);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
 
     public async Task<bool> DeleteItem(long itemID)
     {

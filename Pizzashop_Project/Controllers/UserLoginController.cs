@@ -12,14 +12,15 @@ using DAL.ViewModels;
 using NuGet.Common;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.AspNetCore.Authorization;
+using BLL.Service.Interfaces;
 
 namespace Pizzashop_Project.Controllers
 {
     public class UserLoginController : Controller
     {
-        private readonly UserLoginService _userLoginService;
+        private readonly IUserLoginService _userLoginService;
 
-        public UserLoginController(UserLoginService userLoginService)
+        public UserLoginController(IUserLoginService userLoginService)
         {
             _userLoginService = userLoginService;
         }

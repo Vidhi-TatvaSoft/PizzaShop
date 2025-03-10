@@ -7,12 +7,12 @@ using NuGet.ProjectModel;
 
 namespace BLL.Services
 {
-    public class UserLoginService : UserLoginInterface
+    public class UserLoginService : IUserLoginService
     {
         private readonly PizzashopDbContext _context;
-        private readonly JWTTokenService _jwttokenService;
+        private readonly IJWTTokenService _jwttokenService;
 
-        public UserLoginService(PizzashopDbContext context, JWTTokenService jwttokenService)
+        public UserLoginService(PizzashopDbContext context, IJWTTokenService jwttokenService)
         {
             _context = context;
             _jwttokenService = jwttokenService;

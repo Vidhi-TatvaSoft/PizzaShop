@@ -162,7 +162,7 @@
                                 <div class="col-md-6 col-lg-3">
                                     <div class="form-floating">
                                         <select class="form-select" id="floatingSelect" asp-for="@Model.additem.Unit">
-                                            <option value="pieces">Pieces</option>
+                                            <option value="pcs">Pieces</option>
                                             <option value="cm">cm</option>
                                         </select>
                                         <label for="floatingSelect">Unit*</label>
@@ -215,13 +215,13 @@
 
                             <div class="row mt-2">
                                 <div class="col-12">
-                                    <label for="uploadFile" class="border border-dashed rounded p-3 text-center w-100">
+                                    <label for="choose-file" class="border border-dashed rounded p-3 text-center w-100">
                                         <span class="d-flex flex-column justify-content-center align-items-center">
                                             <i class="fa-solid fa-cloud-arrow-up fs-2"></i>
-                                            <span>Drag & Drop or Browse files</span>
+                                            <span id="browseFileText">Browse files</span>
                                         </span>
                                     </label>
-                                    <input type="file" class="d-none" id="uploadFile" asp-for="@Model.additem.ItemFormImage">
+                                    <input type="file" class="d-none" id="choose-file" asp-for="@Model.additem.ItemFormImage">
                                 </div>
                             </div>
                         </div>
@@ -259,6 +259,177 @@
         </div>
     </div>
 </div>
+
+
+<!-- Edit Items modal-->
+<div class="modal fade" id="EditItemModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Menu Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="EditItem" enctype="multipart/form-data">
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <!-- Left Section (Form) -->
+                        <div class="col-lg-7 col-md-12">
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="floatingSelect" asp-for="@Model.additem.CategoryId" >
+                                            @foreach(var cat in Model.categories){
+                                                <option value="@cat.CategoryId" id="@cat.CategoryId" class="categoryClass">@cat.CategoryName</option>
+                                            }
+                                        </select>
+                                        <label for="floatingSelect">Categories*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.CategoryId"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="hidden" id="itemIdForDeleteItem" asp-for="@Model.additem.ItemId">
+                                        <input type="text" class="form-control" id="itemName" asp-for="@Model.additem.ItemName" placeholder="Name*">
+                                        <label for="itemName">Name*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.ItemName"></span>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="itemType" asp-for="@Model.additem.ItemTypeId">
+                                            <option value="1" id="veg" class="itemtypeclass">veg</option>
+                                            <option value="2" id="nonveg" class="itemtypeclass">Non-veg</option>
+                                            <option value="3" id="vegan" class="itemtypeclass">Vegan</option>
+                                        </select>
+                                        <label for="itemType">Item Type*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.ItemTypeId"></span>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="itemrate" placeholder="Rate*" asp-for="@Model.additem.Rate"
+                                           >
+                                        <label for="itemrate">Rate*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.Rate"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="itemQuantity" asp-for="@Model.additem.Quantity"
+                                            placeholder="Quantity*" >
+                                        <label for="itemQuantity">Quantity*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.Quantity"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="floatingSelect" asp-for="@Model.additem.Unit">
+                                            <option value="pcs" id="pcs" class="itemUnitClass">Pieces</option>
+                                            <option value="cm" id="cm" class="itemUnitClass">centimeter</option>
+                                        </select>
+                                        <label for="floatingSelect">Unit*</label>
+                                        <span class="text-danger" asp-validation-for="@Model.additem.Unit"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="isAvailable1" asp-for="@Model.additem.Isavailable">
+                                        <label class="form-check-label" for="isAvailable1">Available</label>
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="isDefaultTax1" asp-for="@Model.additem.Isdefaulttax" >
+                                        <label class="form-check-label" for="isDefaultTax1">Default Tax</label>
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="taxPercentage1" asp-for="@Model.additem.TaxValue"
+                                            placeholder="Tax-Percentage*">
+                                        <label for="taxPercentage1" style="text-wrap: noWrap;">Tax Percentage*</label>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="shortCode1" asp-for="@Model.additem.ShortCode"
+                                            placeholder="Short Code*">
+                                        <label for="shortCode1">Short Code*</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Description" id="description1" asp-for="@Model.additem.Description"
+                                            style="height: 80px"></textarea>
+                                        <label for="description1">Description</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <input type="file" class="d-none" id="choose-file-editItem" asp-for="@Model.additem.ItemFormImage">
+                                    <label for="choose-file-editItem" class="border border-dashed rounded p-3 text-center w-100">
+                                        <span class="d-flex flex-column justify-content-center align-items-center">
+                                            <i class="fa-solid fa-cloud-arrow-up fs-2"></i>
+                                            <span id="browseFileText-editItem">Browse files</span>
+                                        </span>
+                                    </label>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Section (Modifiers) -->
+                        <div class="col-lg-5 col-md-12 bg-light p-3 rounded">
+                            <h6>Select Modifier Groups</h6>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="extraCheese">
+                                <label class="form-check-label" for="extraCheese">Extra Cheese</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="spicy">
+                                <label class="form-check-label" for="spicy">Spicy</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="noOnions">
+                                <label class="form-check-label" for="noOnions">No Onions</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="glutenFree">
+                                <label class="form-check-label" for="glutenFree">Gluten-Free</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <!-- add Modifier group modal -->
 <div id="exampleModal-addmodifiergroup" class="modal" tabindex="-1">
@@ -829,6 +1000,11 @@
             var successMessage = '@TempData["SuccessMessage"]';
             var errorMessage = '@TempData["ErrorMessage"]';
             console.log("successMessage", successMessage);
+             toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "timeOut": "2000"
+            };
             if (successMessage) {
                 toastr.success(successMessage);
             }
@@ -850,7 +1026,18 @@
             });
         });
     </script> *@
-
+<script>
+        $("#choose-file").change(function () {
+            const file = this.files[0];
+            $("#browseFileText").text(file.name);
+        });
+    </script>
+    <script>
+        $("#choose-file-editItem").change(function () {
+            const file = this.files[0];
+            $("#browseFileText-editItem").text(file.name);
+        });
+    </script>
 
     <script>
         let catid;
@@ -861,7 +1048,63 @@
                 document.getElementById("category-name").value = tag.parentElement.parentElement.children[0].children[1].innerHTML;
             document.getElementById("category-description").value = tag.parentElement.children[0].value;
             @* console.log(tag.parentElement.parentElement.children[1].value;) *@
-                            }
+            }
+
+        function getDetailsForEditItem(tag){
+            var itemID =tag.getAttribute("data-id");
+            $.ajax({
+                url:`/Menu/EditItem?itemID=${itemID}`,
+                type:"GET",
+                success: function(data){
+                    console.log(data);
+                    document.getElementById("itemIdForDeleteItem").value =tag.getAttribute("data-id");
+                    document.getElementById("itemName").value = data.itemName;
+                    document.getElementById("itemrate").value=data.rate;
+                    document.getElementById("itemQuantity").value=data.quantity;
+                    document.getElementById("taxPercentage1").value =data.taxValue;
+                    document.getElementById("shortCode1").value=data.shortCode;
+                    document.getElementById("description1").value=data.description;
+                    if(data.isavailable){
+                        document.getElementById("isAvailable1").checked =true;
+                    }else{
+                        document.getElementById("isAvailable1").checked=false;
+                    }
+
+                    if(data.isdefaulttax){
+                        document.getElementById("isDefaultTax1").checked=true;
+                    }else{
+                        document.getElementById("isDefaultTax1").checked=false;
+                    }
+                    var categoryclass=document.getElementsByClassName("categoryClass");
+                    for(i=0;i<categoryclass.length;i++){
+                        categoryclass[i].removeAttribute("selected");
+                        console.log(categoryclass[i]);
+                    }
+                    console.log(data.categoryId)
+                    document.getElementById(data.categoryId).setAttribute("selected","selected");
+
+                    var itemtypeclass=document.getElementsByClassName("itemtypeclass");
+                    for(i=0;i<itemtypeclass.length;i++){
+                        itemtypeclass[i].removeAttribute("selected");
+                    }
+                    if(data.itemTypeId =="1"){document.getElementById("veg").setAttribute("selected","selected");}
+                    if(data.itemTypeId =="2"){document.getElementById("nonveg").setAttribute("selected","selected");}
+                    if(data.itemTypeId =="3"){document.getElementById("vegan").setAttribute("selected","selected");}
+
+                    
+
+                    var itemUnitClass=document.getElementsByClassName("itemUnitClass");
+                    for(i=0;i<itemUnitClass.length;i++){
+                        itemUnitClass[i].removeAttribute("selected");
+                    }
+                    document.getElementById(data.unit).setAttribute("selected","selected");
+
+
+                    @* document.getElementById("isAvailable1").value=data.isavailable; *@
+                    @* document.getElementById("isDefaultTax1").value=data.isdefaulttax; *@
+                }
+            })
+        }
 
         function GetIdForDelete(tag) {
             console.log("delete")
@@ -889,23 +1132,19 @@
                     classess[i].checked=false;;
                 }
             }
+
         }
 
         function checkboxTickManage(){  
             var classess=document.getElementsByClassName("massDeleteClass");
-            var deleteAllItemCkeckbboxId =document.getElementById("checkboxForSelectAllItem");
+            var deleteAllItemCkeckbboxId = document.getElementById("checkboxForSelectAllItem");
             flag=true;
             for(i=0;i<classess.length;i++){
                 if(!classess[i].checked){
                     flag=false;
                 }
             }
-            @* for(i=0;i<classess.length;i++){
-                if(classess[i].checked){
-                    flag=true;
-                }
-            } *@
-            deleteAllItemCkeckbboxId.checked =flag
+            deleteAllItemCkeckbboxId.checked =flag;
         }
 
         
@@ -915,7 +1154,7 @@
         $(document).ready(function () {
             let currentPage = 1;
             let pageSize = $("#itemsperpage").val();
-            let searchText = $("#searchbtn").val();
+            let searchText = "";
             let catID = $("#category-id-items").val();
             console.log("c:", catID);
 
@@ -926,32 +1165,28 @@
                     data: { catID, search, pageNumber: page, pageSize },
                     success: function (data) {
                         $("#itemListBody").html(data);
-                        @* console.log(@Model.Pagination.Items) *@
-                            @* console.log(data) *@
                         currentPage = page;
-                        @* console.log("s:",search) *@
-                            let startItem = (page - 1) * pageSize + 1;
-                        let totalRecords = @Model.Pagination.TotalCount;
-                        let endItem = Math.min(page * pageSize, totalRecords);
+                        pageSize = parseInt(pageSize);
+                        var totalRecords = parseInt($("#totalCount").val()) || 0;
+                        var startItem = totalRecords === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+                        var endItem = Math.min(currentPage * pageSize, totalRecords);
 
                         $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
-                        $("#left-arrow").prop("disabled", page === 1);
-                        $("#right-arrow").prop("disabled", page * pageSize >= totalRecords);
-                        SelectAllItem(); 
-                        checkboxTickManage();
-                        
+                        $("#left-arrow").prop("disabled", currentPage === 1);
+                        $("#right-arrow").prop("disabled", currentPage * pageSize >= totalRecords);
+                        $("#checkboxForSelectAllItem").prop("checked", false);
                     }
                 });
-               
             }
-
-            
             loadTable(catID, searchText, currentPage, pageSize);
             // Search on keyup
             $("#searchbtn").on("keyup", function () {
                 searchText = $(this).val().trim();
                 console.log(searchText);
+                currentPage =1;
                 loadTable(catID, searchText, currentPage, pageSize);
+                SelectAllItem(); 
+                
                 
             });
 
@@ -969,7 +1204,7 @@
                 if (rightarrow) {
                     currentPage++;
                     loadTable(catID, searchText, currentPage, pageSize);
-                    @* SelectAllItem();  *@
+                    SelectAllItem(); 
                 }
             });
 
@@ -1000,15 +1235,18 @@
                 if (leftarrow) {
                     currentPage--;
                     loadTable(catID, searchText, currentPage, pageSize);
-                    @* SelectAllItem();  *@
+                    SelectAllItem(); 
                 }
             });
 
             // Items per page dropdown
             $("#itemsperpage").on("change", function () {
                 pageSize = $(this).val();
+                currentPage=1;
                 console.log(pageSize);
                 loadTable(catID, searchText, currentPage, pageSize);
+                SelectAllItem(); 
+
             });
            
 
