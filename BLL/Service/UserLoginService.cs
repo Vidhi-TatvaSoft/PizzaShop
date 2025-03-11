@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using BLL.Service.Interfaces;
 using NuGet.ProjectModel;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BLL.Services
 {
@@ -69,7 +70,7 @@ namespace BLL.Services
 
         public bool CheckEmailExist(string email)
         {
-            if (_context.Userlogins.FirstOrDefault(e => e.Email == email) != null)
+            if (_context.Userlogins.FirstOrDefault(e => e.Email == email && e.IsDelete==false) != null)
             {
                 return true;
             }
@@ -92,11 +93,15 @@ namespace BLL.Services
             return _context.Users.FirstOrDefault(x => x.Userlogin.Email == Email).UserId;
         }
 
+        public string GetPassword(string Email){
+            return _context.Userlogins.FirstOrDefault(x=>x.Email==Email).Password;
+        }
+
         public bool ResetPassword(ResetPasswordViewModel resetpassdata)
         {
-            if (_context.Userlogins.FirstOrDefault(e => e.Email == resetpassdata.Email) != null)
+            if (_context.Userlogins.FirstOrDefault(e => e.Email == resetpassdata.Email && e.IsDelete==false) != null)
             {
-                Userlogin user = _context.Userlogins.FirstOrDefault(e => e.Email == resetpassdata.Email);
+                Userlogin user = _context.Userlogins.FirstOrDefault(e => e.Email == resetpassdata.Email && e.IsDelete==false);
                 user.Password = EncryptPassword(resetpassdata.Password);
                 _context.SaveChanges();
                 return true;

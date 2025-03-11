@@ -41,6 +41,27 @@ public class JWTTokenService : IJWTTokenService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    public string GenerateTokenEmailPassword(string email, string password)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+                new Claim("email", email),
+                new Claim("password", password)
+            };
+
+        var token = new JwtSecurityToken(
+            issuer: "localhost",
+            audience: "localhost",
+            claims: claims,
+            expires: DateTime.Now.AddHours(_tokenDuration),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
 
     public ClaimsPrincipal? GetClaimsFromToken(string token)
     {

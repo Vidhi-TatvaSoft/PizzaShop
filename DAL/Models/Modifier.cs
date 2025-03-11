@@ -9,8 +9,6 @@ public partial class Modifier
 
     public string ModifierName { get; set; } = null!;
 
-    public long ModifierGrpId { get; set; }
-
     public string? Description { get; set; }
 
     public string? Unit { get; set; }
@@ -29,9 +27,13 @@ public partial class Modifier
 
     public bool Isdelete { get; set; }
 
+    public long ModifierGrpId { get; set; }
+
     public virtual User? CreatedByNavigation { get; set; }
 
     public virtual User? ModifiedByNavigation { get; set; }
+
+    public virtual Modifiergroup ModifierGrp { get; set; } = null!;
 
     public virtual ICollection<Modifierorder> Modifierorders { get; } = new List<Modifierorder>();
 }

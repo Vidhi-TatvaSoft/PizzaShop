@@ -19,6 +19,7 @@
                         <span asp-validation-for="@Model.category.CategoryName" class="text-danger"></span>
                         <label for="floatingInput">Name</label>
                     </div>
+    using DAL.ViewModels;
     
                     <div class="form-floating">
                         <textarea class="form-control" placeholder="Leave a comment here"
@@ -228,23 +229,10 @@
 
                         <!-- Right Section (Modifiers) -->
                         <div class="col-lg-5 col-md-12 bg-light p-3 rounded">
-                            <h6>Select Modifier Groups</h6>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="extraCheese">
-                                <label class="form-check-label" for="extraCheese">Extra Cheese</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="spicy">
-                                <label class="form-check-label" for="spicy">Spicy</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="noOnions">
-                                <label class="form-check-label" for="noOnions">No Onions</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="glutenFree">
-                                <label class="form-check-label" for="glutenFree">Gluten-Free</label>
-                            </div>
+                            <select>
+                                <option value="">select a modifier Group</option>
+                            </select>
+                            
                         </div>
                     </div>
                 </div>
@@ -395,27 +383,14 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Right Section (Modifiers) -->
                         <div class="col-lg-5 col-md-12 bg-light p-3 rounded">
-                            <h6>Select Modifier Groups</h6>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="extraCheese">
-                                <label class="form-check-label" for="extraCheese">Extra Cheese</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="spicy">
-                                <label class="form-check-label" for="spicy">Spicy</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="noOnions">
-                                <label class="form-check-label" for="noOnions">No Onions</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="glutenFree">
-                                <label class="form-check-label" for="glutenFree">Gluten-Free</label>
-                            </div>
+                            <select>
+                                <option value="">select a modifier Group</option>
+                            </select>
+                            
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -509,54 +484,8 @@
 
 <!-- add new modifier modal -->
 <div id="exampleModal-addmodifier" class="modal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add New Modifier</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="form-floating col-6">
-                        <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                            <option selected>Select Modifier (Group)</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                    </div>
-                    <div class="form-floating col-6 mb-2 p-1">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="name" required>
-                        <label for="floatingInput">Name</label>
-                    </div>
-                    <div class="form-floating col-4 p-1">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="0" required>
-                        <label for="floatingInput">Rate</label>
-                    </div>
-                    <div class="form-floating col-4 p-1">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="0" required>
-                        <label for="floatingInput">Quantity</label>
-                    </div>
-                    <div class="form-floating col-4 mb-2">
-                        <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                            <option selected>Select a unit</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                    </div>
-                    <div class="form-floating col-12 p-1">
-                        <textarea class="form-control" placeholder="Leave a comment here"
-                            id="floatingTextarea"></textarea>
-                        <label for="floatingTextarea">Description</label>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">save</button>
-                <button type="button" class="btn btn-outline-primary">cancel</button>
-            </div>
-        </div>
+    <div class="modal-dialog modal-dialog-centered modal-lg" id="AddModifierModal-mainDiv">
+
     </div>
 </div>
 
@@ -789,9 +718,9 @@
                         <div
                             class="left-sidebar-category-main-div bg-white mt-2 pt-0 col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-md-start justify-content-center ">
 
-                            <div class="row w-100 justify-content-center mt-2">
+                            <div class=" w-100 justify-content-center ">
                                 <!-- logo -->
-                                <div class="logo-main-div d-flex justify-content-between">
+                                <div class="logo-main-div d-flex justify-content-between mb-3">
 
                                     <div class="logo-text text-primary fs-5 mt-2  ms-1 fw-semibold">
                                         Modifier Group
@@ -801,52 +730,31 @@
                                             data-bs-toggle="modal" data-bs-target="#exampleModal-addmodifiergroup"></i>
                                     </div>
                                 </div>
+                                @{var flag2 =true;
 
-                                <!-- Sandwich -->
-                                <div class="category-active-div d-flex align-items-center col-md-12 col-6   p-2">
-                                    <i class="fa-solid fa-receipt mt-2"></i>
-                                    <p class="text-size-set   m-0 ms-3 ">Veggies</p>
-                                </div>
+                                @foreach (var modifierGrp in Model.modifiergroupList)
+                                {
+                                    <div class="modifiers-div-main d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag2?"active-category":"")"  data-id="@modifierGrp.ModifierGrpId" >
+                                        
+                                        <div  class="d-flex "  >
+                                                <i class="fa-solid fa-receipt mt-1 "></i>
+                                                <p class="text-size-set mt-0  m-0 ms-3 ">@modifierGrp.ModifierGrpName</p>
+   
+                                        </div>
+                                        <div>
+                                            <input type="hidden" value="@modifierGrp.Desciption">
+                                            <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdate(this)"
+                                                data-id="@modifierGrp.ModifierGrpId" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal-editcategory"></i>
+                                            <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal-deleteCategory" data-id="@modifierGrp.ModifierGrpId"
+                                                onclick="GetIdForDelete(this)"></i>
+                                        </div>
 
-                                <!-- Pasta -->
-                                <div class="category-inactive-div d-flex align-items-center col-md-12 col-6  p-2 ">
-                                    <i class="fa-solid fa-receipt mt-2 "></i>
-                                    <p class="users-text-inactive text-size-set  m-0 ms-3 ">
-                                        Crust Options</p>
-                                </div>
-
-                                <!--Sides And Appetizer -->
-                                <div class="category-inactive-div d-flex  p-2 col-md-12 col-6 ">
-                                    <i class="fa-solid fa-receipt mt-1 "></i>
-                                    <p class="role-text-inactive  text-size-set m-0 ms-3">
-                                        Cheese Options</p>
-                                </div>
-
-                                <!-- Salads -->
-                                <div class="category-inactive-div d-flex align-items-center col-md-12 col-6 p-2 ">
-                                    <i class="fa-solid fa-receipt "></i>
-                                    <p class="menu-text-inactive text-size-set m-0 ms-3 ">
-                                        Souce Options</p>
-                                </div>
-
-                                <!-- Dips And Sauces-->
-                                <div class="category-inactive-div d-flex col-md-12 col-6 p-2">
-                                    <i class="fa-solid fa-receipt mt-1"></i>
-                                    <p class="table-text-inactive text-size-set   m-0 ms-3">
-                                        Topping Options
-                                    </p>
-                                </div>
-
-                                <!-- Pizza -->
-                                <div class="category-inactive-div d-flex col-md-12 col-6 p-2">
-                                    <i class="fa-solid fa-receipt mt-1"></i>
-                                    <p class="taxes-text-inactive text-size-set m-0 ms-3 ">
-                                        Size Options</p>
-                                </div>
-
-
-
-
+                                    </div>
+                                    flag2=false;
+                                }
+                                } 
                             </div>
                         </div>
 
@@ -855,14 +763,17 @@
                             <div class="item-list-main-div  d-lg-flex justify-content-between mt-2">
                                 <!-- item txt -->
                                 <div class="item-div d-flex col-md-3">
-                                    <div class="item-text fs-3 fw-bold text-primary">Items</div>
+                                    <div class="item-text fs-3 fw-bold text-primary">Modifiers</div>
                                 </div>
 
                                 <!-- search add itemr -->
                                 <div class="search-item-div d-flex  align-items-center justify-content-between mt-2">
                                     <div class="search-button ">
-                                        <input type="text" name="" id="" placeholder="Search" class="p-1 border ">
+                                        @if(Model.Pagination.Items.Count != 0 ){
+                                        <input type="hidden" id="modifier-group-id" value="@Model.Paginationmodifiers.Items[0].ModifierGrpId">
+                                        <input type="text" id="searchbtn-mod" placeholder="Search" class="p-1 border ">
                                         <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                                        }
                                     </div>
                                     <div class="discard-button">
                                         <a href="#" class="btn  p-1 ps-2 pe-2 ms-3 border"><i
@@ -870,10 +781,9 @@
 
                                     </div>
                                     <div class="additem-button">
-                                        <a href="#" class="btn btn-primary text-light p-2 ms-3 border text"
-                                            data-bs-toggle="modal" data-bs-target="#exampleModal-addmodifier">+
+                                        <a  class="btn btn-primary text-light p-2 ms-3 border text" id="AddModifierButton" data-bs-toggle="modal" data-bs-target="#exampleModal-addmodifier">+
                                             Add
-                                            Item</a>
+                                            Modifier</a>
                                     </div>
 
                                 </div>
@@ -882,7 +792,7 @@
                                 <table class="table" id="demo">
                                     <thead>
                                         <tr>
-                                            <th scope="col"><input type="checkbox" name="" id="" class="me-3">
+                                            <th scope="col"><input type="checkbox" id="checkboxForSelectAllModifier" onclick="SelectAllModifiers()" class="me-3">
                                                 Name</th>
                                             <th scope="col">Unit</th>
                                             <th scope="col">Rate</th>
@@ -890,92 +800,27 @@
                                             <th scope="col">Action </th>
                                         </tr>
                                     </thead>
-                                    <tbody style="white-space: nowrap;">
-                                        <tr>
-                                            <td><input type="checkbox" class="me-3" name="" id="">Capsicum</td>
-                                            <td>pcs</td>
-                                            <td class="">
-                                                30
-                                            </td>
-                                            <td>
-                                                5
-                                            </td>
-                                            <td>
-                                                <i class="fa-solid fa-pen w-25" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-updatemodifier"></i>
-                                                <i class="fa-solid fa-trash-can" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-deleteItem"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="checkbox" class="me-3" name="" id="">Capsicum</td>
-                                            <td>pcs</td>
-                                            <td class="">
-                                                30
-                                            </td>
-                                            <td>
-                                                5
-                                            </td>
-                                            <td>
-                                                <i class="fa-solid fa-pen w-25 " data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-updatemodifier"></i>
-                                                <i class="fa-solid fa-trash-can" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-deleteItem"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="checkbox" class="me-3" name="" id="">Capsicum</td>
-                                            <td>pcs</td>
-                                            <td class="">
-                                                30
-                                            </td>
-                                            <td>
-                                                5
-                                            </td>
-                                            <td>
-                                                <i class="fa-solid fa-pen w-25" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-updatemodifier"></i>
-                                                <i class="fa-solid fa-trash-can" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-deleteItem"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="checkbox" class="me-3" name="" id="">Capsicum</td>
-                                            <td>pcs</td>
-                                            <td class="">
-                                                30
-                                            </td>
-                                            <td>
-                                                5
-                                            </td>
-                                            <td>
-                                                <i class="fa-solid fa-pen w-25" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-updatemodifier"></i>
-                                                <i class="fa-solid fa-trash-can" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-deleteItem"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="checkbox" class="me-3" name="" id="">Capsicum</td>
-                                            <td>pcs</td>
-                                            <td class="">
-                                                30
-                                            </td>
-                                            <td>
-                                                5
-                                            </td>
-                                            <td>
-                                                <i class="fa-solid fa-pen w-25" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-updatemodifier"></i>
-                                                <i class="fa-solid fa-trash-can" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal-deleteItem"></i>
-                                            </td>
-                                        </tr>
-
-
+                                    <tbody id="itemListBody-modifier" style="white-space: nowrap;">
+                                        @await Html.PartialAsync("_ModifierListPartial", Model.Paginationmodifiers)
                                     </tbody>
                                 </table>
+                                 @*  Pagination div *@
+                                <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
 
+                                   @if(Model.Paginationmodifiers.Items.Count != 0){
+                                     <span class="mt-2">Items Per page:</span>
+
+                                    <select id="itemsperpage-mod">
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                    </select>
+
+                                    <span class=" mt-2 ms-1" id="pagination-text-mod"></span>
+                                    <a id="left-arrow-mod" class="btn border border-dark bg-light ms-2">&lt;</a>
+                                    <a id="right-arrow-mod" class="btn border border-dark bg-light ms-2">&gt;</a>
+                                   }
+                                </div>
                             </div>
 
                         </div>
@@ -1078,9 +923,7 @@
                     var categoryclass=document.getElementsByClassName("categoryClass");
                     for(i=0;i<categoryclass.length;i++){
                         categoryclass[i].removeAttribute("selected");
-                        console.log(categoryclass[i]);
                     }
-                    console.log(data.categoryId)
                     document.getElementById(data.categoryId).setAttribute("selected","selected");
 
                     var itemtypeclass=document.getElementsByClassName("itemtypeclass");
@@ -1147,16 +990,50 @@
             deleteAllItemCkeckbboxId.checked =flag;
         }
 
+
+        function SelectAllModifiers(){
+            var classess=document.getElementsByClassName("massDeleteClassModifier");
+            var deleteAllItemCkeckbboxId =document.getElementById("checkboxForSelectAllModifier");
+            console.log(classess)
+
+            if(deleteAllItemCkeckbboxId.checked){
+                for(i=0; i<classess.length;i++){
+                    classess[i].checked=true;;
+                }
+            }
+            if(!deleteAllItemCkeckbboxId.checked){
+                for(i=0; i<classess.length;i++){
+                    classess[i].checked=false;;
+                }
+            }
+
+        }
+         function checkboxTickManageModifier(){  
+            var classess=document.getElementsByClassName("massDeleteClassModifier");
+            var deleteAllItemCkeckbboxId = document.getElementById("checkboxForSelectAllModifier");
+            flag=true;
+            for(i=0;i<classess.length;i++){
+                if(!classess[i].checked){
+                    flag=false;
+                }
+            }
+            deleteAllItemCkeckbboxId.checked =flag;
+        }
+
         
     </script>
 
     <script>
         $(document).ready(function () {
             let currentPage = 1;
+            let currentPageMod=1;
             let pageSize = $("#itemsperpage").val();
+            let pageSizeMod=$("#itemsperpage-mod").val();
             let searchText = "";
+            let searchTextMod="";
             let catID = $("#category-id-items").val();
-            console.log("c:", catID);
+            let modifierGrpID =$("#modifier-group-id").val();
+            console.log("c: mod", modifierGrpID);
 
             function loadTable(catID, search = "", page = 1, pageSize = 5) {
                 $.ajax({
@@ -1178,7 +1055,32 @@
                     }
                 });
             }
+
+            function loadTablemodifier(modifierGrpID, search = "", page = 1, pageSize = 5) {
+                $.ajax({
+                    
+                    url: "/Menu/MenuModifierPagination",
+                    type: "GET",
+                    data: { modifierGrpID, search, pageNumber: page, pageSize },
+                    success: function (data) {
+                        console.log("inAhjax # 111111",modifierGrpID);
+                        $("#itemListBody-modifier").html(data);
+                        currentPageMod = page;
+                        pageSizeMod = parseInt(pageSize);
+                        var totalRecordsMod = parseInt($("#totalCount-mod").val()) || 0;
+                        var startItemMod = totalRecordsMod === 0 ? 0 : (currentPageMod - 1) * pageSizeMod + 1;
+                        var endItemMod = Math.min(currentPageMod * pageSizeMod, totalRecordsMod);
+
+                        $("#pagination-text-mod").text("Showing " + startItemMod + " - " + endItemMod + " of " + totalRecordsMod);
+                        $("#left-arrow-mod").prop("disabled", currentPageMod === 1);
+                        $("#right-arrow-mod").prop("disabled", currentPageMod * pageSizeMod >= totalRecordsMod);
+                        $("#checkboxForSelectAllItem").prop("checked", false);
+                    }
+                });
+            }
+
             loadTable(catID, searchText, currentPage, pageSize);
+            loadTablemodifier(modifierGrpID,searchTextMod,currentPageMod,pageSizeMod);
             // Search on keyup
             $("#searchbtn").on("keyup", function () {
                 searchText = $(this).val().trim();
@@ -1186,15 +1088,29 @@
                 currentPage =1;
                 loadTable(catID, searchText, currentPage, pageSize);
                 SelectAllItem(); 
-                
-                
             });
+            $("#searchbtn-mod").on("keyup", function () {
+                searchTextMod = $(this).val().trim();
+                console.log(searchTextMod);
+                currentPageMod =1;
+                loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                SelectAllModifiers(); 
+            });
+
 
             $(".categories-div").on("click",function(){
                 $(".categories-div").removeClass("active-category");
                 $(this).addClass("active-category");
                 catID = $(this).data("id");
+                currentPage=1;
                 loadTable(catID, searchText, currentPage, pageSize);
+            })
+            $(".modifiers-div-main").on("click",function(){
+                $(".modifiers-div-main").removeClass("active-category");
+                $(this).addClass("active-category");
+                modifierGrpID = $(this).data("id");
+                console.log("inAhjax ",modifierGrpID)
+                loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
             })
 
             // Pagination buttons
@@ -1207,10 +1123,54 @@
                     SelectAllItem(); 
                 }
             });
+            $("#right-arrow-mod").on("click", function () {
+                let rightarrowMod = !$(this).prop("disabled");
+                console.log(rightarrowMod);
+                if (rightarrowMod) {
+                    currentPageMod++;
+                    loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                    SelectAllModifiers(); 
+                }
+            });
+
+            $("#left-arrow").on("click", function () {
+                let leftarrow = !$(this).prop("disabled");
+                console.log(leftarrow);
+                if (leftarrow) {
+                    currentPage--;
+                    loadTable(catID, searchText, currentPage, pageSize);
+                    SelectAllItem(); 
+                }
+            });
+            $("#left-arrow-mod").on("click", function () {
+                let leftarrowMod = !$(this).prop("disabled");
+                console.log(leftarrowMod);
+                if (leftarrowMod) {
+                    currentPageMod--;
+                    loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                    SelectAllModifiers(); 
+                }
+            });
+
+            // Items per page dropdown
+            $("#itemsperpage").on("change", function () {
+                pageSize = $(this).val();
+                currentPage=1;
+                console.log(pageSize);
+                loadTable(catID, searchText, currentPage, pageSize);
+                SelectAllItem(); 
+            });
+            $("#itemsperpage-mod").on("change", function () {
+                pageSizeMod = $(this).val();
+                currentPageMod=1;
+                console.log(pageSizeMod);
+                loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                SelectAllModifiers(); 
+            });
 
             $("#deleteAllItemsModalYesButton").on("click",function(){
                  var classess=document.getElementsByClassName("massDeleteClass");
-                 console.log("delete all")
+                 @* console.log("delete all") *@
                  for(i=0; i<classess.length;i++){
                     if(classess[i].checked){
 
@@ -1226,38 +1186,46 @@
                         })
                     }
                 }
-            })
-
-
-            $("#left-arrow").on("click", function () {
-                let leftarrow = !$(this).prop("disabled");
-                console.log(leftarrow);
-                if (leftarrow) {
-                    currentPage--;
-                    loadTable(catID, searchText, currentPage, pageSize);
-                    SelectAllItem(); 
+            })  
+        
+            $("#addModifierModalId").on("submit",function(e){
+                console.log("heloooooooooooo")
+                e.preventDefault();
+                
+                let form=$("#addModifierModalId");
+                if(form.valid()){
+                    let formData=new FormData(this);
+                    console.log(formData);
+                    $.ajax({
+                        url:"AddModifier",
+                        type:"POST",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (res) {
+                            $(".btn-close").click();
+                            console.log(res);
+                            loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                            SelectAllModifiers();
+                        }
+                    })
                 }
-            });
+            })
+            $("#exampleModal-addmodifier").on('show.bs.modal',function(event){
+                console.log("hiii")
+                $.ajax({
+                    url:"/Menu/AddModifierModal",
+                    type:"GET",
+                    data: {},
+                    success: function (data) {
+                        console.log("dfkhsvc");
+                        $("#AddModifierModal-mainDiv").html(data);
+                    }
+                    })
+             }) 
 
-            // Items per page dropdown
-            $("#itemsperpage").on("change", function () {
-                pageSize = $(this).val();
-                currentPage=1;
-                console.log(pageSize);
-                loadTable(catID, searchText, currentPage, pageSize);
-                SelectAllItem(); 
-
-            });
-           
-
-            // Initial table load
         });
     </script>
-    @* <script>
-    console.log("hello");
-     $(document).ready(function () {
-            console.log("Hello world")});
-</script> *@
 
  @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

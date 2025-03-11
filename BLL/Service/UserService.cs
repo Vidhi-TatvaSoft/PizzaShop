@@ -152,7 +152,7 @@ public class UserService : IUserService
 
     public bool IsUserNameExistsForEdit(string Username, string Email)
     {
-        List<User> duplicateUsername = _context.Users.Where(x => x.Username == Username && x.Userlogin.Email != Email && x.Isdelete==false).ToList();
+        List<User> duplicateUsername =  _context.Users.Where(x => x.Username == Username && x.Userlogin.Email != Email && x.Isdelete==false).ToList();
         if (duplicateUsername.Count >= 1)
         {
             return true;

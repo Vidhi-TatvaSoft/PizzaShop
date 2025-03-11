@@ -19,10 +19,12 @@ namespace Pizzashop_Project.Controllers
     public class UserLoginController : Controller
     {
         private readonly IUserLoginService _userLoginService;
+        private readonly IJWTTokenService _jwtTokenService;
 
-        public UserLoginController(IUserLoginService userLoginService)
+        public UserLoginController(IUserLoginService userLoginService,IJWTTokenService jwtTokenService)
         {
             _userLoginService = userLoginService;
+            _jwtTokenService = jwtTokenService;
         }
 
         
@@ -119,11 +121,13 @@ namespace Pizzashop_Project.Controllers
                 }
                 try
                 {
+                    var email = forgorpassword.Email;
+                    var savedPassword = _userLoginService.GetPassword(email);
                     var senderEmail = new MailAddress("tatva.pca155@outlook.com", "tatva.pca155@outlook.com");
                     var receiverEmail = new MailAddress(forgorpassword.Email, forgorpassword.Email);
                     var password = "P}N^{z-]7Ilp";
                     var sub = "reset Password sub";
-                    var resetLink = Url.Action("ResetPassword", "UserLogin", new { Email =_userLoginService.Base64Encode(forgorpassword.Email)}, Request.Scheme);
+                    var resetLink = Url.Action("ResetPassword", "UserLogin", new {resetPassToken=_jwtTokenService.GenerateTokenEmailPassword(email,savedPassword)}, Request.Scheme);
                     var body = $@"     <div style='max-width: 500px; font-family: Arial, sans-serif; border: 1px solid #ddd;'>
                 <div style='background: #006CAC; padding: 10px; text-align: center; height:90px; max-width:100%; display: flex; justify-content: center; align-items: center;'>
                     <img src='https://images.vexels.com/media/users/3/128437/isolated/preview/2dd809b7c15968cb7cc577b2cb49c84f-pizza-food-restaurant-logo.png' style='max-width: 50px;' />
@@ -172,22 +176,29 @@ namespace Pizzashop_Project.Controllers
         }
 
         // GET 
-        public IActionResult ResetPassword(string Email)
+        public IActionResult ResetPassword(string resetPassToken)
         {
-            ResetPasswordViewModel resetpassdata = new ResetPasswordViewModel();
-            resetpassdata.Email =_userLoginService.Base64Decode(Email) ;
-            // resetpassdata.Password = "123";
-            // resetpassdata.ConfirmPassword = "123";
-            return View(resetpassdata);
+
+             var email = _jwtTokenService.GetClaimValue(resetPassToken, "email");
+            var newpassword = _jwtTokenService.GetClaimValue(resetPassToken, "password");
+            var savedPassword = _userLoginService.GetPassword(email);
+
+            if (savedPassword==newpassword)
+            {
+                ResetPasswordViewModel reserpassdata = new();
+                reserpassdata.Email=_jwtTokenService.GetClaimValue(resetPassToken, "email");
+                return View(reserpassdata);
+            }
+            TempData["ErrorMessage"] = "You have already changed the Password once";
+            return RedirectToAction("VerifyPassword","UserLogin");
+            // resetpassdata.Email =_userLoginService.Base64Decode(Email) ;
+            // return View(resetpassdata);
         }
 
         // POST
         [HttpPost]
         public IActionResult ResetPassword(ResetPasswordViewModel resetpassdata)
         {
-            // if (ModelState.IsValid)
-            // {
-                resetpassdata.Email =_userLoginService.Base64Decode(resetpassdata.Email) ;
                 var emailExistStatus = _userLoginService.CheckEmailExist(resetpassdata.Email);
                 if (!emailExistStatus)
                 {

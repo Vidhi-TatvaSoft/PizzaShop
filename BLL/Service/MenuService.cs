@@ -25,7 +25,9 @@ public class MenuService : IMenuService
         return _context.Categories.Where(x => x.Isdelete == false).ToList();
     }
 
-
+    public List<Modifiergroup> GetAllModifierGroups(){
+        return _context.Modifiergroups.Where(x=>x.Isdelete==false).ToList();
+    }
 
     public async Task<bool> AddCategory(Category category, long userId)
     {
@@ -79,12 +81,6 @@ public class MenuService : IMenuService
 
     }
 
-
-    // items
-    // public List<Item> GetItemsByCategory(long catID)
-    // {
-    //     return _context.Items.Where(x=>x.CategoryId == catID).ToList();
-    // }
 
     public PaginationViewModel<ItemsViewModel> GetItemsByCategory(long? catID, string search = "", int pageNumber = 1, int pageSize = 5)
     {
@@ -154,7 +150,7 @@ public class MenuService : IMenuService
 
 
     public AddItemViewModel GetItemByItemID(long itemID){
-        var items = _context.Items.Where(x=>x.ItemId==itemID).ToList();
+        var items = _context.Items.Where(x=>x.ItemId==itemID && x.Isdelete==false).ToList();
         AddItemViewModel editItemvm = new AddItemViewModel()
         {
             CategoryId = items[0].CategoryId,
@@ -199,7 +195,6 @@ public class MenuService : IMenuService
         return true;
     }
 
-
     public async Task<bool> DeleteItem(long itemID)
     {
         if (itemID == null)
@@ -213,5 +208,59 @@ public class MenuService : IMenuService
         return true;
     }
 
+    public PaginationViewModel<ModifierViewModel> GetModifiersByModifierGrp(long? modifierGrpID, string search = "", int pageNumber = 1, int pageSize = 5)
+    {
+        var query = _context.Modifiers
+        .Include(x=>x.ModifierGrp)
+            .Where(x => x.ModifierGrpId == modifierGrpID).Where(x => x.Isdelete == false)
+            .Select(x => new ModifierViewModel
+            {
+                ModifierGrpId=x.ModifierGrpId,
+                ModifierId=x.ModifierId,
+                ModifierName=x.ModifierName,
+                Rate=x.Rate,
+                Quantity=x.Quantity,
+                Unit=x.Unit,
+                Isdelete = x.Isdelete
+            })
+            .AsQueryable();
 
+        //search 
+        if (!string.IsNullOrEmpty(search))
+        {
+            string lowerSearchTerm = search.ToLower();
+            query = query.Where(x =>
+                x.ModifierName.ToLower().Contains(lowerSearchTerm)
+            );
+        }
+
+        // Get total records count (before pagination)
+        int totalCount = query.Count();
+
+        // Apply pagination
+        var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+        return new PaginationViewModel<ModifierViewModel>(items, totalCount, pageNumber, pageSize);
+    }
+
+
+    public async Task<bool> AddModifier(AddModifierViewModel addModifiervm, long userId){
+        if(addModifiervm.ModifierGrpId==null)
+        {
+             return false;
+        }
+        Modifier modifier=new();
+        modifier.ModifierGrpId=addModifiervm.ModifierGrpId;
+        modifier.ModifierName=addModifiervm.ModifierName;
+        modifier.Rate=addModifiervm.Rate;
+        modifier.Quantity=addModifiervm.Quantity;
+        modifier.Unit=addModifiervm.Unit;
+        modifier.Description=addModifiervm.Description;
+        modifier.CreatedBy=userId;
+
+       await  _context.AddAsync(modifier);
+        _context.SaveChanges();
+        return true;
+
+    }
 }

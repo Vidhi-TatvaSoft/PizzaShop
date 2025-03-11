@@ -15,6 +15,7 @@ public interface IUserLoginService
     string GetProfileImage(string Email);
      string GetUsername(string Email);
      long GetUserId(string Email);
+     string GetPassword(string Email);
 
      bool ResetPassword(ResetPasswordViewModel resetpassdata);
     string VerifyUserPassword(UserLoginViewModel userlogin);

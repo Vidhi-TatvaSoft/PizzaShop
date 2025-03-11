@@ -78,7 +78,7 @@ public class UserController : Controller
     // post method
 
     [HttpPost]
-    public IActionResult MyProfile(UserViewModel user)
+    public async Task<IActionResult> MyProfile(UserViewModel user)
     {
         if (user.StateId == -1 && user.CityId == -1)
         {
@@ -123,7 +123,7 @@ public class UserController : Controller
                 return RedirectToAction("EditUser", "User", new { Email = user.Email });
             }
         }
-        if (_userService.IsUserNameExistsForEdit(user.Username, userEmail))
+        if ( _userService.IsUserNameExistsForEdit(user.Username, userEmail))
         {
             TempData["ErrorMessage"] = "UserName Already Exists. Try Another Username";
             return RedirectToAction("MyProfile", "User", new { Email = userEmail });

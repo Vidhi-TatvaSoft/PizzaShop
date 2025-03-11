@@ -11,10 +11,27 @@ public class MenuViewModel
 
     // public List<ItemsViewModel> itemList{get;set;}
 
-    public ItemsViewModel item {get;set;}
+    // public ItemsViewModel item {get;set;}
 
     public PaginationViewModel<ItemsViewModel> Pagination { get; set; }
 
     public AddItemViewModel additem {get; set;}
+
+    public List<Modifiergroup> modifiergroupList {get;set;}
+
+    public Modifiergroup modifiergroup{get;set;}
+
+     public ModifierViewModel modifier{get;set;}
+
+    public AddModifierViewModel addModifier {get; set;}
+
+
+    public PaginationViewModel<ModifierViewModel> Paginationmodifiers { get; set; }
+
+    // public List<Modifier> modifiersList {get;set;}
+
+    // public Modifier modifier{get;set;}
+
+
 }
 
