@@ -26,24 +26,7 @@ else
                 <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteItem"></i>
             </td>
         </tr>
-        @* <tr>
-            <td class="d-md-flex"><input type="checkbox" class="massDeleteClass" data-checkid="@item.ModifierId" class="me-3" onclick="checkboxTickManage()">
-                @item.
-            </td>
-            <td><img src="@item.TypeImage" width="20px">
-            </td>
-            <td>@Convert.ToInt32(item.Rate)</td>
-            <td>@item.Quantity</td>
-            <td class="">
-                <
-            </td>
-            <td>
-                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" data-id="@item.ItemId" onclick="getDetailsForEditItem(this)" data-bs-toggle="modal" data-bs-target="#EditItemModal"></i>
-                <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteItem"
-                    data-id="@item.ItemId" onclick="getIdForDeleteItem(this)"></i>
-            </td>
-            
-        </tr> *@
+    
     }
 }
 <input type="hidden" value="@Model.TotalCount" id="totalCount-mod">

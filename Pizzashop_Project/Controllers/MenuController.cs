@@ -95,6 +95,26 @@ public class MenuController : Controller
     }
     #endregion
 
+       #region menu modifiers Pagination
+    public IActionResult MenuModifierAllPagination( string search = "", int pageNumber = 1, int pageSize = 5)
+    {
+        MenuViewModel menudata = new();
+        menudata.modifiergroupList = _menuService.GetAllModifierGroups();
+
+            menudata.Paginationmodifiers = _menuService.GetAllModifiers(search, pageNumber, pageSize);
+       
+        return PartialView("_AddExisingModifierPaginationPartial", menudata.Paginationmodifiers);
+    }
+    #endregion
+
+    #region menu list of modifier group get
+    public IActionResult GetAllModifierGroups(){
+        MenuViewModel menudata = new();
+        menudata.modifiergroupList = _menuService.GetAllModifierGroups();
+        return PartialView("_ModifierGroupListPartial",menudata);
+    }
+    #endregion
+
 
     #region Add Category 
     public async Task<IActionResult> AddCategory(MenuViewModel menuvm)
@@ -288,6 +308,28 @@ public class MenuController : Controller
         }
         TempData["ErrorMessage"] = "Error while ItemAdd. Try Again..";
         return Json(" not done");
+    }
+    #endregion
+
+    #region AddModifierGroup get
+    public IActionResult AddModifierGroup(){
+        MenuViewModel menuvm=new MenuViewModel();
+        //  menuvm.modifiergroupList = _menuService.GetAllModifierGroups();
+        return PartialView("_AddModifierGroupPartial", menuvm);
+    }
+    #endregion
+
+    #region AddModifierGroup post
+    [HttpPost]
+    public async Task<IActionResult> AddModifierGroup([FromForm]MenuViewModel menuvm){
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        var addModifierGrpStatus =await  _menuService.AddModifierGroup(menuvm.modifiergroup,userId);
+        if(addModifierGrpStatus){
+            return Json("modifier added");
+        }
+        return Json("not added");
     }
     #endregion
 

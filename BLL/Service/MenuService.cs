@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace BLL.Service;
 
@@ -243,6 +244,39 @@ public class MenuService : IMenuService
         return new PaginationViewModel<ModifierViewModel>(items, totalCount, pageNumber, pageSize);
     }
 
+    public PaginationViewModel<ModifierViewModel> GetAllModifiers( string search = "", int pageNumber = 1, int pageSize = 5)
+    {
+        var query = _context.Modifiers.Where(x => x.Isdelete == false)
+        .Select(x => new ModifierViewModel
+            {
+                ModifierGrpId=x.ModifierGrpId,
+                ModifierId=x.ModifierId,
+                ModifierName=x.ModifierName,
+                Rate=x.Rate,
+                Quantity=x.Quantity,
+                Unit=x.Unit,
+                Isdelete = x.Isdelete
+            })
+            .AsQueryable();
+
+        //search 
+        if (!string.IsNullOrEmpty(search))
+        {
+            string lowerSearchTerm = search.ToLower();
+            query = query.Where(x =>
+                x.ModifierName.ToLower().Contains(lowerSearchTerm)
+            );
+        }
+
+        // Get total records count (before pagination)
+        int totalCount = query.Count();
+
+        // Apply pagination
+        var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+        return new PaginationViewModel<ModifierViewModel>(items, totalCount, pageNumber, pageSize);
+    }
+
 
     public async Task<bool> AddModifier(AddModifierViewModel addModifiervm, long userId){
         if(addModifiervm.ModifierGrpId==null)
@@ -262,5 +296,22 @@ public class MenuService : IMenuService
         _context.SaveChanges();
         return true;
 
+    }
+
+    public async Task<bool> AddModifierGroup(Modifiergroup modifiergrp, long userID)
+    {
+        var presentModifiergrp =await _context.Modifiergroups.FirstOrDefaultAsync(x=>x.ModifierGrpName == modifiergrp.ModifierGrpName);
+
+        if(presentModifiergrp !=null){
+            return false;
+
+        }
+        Modifiergroup modgrp = new();
+        modgrp.ModifierGrpName = modifiergrp.ModifierGrpName;
+        modgrp.Desciption = modifiergrp.Desciption;
+        modgrp.CreatedBy = userID;
+        await _context.AddAsync(modgrp);
+        _context.SaveChanges();
+        return true;
     }
 }

@@ -1,0 +1,34 @@
+@using DAL.ViewModels;
+@model MenuViewModel
+
+@{
+    var flag2 = true;
+
+    @foreach (var modifierGrp in Model.modifiergroupList)
+    {
+        <div class="modifiers-div-main d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag2 ? "active-category" : "")"
+            data-id="@modifierGrp.ModifierGrpId">
+
+            <div class="d-flex ">
+                <i class="fa-solid fa-receipt mt-1 "></i>
+                <p class="text-size-set mt-0  m-0 ms-3 ">@modifierGrp.ModifierGrpName</p>
+
+            </div>
+            <div>
+                <input type="hidden" value="@modifierGrp.Desciption">
+                <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdate(this)"
+                    data-id="@modifierGrp.ModifierGrpId" data-bs-toggle="modal" data-bs-target="#exampleModal-editcategory"></i>
+                <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal-deleteCategory" data-id="@modifierGrp.ModifierGrpId"
+                    onclick="GetIdForDelete(this)"></i>
+            </div>
+
+        </div>
+        flag2 = false;
+    }
+}
+
+<script>
+    
+
+</script>

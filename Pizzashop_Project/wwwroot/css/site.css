@@ -241,6 +241,15 @@ form i{
   color: grey;
 }
 
+.modifiers-div-main i.iconeditdelete{
+  opacity: 0;
+}
+
+.modifiers-div-main:hover i.iconeditdelete{
+  opacity: 1;
+  color: grey;
+}
+
 .active-category{
   color:#1138b8 !important;
   font-weight: bold;

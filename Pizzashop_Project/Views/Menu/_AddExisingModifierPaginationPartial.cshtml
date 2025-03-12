@@ -1,0 +1,28 @@
+@using DAL.ViewModels;
+@model PaginationViewModel<ModifierViewModel>
+
+@* @{bool ismassdelete = false;} *@
+@if (Model.Items.Count == 0)
+{
+    <tr>
+        <td colspan="6" class="text-center text-danger fw-bold">No Data Found</td>
+    </tr>
+}
+else
+{
+    @foreach (var modifier in Model.Items)
+    {
+        <tr>
+            <td class="d-flex"><input type="checkbox" class="massDeleteClassModifier" data-checkid="@modifier.ModifierId" id=`modifier-@modifier.ModifierId`  onclick="checkboxTickManageModifier();ModifiersSelected(this)" > &nbsp;   <div>@modifier.ModifierName</div></td>
+            <td>@modifier.Unit</td>
+            <td class="">
+                @modifier.Rate
+            </td>
+            <td>
+                @modifier.Quantity
+            </td>
+        </tr>
+    
+    }
+}
+<input type="hidden" value="@Model.TotalCount" id="totalCount-modExist">

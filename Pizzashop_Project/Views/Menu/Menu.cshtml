@@ -19,8 +19,6 @@
                         <span asp-validation-for="@Model.category.CategoryName" class="text-danger"></span>
                         <label for="floatingInput">Name</label>
                     </div>
-    using DAL.ViewModels;
-    
                     <div class="form-floating">
                         <textarea class="form-control" placeholder="Leave a comment here"
                             asp-for="@Model.category.Description" id="floatingTextarea"></textarea>
@@ -407,27 +405,99 @@
 
 
 <!-- add Modifier group modal -->
-<div id="exampleModal-addmodifiergroup" class="modal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+<div id="exampleModal-addmodifiergroup" data-bs-backdrop="static" data-bs-keyboard="false" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" id="AddModifierGroupModal-mainDiv">
+       <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add Modifier Group</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="name" required>
-                    <label for="floatingInput">Name</label>
+            <form id="addModifierGroupModalFormId">
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="@Model.modifiergroup.ModifierGrpName" class="form-control"
+                            id="floatingInput" placeholder="name" required>
+                        <label for="floatingInput">Name</label>
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control" asp-for="@Model.modifiergroup.Desciption"
+                            placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+                        <label for="floatingTextarea">Description</label>
+                    </div>
+                    <div class="addExistModifier-div col-5 mt-2  d-flex justify-content-center text-primary"
+                        id="AddExistingModifierTextdiv" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal-addExistingmodifier" onclick="LoadAllModifiers();">+ Add Existing
+                        Modifiers</div>
+                    <div id="ExistingModifiers"></div>
                 </div>
-                <div class="form-floating">
-                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-                    <label for="floatingTextarea">Description</label>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >save</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
                 </div>
+            </form>
+</div> 
+    </div>
+</div>
+
+<!-- add existing Modifier while add modifir group modal -->
+<div id="exampleModal-addExistingmodifier" data-bs-backdrop="static" data-bs-keyboard="false" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Existing Modifier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">save</button>
-                <button type="button" class="btn btn-outline-primary">cancel</button>
-            </div>
+            <form  id="AddExistModifierFormID">
+                <div class="modal-body">
+                    <div class="search-button ">
+                        @if (Model.Paginationmodifiers.Items.Count != 0)
+                        {
+                            <input type="hidden" id="modifiergrp-id-items" value="@Model.Paginationmodifiers.Items[0].ModifierGrpId">
+                            <input type="text" id="searchbtn-existingMod" placeholder="Search" class="p-1 border ">
+                            <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                        }
+                    </div>
+                    <div class="table-main-div table-responsive mt-3 bg-white mx-auto w-100 ">
+                        <table class="table" id="demo">
+                            <thead>
+                                <tr>
+                                    <th scope="col"><input type="checkbox" id="checkboxForSelectAllModifier"
+                                            onclick="SelectAllModifiers()" class="me-3">
+                                        Name</th>
+                                    <th scope="col">Unit</th>
+                                    <th scope="col">Rate</th>
+                                    <th scope="col">Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody id="AllModifiersListBody" style="white-space: nowrap;">
+                                @* @await Html.PartialAsync("_AddExisingModifierPaginationPartial", Model.Paginationmodifiers) *@
+                            </tbody>
+                        </table>
+                        @*  Pagination div *@
+                        <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
+
+                            @if (Model.Paginationmodifiers.Items.Count != 0)
+                            {
+                                <span class="mt-2">Items Per page:</span>
+
+                                <select id="itemsperpage-modExist">
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                </select>
+
+                                <span class=" mt-2 ms-1" id="pagination-text-modExist"></span>
+                                <a id="left-arrow-modExist" class="btn border border-dark bg-light ms-2">&lt;</a>
+                                <a id="right-arrow-modExist" class="btn border border-dark bg-light ms-2">&gt;</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="DisplayNamesOfExistingMod()" >Add</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -716,13 +786,13 @@
                 <div class="categories-main-div container-fluid">
                     <div class="row ">
                         <div
-                            class="left-sidebar-category-main-div bg-white mt-2 pt-0 col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-md-start justify-content-center ">
+                            class="left-sidebar-category-main-div bg-light mt-2 pt-0 col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-md-start justify-content-center ">
 
                             <div class=" w-100 justify-content-center ">
                                 <!-- logo -->
                                 <div class="logo-main-div d-flex justify-content-between mb-3">
 
-                                    <div class="logo-text text-primary fs-5 mt-2  ms-1 fw-semibold">
+                                    <div class="logo-text text-primary  fs-5 mt-2  ms-1 fw-semibold">
                                         Modifier Group
                                     </div>
                                     <div class="logo-image ">
@@ -730,31 +800,10 @@
                                             data-bs-toggle="modal" data-bs-target="#exampleModal-addmodifiergroup"></i>
                                     </div>
                                 </div>
-                                @{var flag2 =true;
+                                <div id="ModifierListPartialViewID">
 
-                                @foreach (var modifierGrp in Model.modifiergroupList)
-                                {
-                                    <div class="modifiers-div-main d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag2?"active-category":"")"  data-id="@modifierGrp.ModifierGrpId" >
-                                        
-                                        <div  class="d-flex "  >
-                                                <i class="fa-solid fa-receipt mt-1 "></i>
-                                                <p class="text-size-set mt-0  m-0 ms-3 ">@modifierGrp.ModifierGrpName</p>
-   
-                                        </div>
-                                        <div>
-                                            <input type="hidden" value="@modifierGrp.Desciption">
-                                            <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdate(this)"
-                                                data-id="@modifierGrp.ModifierGrpId" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal-editcategory"></i>
-                                            <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal-deleteCategory" data-id="@modifierGrp.ModifierGrpId"
-                                                onclick="GetIdForDelete(this)"></i>
-                                        </div>
-
-                                    </div>
-                                    flag2=false;
-                                }
-                                } 
+                                </div>
+                                
                             </div>
                         </div>
 
@@ -1008,7 +1057,8 @@
             }
 
         }
-         function checkboxTickManageModifier(){  
+         
+        function checkboxTickManageModifier(){  
             var classess=document.getElementsByClassName("massDeleteClassModifier");
             var deleteAllItemCkeckbboxId = document.getElementById("checkboxForSelectAllModifier");
             flag=true;
@@ -1024,15 +1074,113 @@
     </script>
 
     <script>
+            let modifierGrpID =$("#modifier-group-id").val();
+            let currentPageMod=1;
+             let currentPageModExist=1;
+            let pageSizeMod=$("#itemsperpage-mod").val();
+            let pageSizeModExist=$("#itemsperpage-modExist").val();
+
+            let searchTextMod="";
+            let searchTextModExist="";
+            let modTempID=[];
+            let modTempName=[];
+
+            //load modifiers btn modID ajax
+            function loadTablemodifier(modifierGrpID, search = "", page = 1, pageSize = 5) {
+                $.ajax({
+                    
+                    url: "/Menu/MenuModifierPagination",
+                    type: "GET",
+                    data: { modifierGrpID, search, pageNumber: page, pageSize },
+                    success: function (data) {
+                        console.log("inAhjax # 111111",modifierGrpID);
+                        $("#itemListBody-modifier").html(data);
+                        currentPageMod = page;
+                        pageSizeMod = parseInt(pageSize);
+                        var totalRecordsMod = parseInt($("#totalCount-mod").val()) || 0;
+                        var startItemMod = totalRecordsMod === 0 ? 0 : (currentPageMod - 1) * pageSizeMod + 1;
+                        var endItemMod = Math.min(currentPageMod * pageSizeMod, totalRecordsMod);
+
+                        $("#pagination-text-mod").text("Showing " + startItemMod + " - " + endItemMod + " of " + totalRecordsMod);
+                        $("#left-arrow-mod").prop("disabled", currentPageMod === 1);
+                        $("#right-arrow-mod").prop("disabled", currentPageMod * pageSizeMod >= totalRecordsMod);
+                        $("#checkboxForSelectAllItem").prop("checked", false);
+                    }
+                });
+            }
+            //load all modifier partialview ajax
+            function LoadAllModifiers(search="",page=1,pageSize=5){
+                $.ajax({
+                    
+                    url: "/Menu/MenuModifierAllPagination",
+                    type: "GET",
+                    data: { search, pageNumber: page, pageSize },
+                    success: function (data) {
+                        //console.log(data);
+                        document.getElementById("AllModifiersListBody").innerHTML=data;
+                        //document.getElementById("exampleModal-addmodifiergroup").style.opacity=0; 
+                        currentPageModExist = page;
+                        pageSizeModExist = parseInt(pageSizeModExist);
+                        var totalRecordsModExist = parseInt($("#totalCount-modExist").val()) || 0;
+                        var startItemModExist = totalRecordsModExist === 0 ? 0 : (currentPageModExist - 1) * pageSizeModExist + 1;
+                        var endItemModExist = Math.min(currentPageModExist * pageSizeModExist, totalRecordsModExist);
+
+                        $("#pagination-text-modExist").text("Showing " + startItemModExist + " - " + endItemModExist + " of " + totalRecordsModExist);
+                        $("#left-arrow-modExist").prop("disabled", currentPageModExist === 1);
+                        $("#right-arrow-modExist").prop("disabled", currentPageModExist * pageSizeModExist >= totalRecordsModExist);
+                        $("#checkboxForSelectAllItem").prop("checked", false);
+                    }
+                });
+            }
+            //load modifier group ajax
+            function loadModifierGroup(){
+                $.ajax({
+                    url:"/Menu/GetAllModifierGroups",
+                    type:"Get",
+                    success:function(data){
+                        document.getElementById("ModifierListPartialViewID").innerHTML=data;
+                        console.log("fetched all modifiergrp")
+                    }
+                })
+            }
+
+            //method to show selected existing modifier in add modgrp
+            function DisplayNamesOfExistingMod(){
+                console.log(modTempName);
+                var modDiv=document.getElementById("ExistingModifiers");
+                console.log(modDiv);
+                modDiv.innerHTML = "";
+                for(i=0;i<modTempID.length;i++){
+                    modDiv.innerHTML += `<div class="p-1 border border-1 rounded-pill ms-3 me-2 d-inline justify-content-between align-items-center" style="max-width:fit-content;"><span>
+                    ${modTempName[i]}</span> <i class="fa-solid fa-xmark" style="margin-left: 0px;" onclick="RemoveFromList(\"${modTempID[i]}\",\"${modTempName[i]}\")" ></i></div> `
+                }
+            }
+            
+            //method when checkbox of existing mod ticked
+            function ModifiersSelected(tag){
+                id =tag.getAttribute("data-checkid");
+                name=tag.parentElement.children[1].innerHTML;
+                console.log(id);
+                console.log(name);
+                if(tag.checked){
+                    for(i=0;i < id.length;i++){
+                        if(modTempID[i]==id){
+                            modTempID.splice(modTempID.indexOf(id),1);
+                            modTempName.splice(modTempName.indexOf(name),1);
+
+                        }
+                    }
+                    modTempID.push(id);
+                    modTempName.push(name);
+                }
+
+            }
+
         $(document).ready(function () {
             let currentPage = 1;
-            let currentPageMod=1;
             let pageSize = $("#itemsperpage").val();
-            let pageSizeMod=$("#itemsperpage-mod").val();
-            let searchText = "";
-            let searchTextMod="";
+            let searchText = "";  
             let catID = $("#category-id-items").val();
-            let modifierGrpID =$("#modifier-group-id").val();
             console.log("c: mod", modifierGrpID);
 
             function loadTable(catID, search = "", page = 1, pageSize = 5) {
@@ -1056,31 +1204,12 @@
                 });
             }
 
-            function loadTablemodifier(modifierGrpID, search = "", page = 1, pageSize = 5) {
-                $.ajax({
-                    
-                    url: "/Menu/MenuModifierPagination",
-                    type: "GET",
-                    data: { modifierGrpID, search, pageNumber: page, pageSize },
-                    success: function (data) {
-                        console.log("inAhjax # 111111",modifierGrpID);
-                        $("#itemListBody-modifier").html(data);
-                        currentPageMod = page;
-                        pageSizeMod = parseInt(pageSize);
-                        var totalRecordsMod = parseInt($("#totalCount-mod").val()) || 0;
-                        var startItemMod = totalRecordsMod === 0 ? 0 : (currentPageMod - 1) * pageSizeMod + 1;
-                        var endItemMod = Math.min(currentPageMod * pageSizeMod, totalRecordsMod);
-
-                        $("#pagination-text-mod").text("Showing " + startItemMod + " - " + endItemMod + " of " + totalRecordsMod);
-                        $("#left-arrow-mod").prop("disabled", currentPageMod === 1);
-                        $("#right-arrow-mod").prop("disabled", currentPageMod * pageSizeMod >= totalRecordsMod);
-                        $("#checkboxForSelectAllItem").prop("checked", false);
-                    }
-                });
-            }
+            
 
             loadTable(catID, searchText, currentPage, pageSize);
             loadTablemodifier(modifierGrpID,searchTextMod,currentPageMod,pageSizeMod);
+           // LoadAllModifiers(searchTextModExist,currentPageModExist,pageSizeModExist);
+            loadModifierGroup();
             // Search on keyup
             $("#searchbtn").on("keyup", function () {
                 searchText = $(this).val().trim();
@@ -1094,10 +1223,17 @@
                 console.log(searchTextMod);
                 currentPageMod =1;
                 loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                @* loadModifierGroup(); *@
                 SelectAllModifiers(); 
             });
-
-
+            $("#searchbtn-existingMod").on("keyup", function () {
+                searchTextModExist = $(this).val().trim();
+                console.log(searchTextModExist);
+                currentPageModExist =1;
+                LoadAllModifiers(searchTextModExist,currentPageModExist,pageSizeModExist);
+                @* loadModifierGroup(); *@
+                SelectAllModifiers(); 
+            });
             $(".categories-div").on("click",function(){
                 $(".categories-div").removeClass("active-category");
                 $(this).addClass("active-category");
@@ -1105,14 +1241,16 @@
                 currentPage=1;
                 loadTable(catID, searchText, currentPage, pageSize);
             })
-            $(".modifiers-div-main").on("click",function(){
+
+            $(document).on("click",".modifiers-div-main", function () {
                 $(".modifiers-div-main").removeClass("active-category");
                 $(this).addClass("active-category");
                 modifierGrpID = $(this).data("id");
-                console.log("inAhjax ",modifierGrpID)
+                console.log("modid ", modifierGrpID)
                 loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
-            })
-
+                @* loadModifierGroup(); *@
+    })
+            
             // Pagination buttons
             $("#right-arrow").on("click", function () {
                 let rightarrow = !$(this).prop("disabled");
@@ -1129,6 +1267,16 @@
                 if (rightarrowMod) {
                     currentPageMod++;
                     loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                    @* loadModifierGroup(); *@
+                    SelectAllModifiers(); 
+                }
+            });
+            $("#right-arrow-modExist").on("click", function () {
+                let rightarrowModExist = !$(this).prop("disabled");
+                console.log(rightarrowModExist);
+                if (rightarrowModExist) {
+                    currentPageModExist++;
+                    LoadAllModifiers(searchTextModExist,currentPageModExist,pageSizeModExist);
                     SelectAllModifiers(); 
                 }
             });
@@ -1148,6 +1296,16 @@
                 if (leftarrowMod) {
                     currentPageMod--;
                     loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                    @* loadModifierGroup(); *@
+                    SelectAllModifiers(); 
+                }
+            });
+             $("#left-arrow-modExist").on("click", function () {
+                let leftarrowModExist = !$(this).prop("disabled");
+                console.log(leftarrowModExist);
+                if (leftarrowModExist) {
+                    currentPageModExist--;
+                    LoadAllModifiers(searchTextModExist,currentPageModExist,pageSizeModExist);
                     SelectAllModifiers(); 
                 }
             });
@@ -1165,9 +1323,20 @@
                 currentPageMod=1;
                 console.log(pageSizeMod);
                 loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                @* loadModifierGroup(); *@
+                SelectAllModifiers(); 
+            });
+            $("#itemsperpage-modExist").on("change", function () {
+                pageSizeModExist = $(this).val();
+                currentPageModExist=1;
+                console.log(pageSizeModExist);
+                LoadAllModifiers(searchTextModExist,currentPageModExist,pageSizeModExist);
                 SelectAllModifiers(); 
             });
 
+
+
+            //delete all items
             $("#deleteAllItemsModalYesButton").on("click",function(){
                  var classess=document.getElementsByClassName("massDeleteClass");
                  @* console.log("delete all") *@
@@ -1187,7 +1356,23 @@
                     }
                 }
             })  
-        
+
+    
+            //add modifier get ajax
+            $("#exampleModal-addmodifier").on('show.bs.modal',function(event){
+                console.log("hiii")
+                $.ajax({
+                    url:"/Menu/AddModifierModal",
+                    type:"GET",
+                    data: {},
+                    success: function (data) {
+                        console.log("dfkhsvc");
+                        $("#AddModifierModal-mainDiv").html(data);
+                        loadModifierGroup();
+                    }
+                    })
+             }) 
+            //add modifier modal post ajax
             $("#addModifierModalId").on("submit",function(e){
                 console.log("heloooooooooooo")
                 e.preventDefault();
@@ -1206,23 +1391,66 @@
                             $(".btn-close").click();
                             console.log(res);
                             loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                            loadModifierGroup();
                             SelectAllModifiers();
                         }
                     })
                 }
             })
-            $("#exampleModal-addmodifier").on('show.bs.modal',function(event){
-                console.log("hiii")
+
+            
+
+             //AddModifier Group modal] get method
+            @* $("#exampleModal-addmodifiergroup").on('show.bs.modal',function(event){
+                console.log("modgrp get")
                 $.ajax({
-                    url:"/Menu/AddModifierModal",
+                    url:"/Menu/AddModifierGroup",
                     type:"GET",
                     data: {},
                     success: function (data) {
-                        console.log("dfkhsvc");
-                        $("#AddModifierModal-mainDiv").html(data);
+                        console.log("addmodgrp");
+                      
                     }
+                })
+            }) *@
+
+            //add modifier group post 
+            @* $("#addModifierGroupModalFormId").on("submit", function (e) {
+                console.log("Hello")
+                console.log("modgrp post");
+                e.preventDefault();
+
+                let form = $("#addModifierGroupModalFormId");
+                if (form.valid()) {
+                    let formData = new FormData(this);
+                    console.log(formData);
+                    $.ajax({
+                        url: "/Menu/AddModifierGroup",
+                        type: "POST",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (res) {
+                            console.log(res);
+                            $(".btn-close").click();
+                            loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                            loadModifierGroup();
+                            SelectAllModifiers();
+                        }
                     })
-             }) 
+                }
+            })  *@
+
+            @* $("#AddExistingModifierTextdiv").on("click",function(e){
+              
+                
+                LoadAllModifiers();
+                console.log(document.getElementById("exampleModal-addExistingmodifier"));
+                
+            }) *@
+          
+            
+            
 
         });
     </script>
