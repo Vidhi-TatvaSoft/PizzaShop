@@ -18,6 +18,7 @@ public interface IMenuService
     PaginationViewModel<ModifierViewModel> GetModifiersByModifierGrp(long? modifierGrpID, string search = "", int pageNumber = 1, int pageSize = 5);
     public PaginationViewModel<ModifierViewModel> GetAllModifiers( string search = "", int pageNumber = 1, int pageSize = 5);
      Task<bool> AddModifier(AddModifierViewModel addModifiervm, long userId);
-     Task<bool> AddModifierGroup(Modifiergroup modifiergrp, long userID);
+    Task<bool> AddModifierGroup(AddModifierGroupViewModel modifiergrpvm , long userID);
+    Task<bool> DeleteModifierGroup(long modgrpId);
 
 }

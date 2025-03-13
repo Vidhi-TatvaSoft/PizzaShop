@@ -13,7 +13,9 @@ else
     @foreach (var modifier in Model.Items)
     {
         <tr>
-            <td class="d-flex"><input type="checkbox" class="massDeleteClassModifier" data-checkid="@modifier.ModifierId" id=`modifier-@modifier.ModifierId`  onclick="checkboxTickManageModifier();ModifiersSelected(this)" > &nbsp;   <div>@modifier.ModifierName</div></td>
+            
+            <td class="d-flex"><input type="checkbox" class="massDeleteClassModifierExist" data-checkid="@modifier.ModifierId" id="modifier-@modifier.ModifierId"  onclick="checkboxTickManageModifierExist();ModifiersSelected(this)" > &nbsp;   <div>@modifier.ModifierName</div></td>
+            
             <td>@modifier.Unit</td>
             <td class="">
                 @modifier.Rate

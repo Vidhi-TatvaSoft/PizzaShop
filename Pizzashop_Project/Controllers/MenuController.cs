@@ -10,6 +10,7 @@ using DAL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
 
 namespace Pizzashop_Project.Controllers;
 [Authorize(Roles = "Admin")]
@@ -311,26 +312,39 @@ public class MenuController : Controller
     }
     #endregion
 
-    #region AddModifierGroup get
-    public IActionResult AddModifierGroup(){
-        MenuViewModel menuvm=new MenuViewModel();
-        //  menuvm.modifiergroupList = _menuService.GetAllModifierGroups();
-        return PartialView("_AddModifierGroupPartial", menuvm);
-    }
-    #endregion
+    // #region AddModifierGroup get
+    // public IActionResult AddModifierGroup(){
+    //     MenuViewModel menuvm=new MenuViewModel();
+    //     //  menuvm.modifiergroupList = _menuService.GetAllModifierGroups();
+    //     return PartialView("_AddModifierGroupPartial", menuvm);
+    // }    
+    // #endregion
 
     #region AddModifierGroup post
     [HttpPost]
-    public async Task<IActionResult> AddModifierGroup([FromForm]MenuViewModel menuvm){
+    public async Task<IActionResult> AddModifierGroup(MenuViewModel menuvm ){
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
-        var addModifierGrpStatus =await  _menuService.AddModifierGroup(menuvm.modifiergroup,userId);
+        var addModifierGrpStatus =await  _menuService.AddModifierGroup(menuvm.addmodgrpVm,userId);
         if(addModifierGrpStatus){
             return Json("modifier added");
         }
         return Json("not added");
     }
     #endregion
+
+    #region Delete Mod Grp
+    [HttpPost]
+    public async Task<IActionResult> DeleteModGrp(long modgrpId)
+    {
+        var deletemodgrpStatus =await _menuService.DeleteModifierGroup(modgrpId);
+        if(deletemodgrpStatus){
+            return Json("modifier group dleted");
+        }
+        return Json("modifier group not deleted");
+    }
+    #endregion
+
 
 }

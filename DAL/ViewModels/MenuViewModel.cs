@@ -28,6 +28,8 @@ public class MenuViewModel
 
     public PaginationViewModel<ModifierViewModel> Paginationmodifiers { get; set; }
 
+    public AddModifierGroupViewModel addmodgrpVm{get;set;}
+
     // public List<Modifier> modifiersList {get;set;}
 
     // public Modifier modifier{get;set;}
