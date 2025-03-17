@@ -1,4 +1,7 @@
-﻿@using DAL.ViewModels
+﻿﻿@using DAL.ViewModels
+@using Microsoft.AspNetCore.Authorization
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService;
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
 <!DOCTYPE html>
 <html lang="en">
@@ -68,49 +71,64 @@
                         </a>
 
                         <!-- users -->
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "User.View")).Succeeded){
                         <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "UserList" ? "active-div" : "")"
                             style="text-decoration: none;" asp-action="UsersList" asp-controller="User">
                             <i class="fa-solid fa-users "></i>
                             <p class="users-text-inactive text-size-set  m-0 ms-3">Users</p>
                         </a>
+                        }
 
                         <!--Role and Permission  -->
-                        <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "Roles" ? "active-div" : "")"
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "Role.View")).Succeeded){
+                            <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "Roles" ? "active-div" : "")"
                             style="text-decoration: none;" asp-action="Roles" asp-controller="RolesPermission">
                             <i class="fa-solid fa-user-clock "></i>
                             <p class="role-text-inactive  text-size-set   m-0 ms-3">Role and Permission</p>
                         </a>
+                        }
+                        
 
                         <!-- menu -->
+                          @if ((await AuthorizationService.AuthorizeAsync(User, "Menu.View")).Succeeded){
                         <a class=" d-flex align-items-center  p-3 @((ViewData["sidebar-active"] as string) == "Menu" ? "active-div" : "")"
                             style="text-decoration: none;" asp-action="Menu" asp-controller="Menu">
                             <i class="fa-solid fa-calendar-minus "></i>
                             <p class="menu-text-inactive text-size-set m-0 ms-4">Menu</p>
                         </a>
+                          }
 
                         <!-- Table and Section -->
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.View")).Succeeded){
                         <div class="inactive-div d-flex p-3">
                             <i class="fa-solid fa-table-cells-large "></i>
                             <p class="table-text-inactive text-size-set  m-0 ms-3">Table and Section</p>
                         </div>
+                        }
 
                         <!-- taxes and fees -->
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "TaxFees.View")).Succeeded){
                         <div class="inactive-div d-flex p-3">
                             <i class="fa-solid fa-money-check-dollar "></i>
                             <p class="taxes-text-inactive text-size-set m-0 ms-3">Taxes And Fees</p>
                         </div>
+                        }
 
                         <!-- orders -->
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "Orders.View")).Succeeded){
                         <div class="inactive-div d-flex p-3">
                             <i class="fa-solid fa-clipboard-check"></i>
                             <p class="order-text-inactive text-size-set m-0 ms-4">Orders</p>
                         </div>
+                        }
 
                         <!-- customer -->
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "Customers.View")).Succeeded){
                         <div class="inactive-div d-flex p-3">
                             <i class="fa-regular fa-id-card"></i>
                             <p class="customer-text-inactive text-size-set m-0 ms-3">Customer</p>
                         </div>
+                        }
 
                     </div>
                 </div>
@@ -145,50 +163,65 @@
                                     </div>
 
                                     <!-- users -->
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, "User.View")).Succeeded){
                                     <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "UserList" ? "active-div" : "")"
                                         style="text-decoration: none;" asp-action="UsersList" asp-controller="User">
                                         <i class="fa-solid fa-users "></i>
                                         <p class="users-text-inactive text-size-set  m-0 ms-3">Users</p>
                                     </a>
-
+                                    }
                                     <!--Role and Permission  -->
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, "Role.View")).Succeeded){
                                     <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "Roles" ? "active-div" : "")"
                                         style="text-decoration: none;" asp-action="Roles"
                                         asp-controller="RolesPermission">
                                         <i class="fa-solid fa-user-clock "></i>
                                         <p class="role-text-inactive  text-size-set   m-0 ms-3">Role and Permission</p>
                                     </a>
+                                    }
 
                                     <!-- menu -->
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, "Menu.View")).Succeeded){
                                     <a class=" d-flex align-items-center  p-3 @((ViewData["sidebar-active"] as string) == "Menu" ? "active-div" : "")"
                                         style="text-decoration: none;" asp-action="Menu" asp-controller="Menu">
                                         <i class="fa-solid fa-calendar-minus "></i>
                                         <p class="menu-text-inactive text-size-set m-0 ms-4">Menu</p>
                                     </a>
+                                    }
 
                                     <!-- Table and Section -->
-                                    <adiv class=" d-flex p-3">
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.View")).Succeeded){
+                                    <div class=" d-flex p-3">
                                         <i class="fa-solid fa-table-cells-large "></i>
                                         <p class="table-text-inactive text-size-set  m-0 ms-3">Table and Section</p>
                                 </div>
+                                }
+                                
 
                                 <!-- taxes and fees -->
+                                @if ((await AuthorizationService.AuthorizeAsync(User, "TaxFees.View")).Succeeded){
                                 <div class=" d-flex p-3">
                                     <i class="fa-solid fa-money-check-dollar "></i>
                                     <p class="taxes-text-inactive text-size-set m-0 ms-3">Taxes And Fees</p>
                                 </div>
+                                }
 
                                 <!-- orders -->
+                                @if ((await AuthorizationService.AuthorizeAsync(User, "Orders.View")).Succeeded){
                                 <div class=" d-flex p-3">
                                     <i class="fa-solid fa-clipboard-check"></i>
                                     <p class="order-text-inactive text-size-set m-0 ms-4">Orders</p>
                                 </div>
+                                }
 
                                 <!-- customer -->
+                                @if ((await AuthorizationService.AuthorizeAsync(User, "Customers.View")).Succeeded){
                                 <div class=" d-flex p-3">
                                     <i class="fa-regular fa-id-card"></i>
                                     <p class="customer-text-inactive text-size-set m-0 ms-3">Customer</p>
                                 </div>
+                                }
+                            </div>
                             </div>
                         </div>
 

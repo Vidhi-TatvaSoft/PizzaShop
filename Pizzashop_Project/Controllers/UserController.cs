@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using BLL.Service;
-using BLL.Service.Interfaces;
+using BLL.Interfaces;
 using BLL.Services;
 using DAL.Models;
 using DAL.ViewModels;
@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
 [Authorize(Roles = "Admin")]
@@ -41,6 +42,7 @@ public class UserController : Controller
 
     #region MyProfile get
     // [Authorize(Roles = "Admin")]
+    [PermissionAuthorize("User.View")]
     public IActionResult MyProfile()
     {
         var token = Request.Cookies["AuthToken"];
@@ -76,7 +78,7 @@ public class UserController : Controller
 
     #region Myprofile post
     // post method
-
+    [PermissionAuthorize("User.EditAdd")]
     [HttpPost]
     public async Task<IActionResult> MyProfile(UserViewModel user)
     {

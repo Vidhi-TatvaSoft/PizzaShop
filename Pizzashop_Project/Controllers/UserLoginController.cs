@@ -12,7 +12,7 @@ using DAL.ViewModels;
 using NuGet.Common;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.AspNetCore.Authorization;
-using BLL.Service.Interfaces;
+using BLL.Interfaces;
 
 namespace Pizzashop_Project.Controllers
 {

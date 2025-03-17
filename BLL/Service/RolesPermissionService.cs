@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using BLL.Service.Interfaces;
+using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;

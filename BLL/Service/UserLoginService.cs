@@ -2,7 +2,7 @@ using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using BLL.Service.Interfaces;
+using BLL.Interfaces;
 using NuGet.ProjectModel;
 using System.Security.Cryptography.X509Certificates;
 

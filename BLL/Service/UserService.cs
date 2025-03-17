@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using BLL.Service.Interfaces;
+using BLL.Interfaces;
 using BLL.Services;
 using DAL.Models;
 using DAL.ViewModels;

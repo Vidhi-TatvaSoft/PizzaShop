@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace BLL.Service.Interfaces;
+namespace BLL.Interfaces;
 
 public interface IJWTTokenService
 {

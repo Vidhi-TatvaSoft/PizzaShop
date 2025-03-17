@@ -1,9 +1,10 @@
-using BLL.Service.Interfaces;
+using BLL.Interfaces;
 using BLL.Service;
 using Microsoft.AspNetCore.Mvc;
 using DAL.ViewModels;
 using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
+using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
 [Authorize(Roles = "Admin")]
@@ -16,6 +17,7 @@ public class RolesPermissionController : Controller
         _rolesPermission = rolesPermission;
     }
 
+    [PermissionAuthorize("Role.View")]
     public IActionResult Roles()
     {
         var roles = _rolesPermission.GetRoles();
@@ -23,13 +25,14 @@ public class RolesPermissionController : Controller
         return View(roles);
     }
 
-
+    [PermissionAuthorize("Role.View")]
     public IActionResult Permissions(string name)
     {
         List<RolesPermissionViewModel> permissions = _rolesPermission.permissionByRole(name);
         return View(permissions);
     }
 
+    [PermissionAuthorize("Role.EditAdd")]
     [HttpPost]
     public IActionResult Permissions(List<RolesPermissionViewModel> rolesPermissionViewModel)
     {

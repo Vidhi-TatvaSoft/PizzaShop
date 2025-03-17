@@ -22,8 +22,8 @@ else
                 @modifier.Quantity
             </td>
             <td>
-                <i class="fa-solid fa-pen w-25" data-bs-toggle="modal" data-bs-target="#exampleModal-updatemodifier"></i>
-                <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteItem"></i>
+                <i class="fa-solid fa-pen w-25" data-bs-toggle="modal" data-bs-target="#exampleModal-updatemodifier" data-id="@modifier.ModifierId"></i>
+                <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteModifier" data-id="@modifier.ModifierId" onclick="getIdForDeleteModifier(this)" ></i>
             </td>
         </tr>
     

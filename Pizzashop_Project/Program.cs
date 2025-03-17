@@ -6,9 +6,11 @@ using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using DAL.Models;
-using BLL.Service.Interfaces;
+using BLL.Interfaces;
 using BLL.Interfaces;
 using BLL.Service;
+using Pizzashop_Project.Authorization;
+using Microsoft.AspNetCore.Authorization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,7 +24,7 @@ builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddScoped<HttpContextAccessor>();
 builder.Services.AddScoped<IRolesPermission,RolesPermissionService>();
 builder.Services.AddScoped<IMenuService,MenuService>();
-
+builder.Services.AddScoped<IAuthorizationHandler,PermissionHandler>();
 builder.Services.AddControllersWithViews();
 
 
@@ -78,6 +80,26 @@ builder.Services.AddAuthentication(x=>{
         };
     }
 );
+
+builder.Services.AddAuthorization(options =>
+{
+    var permissions = new[]
+    {
+        "User.View", "User.EditAdd", "User.Delete",
+        "Role.View", "Role.EditAdd", "Role.Delete",
+        "Menu.View", "Menu.EditAdd", "Menu.Delete",
+        "TableSection.View", "TableSection.EditAdd", "TableSection.Delete",
+        "TaxFees.View", "TaxFees.EditAdd", "TaxFees.Delete",
+        "Orders.View", "Orders.EditAdd", "Orders.Delete",
+        "Customers.View", "Customers.EditAdd", "Customers.Delete"
+    };
+
+    foreach (var permission in permissions)
+    {
+        options.AddPolicy(permission, policy => policy.Requirements.Add(new PermissionRequirement(permission)));
+    }
+});
+
 
 builder.Services.AddAuthorization();
 

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using BLL.Interfaces;
 using BLL.Service;
-using BLL.Service.Interfaces;
+using BLL.Interfaces;
 
 // using BLL.Services;
 
@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
+using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
 [Authorize(Roles = "Admin")]
@@ -33,6 +34,7 @@ public class MenuController : Controller
     }
 
     #region  Menu get
+    [PermissionAuthorize("Menu.View")]
     public IActionResult Menu(long? catID, long? modifierGrpID, string search = "", int pageNumber = 1, int pageSize = 5)
     {
         MenuViewModel menudata = new();
@@ -69,6 +71,7 @@ public class MenuController : Controller
     #endregion
 
     #region menniItemPagination
+    [PermissionAuthorize("Menu.View")]
     public IActionResult MenuItemPagination(long? catID, string search = "", int pageNumber = 1, int pageSize = 5)
     {
         MenuViewModel menudata = new();
@@ -83,6 +86,7 @@ public class MenuController : Controller
     #endregion
 
     #region menu modifiers Pagination
+    [PermissionAuthorize("Menu.View")]
     public IActionResult MenuModifierPagination(long? modifierGrpID, string search = "", int pageNumber = 1, int pageSize = 5)
     {
         MenuViewModel menudata = new();
@@ -96,28 +100,32 @@ public class MenuController : Controller
     }
     #endregion
 
-       #region menu modifiers Pagination
-    public IActionResult MenuModifierAllPagination( string search = "", int pageNumber = 1, int pageSize = 5)
+    #region menu modifiers Pagination
+    [PermissionAuthorize("Menu.View")]
+    public IActionResult MenuModifierAllPagination(string search = "", int pageNumber = 1, int pageSize = 5)
     {
         MenuViewModel menudata = new();
         menudata.modifiergroupList = _menuService.GetAllModifierGroups();
 
-            menudata.Paginationmodifiers = _menuService.GetAllModifiers(search, pageNumber, pageSize);
-       
+        menudata.Paginationmodifiers = _menuService.GetAllModifiers(search, pageNumber, pageSize);
+
         return PartialView("_AddExisingModifierPaginationPartial", menudata.Paginationmodifiers);
     }
     #endregion
 
     #region menu list of modifier group get
-    public IActionResult GetAllModifierGroups(){
+    [PermissionAuthorize("Menu.View")]
+    public IActionResult GetAllModifierGroups()
+    {
         MenuViewModel menudata = new();
         menudata.modifiergroupList = _menuService.GetAllModifierGroups();
-        return PartialView("_ModifierGroupListPartial",menudata);
+        return PartialView("_ModifierGroupListPartial", menudata);
     }
     #endregion
 
 
     #region Add Category 
+    [PermissionAuthorize("Menu.EditAdd")]
     public async Task<IActionResult> AddCategory(MenuViewModel menuvm)
     {
         string token = Request.Cookies["AuthToken"];
@@ -135,6 +143,7 @@ public class MenuController : Controller
     #endregion
 
     #region EditCategory
+    [PermissionAuthorize("Menu.EditAdd")]
     public async Task<IActionResult> EditCategory(MenuViewModel menuvm)
     {
         string token = Request.Cookies["AuthToken"];
@@ -155,6 +164,7 @@ public class MenuController : Controller
 
 
     #region delete category
+    [PermissionAuthorize("Menu.Delete")]
     public async Task<IActionResult> DeleteCategory(long id)
     {
         var CategoryDeleteStatus = await _menuService.DeleteCategory(id);
@@ -168,8 +178,18 @@ public class MenuController : Controller
     }
     #endregion
 
+    #region get all modifiers from odifier id
+    public IActionResult getAllmodifiersByModifierGroupId(long modGrpID){
+        MenuViewModel menuvm = new();
+        ModifierGroupForItem modGrpDetails =new();
+        // modGrpDetails.modifierList = _menuService.getAllmodifiersByModifierGroupId(modGrpID);
+
+        return PartialView("_ModifierGroupInItemPartial",menuvm);
+    }
+    #endregion
 
     #region AddItems
+    [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
     public async Task<IActionResult> AddItem(MenuViewModel addItemViewModel)
     {
@@ -218,6 +238,7 @@ public class MenuController : Controller
 
 
     #region  edit item Get
+    [PermissionAuthorize("Menu.EditAdd")]
     public IActionResult EditItem(long itemID)
     {
         return Json(_menuService.GetItemByItemID(itemID));
@@ -226,6 +247,7 @@ public class MenuController : Controller
 
 
     #region  edititem post
+    [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
     public async Task<IActionResult> EditItem(MenuViewModel menuvm)
     {
@@ -270,6 +292,7 @@ public class MenuController : Controller
     #endregion
 
     #region delete item
+    [PermissionAuthorize("Menu.Delete")]
     public async Task<IActionResult> DeleteItem(long itemID)
     {
         var CategoryDeleteStatus = await _menuService.DeleteItem(itemID);
@@ -284,16 +307,18 @@ public class MenuController : Controller
     #endregion
 
     #region AddModifier get
+    [PermissionAuthorize("Menu.EditAdd")]
     public IActionResult AddModifierModal()
     {
-        MenuViewModel menuvm=new MenuViewModel();
-         menuvm.modifiergroupList = _menuService.GetAllModifierGroups();
+        MenuViewModel menuvm = new MenuViewModel();
+        menuvm.modifiergroupList = _menuService.GetAllModifierGroups();
         return PartialView("_AddModifierModal", menuvm);
     }
     #endregion
 
 
     #region Add Modifier post
+    [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
     public async Task<IActionResult> AddModifier([FromForm] MenuViewModel menuvm)
     {
@@ -304,45 +329,157 @@ public class MenuController : Controller
         var addItemStatus = await _menuService.AddModifier(menuvm.addModifier, userId);
         if (addItemStatus)
         {
-            TempData["SuccessMessage"] = "Item Added SuccessFully.";
-            return Json("done");
+            // TempData["SuccessMessage"] = "Item Added SuccessFully.";
+            return Json(new{ success = true, text="Modifier Added Successfully"});
         }
-        TempData["ErrorMessage"] = "Error while ItemAdd. Try Again..";
-        return Json(" not done");
+        // TempData["ErrorMessage"] = "Error while ItemAdd. Try Again..";
+            return Json(new{ success = false, text="Error while Modifier add. Try Again.."});
     }
     #endregion
 
-    // #region AddModifierGroup get
-    // public IActionResult AddModifierGroup(){
-    //     MenuViewModel menuvm=new MenuViewModel();
-    //     //  menuvm.modifiergroupList = _menuService.GetAllModifierGroups();
-    //     return PartialView("_AddModifierGroupPartial", menuvm);
-    // }    
-    // #endregion
 
-    #region AddModifierGroup post
+    [PermissionAuthorize("Menu.EditAdd")]
+    public IActionResult GetModifierDetailsByModifierId(long modID)
+    {
+        MenuViewModel MenuVM = new MenuViewModel();
+        var ModifierGroupList = _menuService.GetAllModifierGroups();
+        ViewBag.modifierGroupList = new SelectList(ModifierGroupList, "ModifierGrpId", "ModifierGrpName");
+        MenuVM.addModifier = _menuService.GetModifierDetailsByModifierId(modID);
+        return PartialView("_UpdateModifierModalPartial", MenuVM);
+    }
+
+    [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
-    public async Task<IActionResult> AddModifierGroup(MenuViewModel menuvm ){
+    public async Task<IActionResult> EditModifier([FromForm] MenuViewModel Menuvm)
+    {
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
-        var addModifierGrpStatus =await  _menuService.AddModifierGroup(menuvm.addmodgrpVm,userId);
-        if(addModifierGrpStatus){
-            return Json("modifier added");
+
+        var editModifierStatus = await _menuService.EditModifier(Menuvm.addModifier, userId);
+
+        if (editModifierStatus)
+        {
+            // TempData["SuccessMessage"] = "Modifier Updated successfully";
+            return Json(new{ success = true, text="Modifier Updated successfully"});
         }
-        return Json("not added");
+        // TempData["ErrorMessage"] = "Failed to Update Modifier";
+        return Json(new{ success = false, text="Failed to Update Modifier"});
+    }
+
+    #region Delete Modifier post
+    [Authorize(Roles = "Admin")]
+    [PermissionAuthorize("Menu.Delete")]
+    [HttpPost]
+    public async Task<IActionResult> DeleteModifier(long modID)
+    {
+        var isDeleted = await _menuService.DeleteModifier(modID);
+
+        if (isDeleted)
+        {
+            // TempData["SuccessMessage"] = "Modifier deleted successfully";
+            return Json(new{ success = true, text="Modifier deleted successfully"});
+        }
+        // TempData["ErrorMessage"] = "Modifier cannot be deleted";
+        return Json(new{ success = false, text="Modifier cannot be deleted"});
     }
     #endregion
 
-    #region Delete Mod Grp
+
+    #region AddModifierGroup post
+    [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
-    public async Task<IActionResult> DeleteModGrp(long modgrpId)
+    public async Task<IActionResult> AddModifierGroup(MenuViewModel menuvm)
     {
-        var deletemodgrpStatus =await _menuService.DeleteModifierGroup(modgrpId);
-        if(deletemodgrpStatus){
-            return Json("modifier group dleted");
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        var addModifierGrpStatus = await _menuService.AddModifierGroup(menuvm.addmodgrpVm, userId);
+        if (addModifierGrpStatus)
+        {
+            return Json(new{ success = true, text="modifierGroup added successfully"});
         }
-        return Json("modifier group not deleted");
+        return Json(new{ success = false, text="Error while Add Modifier group. Try Again!"});
+    }
+    #endregion
+
+    #region Edit Modifier Group get
+    [PermissionAuthorize("Menu.EditAdd")]
+    public IActionResult EditModGrp(long ModGrpId)
+    {
+        var modifiers = _menuService.GetModifiersByModifierGrpId(ModGrpId);
+        var modifierGroup = _menuService.GetModifiergroupByGrpID(ModGrpId);
+
+        return Json(new { modifiers, modifierGroup });
+
+    }
+    #endregion
+
+    #region editmod grp post
+    // [PermissionAuthorize("Menu.EditAdd")]
+    [HttpPost]
+    public async Task<IActionResult> EditModifierGroup(MenuViewModel menuvm)
+    {
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        var editModStatus = await _menuService.EditModifierGroup(menuvm.addmodgrpVm, userId);
+        if (editModStatus)
+        {
+            return Json(new{grpId=menuvm.addmodgrpVm.ModifierGrpId,success = true, text="modifierGroup Updated successfully"});
+        }
+        else
+        {
+            return Json(new{success = false, text="modifierGroup not Updated.Try Again!"});
+        }
+    }
+    #endregion
+
+    //deleteModifierFromModGrpAfterEdit?modGrpID=${modGrpID}&modifierID=${editModTempId[i]}
+    #region deleteModifierFromModGrpAfterEdit post
+    // [PermissionAuthorize("Menu.EditAdd")]
+    [HttpPost]
+    public async Task<IActionResult> DeleteModifierFromModGrpAfterEdit(long modGrpID, long modifierID)
+    {
+        var deleteModStatus = await _menuService.DeleteModifierFromModGrpAfterEdit(modGrpID, modifierID);
+        if (deleteModStatus)
+        {
+            return Json("existing modifier deleted success while edit mod grp");
+        }
+        return Json("fail to delete existing mod in modgrp while edit");
+    }
+    #endregion
+
+    //addModifierToModGrpAfterEdit?modGrpID=${modGrpID}&modifierID=${modTempID[i]}
+    #region addModifierToModGrpAfterEdit post
+    // [PermissionAuthorize("Menu.EditAdd")]
+    [HttpPost]
+    public async Task<IActionResult> addModifierToModGrpAfterEdit(long modGrpID, long modifierID)
+    {
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        var addModStatus = await _menuService.AddModifierToModGrpAfterEdit(modGrpID, modifierID, userId);
+        if (addModStatus)
+        {
+            return Json("existing modifier added success while edit mod grp");
+        }
+        return Json("fail to add existing mod in modgrp while edit");
+    }
+    #endregion
+
+
+    #region Delete Mod Grp
+    [PermissionAuthorize("Menu.Delete")]
+    [HttpPost]
+    public async Task<IActionResult> DeleteModGrp(long modGrpid)
+    {
+        var deletemodgrpStatus = await _menuService.DeleteModifierGroup(modGrpid);
+        if (deletemodgrpStatus)
+        {
+            return Json(new{success = true, text="modifier group deleted successfully"});
+        }
+        return Json(new{success = false, text="modifier group not deleted"});
     }
     #endregion
 

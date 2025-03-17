@@ -1,7 +1,7 @@
 using DAL.Models;
 using DAL.ViewModels;
 
-namespace BLL.Service.Interfaces;
+namespace BLL.Interfaces;
 
 public interface IUserLoginService
 {

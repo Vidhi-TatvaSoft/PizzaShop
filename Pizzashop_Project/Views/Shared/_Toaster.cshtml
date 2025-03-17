@@ -1,0 +1,21 @@
+<script>
+
+    function successToaster(text) {
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "timeOut": "2000"
+        };
+        toastr.success(text);
+    }
+
+    function errorToaster(text) {
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "timeOut": "2000"
+        };
+        toastr.error(text);
+    }
+
+</script>
