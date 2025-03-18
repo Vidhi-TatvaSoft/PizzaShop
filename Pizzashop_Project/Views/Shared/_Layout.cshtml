@@ -100,10 +100,11 @@
 
                         <!-- Table and Section -->
                         @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.View")).Succeeded){
-                        <div class="inactive-div d-flex p-3">
+                        <a class="d-flex align-items-center  p-3 @((ViewData["sidebar-active"] as string) == "TableAndSection" ? "active-div" : "")"
+                            style="text-decoration: none;" asp-action="TableAndSection" asp-controller="TableAndSection">
                             <i class="fa-solid fa-table-cells-large "></i>
                             <p class="table-text-inactive text-size-set  m-0 ms-3">Table and Section</p>
-                        </div>
+                        </a>
                         }
 
                         <!-- taxes and fees -->

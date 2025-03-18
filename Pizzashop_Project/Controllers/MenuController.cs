@@ -43,16 +43,8 @@ public class MenuController : Controller
         menudata.categories = _menuService.GetAllCategories();
         if (catID == null)
         {
-            // menudata.itemList = _menuService.GetItemsByCategory(-100).Items;
-            // ViewBag.catSelect = menudata.categories[0].CategoryId;
             menudata.Pagination = _menuService.GetItemsByCategory(menudata.categories[0].CategoryId, search, pageNumber, pageSize);
         }
-
-        // if (catID != null)
-        // {
-        //     // ViewBag.catSelect = catID;
-        //     menudata.Pagination = _menuService.GetItemsByCategory(catID, search, pageNumber, pageSize);
-        // }
 
         // modifiers---------------------------
         menudata.modifiergroupList = _menuService.GetAllModifierGroups();
@@ -60,11 +52,6 @@ public class MenuController : Controller
         {
             menudata.Paginationmodifiers = _menuService.GetModifiersByModifierGrp(menudata.modifiergroupList[0].ModifierGrpId, search, pageNumber, pageSize);
         }
-        // if(modifierGrpID != null)
-        // {
-        //     menudata.Paginationmodifiers = _menuService.GetModifiersByModifierGrp(modifierGrpID,search,pageNumber,pageSize);
-        // }
-
         ViewData["sidebar-active"] = "Menu";
         return View(menudata);
     }

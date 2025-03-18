@@ -421,6 +421,7 @@
                         <input type="text" asp-for="@Model.addmodgrpVm.ModifierGrpName" class="form-control"
                             id="AddModGrpName" placeholder="name" required>
                         <label for="AddModGrpName">Name</label>
+                        <span asp-validation-for="@Model.addmodgrpVm.ModifierGrpName"></span>
                     </div>
                     <div class="form-floating">
                         <textarea class="form-control"  asp-for="@Model.addmodgrpVm.Desciption"
@@ -1453,7 +1454,7 @@
                 console.log(name);
                 if(tag.checked){
                     if(modTempName.indexOf(name)==-1){
-                        modTempID.push(id);
+                        modTempID.push(parseInt(id));
                         modTempName.push(name); 
                     }
                 }
@@ -1479,11 +1480,12 @@
                 modTempName.splice(modTempName.indexOf(name),1);
                 DisplayNamesOfExistingMod();
             }
+            
             function RemoveFromListForEdit(id,name){
                 console.log("remove")
                 console.log(id)
                 console.log(name);
-                modTempID.splice(editModTempId.indexOf(id),1);
+                modTempID.splice(editModTempId.indexOf(parseInt(id)),1);
                 modTempName.splice(modTempName.indexOf(name),1);
                 DisplayNamesOfExistingModForEdit();
             }
@@ -1718,7 +1720,7 @@
                              url: `/Menu/DeleteItem?itemID=${itemID}`,
                             type: "GET",
                             success: function (data) {
-                                
+                                currentPage=1;
                                 loadTable(catID, searchText, currentPage, pageSize);
                             }
                         })
@@ -1866,7 +1868,7 @@
                             type: "POST",
                             success: function (data) {
                                 $("#checkboxForSelectAllModifier").prop("disabled", true);
-                                currentPage_mod = 1;
+                                currentPageMod = 1;
                                 $(".btn-close").click();
                                loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
                                 loadModifierGroup();
@@ -1963,7 +1965,7 @@
                                 errorToaster(res.text);
                             }
                             $(".btn-close").click();
-                            loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                            loadTablemodifier(res.grpId, searchTextMod, currentPageMod, pageSizeMod);
                             loadModifierGroup();
                             SelectAllModifiers();
                             modTempID=[];

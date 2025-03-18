@@ -1,0 +1,44 @@
+@using DAL.ViewModels;
+@model PaginationViewModel<TableViewModel>
+
+@* @{bool ismassdelete = false;} *@
+@if (Model.Items.Count == 0)
+{
+    <tr>
+        <td colspan="6" class="text-center text-danger fw-bold">No Data Found</td>
+    </tr>
+}
+else
+{
+    @foreach (var item in Model.Items)
+    {
+        <tr>
+            <td class="d-md-flex"><input type="checkbox" class="massDeleteClassforSection" data-checkid="@item.TableId" class="me-3" onclick="checkboxTickManage()">
+                @item.TableName
+            </td>
+            <td>@item.Capacity</td>
+            <td class="">
+                <div class="form-check form-switch">
+                    @if (item.Status == "occupied")
+                    {
+                       <div class="text-center text-white bg-secondary rounded-pill w-25 p-lg-0  mt-1">
+                        Occupied</div>
+                    }
+                    else
+                    {
+                        <div class="text-center text-white bg-success rounded-pill w-25 p-lg-0 ps-1 pe-4 mt-1">
+                        Available</div>
+                    }
+            
+                </div>
+            </td>
+            <td>
+                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" data-id="@item.TableId" data-bs-toggle="modal" data-bs-target="#EditSectionModal"></i>
+                <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#DeleteSectionModal"
+                    data-id="@item.TableId" ></i>
+            </td>
+            
+        </tr>
+    }
+}
+<input type="hidden" value="@Model.TotalCount" id="totalCount">

@@ -25,6 +25,7 @@ builder.Services.AddScoped<HttpContextAccessor>();
 builder.Services.AddScoped<IRolesPermission,RolesPermissionService>();
 builder.Services.AddScoped<IMenuService,MenuService>();
 builder.Services.AddScoped<IAuthorizationHandler,PermissionHandler>();
+builder.Services.AddScoped<ITableAndSection,TableAndSectionService>();
 builder.Services.AddControllersWithViews();
 
 

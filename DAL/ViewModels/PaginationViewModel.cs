@@ -18,6 +18,4 @@ public class PaginationViewModel<T>
         PageNumber = pageNumber;
         PageSize = pageSize;
     }
-
-
 }

@@ -25,12 +25,11 @@ public class MenuViewModel
 
     public AddModifierViewModel addModifier {get; set;}
 
-
     public PaginationViewModel<ModifierViewModel> Paginationmodifiers { get; set; }
 
     public AddModifierGroupViewModel addmodgrpVm{get;set;}
 
-    public List<ModifierViewModel> ModifiersList {get;set;}
+    // public List<ModifierViewModel> ModifiersList {get;set;}
 
     public List<ModifierGroupForItem> modifierGroupForItemList{get;set;}
     // public Modifier modifier{get;set;}
