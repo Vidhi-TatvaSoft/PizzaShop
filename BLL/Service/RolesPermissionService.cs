@@ -20,10 +20,6 @@ public class RolesPermissionService : IRolesPermission
         return _context.Roles.ToList();
     }
 
-    // public List<Permissionmanage> permissionByRole(int id)
-    // {
-    //     return _context.Permissionmanages.Include(x=>x.Role).Where(x => x.RoleId == id).OrderBy(x => x.PermissionId).ToList();
-    // }
 
     public List<RolesPermissionViewModel> permissionByRole(string name)
     {

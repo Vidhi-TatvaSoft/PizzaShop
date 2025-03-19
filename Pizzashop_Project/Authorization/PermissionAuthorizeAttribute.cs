@@ -9,5 +9,4 @@ public class PermissionAuthorizeAttribute : AuthorizeAttribute
     {
         Policy = $"{permission}";
     }
-
 }

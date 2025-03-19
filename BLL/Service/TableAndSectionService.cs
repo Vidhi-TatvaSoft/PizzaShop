@@ -99,10 +99,10 @@ public class TableAndSectionService : ITableAndSection
 
     #region Delete section
     public async Task<bool> DeleteSection(long sectionID){
-        // var tablesInSection = _context.Tables.Where(x=>x.SectionId==sectionID );
-        // for(int i=0; i < tablesInSection.Count(); i++){
-        //     tablesInSection
-        // }
+        var tablesInSection = _context.Tables.Where(x=>x.SectionId==sectionID ).ToList();
+        for(int i=0; i < tablesInSection.Count(); i++){
+            tablesInSection[i].Isdelete=true;
+        }
 
         var sectionToDelete =await _context.Sections.FirstOrDefaultAsync(x=>x.SectionId==sectionID);
         if(sectionToDelete == null){return false;}
@@ -134,6 +134,20 @@ public class TableAndSectionService : ITableAndSection
         await _context.SaveChangesAsync();
         return true;
     }
+    #endregion
+
+
+
+    #region delete table
+    public async Task<bool> DeleteTable(long id){
+        Table table =await _context.Tables.FirstOrDefaultAsync(x=>x.TableId==id && x.Isdelete==false);
+        if(table==null){return false;}
+        table.Isdelete=true;
+        _context.Tables.Update(table);
+        _context.SaveChangesAsync();
+        return true;
+    }
+
     #endregion
 
 }

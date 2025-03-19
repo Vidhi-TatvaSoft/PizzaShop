@@ -80,8 +80,6 @@ public class MenuService : IMenuService
         _context.Update(category);
         await _context.SaveChangesAsync();
         return true;
-
-
     }
 
 
@@ -153,8 +151,39 @@ public class MenuService : IMenuService
 
         await _context.Items.AddAsync(item);
         await _context.SaveChangesAsync();
+          foreach (var modifier in addItemvm.ModifierGroupList)
+            {
+                var itemModifierMapping = new Itemmodifiergroupmapping
+                {
+                    ItemId = item.ItemId,
+                    ModifierGrpId = modifier.ModifierGrpId,
+                    Minvalue = modifier.min,
+                    Maxvalue = modifier.max
+                };
+                _context.Itemmodifiergroupmappings.Add(itemModifierMapping);
+            }
+            await _context.SaveChangesAsync();
+
         return true;
     }
+
+        public List<Modifier> GetModifiersByGroup(long groupId){
+        var data = _context.Modifiers.Where(x => x.ModifierGrpId == groupId).ToList();
+        if (data != null)
+        {
+            return data;
+        }
+        return null;
+    }
+    public string GetModifiersGroupName(long groupId){
+        var name = _context.Modifiergroups.FirstOrDefault(x => x.ModifierGrpId == groupId).ModifierGrpName;
+        if (name != null)
+        {
+            return name;
+        }
+        return null;
+    }
+
 
 
     public AddItemViewModel GetItemByItemID(long itemID){
@@ -174,6 +203,18 @@ public class MenuService : IMenuService
             ShortCode = items[0].ShortCode,
             Description=items[0].Description,
         };
+         var data = _context.Itemmodifiergroupmappings
+        .Where(e => e.ItemId == itemID)
+        .Select(x => new ModifierGroupForItem
+            {
+                ModifierGrpId = (long)x.ModifierGrpId,
+                min = x.Minvalue,
+                max = x.Maxvalue,
+                modifierList = _context.Modifiers.Where(e => e.ModifierGrpId == x.ModifierGrpId).ToList(),
+                ModifierGrpName = _context.Modifiergroups.FirstOrDefault(e => e.ModifierGrpId == x.ModifierGrpId).ModifierGrpName
+            }).ToList();
+        
+        editItemvm.ModifierGroupList = data;
         // editItemvm.CategoryId = items[0].CategoryId;
         // Assign other properties as needed
         return editItemvm;
@@ -184,7 +225,7 @@ public class MenuService : IMenuService
         if(item == null){
             return false;
         }
-        var presentItem = _context.Items.FirstOrDefaultAsync(x=>x.ItemId!=item.ItemId && x.ItemName.ToLower().Trim()==item.ItemName.ToLower().Trim()&& x.Isdelete==false);
+        var presentItem = _context.Items.FirstOrDefaultAsync(x=> x.Isdelete==false);
         if(presentItem != null){return false;}
         item.CategoryId = editvm.CategoryId;
         item.ItemName=editvm.ItemName;
@@ -348,7 +389,7 @@ public class MenuService : IMenuService
       
     }
 
-        public async Task<bool> DeleteModifier(long modID)
+    public async Task<bool> DeleteModifier(long modID)
     {
         var modifierPresent = _context.Modifiers.FirstOrDefault(x => x.ModifierId == modID && x.Isdelete == false);
         if (modifierPresent != null)

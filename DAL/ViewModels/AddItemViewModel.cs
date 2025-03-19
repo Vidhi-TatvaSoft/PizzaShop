@@ -32,6 +32,6 @@ public class AddItemViewModel
 
     public decimal? TaxValue { get; set; }
 
-    
+    public List<ModifierGroupForItem> ModifierGroupList{get;set;}
 
 }

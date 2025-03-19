@@ -12,9 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Pizzashop_Project.Authorization;
+using Newtonsoft.Json;
 
 namespace Pizzashop_Project.Controllers;
-[Authorize(Roles = "Admin")]
+// [Authorize(Roles = "Admin")]
 public class MenuController : Controller
 {
 
@@ -165,7 +166,7 @@ public class MenuController : Controller
     }
     #endregion
 
-    #region get all modifiers from odifier id
+    #region get all modifiers from modifier id
     public IActionResult getAllmodifiersByModifierGroupId(long modGrpID){
         MenuViewModel menuvm = new();
         ModifierGroupForItem modGrpDetails =new();
@@ -175,19 +176,62 @@ public class MenuController : Controller
     }
     #endregion
 
+#region get modifier by mdifier grp for item
+ public IActionResult GetModifiersByGroup(string data)
+    {
+        MenuViewModel mVM = new MenuViewModel();
+        List<ModifierGroupForItem> deserializedData = JsonConvert.DeserializeObject<List<ModifierGroupForItem>>(data);
+
+        if (deserializedData != null)
+        {
+            mVM.additem = mVM.additem ?? new AddItemViewModel();
+            mVM.additem.ModifierGroupList = mVM.additem.ModifierGroupList ?? new List<ModifierGroupForItem>();
+            var i = 0;
+            foreach (ModifierGroupForItem deItems in deserializedData)
+            {
+                mVM.additem.ModifierGroupList.Add(deItems);
+                mVM.additem.ModifierGroupList[i].modifierList = _menuService.GetModifiersByGroup(deItems.ModifierGrpId);
+                mVM.additem.ModifierGroupList[i].ModifierGrpName = _menuService.GetModifiersGroupName(deItems.ModifierGrpId);
+                i++;
+            }
+        }
+          mVM.categories = _menuService.GetAllCategories();
+            mVM.modifiergroupList = _menuService.GetAllModifierGroups();
+       
+        return PartialView("_ModifierGroupInItemPartial", mVM);
+    }
+
+#endregion
+
+
     #region AddItems
     [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
-    public async Task<IActionResult> AddItem(MenuViewModel addItemViewModel)
+    public async Task<IActionResult> AddItem(MenuViewModel MenuViewModel)
     {
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
 
-        if (addItemViewModel.additem.ItemFormImage != null)
+              List<ModifierGroupForItem> deserializedData = JsonConvert.DeserializeObject<List<ModifierGroupForItem>>(MenuViewModel.itemData);
+
+        if (deserializedData != null)
+        {
+            MenuViewModel.additem = MenuViewModel.additem ?? new AddItemViewModel();
+            MenuViewModel.additem.ModifierGroupList = MenuViewModel.additem.ModifierGroupList ?? new List<ModifierGroupForItem>();
+
+            foreach (ModifierGroupForItem deItems in deserializedData)
+            {
+                MenuViewModel.additem.ModifierGroupList.Add(deItems);
+            }
+        }
+
+
+
+        if (MenuViewModel.additem.ItemFormImage != null)
         {
 
-            var extension = addItemViewModel.additem.ItemFormImage.FileName.Split(".");
+            var extension = MenuViewModel.additem.ItemFormImage.FileName.Split(".");
             if (extension[extension.Length - 1] == "jpg" || extension[extension.Length - 1] == "jpeg" || extension[extension.Length - 1] == "png")
             {
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
@@ -196,14 +240,14 @@ public class MenuController : Controller
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
 
-                string fileName = $"{Guid.NewGuid()}_{addItemViewModel.additem.ItemFormImage.FileName}";
+                string fileName = $"{Guid.NewGuid()}_{MenuViewModel.additem.ItemFormImage.FileName}";
                 string fileNameWithPath = Path.Combine(path, fileName);
 
                 using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
                 {
-                    addItemViewModel.additem.ItemFormImage.CopyTo(stream);
+                    MenuViewModel.additem.ItemFormImage.CopyTo(stream);
                 }
-                addItemViewModel.additem.ItemImage = $"/uploads/{fileName}";
+                MenuViewModel.additem.ItemImage = $"/uploads/{fileName}";
             }
             else
             {
@@ -212,7 +256,7 @@ public class MenuController : Controller
             }
         }
 
-        var addItemStatus = await _menuService.AddItem(addItemViewModel.additem, userId);
+        var addItemStatus = await _menuService.AddItem(MenuViewModel.additem, userId);
         if (addItemStatus)
         {
             TempData["SuccessMessage"] = "Item Added SuccessFully.";
@@ -223,7 +267,6 @@ public class MenuController : Controller
     }
     #endregion
 
-
     #region  edit item Get
     [PermissionAuthorize("Menu.EditAdd")]
     public IActionResult EditItem(long itemID)
@@ -231,7 +274,33 @@ public class MenuController : Controller
         return Json(_menuService.GetItemByItemID(itemID));
     }
     #endregion
+      public IActionResult EditModifiersByGroup(string data)
+    {
+        MenuViewModel mVM = new MenuViewModel();
+        List<ModifierGroupForItem> deserializedData = JsonConvert.DeserializeObject<List<ModifierGroupForItem>>(data);
 
+        if (deserializedData != null)
+        {
+            mVM.additem = mVM.additem ?? new AddItemViewModel();
+            mVM.additem.ModifierGroupList = mVM.additem.ModifierGroupList ?? new List<ModifierGroupForItem>();
+            var i = 0;
+            foreach (ModifierGroupForItem deItems in deserializedData)
+            {
+                mVM.additem.ModifierGroupList.Add(deItems);
+                mVM.additem.ModifierGroupList[i].modifierList = _menuService.GetModifiersByGroup(deItems.ModifierGrpId);
+                mVM.additem.ModifierGroupList[i].ModifierGrpName = _menuService.GetModifiersGroupName(deItems.ModifierGrpId);
+                i++;
+            }
+        }
+
+        mVM.categories = _menuService.GetAllCategories();
+        mVM.modifiergroupList = _menuService.GetAllModifierGroups();
+        return PartialView("_EditModifierGroupInItemPartial", mVM);
+    }
+
+    #region edit item modifier group get
+
+    #endregion
 
     #region  edititem post
     [PermissionAuthorize("Menu.EditAdd")]
@@ -303,7 +372,6 @@ public class MenuController : Controller
     }
     #endregion
 
-
     #region Add Modifier post
     [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
@@ -371,7 +439,6 @@ public class MenuController : Controller
         return Json(new{ success = false, text="Modifier cannot be deleted"});
     }
     #endregion
-
 
     #region AddModifierGroup post
     [PermissionAuthorize("Menu.EditAdd")]

@@ -11,5 +11,6 @@ public interface ITableAndSection
     Task<bool> EditSection(Section section,long userId);
     Task<bool> DeleteSection(long sectionID);
     Task<bool> AddTable(TableViewModel table, long userId);
+    Task<bool> DeleteTable(long id);
 }
 

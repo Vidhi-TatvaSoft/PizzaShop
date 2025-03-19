@@ -29,9 +29,11 @@ public class MenuViewModel
 
     public AddModifierGroupViewModel addmodgrpVm{get;set;}
 
+    public string itemData{get;set;}
+
     // public List<ModifierViewModel> ModifiersList {get;set;}
 
-    public List<ModifierGroupForItem> modifierGroupForItemList{get;set;}
+    // public List<ModifierGroupForItem> modifierGroupForItemList{get;set;}
     // public Modifier modifier{get;set;}
 
 

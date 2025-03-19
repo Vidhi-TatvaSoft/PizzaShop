@@ -1,3 +1,4 @@
+@using DAL.ViewModels
 @model DAL.ViewModels.MenuViewModel;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -19,6 +20,7 @@
                         <span asp-validation-for="@Model.category.CategoryName" class="text-danger"></span>
                         <label for="floatingInput">Name</label>
                     </div>
+    using DAL.ViewModels;
                     <div class="form-floating">
                         <textarea class="form-control" placeholder="Leave a comment here"
                             asp-for="@Model.category.Description" id="floatingTextarea"></textarea>
@@ -100,7 +102,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Add New Menu Item</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form asp-action="AddItem" enctype="multipart/form-data">
+            <form id="itemAddForms"  enctype="multipart/form-data">
             <div class="modal-body">
                 <div class="container">
                     <div class="row">
@@ -227,11 +229,12 @@
 
                         <!-- Right Section (Modifiers) -->
                         <div class="col-lg-5 col-md-12 bg-light p-3 rounded">
-                            <select class="w-100 p-1" onchange="AddToListOfModifierGroup(this.value)">
+                            <select class="w-100 p-1" id="Modifier" onchange="GetModifierByGroup()">
                                 @foreach(var modgrp in Model.modifiergroupList){
                                     <option value="@modgrp.ModifierGrpId">@modgrp.ModifierGrpName</option>
                                 }
                             </select>
+                            <div id="ItemByModifiers"></div>
                             
                         </div>
                     </div>
@@ -257,7 +260,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Edit Menu Item</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form asp-action="EditItem" enctype="multipart/form-data">
+            <form enctype="multipart/form-data">
             <div class="modal-body">
                 <div class="container">
                     <div class="row">
@@ -388,6 +391,7 @@
                             <select>
                                 <option value="">select a modifier Group</option>
                             </select>
+                            <div id="EditItemByModifiers"></div>
                             
                         </div>
                         
@@ -1069,12 +1073,23 @@
 
         //details of edit items
         function getDetailsForEditItem(tag){
+
             var itemID =tag.getAttribute("data-id");
             $.ajax({
                 url:`/Menu/EditItem?itemID=${itemID}`,
                 type:"GET",
                 success: function(data){
-                    console.log(data);
+                    console.log(data,"test");
+                     @* var serializedData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(data.ModifierGroupList ?? new List<ModifierGroupForItem>(),
+                            new System.Text.Json.JsonSerializerOptions
+                            {
+                                ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve,
+                                WriteIndented = false
+                            }));*@
+
+                    var editItemData = data.modifierGroupList || []; 
+
+                    console.log(editItemData,"test2");
                     document.getElementById("itemIdForDeleteItem").value =tag.getAttribute("data-id");
                     document.getElementById("itemName").value = data.itemName;
                     document.getElementById("itemrate").value=data.rate;
@@ -1115,7 +1130,17 @@
                     }
                     document.getElementById(data.unit).setAttribute("selected","selected");
 
-
+                    $.ajax({
+                        url: "/Menu/EditModifiersByGroup",
+                        type: "GET",
+                        data: { data: JSON.stringify(editItemData) },
+                        success: function (data) {
+                            $('#EditItemByModifiers').html(data);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
                     @* document.getElementById("isAvailable1").value=data.isavailable; *@
                     @* document.getElementById("isDefaultTax1").value=data.isdefaulttax; *@
                 }
@@ -1367,6 +1392,11 @@
     </script>
 
     <script>
+            let currentPage = 1;
+            let pageSize = $("#itemsperpage").val();
+            let searchText = "";  
+            let catID = $("#category-id-items").val();
+
             let modifierGrpID =$("#modifier-group-id").val();
             let currentPageMod=1;
              let currentPageModExist=1;
@@ -1385,6 +1415,29 @@
 
             let modifierGroupForItemIds =[];
             let modifierGroupForItem =[];
+
+            function loadTable(catID, search = "", page = 1, pageSize = 5) {
+                $.ajax({
+                    url: "/Menu/MenuItemPagination",
+                    type: "GET",
+                    data: { catID, search, pageNumber: page, pageSize },
+                    success: function (data) {
+                        $("#itemListBody").html(data);
+                        currentPage = page;
+                        pageSize = parseInt(pageSize);
+                        var totalRecords = parseInt($("#totalCount").val()) || 0;
+                        var startItem = totalRecords === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+                        var endItem = Math.min(currentPage * pageSize, totalRecords);
+
+                        $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
+                        $("#left-arrow").prop("disabled", currentPage === 1);
+                        $("#right-arrow").prop("disabled", currentPage * pageSize >= totalRecords);
+                        $("#checkboxForSelectAllItem").prop("checked", false);
+                        
+                    }
+                });
+            }
+
             //load modifiers btn modID ajax
             function loadTablemodifier(modifierGrpID, search = "", page = 1, pageSize = 5) {
                 $.ajax({
@@ -1504,35 +1557,8 @@
             }
 
         $(document).ready(function () {
-            let currentPage = 1;
-            let pageSize = $("#itemsperpage").val();
-            let searchText = "";  
-            let catID = $("#category-id-items").val();
-            console.log("c: mod", modifierGrpID);
-
-            function loadTable(catID, search = "", page = 1, pageSize = 5) {
-                $.ajax({
-                    url: "/Menu/MenuItemPagination",
-                    type: "GET",
-                    data: { catID, search, pageNumber: page, pageSize },
-                    success: function (data) {
-                        $("#itemListBody").html(data);
-                        currentPage = page;
-                        pageSize = parseInt(pageSize);
-                        var totalRecords = parseInt($("#totalCount").val()) || 0;
-                        var startItem = totalRecords === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-                        var endItem = Math.min(currentPage * pageSize, totalRecords);
-
-                        $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
-                        $("#left-arrow").prop("disabled", currentPage === 1);
-                        $("#right-arrow").prop("disabled", currentPage * pageSize >= totalRecords);
-                        $("#checkboxForSelectAllItem").prop("checked", false);
-                        
-                    }
-                });
-            }
-
             
+            @* console.log("c: mod", modifierGrpID); *@
 
             loadTable(catID, searchText, currentPage, pageSize);
             loadTablemodifier(modifierGrpID,searchTextMod,currentPageMod,pageSizeMod);
@@ -1981,12 +2007,12 @@
                 e.preventDefault();
 
                 let modGrpid = document.getElementById("modGrp-id-fordelete").value;
-                console.log("modgrp:", modGrpid); // Debugging
+                console.log("modgrp:", modGrpid); 
 
                 $.ajax({
                     url: `/Menu/DeleteModGrp`,
                     type: "POST",
-                    data: { modGrpid: modGrpid }, // Send as a standard form field
+                    data: { modGrpid: modGrpid }, 
                     success: function (res) {
                         if (res.success) {
                                 successToaster(res.text);
@@ -2013,6 +2039,236 @@
 
         });
     </script>
+
+    <!----//Add item script -->
+     <script>
+        var itemData = [];
+
+        function GetModifierByGroup() {
+            var selectedValue = $('#Modifier').val();
+            var minOption = $(`#min-selection-${selectedValue}`).val() ?? 0;
+            var maxOption = $(`#max-selection-${selectedValue}`).val() ?? 0;
+
+            var isAdded = itemData.findIndex(item => item.ModifierGrpId === selectedValue);
+
+            if (isAdded == -1) {
+                var modifierGroup = {
+                    ModifierGrpId: selectedValue,
+                    min: minOption,
+                    max: maxOption
+                };
+
+                itemData.push(modifierGroup);
+
+                $.ajax({
+                    url: '/Menu/GetModifiersByGroup',
+                    type: 'GET',
+                    data: { data: JSON.stringify(itemData) },
+                    success: function (data) {
+                        $('#ItemByModifiers').html(data);
+
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+
+        }
+
+        function SetMinByGroup(element) {
+
+            var selectedValue = $(element).data('id');
+            var minOption = $(`#min-selection-${selectedValue}`).val() ?? 0;
+            console.log(minOption);
+            console.log(itemData);
+            var index = itemData.findIndex(item => item.ModifierGrpId == selectedValue);
+
+            if (index != -1) {
+
+                itemData[index].min = minOption;
+            }
+        }
+
+        function SetMaxByGroup(element) {
+
+            var selectedValue = $(element).data('id');
+            var maxOption = $(`#max-selection-${selectedValue}`).val() ?? 0;
+
+            var index = itemData.findIndex(item => item.ModifierGrpId == selectedValue);
+
+            if (index != -1) {
+
+                itemData[index].max = maxOption;
+
+
+            }
+        }
+
+        function RemoveFromList(element) {
+
+            var selectedValue = $(element).data('id');
+
+            var index = itemData.findIndex(item => item.ModifierGrpId == selectedValue);
+
+            if (index != -1) {
+                itemData.splice(index, 1);
+                $.ajax({
+                    url: '/Menu/GetModifiersByGroup',
+                    type: 'GET',
+                    data: { data: JSON.stringify(itemData) },
+                    success: function (data) {
+                        $('#ItemByModifiers').html(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+        }
+
+        function AddItemData(formData) {
+            formData.append('itemData', JSON.stringify(itemData));
+            $.ajax({
+                url: "/Menu/AddItem",
+                type: "POST",
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function () {
+                    loadTable(catID, searchText, currentPage, pageSize);
+                    $('.btn-close').click();
+                }
+            });
+        }
+
+        $('#itemAddForms').on('submit', function (event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+            AddItemData(formData);
+        });
+
+    </script>
+
+    <!----edit item ---->
+    
+<script>
+
+   
+    function EditModifierByGroup() {
+        var selectedValue = $('#EditModifier').val();
+        var minOption = $(`#edit-min-selection-${selectedValue}`).val() ?? 0;
+        var maxOption = $(`#edit-max-selection-${selectedValue}`).val() ?? 0;
+
+        var isAdded = editItemData.findIndex(item => item.ModifierGrpId == selectedValue);
+        console.log(isAdded,"isAdded");
+
+        if (isAdded == -1) {
+            var modifierGroup = {
+                ModifierGrpId: selectedValue,
+                min: minOption,
+                max: maxOption
+            };
+
+            editItemData.push(modifierGroup);
+
+            $.ajax({
+                url: '/Menu/EditModifiersByGroup',
+                type: 'GET',
+                data: { data: JSON.stringify(editItemData) },
+                success: function (data) {
+                    $('#EditItemByModifiers').html(data);
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+    }
+
+    function EditMinByGroup(element) {
+
+        var selectedValue = $(element).data('id');
+        var minOption = $(`#edit-min-selection-${selectedValue}`).val() ?? 0;
+        console.log(minOption);
+        console.log(itemData);
+        var index = editItemData.findIndex(item => item.ModifierGrpId == selectedValue);
+
+        if (index != -1) {
+
+            editItemData[index].min = minOption;
+        }
+    }
+
+    function EditMaxByGroup(element) {
+
+        var selectedValue = $(element).data('id');
+        var maxOption = $(`#edit-max-selection-${selectedValue}`).val() ?? 0;
+
+        var index = editItemData.findIndex(item => item.ModifierGrpId == selectedValue);
+
+        if (index != -1) {
+
+            editItemData[index].max = maxOption;
+
+
+        }
+    }
+
+    function EditRemoveFromList(element) {
+
+        var selectedValue = $(element).data('id');
+
+        var index = editItemData.findIndex(item => item.ModifierGrpId == selectedValue);
+
+        if (index != -1) {
+            console.log("if");
+            editItemData.splice(index, 1);
+            $.ajax({
+                url: '/Menu/EditModifiersByGroup/',
+                type: 'GET',
+                data: { data: JSON.stringify(editItemData) },
+                success: function (data) {
+                    $('#EditItemByModifiers').html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+    }
+    function EditItemData(formData) {
+        formData.append('itemData', JSON.stringify(editItemData));
+        $.ajax({
+            url: "/Menu/EditItem",
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function () {
+                loadTable(catID, searchText, currentPage, pageSize);
+                $('.btn-close').click();
+            }
+        });
+    }
+
+    $('#itemEditForm').on('submit', function (event) {
+        event.preventDefault();
+        let formData = new FormData(this);
+        console.log(formData.values());
+        EditItemData(formData);
+    });
+
+    $(document).ready(function () {
+       
+    });
+
+
+
+</script>
 
  @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

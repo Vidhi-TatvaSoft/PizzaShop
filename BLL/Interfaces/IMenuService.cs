@@ -12,6 +12,8 @@ public interface IMenuService
     Task<bool> DeleteCategory(long catID);
     PaginationViewModel<ItemsViewModel> GetItemsByCategory(long? catID, string search = "", int pageNumber = 1, int pageSize = 5);
     Task<bool> AddItem(AddItemViewModel addItemvm, long userId);
+    public List<Modifier> GetModifiersByGroup(long groupId);
+    public string GetModifiersGroupName(long groupId);
     AddItemViewModel GetItemByItemID(long itemID);
     Task<bool> EditItem(AddItemViewModel editvm, long userId);
     Task<bool> DeleteItem(long itemID);

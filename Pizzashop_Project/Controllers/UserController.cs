@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
-[Authorize(Roles = "Admin")]
+// [Authorize(Roles = "Admin")]
 public class UserController : Controller
 {
     private readonly IUserService _userService;
@@ -146,6 +146,7 @@ public class UserController : Controller
 
     #region Adduser get
     // [Authorize(Roles = "Admin")]
+     [PermissionAuthorize("User.EditAdd")]
     public IActionResult AddUser()
     {
         var Roles = _userService.GetRole();
@@ -162,6 +163,7 @@ public class UserController : Controller
 
 
     #region  addUser post
+     [PermissionAuthorize("User.EditAdd")]
     [HttpPost]
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddUser(UserViewModel user)
@@ -265,13 +267,13 @@ public class UserController : Controller
                 await smtp.SendMailAsync(mess);
             }
             TempData["SuccessMessage"] = "User added successfully. Check your email for login details";
-
+             return RedirectToAction("UsersList","User");
 
         }
         catch (Exception ex)
         {
-            TempData["addUserErrorMessage"] = ex.Message;
-            return View();
+            TempData["SuccessMessage"] ="User Added But Mail not sent because of mail server error";
+            return RedirectToAction("UsersList","User");
         }
 
 
@@ -282,6 +284,7 @@ public class UserController : Controller
 
 
     #region  EditUser get
+     [PermissionAuthorize("User.EditAdd")]
     public IActionResult EditUser(string Email)
     {
         // var token = Request.Cookies["AuthToken"];
@@ -319,6 +322,7 @@ public class UserController : Controller
 
 
     #region EditUser post
+     [PermissionAuthorize("User.EditAdd")]
     [HttpPost]
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> EditUser(UserViewModel user)
@@ -384,6 +388,7 @@ public class UserController : Controller
 
 
     #region changepassword get
+     [PermissionAuthorize("User.EditAdd")]
     public IActionResult ChangePassword()
     {
         return View();
@@ -391,6 +396,7 @@ public class UserController : Controller
     #endregion
 
     #region changepassword post
+     [PermissionAuthorize("User.EditAdd")]
     [HttpPost]
     public IActionResult ChangePassword(ChangePasswordViewModel changePassword)
     {
@@ -421,6 +427,7 @@ public class UserController : Controller
 
 
     #region deleteUser 
+     [PermissionAuthorize("User.Delete")]
     public async Task<IActionResult> deleteUser(string Email)
     {
         var deleteStatus = await _userService.deleteUser(Email);
@@ -448,6 +455,7 @@ public class UserController : Controller
     #endregion
 
     #region Userlist
+     [PermissionAuthorize("User.View")]
     // [Authorize(Roles = "Admin")]
     public IActionResult UsersList()
     {
@@ -460,6 +468,7 @@ public class UserController : Controller
 
 
     #region PaginatedData
+     [PermissionAuthorize("User.View")]
     //    [Authorize(Roles = "Admin")]
     public IActionResult PaginatedData(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
     {
@@ -469,13 +478,6 @@ public class UserController : Controller
     }
     #endregion
 
-
-    // [HttpGet]
-    // public IActionResult GetCountries()
-    // {
-    //     var countries = _userService.GetCountry();
-    //     return Json(new SelectList(countries, "Id", "Name"));
-    // }
 
     #region Getstates
     [HttpGet]

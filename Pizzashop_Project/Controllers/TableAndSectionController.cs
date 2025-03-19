@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using BLL.Interfaces;
 using BLL.Service;
@@ -5,6 +6,7 @@ using BLL.Services;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
 
@@ -21,6 +23,7 @@ public class TableAndSectionController : Controller
         _userLoginSerivce = userLoginService;
     }
 
+    [PermissionAuthorize("TableSection.View")]
     public IActionResult TableAndSection(long? SectionID, string search = "", int pageNumber = 1, int pageSize = 5){
         TableSectionViewModel tablesectionvm = new();
 
@@ -30,10 +33,14 @@ public class TableAndSectionController : Controller
         {
             tablesectionvm.TableList = _tableSectionService.GetTableBySection(tablesectionvm.sectionList[0].SectionId, search, pageNumber, pageSize);
         }
+        else{
+        }
+       
          ViewData["sidebar-active"] = "TableAndSection";
         return View(tablesectionvm);
     }
 
+    [PermissionAuthorize("TableSection.View")]
      public IActionResult TablePagination(long? SectionID, string search = "", int pageNumber = 1, int pageSize = 5)
     {
          TableSectionViewModel tablesectionvm = new();
@@ -41,12 +48,14 @@ public class TableAndSectionController : Controller
         tablesectionvm.sectionList = _tableSectionService.GetAllSections();
 
         if (SectionID != null)
-        {
+        {   
+          
             tablesectionvm.TableList = _tableSectionService.GetTableBySection(SectionID, search, pageNumber, pageSize);
         }
         return PartialView("_TablesListPartial",  tablesectionvm.TableList);
     }
 
+    [PermissionAuthorize("TableSection.EditAdd")]
     public async Task<IActionResult> AddSection(TableSectionViewModel Tablesection){
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
@@ -63,7 +72,8 @@ public class TableAndSectionController : Controller
         }
     }
 
-    public async Task<IActionResult> EditCategory(TableSectionViewModel Tablesection){
+    [PermissionAuthorize("TableSection.EditAdd")]
+    public async Task<IActionResult> EditSection(TableSectionViewModel Tablesection){
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
@@ -80,6 +90,7 @@ public class TableAndSectionController : Controller
     
     }
 
+    [PermissionAuthorize("TableSection.Delete")]
     public async Task<IActionResult> DeleteSection(long id){
         bool deleteSectionStatus = await _tableSectionService.DeleteSection(id);
         if(deleteSectionStatus){
@@ -92,7 +103,7 @@ public class TableAndSectionController : Controller
 
         }
     }
-
+    [PermissionAuthorize("TableSection.EditAdd")]
     public async Task<IActionResult> AddTable(TableSectionViewModel Tablesection){
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
@@ -104,6 +115,20 @@ public class TableAndSectionController : Controller
         }
         else{
             TempData["ErrorMessage"]="Error While Adding Table. Try Again!";
+            return RedirectToAction("TableAndSection");
+
+        }
+    }
+
+    [PermissionAuthorize("TableSection.Delete")]
+    public async Task<IActionResult> Deletetable(long id){
+        bool deleteTableStatus = await _tableSectionService.DeleteTable(id);
+        if(deleteTableStatus){
+            TempData["SuccessMessage"]="Table Deleted Successfully";
+            return RedirectToAction("TableAndSection");
+        }
+        else{
+            TempData["ErrorMessage"]="Error While Deleting Table. Try Again!";
             return RedirectToAction("TableAndSection");
 
         }

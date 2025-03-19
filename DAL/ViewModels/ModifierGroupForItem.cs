@@ -1,3 +1,5 @@
+using DAL.Models;
+
 namespace DAL.ViewModels;
 
 public class ModifierGroupForItem
@@ -10,6 +12,6 @@ public class ModifierGroupForItem
 
     public int max{get;set;}
 
-    public List<AddModifierViewModel> modifierList{get;set;}
+    public List<Modifier> modifierList{get;set;}
 
 }

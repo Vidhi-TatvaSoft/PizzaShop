@@ -31,6 +31,8 @@ public partial class PizzashopDbContext : DbContext
 
     public virtual DbSet<Item> Items { get; set; }
 
+    public virtual DbSet<Itemmodifiergroupmapping> Itemmodifiergroupmappings { get; set; }
+
     public virtual DbSet<Itemtype> Itemtypes { get; set; }
 
     public virtual DbSet<Kot> Kots { get; set; }
@@ -374,6 +376,29 @@ public partial class PizzashopDbContext : DbContext
             entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ItemModifiedByNavigations)
                 .HasForeignKey(d => d.ModifiedBy)
                 .HasConstraintName("items_modified_by_fkey");
+        });
+
+        modelBuilder.Entity<Itemmodifiergroupmapping>(entity =>
+        {
+            entity.HasKey(e => e.ItemmodifiergroupmappingId).HasName("itemmodifiergroupmapping_pkey");
+
+            entity.ToTable("itemmodifiergroupmapping");
+
+            entity.Property(e => e.ItemmodifiergroupmappingId).HasColumnName("itemmodifiergroupmapping_id");
+            entity.Property(e => e.Isdelete).HasColumnName("isdelete");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.Maxvalue).HasColumnName("maxvalue");
+            entity.Property(e => e.Minvalue).HasColumnName("minvalue");
+            entity.Property(e => e.ModifierGrpId).HasColumnName("modifier_grp_id");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.Itemmodifiergroupmappings)
+                .HasForeignKey(d => d.ItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("itemmodifiergroupmapping_item_id_fkey");
+
+            entity.HasOne(d => d.ModifierGrp).WithMany(p => p.Itemmodifiergroupmappings)
+                .HasForeignKey(d => d.ModifierGrpId)
+                .HasConstraintName("itemmodifiergroupmapping_modifier_grp_id_fkey");
         });
 
         modelBuilder.Entity<Itemtype>(entity =>
@@ -859,9 +884,7 @@ public partial class PizzashopDbContext : DbContext
 
             entity.ToTable("tables");
 
-            entity.Property(e => e.TableId)
-                .ValueGeneratedNever()
-                .HasColumnName("table_id");
+            entity.Property(e => e.TableId).HasColumnName("table_id");
             entity.Property(e => e.Capacity).HasColumnName("capacity");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_DATE")
