@@ -23,11 +23,11 @@ public class MenuService : IMenuService
 
     public List<Category> GetAllCategories()
     {
-        return _context.Categories.Where(x => x.Isdelete == false).ToList();
+        return _context.Categories.Where(x => x.Isdelete == false).OrderBy(x=>x.CategoryId).ToList();
     }
 
     public List<Modifiergroup> GetAllModifierGroups(){
-        return _context.Modifiergroups.Where(x=>x.Isdelete==false).ToList();
+        return _context.Modifiergroups.Where(x=>x.Isdelete==false).OrderBy(x=>x.ModifierGrpId).ToList();
     }
 
     public async Task<bool> AddCategory(Category category, long userId)
@@ -75,6 +75,14 @@ public class MenuService : IMenuService
         {
             return false;
         }
+        List<Item> itemsincategory = _context.Items.Where(x=>x.CategoryId==catID && x.Isdelete==false).ToList();
+
+        for(int i=0;i<itemsincategory.Count;i++){
+            itemsincategory[i].Isdelete=true;
+            _context.Update(itemsincategory[i]);
+           await  _context.SaveChangesAsync();
+        }
+
         Category category = await _context.Categories.FirstOrDefaultAsync(x => x.CategoryId == catID);
         category.Isdelete = true;
         _context.Update(category);

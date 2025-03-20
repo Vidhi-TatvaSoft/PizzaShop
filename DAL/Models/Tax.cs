@@ -15,7 +15,7 @@ public partial class Tax
 
     public bool? Isenable { get; set; }
 
-    public bool? Isdefault { get; set; }
+    public bool Isdefault { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

@@ -25,15 +25,15 @@
                     </div>
 
                     <!-- Sandwich -->
-                    @{
-                        var flag = true;
+                    @* @{
+                        var flag = true; *@
 
                         @foreach (var sections in Model.sectionList)
                         {
-                            <div class="Sections-div d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag ? "active-category" : "")"
+                            <div class="Sections-div d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(ViewBag.selectedSection==sections.SectionId ? "active-category" : "")"
                                 data-id="@sections.SectionId">
 
-                                <div class="d-flex ">
+                                <div class="d-flex ">   
                                     <i class="fa-solid fa-receipt mt-1 "></i>
                                     <p class="text-size-set mt-0  m-0 ms-3 ">@sections.SectionName</p>
 
@@ -48,9 +48,9 @@
                                 </div>
 
                             </div>
-                            flag = false;
+                            @* flag = false; *@
                         }
-                    }
+                    @* } *@
 
                 </div>
             </div>
@@ -74,7 +74,7 @@
                         </div>
                         <div class="discard-button">
                             <a href="#" class="btn  p-1 ps-2 pe-2 ms-3 border" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal-deleteAllItem"><i class="fa-solid fa-trash-can "></i></a>
+                                data-bs-target="#DeleteAllTableModal"><i class="fa-solid fa-trash-can "></i></a>
 
                         </div>
                         <div class="additem-button">
@@ -95,12 +95,12 @@
                         <table class="table" id="demo1">
                             <thead>
                                 <tr>
-                                    <th scope="col"><input type="checkbox" id="checkboxForSelectAllSection"
+                                    <th scope="col" class="text-start"><input type="checkbox" id="checkboxForSelectAllSection"
                                             onclick="SelectAllSection()" class="me-3">
                                         Name</th>
-                                    <th scope="col">Capacity</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Action </th>
+                                    <th scope="col" class="text-center">Capacity</th>
+                                    <th scope="col" class="text-center">Status</th>
+                                    <th scope="col" class="text-center">Action </th>
                                 </tr>
                             </thead>
                             <tbody id="TableListBody" style="white-space: nowrap; ">
@@ -178,7 +178,7 @@
                 <h5 class="modal-title">Edit Section</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form asp-action="EditCategory" asp-controller="TableAndSection">
+            <form asp-action="EditSection" asp-controller="TableAndSection">
                 <div class="modal-body">
                     <div class="form-floating mb-3">
                         <input type="hidden" asp-for="@Model.Section.SectionId" id="section-id">
@@ -376,6 +376,30 @@
     </div>
 </div>
 
+<!-- delete selected all Table -->
+<div id="DeleteAllTableModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Conformation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+                <div class="delete-cat-image d-flex flex-column  align-items-center">
+                    <img src="images/toppng.com-warning-icon-2400x2400.png" width="50px" alt="">
+                    <p>Are you sure you want to delete these Tables?</p>
+                </div>
+            </div>
+                @* <input type="hidden" asp-for="@Model.table.TableId" id="table-id-fordeleteTable" name="id"> *@
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary" id="deleteAllTablesModalYesButton" data-bs-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
+                </div>
+          
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <Script>
         let currentPage = 1;
@@ -432,8 +456,6 @@
             console.log(tag.parentElement.parentElement.children[2].children[0].children[0].innerHTML);
             document.getElementById("TableCapacityForEdit").value=tag.parentElement.parentElement.children[1].innerHTML;
             document.getElementById("tableStatusForEdit").value=tag.parentElement.parentElement.children[2].children[0].children[0].innerHTML.trim();
-
-
         }
 
 
@@ -517,7 +539,39 @@
             loadSectionTable(SectionID, searchText, currentPage, pageSize);
             SelectAllSection();
         });
+      
+        //delete all Tables
+            $("#deleteAllTablesModalYesButton").on("click",function(){
+                 var classess=document.getElementsByClassName("massDeleteClassforSection");
+                 @* console.log("delete all") *@
+                 let toasterflag=true;
+                 for(i=0; i<classess.length;i++){
+                    if(classess[i].checked){
+
+                        let tableID = classess[i].getAttribute("data-checkid");
+                        console.log(tableID)
+                        $.ajax({
+                             url: `/TableAndSection/Deletetable?id=${tableID}`,
+                            type: "GET",
+                            success: function (data) {
+                                if (data.success && toasterflag) {
+                                successToaster(data.text);
+                                toasterflag=false;
+                                } 
+                                if(data.success==false &&toasterflag) {
+                                    errorToaster(data.text);
+                                    toasterflag=false;
+                                }
+                                location.reload();
+                                currentPage=1;
+                                loadSectionTable(SectionID, searchText, currentPage, pageSize);
+                            }
+                        })
+                    }
+                }
+            })  
       });
+      
 
     </Script>
 
@@ -539,4 +593,8 @@
             }
         });
     </script>
+@{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+     <partial name="_Toaster"/>
 }

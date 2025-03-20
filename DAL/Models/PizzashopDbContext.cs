@@ -930,11 +930,10 @@ public partial class PizzashopDbContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.Isdefault)
-                .HasDefaultValueSql("false")
-                .HasColumnName("isdefault");
+            entity.Property(e => e.Isdefault).HasColumnName("isdefault");
             entity.Property(e => e.Isdelete).HasColumnName("isdelete");
             entity.Property(e => e.Isenable)
+                .IsRequired()
                 .HasDefaultValueSql("true")
                 .HasColumnName("isenable");
             entity.Property(e => e.ModifiedAt)

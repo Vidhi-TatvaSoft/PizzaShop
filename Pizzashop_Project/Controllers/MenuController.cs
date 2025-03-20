@@ -167,17 +167,18 @@ public class MenuController : Controller
     #endregion
 
     #region get all modifiers from modifier id
-    public IActionResult getAllmodifiersByModifierGroupId(long modGrpID){
+    public IActionResult getAllmodifiersByModifierGroupId(long modGrpID)
+    {
         MenuViewModel menuvm = new();
-        ModifierGroupForItem modGrpDetails =new();
+        ModifierGroupForItem modGrpDetails = new();
         // modGrpDetails.modifierList = _menuService.getAllmodifiersByModifierGroupId(modGrpID);
 
-        return PartialView("_ModifierGroupInItemPartial",menuvm);
+        return PartialView("_ModifierGroupInItemPartial", menuvm);
     }
     #endregion
 
-#region get modifier by mdifier grp for item
- public IActionResult GetModifiersByGroup(string data)
+    #region get modifier by mdifier grp for item
+    public IActionResult GetModifiersByGroup(string data)
     {
         MenuViewModel mVM = new MenuViewModel();
         List<ModifierGroupForItem> deserializedData = JsonConvert.DeserializeObject<List<ModifierGroupForItem>>(data);
@@ -195,13 +196,13 @@ public class MenuController : Controller
                 i++;
             }
         }
-          mVM.categories = _menuService.GetAllCategories();
-            mVM.modifiergroupList = _menuService.GetAllModifierGroups();
-       
+        mVM.categories = _menuService.GetAllCategories();
+        mVM.modifiergroupList = _menuService.GetAllModifierGroups();
+
         return PartialView("_ModifierGroupInItemPartial", mVM);
     }
 
-#endregion
+    #endregion
 
 
     #region AddItems
@@ -213,7 +214,7 @@ public class MenuController : Controller
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
 
-              List<ModifierGroupForItem> deserializedData = JsonConvert.DeserializeObject<List<ModifierGroupForItem>>(MenuViewModel.itemData);
+        List<ModifierGroupForItem> deserializedData = JsonConvert.DeserializeObject<List<ModifierGroupForItem>>(MenuViewModel.itemData);
 
         if (deserializedData != null)
         {
@@ -225,9 +226,6 @@ public class MenuController : Controller
                 MenuViewModel.additem.ModifierGroupList.Add(deItems);
             }
         }
-
-
-
         if (MenuViewModel.additem.ItemFormImage != null)
         {
 
@@ -260,10 +258,10 @@ public class MenuController : Controller
         if (addItemStatus)
         {
             TempData["SuccessMessage"] = "Item Added SuccessFully.";
-            return RedirectToAction("Menu");
+            return RedirectToAction("Menu",new{catId=MenuViewModel.additem.CategoryId});
         }
         TempData["ErrorMessage"] = "Error while ItemAdd. Try Again..";
-        return RedirectToAction("Menu");
+        return RedirectToAction("Menu",new{catId=MenuViewModel.additem.CategoryId});
     }
     #endregion
 
@@ -274,7 +272,9 @@ public class MenuController : Controller
         return Json(_menuService.GetItemByItemID(itemID));
     }
     #endregion
-      public IActionResult EditModifiersByGroup(string data)
+
+    #region EditModifiersByGroup for item
+    public IActionResult EditModifiersByGroup(string data)
     {
         MenuViewModel mVM = new MenuViewModel();
         List<ModifierGroupForItem> deserializedData = JsonConvert.DeserializeObject<List<ModifierGroupForItem>>(data);
@@ -297,10 +297,9 @@ public class MenuController : Controller
         mVM.modifiergroupList = _menuService.GetAllModifierGroups();
         return PartialView("_EditModifierGroupInItemPartial", mVM);
     }
-
-    #region edit item modifier group get
-
     #endregion
+
+
 
     #region  edititem post
     [PermissionAuthorize("Menu.EditAdd")]
@@ -385,14 +384,14 @@ public class MenuController : Controller
         if (addItemStatus)
         {
             // TempData["SuccessMessage"] = "Item Added SuccessFully.";
-            return Json(new{ success = true, text="Modifier Added Successfully"});
+            return Json(new { success = true, text = "Modifier Added Successfully" });
         }
         // TempData["ErrorMessage"] = "Error while ItemAdd. Try Again..";
-            return Json(new{ success = false, text="Error while Modifier add. Try Again.."});
+        return Json(new { success = false, text = "Error while Modifier add. Try Again.." });
     }
     #endregion
 
-
+    #region GetModifierDetailsByModifierId
     [PermissionAuthorize("Menu.EditAdd")]
     public IActionResult GetModifierDetailsByModifierId(long modID)
     {
@@ -402,7 +401,9 @@ public class MenuController : Controller
         MenuVM.addModifier = _menuService.GetModifierDetailsByModifierId(modID);
         return PartialView("_UpdateModifierModalPartial", MenuVM);
     }
+    #endregion
 
+    #region EditModifier
     [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
     public async Task<IActionResult> EditModifier([FromForm] MenuViewModel Menuvm)
@@ -416,11 +417,14 @@ public class MenuController : Controller
         if (editModifierStatus)
         {
             // TempData["SuccessMessage"] = "Modifier Updated successfully";
-            return Json(new{ success = true, text="Modifier Updated successfully"});
+            return Json(new { success = true, text = "Modifier Updated successfully" });
         }
         // TempData["ErrorMessage"] = "Failed to Update Modifier";
-        return Json(new{ success = false, text="Failed to Update Modifier"});
+        return Json(new { success = false, text = "Failed to Update Modifier" });
     }
+
+    #endregion
+
 
     #region Delete Modifier post
     [Authorize(Roles = "Admin")]
@@ -433,10 +437,10 @@ public class MenuController : Controller
         if (isDeleted)
         {
             // TempData["SuccessMessage"] = "Modifier deleted successfully";
-            return Json(new{ success = true, text="Modifier deleted successfully"});
+            return Json(new { success = true, text = "Modifier deleted successfully" });
         }
         // TempData["ErrorMessage"] = "Modifier cannot be deleted";
-        return Json(new{ success = false, text="Modifier cannot be deleted"});
+        return Json(new { success = false, text = "Modifier cannot be deleted" });
     }
     #endregion
 
@@ -451,9 +455,9 @@ public class MenuController : Controller
         var addModifierGrpStatus = await _menuService.AddModifierGroup(menuvm.addmodgrpVm, userId);
         if (addModifierGrpStatus)
         {
-            return Json(new{ success = true, text="modifierGroup added successfully"});
+            return Json(new { success = true, text = "modifierGroup added successfully" });
         }
-        return Json(new{ success = false, text="Error while Add Modifier group. Try Again!"});
+        return Json(new { success = false, text = "Error while Add Modifier group. Try Again!" });
     }
     #endregion
 
@@ -480,11 +484,11 @@ public class MenuController : Controller
         var editModStatus = await _menuService.EditModifierGroup(menuvm.addmodgrpVm, userId);
         if (editModStatus)
         {
-            return Json(new{grpId=menuvm.addmodgrpVm.ModifierGrpId,success = true, text="modifierGroup Updated successfully"});
+            return Json(new { grpId = menuvm.addmodgrpVm.ModifierGrpId, success = true, text = "modifierGroup Updated successfully" });
         }
         else
         {
-            return Json(new{success = false, text="modifierGroup not Updated.Try Again!"});
+            return Json(new { success = false, text = "modifierGroup not Updated.Try Again!" });
         }
     }
     #endregion
@@ -531,9 +535,9 @@ public class MenuController : Controller
         var deletemodgrpStatus = await _menuService.DeleteModifierGroup(modGrpid);
         if (deletemodgrpStatus)
         {
-            return Json(new{success = true, text="modifier group deleted successfully"});
+            return Json(new { success = true, text = "modifier group deleted successfully" });
         }
-        return Json(new{success = false, text="modifier group not deleted"});
+        return Json(new { success = false, text = "modifier group not deleted" });
     }
     #endregion
 

@@ -13,26 +13,26 @@ else
     @foreach (var item in Model.Items)
     {
         <tr>
-            <td class="d-md-flex"><input type="checkbox" class="massDeleteClassforSection" data-checkid="@item.TableId" class="me-3" onclick="checkboxTickManage()">
-                <span>@item.TableName</span>
+            <td class=" text-start text-nowrap align-content-center"><input type="checkbox" class="massDeleteClassforSection" data-checkid="@item.TableId" class="me-3" onclick="checkboxTickManage()">
+                <span class="ms-3 ">@item.TableName</span>
             </td>
-            <td>@item.Capacity</td>
-            <td class="">
-                <div class="form-check form-switch">
+            <td class="text-center">@item.Capacity</td>
+            <td class="text-center d-flex justify-content-center">
+                <div>
                     @if (item.Status == "occupied")
                     {
-                       <div class="text-center text-white bg-secondary rounded-pill w-25 p-lg-0  mt-1">
+                       <div class="text-center text-white bg-secondary rounded-pill  p-lg-1 p-1" style="max-width: fit-content; font-size: 14px;">
                         Occupied</div>
                     }
                     else
                     {
-                        <div class="text-center text-white bg-success rounded-pill w-25 p-lg-0 ps-1 pe-4 mt-1">
+                        <div class="text-center text-white bg-success rounded-pill p-lg-1  p-1"  style="max-width: fit-content; font-size: 14px;">
                         Available</div>
                     }
             
                 </div>
             </td>
-            <td>
+            <td class="text-center">
                 <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" data-id="@item.TableId" onclick="updateTableDetails(this)" data-bs-toggle="modal" data-bs-target="#EditTableModal"></i>
                 <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#DeleteTableModal"
                     data-id="@item.TableId" onclick="DeleteTableDetails(this)" ></i>

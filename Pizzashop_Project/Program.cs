@@ -26,6 +26,7 @@ builder.Services.AddScoped<IRolesPermission,RolesPermissionService>();
 builder.Services.AddScoped<IMenuService,MenuService>();
 builder.Services.AddScoped<IAuthorizationHandler,PermissionHandler>();
 builder.Services.AddScoped<ITableAndSection,TableAndSectionService>();
+builder.Services.AddScoped<ITaxAndFees, TaxAndFeesService>();
 builder.Services.AddControllersWithViews();
 
 

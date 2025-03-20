@@ -41,42 +41,7 @@
             </thead>
             <tbody id="TableBody">
                 @await Html.PartialAsync("_UserListPartial", Model)
-                @* @foreach (var item in Model) {
-            if(!item.Isdelete){
-             <tr>
-            <td>
-                <img src="@item.ProfileImage" alt="" width="35px" style="border-radius: 50%;"> @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Userlogin.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role.RoleName)
-            </td>
-            <td>
-                @if(item.Status == true)
-                {
-                    <div class="text-center text-white bg-success rounded-pill w-75 p-lg-0 ps-1 pe-4">
-                        Active</div>
-                }
-                else
-                {
-                    <div class="text-center text-white bg-danger rounded-pill w-75 p-lg-0 ps-1 pe-4">
-                        Inactive</div>
-                }
                 
-            </td>
-            <td>
-                <a asp-action="EditUser" asp-controller="User" asp-route-Email="@item.Userlogin.Email"><i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0 text-dark" ></i></a>
-                <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#delete-user" data-email="@item.Userlogin.Email"></i>
-                    <!-- delete item modal-->
-            </td>
-             </tr>
-            }
-         } *@
             </tbody>
         </table>
 
@@ -133,27 +98,7 @@
 @section Scripts {
     <script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-    @* <script>
-        let table = new DataTable('#example');
 
-        table.on('click', 'tbody tr', function () {
-            let data = table.row(this).data();
-
-            alert('You clicked on ' + data[0] + "'s row");
-        });
-    </script> *@
-
-    @* <script>
-        function changePage(page) {
-            const PageSize = document.getElementById("PageSize").value;
-            window.location.href = `?PageNo=${page}&PageSize=${PageSize}`;
-        }
-
-        function pageSizeChange(page) {
-            const PageSize = document.getElementById("PageSize").value;
-            window.location.href = `?PageNo=${page}&PageSize=${PageSize}`;
-        }
-    </script> *@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

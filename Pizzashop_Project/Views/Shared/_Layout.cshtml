@@ -109,10 +109,11 @@
 
                         <!-- taxes and fees -->
                         @if ((await AuthorizationService.AuthorizeAsync(User, "TaxFees.View")).Succeeded){
-                        <div class="inactive-div d-flex p-3">
+                        <a class="inactive-div d-flex p-3 @((ViewData["sidebar-active"] as string) == "TaxAndFees" ? "active-div" : "")"
+                            style="text-decoration: none;" asp-action="TaxAndFees" asp-controller="TaxAndFees">
                             <i class="fa-solid fa-money-check-dollar "></i>
                             <p class="taxes-text-inactive text-size-set m-0 ms-3">Taxes And Fees</p>
-                        </div>
+                        </a>
                         }
 
                         <!-- orders -->
@@ -192,19 +193,19 @@
 
                                     <!-- Table and Section -->
                                     @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.View")).Succeeded){
-                                    <div class=" d-flex p-3">
+                                    <a class=" d-flex p-3">
                                         <i class="fa-solid fa-table-cells-large "></i>
                                         <p class="table-text-inactive text-size-set  m-0 ms-3">Table and Section</p>
-                                </div>
+                                </a>
                                 }
                                 
 
                                 <!-- taxes and fees -->
                                 @if ((await AuthorizationService.AuthorizeAsync(User, "TaxFees.View")).Succeeded){
-                                <div class=" d-flex p-3">
+                                <a class=" d-flex p-3">
                                     <i class="fa-solid fa-money-check-dollar "></i>
                                     <p class="taxes-text-inactive text-size-set m-0 ms-3">Taxes And Fees</p>
-                                </div>
+                                </a>
                                 }
 
                                 <!-- orders -->
@@ -260,10 +261,6 @@
                     </div>
                     @RenderBody()
                 </div>
-
-
-
-
             </div>
         </div>
     </div>

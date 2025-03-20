@@ -17,7 +17,7 @@ public class TableAndSectionService : ITableAndSection
 
     #region  Get All Section List
     public List<Section> GetAllSections(){
-        List<Section> allsections = _context.Sections.Where(x=>x.Isdelete==false).ToList();
+        List<Section> allsections = _context.Sections.Where(x=>x.Isdelete==false).OrderBy(x=>x.SectionId).ToList();
         return allsections;
     }
     #endregion
@@ -27,7 +27,7 @@ public class TableAndSectionService : ITableAndSection
     public PaginationViewModel<TableViewModel> GetTableBySection(long? sectionID, string search = "", int pageNumber = 1, int pageSize = 5)
     {
 
-        var query = _context.Tables.Where(x => x.SectionId == sectionID &&  x.Isdelete == false)
+        var query = _context.Tables.Where(x => x.SectionId == sectionID &&  x.Isdelete == false).OrderBy(x=>x.TableId)
             .Select(x => new TableViewModel
             {
                 TableId = x.TableId,
@@ -77,7 +77,7 @@ public class TableAndSectionService : ITableAndSection
     } 
     #endregion
 
-    #region  edit post
+    #region  edit section post
     public async Task<bool> EditSection(Section section,long userId){
         var existingSection =await _context.Sections.FirstOrDefaultAsync(x=>x.SectionId==section.SectionId && x.Isdelete==false);
         if(existingSection== null){
@@ -102,6 +102,8 @@ public class TableAndSectionService : ITableAndSection
         var tablesInSection = _context.Tables.Where(x=>x.SectionId==sectionID ).ToList();
         for(int i=0; i < tablesInSection.Count(); i++){
             tablesInSection[i].Isdelete=true;
+            _context.Update(tablesInSection[i]);
+            await _context.SaveChangesAsync();
         }
 
         var sectionToDelete =await _context.Sections.FirstOrDefaultAsync(x=>x.SectionId==sectionID);
@@ -136,6 +138,31 @@ public class TableAndSectionService : ITableAndSection
     }
     #endregion
 
+    #region EditTable
+    public async Task<bool> EditTable(TableViewModel table, long userId){
+        var tablepresent =await _context.Tables.FirstOrDefaultAsync(x=>x.TableId== table.TableId && x.Isdelete==false);
+        if(tablepresent==null){
+            return false;
+        }
+        var tableNameExist =await  _context.Tables.FirstOrDefaultAsync(x=>x.TableId != table.TableId && x.TableName.ToLower().Trim()== table.TableName.ToLower().Trim() && x.Isdelete==false);
+        if(tableNameExist != null)
+        {return false;}
+        tablepresent.TableName=table.TableName;
+        tablepresent.Capacity=table.Capacity;
+        tablepresent.Status=table.Status;
+        tablepresent.SectionId=table.SectionId;
+        _context.Update(tablepresent);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+    #endregion
+
+    #region getSectionByTableId
+    public async Task<Table> getTableByTableId(long id){
+        var table =await _context.Tables.FirstOrDefaultAsync(x=>x.TableId==id && x.Isdelete==false);
+        return table;
+    }
+    #endregion
 
 
     #region delete table
