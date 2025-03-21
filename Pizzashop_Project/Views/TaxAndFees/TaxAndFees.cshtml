@@ -19,7 +19,7 @@
         </div>
         <div class="adduser-button">
             <div class="btn btn-primary text-light p-2 ms-3 border text" data-bs-toggle="modal"
-                data-bs-target="#AddTaxModal">+ Add Tax</div>
+                data-bs-target="#AddTaxModal" onclick="EmptyAddTaxForm()">+ Add Tax</div>
         </div>
 
     </div>
@@ -70,15 +70,15 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Section</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">Add Tax</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyAddTaxForm()"></button>
             </div>
-            <form asp-action="AddTax" asp-controller="TaxAndFees">
+            <form id="TaxAddFormId">
                 <div class="modal-body row">
                     <div class="form-floating  col-12">
                         <input type="text" class="form-control" id="TaxName" asp-for="@Model.taxViewModel.TaxName"
                             placeholder="name">
-                        <span asp-validation-for="@Model.taxViewModel.TaxName" class="text-danger"></span>
+                        <span asp-validation-for="@Model.taxViewModel.TaxName" class="text-danger " id="RemoveValidations"></span>
                         <label for="TaxName"> &nbsp; Name*</label>
                     </div>
 
@@ -89,7 +89,6 @@
                                 <option value="Fix Amount">Fix Amount</option>
                             </select>
                             <label for="TaxType">Type*</label>
-                            <span class="text-danger" asp-validation-for="@Model.taxViewModel.TaxType"></span>
                         </div>
                     </div>
                     <div class="col-md-6 mx-auto mt-4">
@@ -97,7 +96,7 @@
                             <input type="text" id="TaxValue" asp-for="@Model.taxViewModel.TaxValue" class="form-control"
                                 placeholder="Tax Amount*">
                             <label for="TaxValue">Amount*</label>
-                            <span class="text-danger" asp-validation-for="@Model.taxViewModel.TaxValue"></span>
+                            <span class="text-danger" asp-validation-for="@Model.taxViewModel.TaxValue" id="RemoveValidationsamt"></span>
                         </div>
                     </div>
 
@@ -120,7 +119,7 @@
 
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">save</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyAddTaxForm()">cancel</button>
                 </div>
             </form>
         </div>
@@ -132,10 +131,10 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Section</h5>
+                <h5 class="modal-title">Edit Tax</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form asp-action="EditTax" asp-controller="TaxAndFees">
+            <form id="EditTaxFormId">
                 <div class="modal-body row">
                     <div class="form-floating  col-12">
                         <input type="hidden" id="TaxIdForEdit" asp-for="@Model.taxViewModel.TaxId">
@@ -157,8 +156,8 @@
                     </div>
                     <div class="col-md-6 mx-auto mt-4">
                         <div class="form-floating">
-                            <input type="text" id="EditTaxValue" asp-for="@Model.taxViewModel.TaxValue" class="form-control"
-                                placeholder="Amount*">
+                            <input type="text" id="EditTaxValue" asp-for="@Model.taxViewModel.TaxValue"
+                                class="form-control" placeholder="Amount*">
                             <label for="EditTaxValue">Amount*</label>
                             <span class="text-danger" asp-validation-for="@Model.taxViewModel.TaxValue"></span>
                         </div>
@@ -191,7 +190,7 @@
 </div>
 
 
-
+<!-- Delete Tax modal -->
 <div id="DeleteTaxModal" class="modal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -203,7 +202,7 @@
                 <div class="delete-cat-image d-flex flex-column  align-items-center">
                     <img src="images/toppng.com-warning-icon-2400x2400.png" width="50px" alt="">
                     <p>Are you sure you want to delete this Tax?</p>
-                    <form method="post" asp-action="deleteTax" asp-controller="TaxAndFees">
+                    <form id="DeleteTaxFormId">
                         <input type="hidden" id="deleteTaxId" name="id" asp-for="@Model.taxViewModel.TaxId" />
                         <div class="modal-footer d-flex justify-content-center">
                             <button class="btn btn-primary" type="submit">Yes</button>
@@ -245,26 +244,34 @@
     </script>
 
     <script>
-        function updateTaxDetails(tag){
-            var taxID=tag.getAttribute("data-id");
+        function EmptyAddTaxForm() {
+            document.getElementById("TaxName").value = "";
+            document.getElementById("TaxValue").value = "";
+            document.getElementById("isEnableid").checked = false;
+            document.getElementById("defaultTax").checked = false;
+            document.getElementById("RemoveValidations").innerText = "";
+            document.getElementById("RemoveValidationsamt").innerText = "";
+        }
+        function updateTaxDetails(tag) {
+            var taxID = tag.getAttribute("data-id");
             $.ajax({
-                url:`/TaxAndFees/GetTaxDetailsById?taxID=${taxID}`,
-                type:"Get",
-                success:function(res){
+                url: `/TaxAndFees/GetTaxDetailsById?taxID=${taxID}`,
+                type: "Get",
+                success: function (res) {
                     console.log(res);
-                    document.getElementById("TaxIdForEdit").value =res.taxId;
-                    document.getElementById("EditTaxName").value=res.taxName;
-                    document.getElementById("EditTaxType").value=res.taxType;
+                    document.getElementById("TaxIdForEdit").value = res.taxId;
+                    document.getElementById("EditTaxName").value = res.taxName;
+                    document.getElementById("EditTaxType").value = res.taxType;
                     @* console.log(tag.parentElement.parentElement.children[2].children[0].children[0].innerHTML); *@
-                    document.getElementById("EditTaxValue").value=res.taxValue;
-                    document.getElementById("EditisEnableid").checked=res.isenable;
-                    document.getElementById("EditdefaultTax").checked= res.isdefault;
+                        document.getElementById("EditTaxValue").value=res.taxValue;
+                    document.getElementById("EditisEnableid").checked = res.isenable;
+                    document.getElementById("EditdefaultTax").checked = res.isdefault;
                 }
             })
         }
 
-        function taxDetailsForDelete(tag){
-            document.getElementById("deleteTaxId").value=tag.getAttribute("data-id");
+        function taxDetailsForDelete(tag) {
+            document.getElementById("deleteTaxId").value = tag.getAttribute("data-id");
         }
     </script>
 
@@ -333,11 +340,99 @@
 
             // Initial table load
             loadTable();
+
+
+            //add tax
+            $(document).on("submit", "#TaxAddFormId", function (e) {
+                e.preventDefault();
+
+                let form = $("#TaxAddFormId");
+                if (form.valid()) {
+                    let formData = new FormData(this);
+                    console.log(formData);
+                    $.ajax({
+                        url: "/TaxAndFees/AddTax",
+                        type: "POST",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (res) {
+                            if (res.success) {
+                                successToaster(res.text);
+                            } else {
+                                errorToaster(res.text);
+                            }
+                            $(".btn-close").click();
+                            @* console.log(res); *@
+                            loadTable(currentPage, searchText, pageSize);
+                            EmptyAddTaxForm();
+                        }
+                    })
+                }
+            })
+
+            //edit tax
+            $(document).on("submit", "#EditTaxFormId", function (e) {
+                e.preventDefault();
+
+                let form = $("#EditTaxFormId");
+                if (form.valid()) {
+                    let formData = new FormData(this);
+                    console.log(formData);
+                    $.ajax({
+                        url: "/TaxAndFees/EditTax",
+                        type: "POST",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (res) {
+                            if (res.success) {
+                                successToaster(res.text);
+                            } else {
+                                errorToaster(res.text);
+                            }
+                            $(".btn-close").click();
+                            @* console.log(res); *@
+                            loadTable(currentPage, searchText, pageSize);
+                        }
+                    })
+                }
+            })
+
+
+            //delete tax
+            $(document).on("submit", "#DeleteTaxFormId", function (e) {
+                e.preventDefault();
+                let id=document.getElementById("deleteTaxId").value;    
+                console.log(id);
+                $.ajax({
+                        url: `/TaxAndFees/DeleteTax?id=${id}`,
+                        type: "POST",
+                        contentType: false,
+                        processData: false,
+                        success: function (res) {
+                            if (res.success) {
+                                successToaster(res.text);
+                            } else {
+                                errorToaster(res.text);
+                            }
+                            $(".btn-close").click();
+                            @* console.log(res); *@
+                            loadTable(currentPage, searchText, pageSize);
+                        }
+                    });
+            })
+
+
+
+
+
+
+
         });
     </script>
-
-@{
+ @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
+    <partial name="_Toaster"/>
 }

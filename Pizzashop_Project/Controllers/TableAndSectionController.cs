@@ -44,6 +44,14 @@ public class TableAndSectionController : Controller
         return View(tablesectionvm);
     }
 
+
+     [PermissionAuthorize("TableSection.View")]
+    public IActionResult SectionList(){
+        TableSectionViewModel tablesectionvm = new();
+        tablesectionvm.sectionList = _tableSectionService.GetAllSections();
+        return PartialView("_SectionListPartial",tablesectionvm);
+    }
+
     [PermissionAuthorize("TableSection.View")]
      public IActionResult TablePagination(long? SectionID, string search = "", int pageNumber = 1, int pageSize = 5)
     {
@@ -61,34 +69,37 @@ public class TableAndSectionController : Controller
 
     [PermissionAuthorize("TableSection.EditAdd")]
     public async Task<IActionResult> AddSection(TableSectionViewModel Tablesection){
+        var sectionNamePresent =await _tableSectionService.GetSectionByName(Tablesection.Section);
+        if(sectionNamePresent!=null){
+            return Json(new { success = false, text = "Section Already Present" });
+        }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         bool addSectionstatus =await _tableSectionService.AddSection(Tablesection.Section,userId);
         if(addSectionstatus){
-            TempData["SuccessMessage"]="Section Added Successfully";
-            return RedirectToAction("TableAndSection");
-        }
-        else{
-            TempData["ErrorMessage"]="Error While Adding Section. Try Again!";
-            return RedirectToAction("TableAndSection");
+            return Json(new { success = true, text = "Section Added successfully" });
+        }else{          
+            return Json(new { success = false, text = "Error While Adding Section. Try Again!" });
         }
     }
 
     [PermissionAuthorize("TableSection.EditAdd")]
     public async Task<IActionResult> EditSection(TableSectionViewModel Tablesection){
+        var sectionNamePresent =await _tableSectionService.GetSectionByNameForEdit(Tablesection.Section);
+        if(sectionNamePresent!=null){
+            return Json(new { success = false, text = "Section Already present. Try New SectionName" });
+        }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         bool editSectionStatus =await _tableSectionService.EditSection(Tablesection.Section,userId);
         if(editSectionStatus){
-            TempData["SuccessMessage"]="Section Updated Successfully";
+            return Json(new { success = true, text = "Section Updated successfully" });
+        }else{          
+            return Json(new { success = false, text = "Error While Updating Section. Try Again!" });
         }
-        else{
-            TempData["ErrorMessage"]="Error While Updating Section. Try Again!";
-
-        }
-        return RedirectToAction("TableAndSection",new{SectionID=Tablesection.Section.SectionId});
+        // return RedirectToAction("TableAndSection",new{SectionID=Tablesection.Section.SectionId});
     
     }
 
@@ -96,46 +107,52 @@ public class TableAndSectionController : Controller
     public async Task<IActionResult> DeleteSection(long id){
         bool deleteSectionStatus = await _tableSectionService.DeleteSection(id);
         if(deleteSectionStatus){
-            TempData["SuccessMessage"]="Section Deleted Successfully";
+            var sectionList =_tableSectionService.GetAllSections();
+            return Json(new {sectionID= sectionList[0].SectionId,success = true, text = "Section Deleted successfully" });
+        }else{          
+            return Json(new { success = false, text = "Error While Deleting Section. Try Again!" });
         }
-        else{
-            TempData["ErrorMessage"]="Error While Deleting Section. Try Again!";
-        }
-        return RedirectToAction("TableAndSection");
+        // return RedirectToAction("TableAndSection");
     }
 
     [PermissionAuthorize("TableSection.EditAdd")]
     public async Task<IActionResult> AddTable(TableSectionViewModel Tablesection){
+        var TableNamePresentInSection =await _tableSectionService.GetTableByNameInSameSection(Tablesection.table);
+        if(TableNamePresentInSection!=null){
+            return Json(new { success = false, text = "Table Already Present" });
+        }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         bool addTablestatus =await _tableSectionService.AddTable(Tablesection.table,userId);
         if(addTablestatus){
-            TempData["SuccessMessage"]="Table Added Successfully";
+            return Json(new { success = true, text = "Table Added successfully" });
+        }else{          
+            return Json(new { success = false, text = "Error While Adding Table. Try Again!" });
         }
-        else{
-            TempData["ErrorMessage"]="Error While Adding Table. Try Again!";
-
-        }
-        return RedirectToAction("TableAndSection",new{SectionID=Tablesection.table.SectionId});
     }
 
+    [PermissionAuthorize("TableSection.EditAdd")]
+
     public async Task<IActionResult> EditTable(TableSectionViewModel Tablesection){
+        var TableNamePresentInSection =await _tableSectionService.GetTableByNameInSameSection(Tablesection.table);
+        if(TableNamePresentInSection!=null){
+            return Json(new { success = false, text = "Table Already Present" });
+        }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
-        bool addTablestatus =await _tableSectionService.EditTable(Tablesection.table,userId);
-        if(addTablestatus){
-            TempData["SuccessMessage"]="Table Ipdate Successfully";
+        bool EditTablestatus =await _tableSectionService.EditTable(Tablesection.table,userId);
+        if(EditTablestatus){
+            return Json(new { success = true, text = "Table Updated successfully" });
+        }else{          
+            return Json(new { success = false, text = "Error While Updating Table. Try Again!" });
         }
-        else{
-            TempData["ErrorMessage"]="Error While Updating Table. Try Again!";
-        }
-        return RedirectToAction("TableAndSection",new{SectionID=Tablesection.table.SectionId});
     }
 
     [PermissionAuthorize("TableSection.Delete")]
-    public async Task<IActionResult> Deletetable(long id){
+    [HttpPost]
+    public async Task<IActionResult> DeleteTable(long id){
         var table =await _tableSectionService.getTableByTableId(id);
         bool deleteTableStatus = await _tableSectionService.DeleteTable(id);
         if(deleteTableStatus){

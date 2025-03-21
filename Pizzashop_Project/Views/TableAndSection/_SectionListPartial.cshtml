@@ -1,0 +1,28 @@
+@using DAL.ViewModels;
+@model DAL.ViewModels.TableSectionViewModel;
+
+
+@{
+    var flag2 = true;
+    @foreach (var sections in Model.sectionList)
+    {
+        <div class="Sections-div d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag2 ? "active-category" : "")"
+            data-id="@sections.SectionId">
+
+            <div class="d-flex ">
+                <i class="fa-solid fa-receipt mt-1 "></i>
+                <p class="text-size-set mt-0  m-0 ms-3 ">@sections.SectionName</p>
+
+            </div>
+            <div>
+                <input type="hidden" value="@sections.Description">
+                <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="UpdatesectionDetails(this)"
+                    data-id="@sections.SectionId" data-bs-toggle="modal" data-bs-target="#EditSectionModal"></i>
+                <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
+                    onclick="DeleteSectionDetails(this)" data-bs-target="#DeleteSectionModal" data-id="@sections.SectionId"></i>
+            </div>
+
+        </div>
+    flag2 = false;
+    }
+}

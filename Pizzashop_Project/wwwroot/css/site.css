@@ -250,6 +250,15 @@ form i{
   color: grey;
 }
 
+.Sections-div i.iconeditdelete{
+  opacity: 0;
+}
+
+.Sections-div:hover i.iconeditdelete{
+  opacity: 1;
+  color: grey;
+}
+
 .active-category{
   color:#1138b8 !important;
   font-weight: bold;

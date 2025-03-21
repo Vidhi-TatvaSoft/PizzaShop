@@ -70,13 +70,13 @@ builder.Services.AddAuthentication(x=>{
             {
                 // Redirect to login page when unauthorized 
                 context.HandleResponse();
-                context.Response.Redirect("/UserLogin/VerifyPassword");
+                context.Response.Redirect("/ErrorPage/pageNotFoundError");
                 return Task.CompletedTask;
             },
             OnForbidden = context =>
             {
                 // Redirect to login when access is forbidden (403)
-                context.Response.Redirect("/UserLogin/VerifyPassword");
+                context.Response.Redirect("/ErrorPage/pageNotFoundError");
                 return Task.CompletedTask;
             }
         };

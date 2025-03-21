@@ -20,7 +20,6 @@
                         <span asp-validation-for="@Model.category.CategoryName" class="text-danger"></span>
                         <label for="floatingInput">Name</label>
                     </div>
-    using DAL.ViewModels;
                     <div class="form-floating">
                         <textarea class="form-control" placeholder="Leave a comment here"
                             asp-for="@Model.category.Description" id="floatingTextarea"></textarea>
@@ -1249,7 +1248,6 @@
             deleteAllItemCkeckbboxId.checked =flag;
         }
 
-
         function SelectAllModifiers(){
             var classess=document.getElementsByClassName("massDeleteClassModifier");
             var deleteAllItemCkeckbboxId =document.getElementById("checkboxForSelectAllModifier");
@@ -1483,7 +1481,7 @@
                 modDiv.innerHTML = "";
                 for(i=0;i<modTempID.length;i++){
                     modDiv.innerHTML += `<div class="p-1 border border-1 rounded-pill ms-3 mb-2 me-2 d-inline justify-content-between align-items-center" style="max-width:fit-content;">
-                    ${modTempName[i]} <i class="fa-solid fa-xmark" style="margin-left: 0px;" onclick="RemoveFromList(\`${modTempID[i]}\`,\`${modTempName[i]}\`)" ></i></div> `
+                    ${modTempName[i]} <i class="fa-solid fa-xmark" style="margin-left: 0px;" onclick="RemoveFromListAddModifierGroup(\`${modTempID[i]}\`,\`${modTempName[i]}\`)" ></i></div> `
                 }
             }
             //Edit #-----method to show selected existing modifier in edit modgrp
@@ -1494,6 +1492,7 @@
                 console.log("heloooooooooo")
                 modDiv.innerHTML = "";
                 for(i=0;i<modTempID.length;i++){
+                    console.log(modTempName[i]);
                     modDiv.innerHTML += `<div class="p-1 border border-1 rounded-pill ms-3 mb-2 me-2 d-inline justify-content-between align-items-center" style="max-width:fit-content;">
                     ${modTempName[i]} <i class="fa-solid fa-xmark" style="margin-left: 0px;" onclick="RemoveFromListForEdit(\`${modTempID[i]}\`,\`${modTempName[i]}\`)" ></i></div> `
                 }
@@ -1525,12 +1524,14 @@
                 else{document.getElementById(`modifier-${modId}`).checked = true;}
             } *@
 
-            function RemoveFromList(id,name){
+            function RemoveFromListAddModifierGroup(id,name){
                 console.log("remove")
                 console.log(id)
                 console.log(name);
                  modTempID.splice(modTempID.indexOf(id),1);
                 modTempName.splice(modTempName.indexOf(name),1);
+                console.log(modTempID);
+                console.log(modTempName);
                 DisplayNamesOfExistingMod();
             }
             
@@ -1538,8 +1539,10 @@
                 console.log("remove")
                 console.log(id)
                 console.log(name);
-                modTempID.splice(editModTempId.indexOf(parseInt(id)),1);
+                console.log("splice id:",modTempID.indexOf(parseInt(id)));
+                modTempID.splice(modTempID.indexOf(parseInt(id)),1);
                 modTempName.splice(modTempName.indexOf(name),1);
+                console.log(modTempID);
                 DisplayNamesOfExistingModForEdit();
             }
 
@@ -1579,7 +1582,7 @@
                 console.log(searchTextMod);
                 currentPageMod =1;
                 loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
-                @* loadModifierGroup(); *@
+       
                 SelectAllModifiers(); 
             });
 
@@ -1588,16 +1591,12 @@
                 console.log(searchTextModExist);
                 currentPageModExist =1;
                 LoadAllModifiers(searchTextModExist,currentPageModExist,pageSizeModExist);
-                @* loadModifierGroup(); *@
-                @* SelectAllModifiersExist();  *@
             });
             $("#searchbtn-existingModForEdit").on("keyup", function () {
                 searchTextModExistForEdit = $(this).val().trim();
                 console.log(searchTextModExistForEdit);
                 currentPageModExistForEdit =1;
                 LoadAllModifiersForEdit(searchTextModExistForEdit,currentPageModExistForEdit,pageSizeModExistForEdit);
-                @* loadModifierGroup(); *@
-                @* SelectAllModifiersExist();  *@
             });
 
 
@@ -1615,7 +1614,6 @@
                 modifierGrpID = $(this).data("id");
                 console.log("modid ", modifierGrpID)
                 loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
-                @* loadModifierGroup(); *@
     })
             
             // Pagination buttons
@@ -1634,7 +1632,6 @@
                 if (rightarrowMod) {
                     currentPageMod++;
                     loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
-                    @* loadModifierGroup(); *@
                     SelectAllModifiers(); 
                 }
             });
@@ -1673,7 +1670,6 @@
                 if (leftarrowMod) {
                     currentPageMod--;
                     loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
-                    @* loadModifierGroup(); *@
                     SelectAllModifiers(); 
                 }
             });
@@ -1711,7 +1707,6 @@
                 currentPageMod=1;
                 console.log(pageSizeMod);
                 loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
-                @* loadModifierGroup(); *@
                 SelectAllModifiers(); 
             });
             
@@ -1765,7 +1760,7 @@
                     success: function (data) {
                         console.log("dfkhsvc");
                         $("#AddModifierModal-mainDiv").html(data);
-                        loadModifierGroup();
+                        @* loadModifierGroup(); *@
                     }
                     })
              }) 
@@ -1796,7 +1791,7 @@
                             $(".btn-close").click();
                             console.log(res);
                             loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
-                            loadModifierGroup();
+                            @* loadModifierGroup(); *@
                             SelectAllModifiers();
                         }
                     })
@@ -1847,7 +1842,7 @@
                             } 
                             $(".btn-close").click();
                            loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
-                            loadModifierGroup();
+                            @* loadModifierGroup(); *@
                             SelectAllModifiers();
                         }
                     });
@@ -1874,7 +1869,7 @@
                         $(".btn-close").click();
                         currentPageMod = 1;
                         loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
-                        loadModifierGroup();
+                        @* loadModifierGroup(); *@
                         SelectAllModifiers();
                     }
                 });
@@ -1897,7 +1892,7 @@
                                 currentPageMod = 1;
                                 $(".btn-close").click();
                                loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
-                                loadModifierGroup();
+                                @* loadModifierGroup(); *@
                                 SelectAllModifiers();
                             }
                         });

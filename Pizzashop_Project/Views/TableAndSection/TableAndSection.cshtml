@@ -20,15 +20,14 @@
                         </div>
                         <div class="logo-image ">
                             <i class="fa-regular fa-square-plus fs-4 text-primary mt-3" data-bs-toggle="modal"
-                                data-bs-target="#AddSectionModal"></i>
+                                data-bs-target="#AddSectionModal" onclick="EmptyAddSectionForm()"></i>
                         </div>
                     </div>
+                    <div id="SectionPartialViewId">
 
-                    <!-- Sandwich -->
-                    @* @{
-                        var flag = true; *@
+                    </div>
 
-                        @foreach (var sections in Model.sectionList)
+                    @* @foreach (var sections in Model.sectionList)
                         {
                             <div class="Sections-div d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(ViewBag.selectedSection==sections.SectionId ? "active-category" : "")"
                                 data-id="@sections.SectionId">
@@ -48,9 +47,8 @@
                                 </div>
 
                             </div>
-                            @* flag = false; *@
-                        }
-                    @* } *@
+                        } *@
+
 
                 </div>
             </div>
@@ -79,7 +77,7 @@
                         </div>
                         <div class="additem-button">
                             <button class="btn btn-primary text-light p-2 ms-3 border text" data-bs-toggle="modal"
-                                data-bs-target="#AddTableModal">+ Add Table</button>
+                                data-bs-target="#AddTableModal" onclick="EmptyAddTableForm()">+ Add Table</button>
 
                         </div>
 
@@ -95,8 +93,8 @@
                         <table class="table" id="demo1">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="text-start"><input type="checkbox" id="checkboxForSelectAllSection"
-                                            onclick="SelectAllSection()" class="me-3">
+                                    <th scope="col" class="text-start"><input type="checkbox"
+                                            id="checkboxForSelectAllSection" onclick="SelectAllSection()" class="me-3">
                                         Name</th>
                                     <th scope="col" class="text-center">Capacity</th>
                                     <th scope="col" class="text-center">Status</th>
@@ -145,25 +143,25 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add Section</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyAddSectionForm()"></button>
             </div>
-            <form asp-action="AddSection" asp-controller="TableAndSection">
+            <form id="AddSectionFormId">
                 <div class="modal-body">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput"
-                            asp-for="@Model.Section.SectionName" placeholder="name" required>
-                        <span asp-validation-for="@Model.Section.SectionName" class="text-danger"></span>
-                        <label for="floatingInput">Name</label>
+                        <input type="text" class="form-control" id="SectionName" asp-for="@Model.Section.SectionName"
+                            placeholder="name" required>
+                        <span asp-validation-for="@Model.Section.SectionName" class="text-danger RemoveValidations" ></span>
+                        <label for="SectionName">Name</label>
                     </div>
                     <div class="form-floating">
                         <textarea class="form-control" placeholder="Leave a comment here"
-                            asp-for="@Model.Section.Description" id="floatingTextarea"></textarea>
-                        <label for="floatingTextarea">Description</label>
+                            asp-for="@Model.Section.Description" id="sectionDescription"></textarea>
+                        <label for="sectionDescription">Description</label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">save</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyAddSectionForm()">cancel</button>
                 </div>
             </form>
         </div>
@@ -178,12 +176,12 @@
                 <h5 class="modal-title">Edit Section</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form asp-action="EditSection" asp-controller="TableAndSection">
+            <form id="EditSectionFormId">
                 <div class="modal-body">
                     <div class="form-floating mb-3">
                         <input type="hidden" asp-for="@Model.Section.SectionId" id="section-id">
-                        <input type="text" class="form-control" id="section-name"
-                            asp-for="@Model.Section.SectionName" placeholder="name" required>
+                        <input type="text" class="form-control" id="section-name" asp-for="@Model.Section.SectionName"
+                            placeholder="name" required>
                         <span asp-validation-for="@Model.Section.SectionName" class="text-danger"></span>
 
                         <label for="section-name">Name</label>
@@ -217,7 +215,7 @@
                     <p>Are you sure you want to delete this Section?</p>
                 </div>
             </div>
-            <form asp-action="DeleteSection" asp-controller="TableAndSection">
+            <form id="DeletesectionFormId">
                 <input type="hidden" asp-for="@Model.Section.SectionId" id="section-id-fordeletesection" name="id">
                 <div class="modal-footer d-flex justify-content-center">
                     <button type="submit" class="btn btn-primary">Yes</button>
@@ -229,35 +227,36 @@
 </div>
 
 <!--Add Table modal-->
-<div id="AddTableModal" class="modal fae"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="AddTableModal" class="modal fae" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add table @ViewBag.sectionID</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyAddTableForm()"></button>
             </div>
-            <form asp-action="AddTable" asp-controller="TableAndSection">
+            <form id="AddTableFormId">
                 <div class="modal-body row">
                     <div class="col-6 mx-auto">
                         <div class="form-floating">
                             <input type="text" id="TableName" asp-for="@Model.table.TableName" class="form-control"
                                 placeholder="Name*">
                             <label for="TableName">Name*</label>
-                            <span class="text-danger" asp-validation-for="@Model.table.TableName"></span>
+                            <span class="text-danger RemoveValidations" asp-validation-for="@Model.table.TableName" ></span>
                         </div>
                     </div>
                     <div class="col-6 mx-auto">
                         <div class="form-floating">
                             <select asp-for="@Model.table.SectionId" class="form-control" id="AddTableModaldropDown">
-                                 @foreach(var items in Model.sectionList){
-                                        <option value="@items.SectionId" class="DemoDDL">@items.SectionName</option>
-                            
-                                } 
-                                        @* <option value="1" class="DemoDDL">Section1</option>
+                                @foreach (var items in Model.sectionList)
+                                {
+                                    <option value="@items.SectionId" class="DemoDDL">@items.SectionName</option>
+
+                                }
+                                @* <option value="1" class="DemoDDL">Section1</option>
                                         <option value="3" class="DemoDDL">Section2</option> *@
                             </select>
                             <label for="AddTableModaldropDown">Section</label>
-                            <span class="text-danger" asp-validation-for="@Model.table.SectionId"></span>
+                            @* <span class="text-danger" asp-validation-for="@Model.table.SectionId" class="RemoveValidations"></span> *@
                         </div>
                     </div>
 
@@ -266,7 +265,7 @@
                             <input type="text" id="TableCapacity" asp-for="@Model.table.Capacity" class="form-control"
                                 placeholder="capacity">
                             <label for="TableCapacity">Capacity*</label>
-                            <span class="text-danger" asp-validation-for="@Model.table.Capacity"></span>
+                            <span class="text-danger RemoveValidations" asp-validation-for="@Model.table.Capacity" ></span>
                         </div>
                     </div>
                     <div class="col-6 mx-auto mt-4">
@@ -276,13 +275,13 @@
                                 <option value="Occupied">Occupied</option>
                             </select>
                             <label for="tableStatus">Status</label>
-                            <span class="text-danger" asp-validation-for="@Model.table.Status"></span>
+                            @* <span class="text-danger" asp-validation-for="@Model.table.Status" class="RemoveValidations"></span> *@
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-primary" value="Save">
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyAddTableForm()">Cancel</button>
                 </div>
             </form>
         </div>
@@ -290,14 +289,14 @@
 </div>
 
 <!--Edit Table modal-->
-<div id="EditTableModal" class="modal fae"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="EditTableModal" class="modal fae" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Edit table @ViewBag.sectionID</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form asp-action="EditTable" asp-controller="TableAndSection">
+            <form id="EditTableFormId">
                 <div class="modal-body row">
                     <div class="col-6 mx-auto">
                         <div class="form-floating">
@@ -311,11 +310,12 @@
                     <div class="col-6 mx-auto">
                         <div class="form-floating">
                             <select asp-for="@Model.table.SectionId" class="form-control" id="EditTableModaldropDown">
-                                 @foreach(var items in Model.sectionList){
-                                        <option value="@items.SectionId" >@items.SectionName</option>
-                            
-                                } 
-                                        @* <option value="1" class="DemoDDL">Section1</option>
+                                @foreach (var items in Model.sectionList)
+                                {
+                                    <option value="@items.SectionId">@items.SectionName</option>
+
+                                }
+                                @* <option value="1" class="DemoDDL">Section1</option>
                                         <option value="3" class="DemoDDL">Section2</option> *@
                             </select>
                             <label for="EditTableModaldropDown">Section</label>
@@ -325,8 +325,8 @@
 
                     <div class="col-6 mx-auto mt-4">
                         <div class="form-floating">
-                            <input type="text" id="TableCapacityForEdit" asp-for="@Model.table.Capacity" class="form-control"
-                                placeholder="capacity">
+                            <input type="text" id="TableCapacityForEdit" asp-for="@Model.table.Capacity"
+                                class="form-control" placeholder="capacity">
                             <label for="TableCapacityForEdit">Capacity*</label>
                             <span class="text-danger" asp-validation-for="@Model.table.Capacity"></span>
                         </div>
@@ -365,7 +365,7 @@
                     <p>Are you sure you want to delete this Table?</p>
                 </div>
             </div>
-            <form asp-action="DeleteTable" asp-controller="TableAndSection">
+            <form id="DeleteTableFormId">
                 <input type="hidden" asp-for="@Model.table.TableId" id="table-id-fordeleteTable" name="id">
                 <div class="modal-footer d-flex justify-content-center">
                     <button type="submit" class="btn btn-primary">Yes</button>
@@ -390,12 +390,13 @@
                     <p>Are you sure you want to delete these Tables?</p>
                 </div>
             </div>
-                @* <input type="hidden" asp-for="@Model.table.TableId" id="table-id-fordeleteTable" name="id"> *@
-                <div class="modal-footer d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary" id="deleteAllTablesModalYesButton" data-bs-dismiss="modal">Yes</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
-                </div>
-          
+            @* <input type="hidden" asp-for="@Model.table.TableId" id="table-id-fordeleteTable" name="id"> *@
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary" id="deleteAllTablesModalYesButton"
+                    data-bs-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
+            </div>
+
         </div>
     </div>
 </div>
@@ -403,179 +404,374 @@
 @section scripts {
     <Script>
         let currentPage = 1;
-            let pageSize = $("#itemsperpage").val();
-            let searchText = "";
-            let SectionID = $("#section-id-div").val();
+        let pageSize = $("#itemsperpage").val();
+        let searchText = "";
+        let SectionID = $("#section-id-div").val();
 
-         function loadSectionTable(SectionID, search = "", page = 1, pageSize = 5) {
-                console.log("functiocall")
-                $.ajax({
-                    
-                    url: "/TableAndSection/TablePagination",
-                    type: "GET",
-                    data: { SectionID, search, pageNumber: page, pageSize },
-                    success: function (data) {
-                        console.log("ajax call");
-                        $("#TableListBody").html(data);
-                        currentPage = page;
-                        pageSize = parseInt(pageSize);
-                        var totalRecords = parseInt($("#totalCount").val()) || 0;
-                        var startItem = totalRecords === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-                        var endItem = Math.min(currentPage * pageSize, totalRecords);
+        function loadSection() {
+            @* let SectionIDforbhai = $("#section-id-div").val(); *@
+            $.ajax({
+                url: "/TableAndSection/SectionList",
+                type: "GET",
+                success: function (data) {
+                    @* console.log(data); *@    
+                        console.log("section ajax call");
+                    $("#SectionPartialViewId").html(data);
+                    @* loadSectionTable(SectionIDforbhai, searchText, currentPage, pageSize); *@
+                }
+            });
+        }
 
-                        $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
-                        $("#left-arrow").prop("disabled", currentPage === 1);
-                        $("#right-arrow").prop("disabled", currentPage * pageSize >= totalRecords);
-                        $("#checkboxForSelectAllSection").prop("checked", false);
-                        document.getElementById("AddTableModaldropDown").value=SectionID.toString();
-                        
-                    }
-                });
-            }
+        function loadSectionTable(SectionID, search = "", page = 1, pageSize = 5) {
 
-        function UpdatesectionDetails(tag){
-            document.getElementById("section-id").value= tag.getAttribute("data-id");
-            console.log( tag.getAttribute("data-id"));
-             document.getElementById("section-name").value = tag.parentElement.parentElement.children[0].children[1].innerHTML;
+            console.log("functiocall")
+            $.ajax({
+                url: "/TableAndSection/TablePagination",
+                type: "GET",
+                data: { SectionID, search, pageNumber: page, pageSize },
+                success: function (data) {
+                    console.log("ajax call");
+                    $("#TableListBody").html(data);
+                    currentPage = page;
+                    pageSize = parseInt(pageSize);
+                    var totalRecords = parseInt($("#totalCount").val()) || 0;
+                    var startItem = totalRecords === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+                    var endItem = Math.min(currentPage * pageSize, totalRecords);
+
+                    $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
+                    $("#left-arrow").prop("disabled", currentPage === 1);
+                    $("#right-arrow").prop("disabled", currentPage * pageSize >= totalRecords);
+                    $("#checkboxForSelectAllSection").prop("checked", false);
+                    document.getElementById("AddTableModaldropDown").value = SectionID.toString();
+
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                }
+            });
+        }
+
+        function UpdatesectionDetails(tag) {
+            document.getElementById("section-id").value = tag.getAttribute("data-id");
+            document.getElementById("section-name").value = tag.parentElement.parentElement.children[0].children[1].innerHTML;
             document.getElementById("section-description").value = tag.parentElement.children[0].value;
         }
 
-        function DeleteSectionDetails(tag){
-            document.getElementById("section-id-fordeletesection").value=tag.getAttribute("data-id");
-            console.log("delete id",tag.getAttribute("data-id"));
-        }
-        function DeleteTableDetails(tag){
-            document.getElementById("table-id-fordeleteTable").value=tag.getAttribute("data-id");
-            @* console.log("delete id",tag.getAttribute("data-id")); *@
+        function DeleteSectionDetails(tag) {
+            document.getElementById("section-id-fordeletesection").value = tag.getAttribute("data-id");
         }
 
-        function updateTableDetails(tag){
-            document.getElementById("TableIdForEdit").value =tag.getAttribute("data-id");
-            document.getElementById("TableNameEdit").value=tag.parentElement.parentElement.children[0].children[1].innerHTML;
-            document.getElementById("EditTableModaldropDown").value=SectionID.toString();
-            console.log(tag.parentElement.parentElement.children[2].children[0].children[0].innerHTML);
-            document.getElementById("TableCapacityForEdit").value=tag.parentElement.parentElement.children[1].innerHTML;
-            document.getElementById("tableStatusForEdit").value=tag.parentElement.parentElement.children[2].children[0].children[0].innerHTML.trim();
+        function DeleteTableDetails(tag) {
+            document.getElementById("table-id-fordeleteTable").value = tag.getAttribute("data-id");
+        }
+
+        function updateTableDetails(tag) {
+            document.getElementById("TableIdForEdit").value = tag.getAttribute("data-id");
+            document.getElementById("TableNameEdit").value = tag.parentElement.parentElement.children[0].children[1].innerHTML;
+            document.getElementById("EditTableModaldropDown").value = SectionID.toString();
+            document.getElementById("TableCapacityForEdit").value = tag.parentElement.parentElement.children[1].innerHTML;
+            document.getElementById("tableStatusForEdit").value = tag.parentElement.parentElement.children[2].children[0].children[0].innerHTML.trim();
         }
 
 
 
-        function SelectAllSection(){
-            var classess=document.getElementsByClassName("massDeleteClassforSection");
-            var deleteAllItemCkeckbboxId =document.getElementById("checkboxForSelectAllSection");
+        function SelectAllSection() {
+            var classess = document.getElementsByClassName("massDeleteClassforSection");
+            var deleteAllItemCkeckbboxId = document.getElementById("checkboxForSelectAllSection");
             console.log(classess)
 
-            if(deleteAllItemCkeckbboxId.checked){
-                for(i=0; i<classess.length;i++){
-                    classess[i].checked=true;;
+            if (deleteAllItemCkeckbboxId.checked) {
+                for (i = 0; i < classess.length; i++) {
+                    classess[i].checked = true;;
                 }
             }
-            if(!deleteAllItemCkeckbboxId.checked){
-                for(i=0; i<classess.length;i++){
-                    classess[i].checked=false;;
+            if (!deleteAllItemCkeckbboxId.checked) {
+                for (i = 0; i < classess.length; i++) {
+                    classess[i].checked = false;;
                 }
             }
 
         }
-        function checkboxTickManage(){  
-            var classess=document.getElementsByClassName("massDeleteClassforSection");
+        function checkboxTickManage() {
+            var classess = document.getElementsByClassName("massDeleteClassforSection");
             var deleteAllItemCkeckbboxId = document.getElementById("checkboxForSelectAllSection");
-            flag=true;
-            for(i=0;i<classess.length;i++){
-                if(!classess[i].checked){
-                    flag=false;
+            flag = true;
+            for (i = 0; i < classess.length; i++) {
+                if (!classess[i].checked) {
+                    flag = false;
                 }
             }
-            deleteAllItemCkeckbboxId.checked =flag;
+            deleteAllItemCkeckbboxId.checked = flag;
         }
 
+        function EmptyAddSectionForm() {
+            document.getElementById("SectionName").value = "";
+            document.getElementById("sectionDescription").value = "";
+            var validatinclass=document.getElementsByClassName("RemoveValidations");
+            for (i = 0; i < validatinclass.length; i++) {
+                validatinclass[i].innerText = "";
+            }
+            
+        }
+
+        function EmptyAddTableForm() {
+            document.getElementById("TableName").value = "";
+            document.getElementById("TableCapacity").value = "";
+            var validatinclass=document.getElementsByClassName("RemoveValidations");
+            for (i = 0; i < validatinclass.length; i++) {
+                validatinclass[i].innerText = "";
+            }
+
+        }
 
         $(document).ready(function () {
-            
-      
-        loadSectionTable(SectionID, searchText, currentPage, pageSize);
 
-        $(".Sections-div").on("click",function(){
+            loadSection();
+            loadSectionTable(SectionID, searchText, currentPage, pageSize);
+
+            $(document).on("click", ".Sections-div", function () {
                 $(".Sections-div").removeClass("active-category");
                 $(this).addClass("active-category");
                 SectionID = $(this).data("id");
-                currentPage=1;
+                currentPage = 1;
                 loadSectionTable(SectionID, searchText, currentPage, pageSize);
                 SelectAllSection();
-                
+
             })
 
-        $("#searchbtn").on("keyup", function () {
-            searchText = $(this).val().trim();
-            console.log(searchText);
-            currentPage = 1;
-            loadSectionTable(SectionID, searchText, currentPage, pageSize);
-            SelectAllSection();
-        });
-
-        $("#right-arrow").on("click", function () {
-            let rightarrow = !$(this).prop("disabled");
-            console.log(rightarrow);
-            if (rightarrow) {
-                currentPage++;
+            $("#searchbtn").on("keyup", function () {
+                searchText = $(this).val().trim();
+                console.log(searchText);
+                currentPage = 1;
                 loadSectionTable(SectionID, searchText, currentPage, pageSize);
                 SelectAllSection();
-            }
-        });
+            });
 
-        $("#left-arrow").on("click", function () {
-            let leftarrow = !$(this).prop("disabled");
-            console.log(leftarrow);
-            if (leftarrow) {
-                currentPage--;
+            $("#right-arrow").on("click", function () {
+                let rightarrow = !$(this).prop("disabled");
+                console.log(rightarrow);
+                if (rightarrow) {
+                    currentPage++;
+                    loadSectionTable(SectionID, searchText, currentPage, pageSize);
+                    SelectAllSection();
+                }
+            });
+
+            $("#left-arrow").on("click", function () {
+                let leftarrow = !$(this).prop("disabled");
+                console.log(leftarrow);
+                if (leftarrow) {
+                    currentPage--;
+                    loadSectionTable(SectionID, searchText, currentPage, pageSize);
+                    SelectAllSection();
+                }
+            });
+            $("#itemsperpage").on("change", function () {
+                pageSize = $(this).val();
+                currentPage = 1;
+                console.log(pageSize);
                 loadSectionTable(SectionID, searchText, currentPage, pageSize);
                 SelectAllSection();
-            }
-        });
-        $("#itemsperpage").on("change", function () {
-            pageSize = $(this).val();
-            currentPage = 1;
-            console.log(pageSize);
-            loadSectionTable(SectionID, searchText, currentPage, pageSize);
-            SelectAllSection();
-        });
-      
-        //delete all Tables
-            $("#deleteAllTablesModalYesButton").on("click",function(){
-                 var classess=document.getElementsByClassName("massDeleteClassforSection");
-                 @* console.log("delete all") *@
-                 let toasterflag=true;
-                 for(i=0; i<classess.length;i++){
-                    if(classess[i].checked){
+            });
+
+            //delete all Tables
+            $("#deleteAllTablesModalYesButton").on("click", function () {
+                var classess = document.getElementsByClassName("massDeleteClassforSection");
+                @* console.log("delete all") *@
+                    let toasterflag = true;
+                for (i = 0; i < classess.length; i++) {
+                    if (classess[i].checked) {
 
                         let tableID = classess[i].getAttribute("data-checkid");
                         console.log(tableID)
                         $.ajax({
-                             url: `/TableAndSection/Deletetable?id=${tableID}`,
+                            url: `/TableAndSection/DeleteTable?id=${tableID}`,
                             type: "GET",
                             success: function (data) {
                                 if (data.success && toasterflag) {
-                                successToaster(data.text);
-                                toasterflag=false;
-                                } 
-                                if(data.success==false &&toasterflag) {
+                                    successToaster(data.text);
+                                    toasterflag = false;
+                                }
+                                if (data.success == false && toasterflag) {
                                     errorToaster(data.text);
-                                    toasterflag=false;
+                                    toasterflag = false;
                                 }
                                 location.reload();
-                                currentPage=1;
+                                currentPage = 1;
                                 loadSectionTable(SectionID, searchText, currentPage, pageSize);
                             }
                         })
                     }
                 }
-            })  
-      });
-      
+            })
+
+            //add section
+            $(document).on("submit", "#AddSectionFormId", function (e) {
+                e.preventDefault();
+
+                let form = $("#AddSectionFormId");
+                if (form.valid()) {
+                    let formData = new FormData(this);
+                    console.log(formData);
+                    $.ajax({
+                        url: "/TableAndSection/AddSection",
+                        type: "POST",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (res) {
+                            if (res.success) {
+                                successToaster(res.text);
+                            } else {
+                                errorToaster(res.text);
+                            }
+                            $(".btn-close").click();
+                            @* console.log(res); *@
+                                loadSection();
+                            loadSectionTable(SectionID, searchText, currentPage, pageSize);
+                            EmptyAddSectionForm();
+                        }
+                    })
+                }
+            })
+
+            //Edit section POST
+            $(document).on("submit", "#EditSectionFormId", function (e) {
+                e.preventDefault();
+                let form = $("#EditSectionFormId");
+                let SectionIDforEdit = $("#section-id-div").val();
+
+                if (form.valid()) {
+                    let formData = new FormData(this);
+                    $.ajax({
+                        url: "/TableAndSection/EditSection",
+                        type: "POST",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (res) {
+                            if (res.success) {
+                                successToaster(res.text);
+                            } else {
+                                errorToaster(res.text);
+                            }
+                            $(".btn-close").click();
+                            loadSection();
+                            loadSectionTable(SectionIDforEdit, searchText, currentPage, pageSize);
+                            }
+                    })
+                }
+            })
+
+            //delete section
+            $(document).on("submit", "#DeletesectionFormId", function (e) {
+                e.preventDefault();
+                let id = document.getElementById("section-id-fordeletesection").value;
+
+                $.ajax({
+                    url: `/TableAndSection/DeleteSection?id=${id}`,
+                    type: "POST",
+                    success: function (res) {
+                        if (res.success) {
+                            successToaster(res.text);
+                        } else {
+                            errorToaster(res.text);
+                        }
+                        $(".btn-close").click();
+                        @* console.log(res); *@
+                        loadSection();
+                            loadSectionTable(res.sectionID, searchText, currentPage, pageSize);
+                    }
+                });
+            })
+
+            //Add Table
+            $(document).on("submit", "#AddTableFormId", function (e) {
+                e.preventDefault();
+                let form = $("#AddTableFormId");
+                @* let SectionID = $("#AddTableModaldropDown").val(); *@
+                if (form.valid()) {
+                    let formData = new FormData(this);
+                    $.ajax({
+                        url: "/TableAndSection/AddTable",
+                        type: "POST",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (res) {
+                            if (res.success) {
+                                successToaster(res.text);
+                            } else {
+                                errorToaster(res.text);
+                            }
+                            $(".btn-close").click();
+                            loadSectionTable(SectionID, searchText, currentPage, pageSize);
+                            EmptyAddTableForm();
+                        }
+                    })
+                }
+            })
+
+            //Edit Table
+            $(document).on("submit", "#EditTableFormId", function (e) {
+                e.preventDefault();
+                let form = $("#EditTableFormId");
+                @* let SectionID = $("#EditTableModaldropDown").val(); *@
+                if (form.valid()) {
+                    let formData = new FormData(this);
+                    $.ajax({
+                        url: "/TableAndSection/EditTable",
+                        type: "POST",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (res) {
+                            if (res.success) {
+                                successToaster(res.text);
+                            } else {
+                                errorToaster(res.text);
+                            }
+                            $(".btn-close").click();
+                            loadSectionTable(SectionID, searchText, currentPage, pageSize);
+                        }
+                    })
+                }
+            })
+
+            //delete Table
+            $(document).on("submit", "#DeleteTableFormId", function (e) {
+                e.preventDefault();
+                let id = document.getElementById("table-id-fordeleteTable").value;
+                $.ajax({
+                    url: `/TableAndSection/DeleteTable?id=${id}`,
+                    type: "POST",
+                    success: function (res) {
+                        if (res.success) {
+                            successToaster(res.text);
+                        } else {
+                            errorToaster(res.text);
+                        }
+                        $(".btn-close").click();
+                        currentPage=1;
+                        console.log("delete table");
+                        loadSectionTable(SectionID, searchText, currentPage, pageSize);
+                        console.log(currentPage);
+                        console.log(SectionID);
+                        console.log("delete table dn")                   
+                    }
+                });
+            })
+
+
+
+
+        });
+
 
     </Script>
 
-        <script>
+    <script>
         $(document).ready(function () {
             var successMessage = '@TempData["SuccessMessage"]';
             var errorMessage = '@TempData["ErrorMessage"]';
@@ -593,8 +789,8 @@
             }
         });
     </script>
-@{
+    @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-     <partial name="_Toaster"/>
+    <partial name="_Toaster" />
 }

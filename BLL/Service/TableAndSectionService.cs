@@ -58,12 +58,16 @@ public class TableAndSectionService : ITableAndSection
     }
     #endregion
 
+    #region GetSectionByName
+    public async Task<Section> GetSectionByName(Section section){
+        var section1 =await _context.Sections.FirstOrDefaultAsync(x=>x.SectionName.ToLower().Trim()== section.SectionName.ToLower().Trim() && x.Isdelete==false);
+        return section1;
+    }
+    #endregion
+
+
     #region Add section
     public async Task<bool> AddSection(Section section, long userID){
-        var sectionpresent =await _context.Sections.FirstOrDefaultAsync(x=>x.SectionName.ToLower().Trim()== section.SectionName.ToLower().Trim() && x.Isdelete==false);
-        if(sectionpresent != null){
-            return false;
-        }
         if(section==null){
             return false;
         }
@@ -75,6 +79,13 @@ public class TableAndSectionService : ITableAndSection
         await _context.SaveChangesAsync();
         return true;
     } 
+    #endregion
+
+    #region GetSectionByNameForEdit
+    public async Task<Section> GetSectionByNameForEdit(Section section){
+        var section1 =await _context.Sections.FirstOrDefaultAsync(x=>x.SectionId!=section.SectionId &&x.SectionName.ToLower().Trim()== section.SectionName.ToLower().Trim() && x.Isdelete==false);
+        return section1;
+    }
     #endregion
 
     #region  edit section post
@@ -117,6 +128,13 @@ public class TableAndSectionService : ITableAndSection
     }
     #endregion
 
+    #region GetTableByNameInSameSection
+    public async Task<Table> GetTableByNameInSameSection(TableViewModel table){
+        var table1 =await _context.Tables.FirstOrDefaultAsync(x=>x.TableId!=table.TableId && x.TableName.ToLower().Trim()== table.TableName.ToLower().Trim() && x.SectionId==table.SectionId && x.Isdelete==false);
+        return table1;
+    }
+    #endregion
+
     #region Add Table post
     public async Task<bool> AddTable(TableViewModel table, long userId){
         var tablepresent =await _context.Tables.FirstOrDefaultAsync(x=>x.TableName.ToLower().Trim()== table.TableName.ToLower().Trim() && x.Isdelete==false);
@@ -151,7 +169,9 @@ public class TableAndSectionService : ITableAndSection
         tablepresent.Capacity=table.Capacity;
         tablepresent.Status=table.Status;
         tablepresent.SectionId=table.SectionId;
-        _context.Update(tablepresent);
+        tablepresent.ModifiedBy=userId;
+        tablepresent.ModifiedAt=DateTime.Now;
+        _context.Tables.Update(tablepresent);
         await _context.SaveChangesAsync();
         return true;
     }

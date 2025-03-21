@@ -21,6 +21,11 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var cookieSavedToken = httpContext.Request.Cookies["AuthToken"];
+            if(cookieSavedToken == null)
+            {
+                context.Fail();
+                return Task.CompletedTask;
+            }
             var roleName = _jWTService.GetClaimValue(cookieSavedToken, "role");
             var permissionsData = _rolesPermission.permissionByRole(roleName);
 

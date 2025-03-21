@@ -44,19 +44,16 @@ public class TaxAndFeesController: Controller
 
         var taxNamePresent =await _taxAndFeeService.GetTaxByName(taxFeesvm.taxViewModel);
         if(taxNamePresent!=null){
-            TempData["ErroMessage"]="Tax Already present";
-            return RedirectToAction("TaxAndFees");
+             return Json(new { success = false, text = "Tax Already Present" });
         }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         bool taxAddStatus =await  _taxAndFeeService.AddTax(taxFeesvm.taxViewModel,userId);
         if(taxAddStatus){
-            TempData["SuccessMessage"]="Tax Added Successfully";
-            return RedirectToAction("TaxAndFees");
-        }else{
-            TempData["ErrorMessage"]="Error whwile Adding Tax. Try Again!";
-            return RedirectToAction("TaxAndFees");
+            return Json(new { success = true, text = "Tax Added successfully" });
+        }else{          
+            return Json(new { success = false, text = "Error While Adding Tax. Try Again!" });
         }
     }
     #endregion
@@ -72,19 +69,16 @@ public class TaxAndFeesController: Controller
     public async Task<IActionResult> EditTax(TaxANdFeesViewModel taxfeesvm){
         var taxNamePresent =await _taxAndFeeService.GetTaxByNameForEdit(taxfeesvm.taxViewModel);
         if(taxNamePresent!=null){
-            TempData["ErroMessage"]="TaxName Already present";
-            return RedirectToAction("TaxAndFees");
+            return Json(new { success = false, text = "Tax Already present. Try New TaxName" });
         }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
-        bool taxAddStatus =await _taxAndFeeService.EditTax(taxfeesvm.taxViewModel,userId);
-        if(taxAddStatus){
-            TempData["SuccessMessage"]="Tax Updated Successfully";
-            return RedirectToAction("TaxAndFees");
-        }else{
-            TempData["ErrorMessage"]="Error whwile Updating Tax. Try Again!";
-            return RedirectToAction("TaxAndFees");
+        bool taxEditStatus =await _taxAndFeeService.EditTax(taxfeesvm.taxViewModel,userId);
+        if(taxEditStatus){
+            return Json(new { success = true, text = "Tax Updated successfully" });
+        }else{          
+            return Json(new { success = false, text = "Error While Updating Tax. Try Again!" });
         }
     }
     #endregion
@@ -93,12 +87,10 @@ public class TaxAndFeesController: Controller
     public async Task<IActionResult> deleteTax(long id){
         bool deleteTaxStatus = await _taxAndFeeService.DeleteTax(id);
         if(deleteTaxStatus){
-            TempData["SuccessMessage"]="Tax Deleted Successfully";
+            return Json(new { success = true, text = "Tax Deleted successfully" });
+        }else{          
+            return Json(new { success = false, text = "Error While Deleting Tax. Try Again!" });
         }
-        else{
-            TempData["ErrorMessage"]="Error While Deleting Tax. Try Again!";
-        }
-        return RedirectToAction("TaxAndFees");
     }
     #endregion
 
