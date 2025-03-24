@@ -53,6 +53,8 @@ public class MenuController : Controller
         {
             menudata.Paginationmodifiers = _menuService.GetModifiersByModifierGrp(menudata.modifiergroupList[0].ModifierGrpId, search, pageNumber, pageSize);
         }
+        menudata.additem=menudata.additem??new AddItemViewModel();
+        menudata.additem.ModifierGroupList = menudata.additem.ModifierGroupList ?? new List<ModifierGroupForItem>();
         ViewData["sidebar-active"] = "Menu";
         return View(menudata);
     }
@@ -100,6 +102,22 @@ public class MenuController : Controller
         return PartialView("_AddExisingModifierPaginationPartial", menudata.Paginationmodifiers);
     }
     #endregion
+
+        #region menu modifiers Pagination
+    [PermissionAuthorize("Menu.View")]
+    public IActionResult MenuModifierAllPaginationForEdit(string search = "", int pageNumber = 1, int pageSize = 5)
+    {
+        MenuViewModel menudata = new();
+        menudata.modifiergroupList = _menuService.GetAllModifierGroups();
+
+        menudata.Paginationmodifiers = _menuService.GetAllModifiers(search, pageNumber, pageSize);
+
+        return PartialView("_AddExisingModifierPaginationPartial", menudata.Paginationmodifiers);
+    }
+    #endregion
+
+
+
 
     #region menu list of modifier group get
     [PermissionAuthorize("Menu.View")]
@@ -269,6 +287,7 @@ public class MenuController : Controller
     [PermissionAuthorize("Menu.EditAdd")]
     public IActionResult EditItem(long itemID)
     {
+
         return Json(_menuService.GetItemByItemID(itemID));
     }
     #endregion
@@ -304,11 +323,23 @@ public class MenuController : Controller
     #region  edititem post
     [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
-    public async Task<IActionResult> EditItem(MenuViewModel menuvm)
+    public async Task<IActionResult> EditItem([FromForm]MenuViewModel menuvm)
     {
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+         List<ModifierGroupForItem> deserializedData = JsonConvert.DeserializeObject<List<ModifierGroupForItem>>(menuvm.itemData);
+
+        if (deserializedData != null)
+        {
+            menuvm.additem = menuvm.additem ?? new AddItemViewModel();
+            menuvm.additem.ModifierGroupList = menuvm.additem.ModifierGroupList ?? new List<ModifierGroupForItem>();
+
+            foreach (ModifierGroupForItem deItems in deserializedData)
+            {
+                menuvm.additem.ModifierGroupList.Add(deItems);
+            }
+        }
         if (menuvm.additem.ItemFormImage != null)
         {
             var extension = menuvm.additem.ItemFormImage.FileName.Split(".");

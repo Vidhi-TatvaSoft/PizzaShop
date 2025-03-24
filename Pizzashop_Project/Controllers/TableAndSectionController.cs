@@ -45,7 +45,7 @@ public class TableAndSectionController : Controller
     }
 
 
-     [PermissionAuthorize("TableSection.View")]
+    [PermissionAuthorize("TableSection.View")]
     public IActionResult SectionList(){
         TableSectionViewModel tablesectionvm = new();
         tablesectionvm.sectionList = _tableSectionService.GetAllSections();

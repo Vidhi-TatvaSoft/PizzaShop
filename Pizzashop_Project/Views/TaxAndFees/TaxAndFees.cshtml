@@ -71,14 +71,16 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add Tax</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyAddTaxForm()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    onclick="EmptyAddTaxForm()"></button>
             </div>
             <form id="TaxAddFormId">
                 <div class="modal-body row">
                     <div class="form-floating  col-12">
                         <input type="text" class="form-control" id="TaxName" asp-for="@Model.taxViewModel.TaxName"
                             placeholder="name">
-                        <span asp-validation-for="@Model.taxViewModel.TaxName" class="text-danger " id="RemoveValidations"></span>
+                        <span asp-validation-for="@Model.taxViewModel.TaxName" class="text-danger "
+                            id="RemoveValidations"></span>
                         <label for="TaxName"> &nbsp; Name*</label>
                     </div>
 
@@ -96,7 +98,8 @@
                             <input type="text" id="TaxValue" asp-for="@Model.taxViewModel.TaxValue" class="form-control"
                                 placeholder="Tax Amount*">
                             <label for="TaxValue">Amount*</label>
-                            <span class="text-danger" asp-validation-for="@Model.taxViewModel.TaxValue" id="RemoveValidationsamt"></span>
+                            <span class="text-danger" asp-validation-for="@Model.taxViewModel.TaxValue"
+                                id="RemoveValidationsamt"></span>
                         </div>
                     </div>
 
@@ -119,7 +122,8 @@
 
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">save</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyAddTaxForm()">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
+                        onclick="EmptyAddTaxForm()">cancel</button>
                 </div>
             </form>
         </div>
@@ -364,7 +368,7 @@
                             }
                             $(".btn-close").click();
                             @* console.log(res); *@
-                            loadTable(currentPage, searchText, pageSize);
+                                loadTable(currentPage, searchText, pageSize);
                             EmptyAddTaxForm();
                         }
                     })
@@ -393,7 +397,7 @@
                             }
                             $(".btn-close").click();
                             @* console.log(res); *@
-                            loadTable(currentPage, searchText, pageSize);
+                                loadTable(currentPage, searchText, pageSize);
                         }
                     })
                 }
@@ -403,36 +407,29 @@
             //delete tax
             $(document).on("submit", "#DeleteTaxFormId", function (e) {
                 e.preventDefault();
-                let id=document.getElementById("deleteTaxId").value;    
+                let id = document.getElementById("deleteTaxId").value;
                 console.log(id);
                 $.ajax({
-                        url: `/TaxAndFees/DeleteTax?id=${id}`,
-                        type: "POST",
-                        contentType: false,
-                        processData: false,
-                        success: function (res) {
-                            if (res.success) {
-                                successToaster(res.text);
-                            } else {
-                                errorToaster(res.text);
-                            }
-                            $(".btn-close").click();
-                            @* console.log(res); *@
-                            loadTable(currentPage, searchText, pageSize);
+                    url: `/TaxAndFees/DeleteTax?id=${id}`,
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        if (res.success) {
+                            successToaster(res.text);
+                        } else {
+                            errorToaster(res.text);
                         }
-                    });
-            })
-
-
-
-
-
-
-
+                        $(".btn-close").click();
+                        @* console.log(res); *@
+                            loadTable(currentPage, searchText, pageSize);
+                    }
+                });
+            });
         });
     </script>
- @{
+    @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <partial name="_Toaster"/>
+    <partial name="_Toaster" />
 }

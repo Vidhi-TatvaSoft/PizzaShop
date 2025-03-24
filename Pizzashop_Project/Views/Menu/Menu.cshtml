@@ -95,7 +95,7 @@
 
 <!-- Add Items modal-->
 <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add New Menu Item</h5>
@@ -166,7 +166,6 @@
                                             <option value="cm">cm</option>
                                         </select>
                                         <label for="floatingSelect">Unit*</label>
-                                        <span class="text-danger" asp-validation-for="@Model.additem.Unit"></span>
                                     </div>
                                 </div>
                             </div>
@@ -259,7 +258,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Edit Menu Item</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form enctype="multipart/form-data">
+            <form enctype="multipart/form-data" id="itemEditForm">
             <div class="modal-body">
                 <div class="container">
                     <div class="row">
@@ -387,8 +386,10 @@
                         </div>
                         <!-- Right Section (Modifiers) -->
                         <div class="col-lg-5 col-md-12 bg-light p-3 rounded">
-                            <select>
-                                <option value="">select a modifier Group</option>
+                            <select class="w-100 p-1" id="EditModifier" onchange="EditModifierByGroup()">
+                                @foreach(var modgrp in Model.modifiergroupList){
+                                    <option value="@modgrp.ModifierGrpId">@modgrp.ModifierGrpName</option>
+                                }
                             </select>
                             <div id="EditItemByModifiers"></div>
                             
@@ -452,7 +453,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add Existing Modifier</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"  onclick="DiscardSelectedModifiersOnCancel()"></button>
             </div>
             <form  id="AddExistModifierFormID">
                 <div class="modal-body">
@@ -502,7 +503,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="DisplayNamesOfExistingMod()" >Add</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="DiscardSelectedModifiersOnCancel()">cancel</button>
                 </div>
             </form>
         </div>
@@ -542,7 +543,7 @@
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyFieldsAddModGrpForEdit()">cancel</button>
                 </div>
             </form>
-</div> 
+        </div> 
     </div>
 </div>
 
@@ -552,7 +553,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add Existing Modifier</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="DiscardSelectedModifiersOnCancel()"></button>
             </div>
             <form  id="editExistModifierFormID">
                 <div class="modal-body">
@@ -602,7 +603,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="DisplayNamesOfExistingModForEdit()" >Add</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="DiscardSelectedModifiersOnCancel()">cancel</button>
                 </div>
             </form>
         </div>
@@ -1157,7 +1158,9 @@
                    data.modifiers.forEach(x=>{
                         modTempID.push(x.modifierId);
                         modTempName.push(x.modifierName);
-                        editModTempId.push(x.modifierId);
+                        editModTempId.push(x.modifierId); //static
+                        modTempIdForCancel.push(x.modifierId);
+                        modTempNameForCancel.push(x.modifierName);
                         console.log("hii");
                    });
                    console.log(data.modifierGroup.modifierGrpId);
@@ -1178,6 +1181,8 @@
         function EmptyFieldsAddModGrp(){
             modTempID =[];
             modTempName=[];
+            modTempIdForCancel=[];
+            modTempNameForCancel=[];
             
             document.getElementById("tempIdsHiddenField").value = "";
             document.getElementById("AddModGrpName").value="";
@@ -1190,6 +1195,8 @@
             modTempID =[];
             modTempName=[];
             editModTempId=[];
+            modTempIdForCancel=[];
+            modTempNameForCancel=[];
             document.getElementById("tempIdsHiddenFieldForEdit").value = "";
             document.getElementById("EditModGrpNameForEdit").value="";
             document.getElementById("EditModGrpDescriptionForEdit").value="";
@@ -1312,6 +1319,9 @@
         
         //load all modifiers for add existing modifier width pagination
         function LoadAllModifiers(search="",page=1,pageSize=5){
+
+                pageSize = parseInt(pageSizeModExist)
+
                 $.ajax({
                     
                     url: "/Menu/MenuModifierAllPagination",
@@ -1345,22 +1355,25 @@
 
         //load all modifiers for edit existing modifier width pagination
             function LoadAllModifiersForEdit(search="",page=1,pageSize=5){
+                pageSize = parseInt(pageSizeModExistForEdit)
+                       
+                
                 $.ajax({
                     
-                    url: "/Menu/MenuModifierAllPagination",
+                    url: "/Menu/MenuModifierAllPaginationForEdit",
                     type: "GET",
-                    data: { search, pageNumber: page, pageSize },
+                    data: { search, pageNumber: page, pageSize  },
                     success: function (data) {
                         //console.log(data);
                         document.getElementById("checkboxForSelectAllModifierExist").checked=false;
                         document.getElementById("AllModifiersListBodyEdit").innerHTML=data;
                         //document.getElementById("exampleModal-addmodifiergroup").style.opacity=0; 
                         currentPageModExistForEdit = page;
-                        pageSizeModExistForEdit = parseInt(pageSizeModExist);
+                        pageSizeModExistForEdit = parseInt(pageSizeModExistForEdit);
                         var totalRecordsModExistForEdit = parseInt($("#totalCount-modExist").val()) || 0;
                         var startItemModExistForEdit = totalRecordsModExistForEdit === 0 ? 0 : (currentPageModExistForEdit - 1) * pageSizeModExistForEdit + 1;
                         var endItemModExistForEdit = Math.min(currentPageModExistForEdit * pageSizeModExistForEdit, totalRecordsModExistForEdit);
-
+                        
                         $("#pagination-text-modExistForEdit").text("Showing " + startItemModExistForEdit + " - " + endItemModExistForEdit + " of " + totalRecordsModExistForEdit);
                         $("#left-arrow-modExistForEdit").prop("disabled", currentPageModExistForEdit === 1);
                         $("#right-arrow-modExistForEdit").prop("disabled", currentPageModExistForEdit * pageSizeModExistForEdit >= totalRecordsModExistForEdit);
@@ -1405,7 +1418,10 @@
             let searchTextModExist="";
             let modTempID=[];
             let modTempName=[];
+            let modTempIdForCancel=[];
+            let modTempNameForCancel=[];
             let editModTempId=[];
+            
 
             let currentPageModExistForEdit =1;
             let pageSizeModExistForEdit =$("#itemsperpage-modExistForEdit").val();
@@ -1475,9 +1491,19 @@
 
             //Add-----method to show selected existing modifier in add modgrp
             function DisplayNamesOfExistingMod(){
-                console.log(modTempName);
+                modTempIdForCancel=[];
+                modTempNameForCancel=[];
+
+                for(i=0;i<modTempID.length;i++){
+                    if(modTempIdForCancel.indexOf(modTempID[i])==-1){
+                        modTempIdForCancel.push(modTempID[i]);
+                        modTempNameForCancel.push(modTempName[i]);
+                    }
+                }
+                
+                @* console.log(modTempName); *@
                 var modDiv=document.getElementById("ExistingModifiers");
-                console.log(modDiv);
+                @* console.log(modDiv); *@
                 modDiv.innerHTML = "";
                 for(i=0;i<modTempID.length;i++){
                     modDiv.innerHTML += `<div class="p-1 border border-1 rounded-pill ms-3 mb-2 me-2 d-inline justify-content-between align-items-center" style="max-width:fit-content;">
@@ -1486,6 +1512,15 @@
             }
             //Edit #-----method to show selected existing modifier in edit modgrp
             function DisplayNamesOfExistingModForEdit(){
+                modTempIdForCancel=[];
+                modTempNameForCancel=[];
+
+                for(i=0;i<modTempID.length;i++){
+                    if(modTempIdForCancel.indexOf(modTempID[i])==-1){
+                        modTempIdForCancel.push(modTempID[i]);
+                        modTempNameForCancel.push(modTempName[i]);
+                    }
+                }
                 console.log(modTempName);
                 var modDiv=document.getElementById("ExistingModifiersForEdit");
                 console.log(modDiv);
@@ -1516,20 +1551,30 @@
                 }
             }
 
-            @* function isModCheckedOrNot(modId){
-                
-                let existdata =modTempID.indexOf(modId);
-                console.log(existdata);
-                if(existdata==-1){document.getElementById(`modifier-${modId}`).checked = false}
-                else{document.getElementById(`modifier-${modId}`).checked = true;}
-            } *@
+            //discard-button checkboxTickManageModifierExist if cancel button isAdded clicked while Add Existing modifiers
+            function DiscardSelectedModifiersOnCancel(){
+                modTempID =[];
+                modTempName =[];
+                for(i=0;i<modTempIdForCancel.length;i++){
+                    modTempID.push(modTempIdForCancel[i]);
+                    modTempName.push(modTempNameForCancel[i]);
+                }
+                console.log(modTempID);
+                console.log(modTempIdForCancel);
+                console.log(modTempName);
+                console.log(modTempNameForCancel);
+            }
+
 
             function RemoveFromListAddModifierGroup(id,name){
-                console.log("remove")
+                @* console.log("remove")
                 console.log(id)
-                console.log(name);
+                console.log(name); *@
                  modTempID.splice(modTempID.indexOf(id),1);
                 modTempName.splice(modTempName.indexOf(name),1);
+                modTempIdForCancel.splice(modTempIdForCancel.indexOf(id),1);
+                modTempNameForCancel.splice(modTempNameForCancel.indexOf(name),1);
+
                 console.log(modTempID);
                 console.log(modTempName);
                 DisplayNamesOfExistingMod();
@@ -1542,6 +1587,8 @@
                 console.log("splice id:",modTempID.indexOf(parseInt(id)));
                 modTempID.splice(modTempID.indexOf(parseInt(id)),1);
                 modTempName.splice(modTempName.indexOf(name),1);
+                modTempIdForCancel.splice(modTempIdForCancel.indexOf(id),1);
+                modTempNameForCancel.splice(modTempNameForCancel.indexOf(name),1);
                 console.log(modTempID);
                 DisplayNamesOfExistingModForEdit();
             }
@@ -1720,7 +1767,7 @@
             $("#itemsperpage-modExistForEdit").on("change", function () {
                 pageSizeModExistForEdit = $(this).val();
                 currentPageModExistForEdit=1;
-                console.log(pageSizeModExistForEdit);
+                console.log(pageSizeModExistForEdit,"JSON ne pagesize");
                 LoadAllModifiersForEdit(searchTextModExistForEdit,currentPageModExistForEdit,pageSizeModExistForEdit);
                 //SelectAllModifiersExist(); 
             });
@@ -1930,6 +1977,8 @@
                             SelectAllModifiers();
                             modTempID=[];
                             modTempName=[];
+                            modTempIdForCancel=[];
+                            modTempNameForCancel=[];
                         }
                     })
                 }
@@ -2150,14 +2199,17 @@
     
 <script>
 
-   
+
+
     function EditModifierByGroup() {
         var selectedValue = $('#EditModifier').val();
         var minOption = $(`#edit-min-selection-${selectedValue}`).val() ?? 0;
         var maxOption = $(`#edit-max-selection-${selectedValue}`).val() ?? 0;
+       console.log("2",editItemData);
 
         var isAdded = editItemData.findIndex(item => item.ModifierGrpId == selectedValue);
         console.log(isAdded,"isAdded");
+        @* console.log(editItemData); *@
 
         if (isAdded == -1) {
             var modifierGroup = {
@@ -2170,7 +2222,7 @@
 
             $.ajax({
                 url: '/Menu/EditModifiersByGroup',
-                type: 'GET',
+                type: 'POST',
                 data: { data: JSON.stringify(editItemData) },
                 success: function (data) {
                     $('#EditItemByModifiers').html(data);
@@ -2185,6 +2237,7 @@
     }
 
     function EditMinByGroup(element) {
+        console.log("element min",element);
 
         var selectedValue = $(element).data('id');
         var minOption = $(`#edit-min-selection-${selectedValue}`).val() ?? 0;
@@ -2202,7 +2255,7 @@
 
         var selectedValue = $(element).data('id');
         var maxOption = $(`#edit-max-selection-${selectedValue}`).val() ?? 0;
-
+        console.log("element max",element);
         var index = editItemData.findIndex(item => item.ModifierGrpId == selectedValue);
 
         if (index != -1) {
@@ -2214,7 +2267,7 @@
     }
 
     function EditRemoveFromList(element) {
-
+        console.log(element,'element');
         var selectedValue = $(element).data('id');
 
         var index = editItemData.findIndex(item => item.ModifierGrpId == selectedValue);
@@ -2224,7 +2277,7 @@
             editItemData.splice(index, 1);
             $.ajax({
                 url: '/Menu/EditModifiersByGroup/',
-                type: 'GET',
+                type: 'POST',
                 data: { data: JSON.stringify(editItemData) },
                 success: function (data) {
                     $('#EditItemByModifiers').html(data);
@@ -2236,7 +2289,10 @@
         }
     }
     function EditItemData(formData) {
+        console.log("3",formData);
+
         formData.append('itemData', JSON.stringify(editItemData));
+        console.log("4",formData);
         $.ajax({
             url: "/Menu/EditItem",
             type: "POST",
@@ -2253,12 +2309,12 @@
     $('#itemEditForm').on('submit', function (event) {
         event.preventDefault();
         let formData = new FormData(this);
-        console.log(formData.values());
+        console.log("hereeeeeeee");
         EditItemData(formData);
     });
 
     $(document).ready(function () {
-       
+       @* console.log("1",editItemData); *@
     });
 
 
