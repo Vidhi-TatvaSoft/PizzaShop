@@ -38,6 +38,31 @@ public class UserController : Controller
         return View();
     }
 
+        #region Userlist
+     [PermissionAuthorize("User.View")]
+    // [Authorize(Roles = "Admin")]
+    public IActionResult UsersList()
+    {
+        var users = _userService.GetUserList();
+        ViewData["sidebar-active"] = "UserList";
+        return View(users);
+    }
+
+    #endregion
+
+
+    #region PaginatedData
+     [PermissionAuthorize("User.View")]
+    //    [Authorize(Roles = "Admin")]
+    public IActionResult PaginatedData(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
+    {
+        ViewBag.email = Request.Cookies["email"];
+        var users = _userService.GetUserList(search, sortColumn, sortDirection, pageNumber, pageSize);
+        return PartialView("_UserListPartial", users);
+    }
+    #endregion
+
+
 
 
     #region MyProfile get
@@ -454,29 +479,6 @@ public class UserController : Controller
     }
     #endregion
 
-    #region Userlist
-     [PermissionAuthorize("User.View")]
-    // [Authorize(Roles = "Admin")]
-    public IActionResult UsersList()
-    {
-        var users = _userService.GetUserList();
-        ViewData["sidebar-active"] = "UserList";
-        return View(users);
-    }
-
-    #endregion
-
-
-    #region PaginatedData
-     [PermissionAuthorize("User.View")]
-    //    [Authorize(Roles = "Admin")]
-    public IActionResult PaginatedData(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
-    {
-        ViewBag.email = Request.Cookies["email"];
-        var users = _userService.GetUserList(search, sortColumn, sortDirection, pageNumber, pageSize);
-        return PartialView("_UserListPartial", users);
-    }
-    #endregion
 
 
     #region Getstates

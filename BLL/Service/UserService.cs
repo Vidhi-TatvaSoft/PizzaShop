@@ -91,8 +91,6 @@ public class UserService : IUserService
                 u.Userlogin.Role.RoleName.ToLower().Contains(lowerSearchTerm)
             );
         }
-
-
         //sorting
         switch (sortColumn)
         {

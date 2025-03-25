@@ -174,7 +174,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Section</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyAddTableForm()"></button>
             </div>
             <form id="EditSectionFormId">
                 <div class="modal-body">
@@ -182,8 +182,7 @@
                         <input type="hidden" asp-for="@Model.Section.SectionId" id="section-id">
                         <input type="text" class="form-control" id="section-name" asp-for="@Model.Section.SectionName"
                             placeholder="name" required>
-                        <span asp-validation-for="@Model.Section.SectionName" class="text-danger"></span>
-
+                        <span asp-validation-for="@Model.Section.SectionName" class="text-danger RemoveValidations"></span>
                         <label for="section-name">Name</label>
                     </div>
                     <div class="form-floating">
@@ -194,7 +193,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" id="updatebtn" class="btn btn-primary">save</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyAddTableForm()">cancel</button>
                 </div>
             </form>
         </div>
@@ -294,7 +293,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Edit table @ViewBag.sectionID</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyAddTableForm()"></button>
             </div>
             <form id="EditTableFormId">
                 <div class="modal-body row">
@@ -304,7 +303,7 @@
                             <input type="text" id="TableNameEdit" asp-for="@Model.table.TableName" class="form-control"
                                 placeholder="Name*">
                             <label for="TableNameEdit">Name*</label>
-                            <span class="text-danger" asp-validation-for="@Model.table.TableName"></span>
+                            <span class="text-danger RemoveValidations" asp-validation-for="@Model.table.TableName"></span>
                         </div>
                     </div>
                     <div class="col-6 mx-auto">
@@ -319,7 +318,7 @@
                                         <option value="3" class="DemoDDL">Section2</option> *@
                             </select>
                             <label for="EditTableModaldropDown">Section</label>
-                            <span class="text-danger" asp-validation-for="@Model.table.SectionId"></span>
+                            <span class="text-danger RemoveValidations" asp-validation-for="@Model.table.SectionId"></span>
                         </div>
                     </div>
 
@@ -344,7 +343,7 @@
                 </div>
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-primary" value="Save">
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyAddTableForm()">Cancel</button>
                 </div>
             </form>
         </div>
@@ -523,6 +522,13 @@
                 validatinclass[i].innerText = "";
             }
 
+        }
+
+        function RemoveValidatoOnCancel(){
+            var classList = document.getElementsByClassName("RemoveValidations");
+            for (var i = 0; i < classList.length; i++) {
+                classList[i].innerText = "";
+            }
         }
 
         $(document).ready(function () {

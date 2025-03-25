@@ -27,6 +27,7 @@ builder.Services.AddScoped<IMenuService,MenuService>();
 builder.Services.AddScoped<IAuthorizationHandler,PermissionHandler>();
 builder.Services.AddScoped<ITableAndSection,TableAndSectionService>();
 builder.Services.AddScoped<ITaxAndFees, TaxAndFeesService>();
+builder.Services.AddScoped<IOrderService,OrderService>();
 builder.Services.AddControllersWithViews();
 
 

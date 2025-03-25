@@ -774,27 +774,21 @@ public partial class PizzashopDbContext : DbContext
             entity.ToTable("rating");
 
             entity.Property(e => e.RatingId).HasColumnName("rating_id");
-            entity.Property(e => e.Ambience)
-                .HasMaxLength(20)
-                .HasColumnName("ambience");
+            entity.Property(e => e.Ambience).HasColumnName("ambience");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");
-            entity.Property(e => e.Food)
-                .HasMaxLength(20)
-                .HasColumnName("food");
+            entity.Property(e => e.Food).HasColumnName("food");
             entity.Property(e => e.Isdelete).HasColumnName("isdelete");
             entity.Property(e => e.ModifiedAt)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("modified_at");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
             entity.Property(e => e.Review).HasColumnName("review");
-            entity.Property(e => e.Service)
-                .HasMaxLength(20)
-                .HasColumnName("service");
+            entity.Property(e => e.Service).HasColumnName("service");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.RatingCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)

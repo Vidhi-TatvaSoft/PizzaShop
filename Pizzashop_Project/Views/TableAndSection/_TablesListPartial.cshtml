@@ -33,7 +33,7 @@ else
                 </div>
             </td>
             <td class="text-center">
-                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" data-id="@item.TableId" onclick="updateTableDetails(this)" data-bs-toggle="modal" data-bs-target="#EditTableModal"></i>
+                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" data-id="@item.TableId" onclick="updateTableDetails(this);RemoveValidatoOnCancel()" data-bs-toggle="modal" data-bs-target="#EditTableModal"></i>
                 <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#DeleteTableModal"
                     data-id="@item.TableId" onclick="DeleteTableDetails(this)" ></i>
             </td>

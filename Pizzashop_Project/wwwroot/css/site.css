@@ -123,9 +123,6 @@ form i{
     font-size: small;
   }
 
-/* .search-icon-style{
-  margin-left: -35px ;
-} */
  .user-div, .back-button{
   position: relative;
  }
@@ -137,6 +134,11 @@ form i{
   position: absolute;
   margin-left: -23px;
   margin-top: 7px;
+ }
+ .search-icon-style-orders{
+  position: absolute;
+  margin-left: 178px;
+  margin-top: -28px;
  }
 
  .table-main-div{

@@ -1,0 +1,268 @@
+@using DAL.ViewModels;
+@model DAL.ViewModels.PaginationViewModel<OrderViewModel>;
+
+
+<!-- Tax list -->
+<div class="user-list-main-div row  d-md-flex justify-content-between mt-2">
+    <!-- Tax txt -->
+    <div class="user-text fs-2 fw-bold text-primary col-md-1">Orders</div>
+    <div class="d-flex justify-content-end col-lg-10 row pe-0">
+        <div class="search-button-orders  col-lg-3 col-6 ">
+            <input type="text" id="searchbtn" placeholder="Search" class=" borderm-2 mt-1 me-3 p-2 w-100"
+                placeholder="Search">
+
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <select class="w-100 m-1 me-3 p-2 " id="status">
+                <option value="All Status" selected>All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Served">Served</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="On Hold">On Hold</option>
+                <option value="Failed">Failed</option>
+            </select>
+        </div>
+        <div class="d-md-flex  d-lg-none row justify-content-between pe-0 m-0">
+            <div class=" col-lg-3 ps-0 col-md-9 col-sm-8 col-7 ">
+                <select class="m-1 me-3 p-2 w-100" id="timePeriod">
+                    <option value="All Time" selected>All Time</option>
+                    <option value="7">Last 7 Days</option>
+                    <option value="30">Last 30 Days</option>
+                    <option value="Current Month">Current Month</option>
+
+                </select>
+
+            </div>
+            <a class="btn btn-primary m-1 me-0 p-2 ps-3 pe-3 " style="max-width: fit-content;"><i
+                    class="fa-solid fa-share-from-square mt-1 "></i>&nbsp;Export</a>
+
+        </div>
+        <div class="form-floating col-lg-3 pe-1 col-md-6 d-lg-flex d-none">
+            <select class="m-1 me-3 p-2 w-100" id="timePeriod2">
+                <option value="All Time" selected>All Time</option>
+                <option value="7">Last 7 Days</option>
+                <option value="30">Last 30 Days</option>
+                <option value="Current Month">Current Month</option>
+            </select>
+
+        </div>
+        <a class="btn btn-primary m-1 p-1 pt-2 d-lg-flex d-none" style="max-width: fit-content;"><i
+                class="fa-solid fa-share-from-square mt-1"></i>&nbsp;&nbsp;Export</a>
+        <div class="form-floating col-lg-3 col-6 ">
+            <input type="date" id="startDate" class="m-2 me-3 p-2 w-100 pe-0">
+
+        </div>
+        <div class="form-floating col-lg-3 col-6">
+            <input type="date" id="endDate" class="m-2 me-3 p-2 w-100 pe-0">
+
+        </div>
+        <a class="btn btn-primary m-2 p-3 pt-2 pb-2" 
+            style="max-width: fit-content;" id="searchfordate" >Search</a>
+        <a class="btn btn-outline-primary m-2 p-3 pb-2 pt-2"
+            style="max-width: fit-content;" id="clearBtnForDate" >Clear</a>
+
+    </div>
+
+
+</div>
+
+<!-- table -->
+<div class="container">
+    <div class="table-main-div table-responsive mt-3 bg-white mx-auto ">
+        <table id="example" class="table display">
+            <thead>
+                <tr>
+                    <th scope="col">#Order <i class="bi bi-arrow-down-up" id="sort-orderId" data-column="OrderId"
+                            data-direction="asc"></i></th>
+                    <th scope="col">Date<i class="bi bi-arrow-down-up" id="sort-date" data-column="Date"
+                            data-direction="asc"></i></th>
+                    <th scope="col">Customer<i class="bi bi-arrow-down-up" id="sort-customer" data-column="Customer"
+                            data-direction="asc"></i></th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Payment Mode</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col">Total Amount<i class="bi bi-arrow-down-up" id="sort-amount" data-column="Amount"
+                            data-direction="asc"></i></th>
+                    <th scope="col">Action </th>
+                </tr>
+            </thead>
+            <tbody id="TableBody">
+                @* @await Html.PartialAsync("_TaxListPartial", Model) *@
+
+            </tbody>
+        </table>
+
+    </div>
+    @*  Pagination div *@
+    <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
+
+        <span class="mt-2">Items Per page:</span>
+
+        <select id="itemsperpage">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+        </select>
+
+        <span class=" mt-2 ms-1" id="pagination-text"></span>
+        <a id="left-arrow" class="btn border border-dark bg-light ms-2">&lt;</a>
+        <a id="right-arrow" class="btn border border-dark bg-light ms-2">&gt;</a>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            let currentPage = 1;
+            let pageSize = $("#itemsperpage").val();
+            let searchText = "";
+            let sortColumn = "";
+            let sortDirection = "asc";
+            let startDate;
+            let endDate;
+            let timePeriod = $("#timePeriod").val();
+            let status = $("#status").val();
+
+
+
+            function loadTableForOrders(page = 1, search = "", sortColumn = "", sortDirection = "asc", pageSize = 5,status="",timePeriod="",startDate="",endDate="") {
+                $.ajax({
+                    url: "/Order/PaginatedOrdersData",
+                    type: "GET",
+                    data: { search, sortColumn, sortDirection, pageNumber: page, pageSize,status,timePeriod,startDate,endDate },
+                    success: function (data) {
+                        $("#TableBody").html(data);
+                        currentPage = page;
+
+                        pageSize = parseInt(pageSize);
+                        var totalRecords = parseInt($("#totalCount").val()) || 0;
+                        var startItem = totalRecords === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+                        var endItem = Math.min(currentPage * pageSize, totalRecords);
+
+                        $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
+                        $("#left-arrow").prop("disabled", page === 1);
+                        $("#right-arrow").prop("disabled", page * pageSize >= totalRecords);
+                    }
+                });
+            }
+
+            // Search on keyup
+            $("#searchbtn").on("keyup", function () {
+                searchText = $(this).val().trim();
+                currentPage = 1;
+                loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+            });
+
+            // Sorting functionality
+            $("#sort-orderId").on("click", function () {
+                sortColumn = $(this).data("column");
+                console.log(sortColumn);
+                sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
+                $(this).attr("data-direction", sortDirection);
+                loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+            });
+            $("#sort-date").on("click", function () {
+                sortColumn = $(this).data("column");
+                console.log(sortColumn);
+                sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
+                $(this).attr("data-direction", sortDirection);
+                loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+            });
+            $("#sort-customer").on("click", function () {
+                sortColumn = $(this).data("column");
+                console.log(sortColumn);
+                sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
+                $(this).attr("data-direction", sortDirection);
+                loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+            });
+
+            $("#sort-amount").on("click", function () {
+                sortColumn = $(this).data("column");
+                console.log(sortColumn);
+                sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
+                $(this).attr("data-direction", sortDirection);
+                loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+            });
+
+            // Pagination buttons
+            $("#right-arrow").on("click", function () {
+                let rightarrow = !$(this).prop("disabled");
+                console.log(rightarrow);
+                if (rightarrow) {
+                    currentPage++;
+                    loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+                }
+            });
+
+            $("#left-arrow").on("click", function () {
+                let leftarrow = !$(this).prop("disabled");
+                console.log(leftarrow);
+                if (leftarrow) {
+                    currentPage--;
+                    loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+                }
+            });
+
+            $("#searchfordate").on("click", function () {
+                startDate = $("#startDate").val();
+                endDate = $("#endDate").val();
+                console.log(startDate);
+                console.log(endDate);
+                loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+            });
+
+            // Items per page dropdown
+            $("#itemsperpage").on("change", function () {
+                pageSize = $(this).val();
+                console.log(pageSize);
+                currentPage = 1;
+                loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+            });
+
+            $("#status").on("change", function () {
+                status = $(this).val();
+                currentPage = 1;
+                loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+            });
+
+            $("#timePeriod").on("change", function () {
+               timePeriod = $(this).val();
+                document.getElementById("timePeriod2").value = timePeriod;
+               currentPage=1;
+               loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+              
+            });
+            $("#timePeriod2").on("change", function () {
+                timePeriod = $(this).val();
+                document.getElementById("timePeriod").value = timePeriod;
+                currentPage = 1;
+               loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+              
+            });
+
+            $("#clearBtnForDate").on("click", function () {
+                startDate = "";
+                endDate = "";
+                document.getElementById("startDate").value = "";
+                document.getElementById("endDate").value = "";
+                loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+            });
+@* 
+            $("#timePeriod").on("change", function () {
+                console.log("before")
+                const today = new Date();
+                const formattedDate = today.toISOString().split('T')[0];
+                console.log("date",formattedDate);
+                console.log("heloooooooooooooooo")
+            }); *@
+
+
+
+            // Initial table load
+            loadTableForOrders();
+        });
+    </script>
+}

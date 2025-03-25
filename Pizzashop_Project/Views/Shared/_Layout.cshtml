@@ -118,10 +118,11 @@
 
                         <!-- orders -->
                         @if ((await AuthorizationService.AuthorizeAsync(User, "Orders.View")).Succeeded){
-                        <div class="inactive-div d-flex p-3">
+                        <a class="inactive-div d-flex p-3 @((ViewData["sidebar-active"] as string) == "Orders" ? "active-div" : "")"
+                            style="text-decoration: none;" asp-action="Orders" asp-controller="Order">
                             <i class="fa-solid fa-clipboard-check"></i>
                             <p class="order-text-inactive text-size-set m-0 ms-4">Orders</p>
-                        </div>
+                        </a>
                         }
 
                         <!-- customer -->

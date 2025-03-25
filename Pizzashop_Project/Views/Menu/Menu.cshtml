@@ -10,14 +10,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="removeValidationOnCancel()"></button>
             </div>
             <form asp-action="AddCategory" asp-controller="Menu">
                 <div class="modal-body">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="floatingInput"
                             asp-for="@Model.category.CategoryName" placeholder="name" required>
-                        <span asp-validation-for="@Model.category.CategoryName" class="text-danger"></span>
+                        <span asp-validation-for="@Model.category.CategoryName" class="text-danger removeValidationOnCancel"></span>
                         <label for="floatingInput">Name</label>
                     </div>
                     <div class="form-floating">
@@ -28,7 +28,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">save</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="removeValidationOnCancel()">cancel</button>
                 </div>
             </form>
         </div>
@@ -41,7 +41,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="removeValidationOnCancel()"></button>
             </div>
             <form asp-action="EditCategory" asp-controller="Menu">
                 <div class="modal-body">
@@ -49,7 +49,7 @@
                         <input type="hidden" asp-for="@Model.category.CategoryId" id="category-id">
                         <input type="text" class="form-control" id="category-name"
                             asp-for="@Model.category.CategoryName" placeholder="name" required>
-                        <span asp-validation-for="@Model.category.CategoryName" class="text-danger"></span>
+                        <span asp-validation-for="@Model.category.CategoryName" class="text-danger removeValidationOnCancel"></span>
 
                         <label for="category-name">Name</label>
                     </div>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" id="updatebtn" class="btn btn-primary">save</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="removeValidationOnCancel()">cancel</button>
                 </div>
             </form>
         </div>
@@ -99,7 +99,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add New Menu Item</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="removeValidationOnCancel()"></button>
             </div>
             <form id="itemAddForms"  enctype="multipart/form-data">
             <div class="modal-body">
@@ -116,14 +116,14 @@
                                             }
                                         </select>
                                         <label for="floatingSelect">Categories*</label>
-                                        <span class="text-danger" asp-validation-for="@Model.additem.CategoryId"></span>
+                                        <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.CategoryId"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="floatingInput" asp-for="@Model.additem.ItemName" placeholder="Name*">
                                         <label for="floatingInput">Name*</label>
-                                        <span class="text-danger" asp-validation-for="@Model.additem.ItemName"></span>
+                                        <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.ItemName"></span>
 
                                     </div>
                                 </div>
@@ -138,8 +138,6 @@
                                             <option value="3">Vegan</option>
                                         </select>
                                         <label for="floatingSelect">Item Type*</label>
-                                        <span class="text-danger" asp-validation-for="@Model.additem.ItemTypeId"></span>
-
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-3">
@@ -147,7 +145,7 @@
                                         <input type="number" class="form-control" id="floatingInput" placeholder="Rate*" asp-for="@Model.additem.Rate"
                                            >
                                         <label for="floatingInput">Rate*</label>
-                                        <span class="text-danger" asp-validation-for="@Model.additem.Rate"></span>
+                                        <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.Rate"></span>
                                     </div>
                                 </div>
 
@@ -156,7 +154,7 @@
                                         <input type="number" class="form-control" id="floatingInput" asp-for="@Model.additem.Quantity"
                                             placeholder="Quantity*" >
                                         <label for="floatingInput">Quantity*</label>
-                                        <span class="text-danger" asp-validation-for="@Model.additem.Quantity"></span>
+                                        <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.Quantity"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-3">
@@ -242,7 +240,7 @@
             <!-- Footer Buttons -->
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="removeValidationOnCancel()">Cancel</button>
             </div>
             </form>
         </div>
@@ -256,7 +254,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Edit Menu Item</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="removeValidationOnCancel()"></button>
             </div>
             <form enctype="multipart/form-data" id="itemEditForm">
             <div class="modal-body">
@@ -281,7 +279,7 @@
                                         <input type="hidden" id="itemIdForDeleteItem" asp-for="@Model.additem.ItemId">
                                         <input type="text" class="form-control" id="itemName" asp-for="@Model.additem.ItemName" placeholder="Name*">
                                         <label for="itemName">Name*</label>
-                                        <span class="text-danger" asp-validation-for="@Model.additem.ItemName"></span>
+                                        <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.ItemName"></span>
 
                                     </div>
                                 </div>
@@ -296,7 +294,7 @@
                                             <option value="3" id="vegan" class="itemtypeclass">Vegan</option>
                                         </select>
                                         <label for="itemType">Item Type*</label>
-                                        <span class="text-danger" asp-validation-for="@Model.additem.ItemTypeId"></span>
+                                        <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.ItemTypeId"></span>
 
                                     </div>
                                 </div>
@@ -305,7 +303,7 @@
                                         <input type="number" class="form-control" id="itemrate" placeholder="Rate*" asp-for="@Model.additem.Rate"
                                            >
                                         <label for="itemrate">Rate*</label>
-                                        <span class="text-danger" asp-validation-for="@Model.additem.Rate"></span>
+                                        <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.Rate"></span>
                                     </div>
                                 </div>
 
@@ -314,7 +312,7 @@
                                         <input type="number" class="form-control" id="itemQuantity" asp-for="@Model.additem.Quantity"
                                             placeholder="Quantity*" >
                                         <label for="itemQuantity">Quantity*</label>
-                                        <span class="text-danger" asp-validation-for="@Model.additem.Quantity"></span>
+                                        <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.Quantity"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-3">
@@ -324,7 +322,6 @@
                                             <option value="cm" id="cm" class="itemUnitClass">centimeter</option>
                                         </select>
                                         <label for="floatingSelect">Unit*</label>
-                                        <span class="text-danger" asp-validation-for="@Model.additem.Unit"></span>
                                     </div>
                                 </div>
                             </div>
@@ -402,7 +399,7 @@
             <!-- Footer Buttons -->
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="removeValidationOnCancel()">Cancel</button>
             </div>
             </form>
         </div>
@@ -416,7 +413,7 @@
        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add Modifier Group</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyFieldsAddModGrp()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyFieldsAddModGrp();removeValidationOnCancel()"></button>
             </div>
             <form id="addModifierGroupModalFormId">
                 <div class="modal-body">
@@ -425,7 +422,7 @@
                         <input type="text" asp-for="@Model.addmodgrpVm.ModifierGrpName" class="form-control"
                             id="AddModGrpName" placeholder="name" required>
                         <label for="AddModGrpName">Name</label>
-                        <span asp-validation-for="@Model.addmodgrpVm.ModifierGrpName"></span>
+                        <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.addmodgrpVm.ModifierGrpName"></span>
                     </div>
                     <div class="form-floating">
                         <textarea class="form-control"  asp-for="@Model.addmodgrpVm.Desciption"
@@ -440,7 +437,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"  >save</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyFieldsAddModGrp()">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyFieldsAddModGrp();removeValidationOnCancel()">cancel</button>
                 </div>
             </form>
 </div> 
@@ -516,7 +513,7 @@
        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Modifier Group</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyFieldsAddModGrpForEdit()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyFieldsAddModGrpForEdit();removeValidationOnCancel()"></button>
             </div>
             <form id="EditModifierGroupModalFormId">
                 <div class="modal-body">
@@ -526,6 +523,7 @@
                         <input type="text" asp-for="@Model.addmodgrpVm.ModifierGrpName" class="form-control"
                             id="EditModGrpNameForEdit" placeholder="name" required>
                         <label for="EditModGrpNameForEdit">Name</label>
+                        <span asp-validation-for="@Model.addmodgrpVm.ModifierGrpName" class="text-danger removeValidationOnCancel"></span>
                     </div>
                     <div class="form-floating">
                         <textarea class="form-control"  asp-for="@Model.addmodgrpVm.Desciption"
@@ -540,7 +538,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"  >save</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyFieldsAddModGrpForEdit()">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyFieldsAddModGrpForEdit();removeValidationOnCancel()">cancel</button>
                 </div>
             </form>
         </div> 
@@ -1353,6 +1351,13 @@
                 });
             }
 
+        //removeValidationOnCancel #
+        function removeValidationOnCancel(){
+            var remoeclassList = document.getElementsByClassName("removeValidationOnCancel"); 
+            for(i=0;i<remoeclassList.length;i++){
+                remoeclassList[i].innerText="";
+            }
+        }
         //load all modifiers for edit existing modifier width pagination
             function LoadAllModifiersForEdit(search="",page=1,pageSize=5){
                 pageSize = parseInt(pageSizeModExistForEdit)
@@ -1559,18 +1564,12 @@
                     modTempID.push(modTempIdForCancel[i]);
                     modTempName.push(modTempNameForCancel[i]);
                 }
-                console.log(modTempID);
-                console.log(modTempIdForCancel);
-                console.log(modTempName);
-                console.log(modTempNameForCancel);
             }
 
 
             function RemoveFromListAddModifierGroup(id,name){
-                @* console.log("remove")
-                console.log(id)
-                console.log(name); *@
-                 modTempID.splice(modTempID.indexOf(id),1);
+                
+                modTempID.splice(modTempID.indexOf(id),1);
                 modTempName.splice(modTempName.indexOf(name),1);
                 modTempIdForCancel.splice(modTempIdForCancel.indexOf(id),1);
                 modTempNameForCancel.splice(modTempNameForCancel.indexOf(name),1);

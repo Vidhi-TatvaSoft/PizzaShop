@@ -4,9 +4,9 @@
 @* <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css"> *@
 
 
-<!-- user list -->
+<!-- Tax list -->
 <div class="user-list-main-div  d-flex justify-content-between mt-2">
-    <!-- user txt -->
+    <!-- Tax txt -->
     <div class="user-div d-flex col-md-3">
         <div class="user-text fs-2 fw-bold text-primary">Tax/Fees</div>
     </div>
@@ -136,7 +136,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Tax</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="RemoveValidatoOnCancel()"></button>
             </div>
             <form id="EditTaxFormId">
                 <div class="modal-body row">
@@ -144,7 +144,7 @@
                         <input type="hidden" id="TaxIdForEdit" asp-for="@Model.taxViewModel.TaxId">
                         <input type="text" class="form-control" id="EditTaxName" asp-for="@Model.taxViewModel.TaxName"
                             placeholder="name">
-                        <span asp-validation-for="@Model.taxViewModel.TaxName" class="text-danger"></span>
+                        <span asp-validation-for="@Model.taxViewModel.TaxName" class="text-danger RemoveValidations"></span>
                         <label for="EditTaxName"> &nbsp; Name*</label>
                     </div>
 
@@ -155,7 +155,6 @@
                                 <option value="Fix Amount">Fix Amount</option>
                             </select>
                             <label for="EditTaxType">Type*</label>
-                            <span class="text-danger" asp-validation-for="@Model.taxViewModel.TaxType"></span>
                         </div>
                     </div>
                     <div class="col-md-6 mx-auto mt-4">
@@ -163,7 +162,7 @@
                             <input type="text" id="EditTaxValue" asp-for="@Model.taxViewModel.TaxValue"
                                 class="form-control" placeholder="Amount*">
                             <label for="EditTaxValue">Amount*</label>
-                            <span class="text-danger" asp-validation-for="@Model.taxViewModel.TaxValue"></span>
+                            <span class="text-danger RemoveValidations" asp-validation-for="@Model.taxViewModel.TaxValue"></span>
                         </div>
                     </div>
 
@@ -186,7 +185,7 @@
 
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">save</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="RemoveValidatoOnCancel()">cancel</button>
                 </div>
             </form>
         </div>
@@ -255,6 +254,12 @@
             document.getElementById("defaultTax").checked = false;
             document.getElementById("RemoveValidations").innerText = "";
             document.getElementById("RemoveValidationsamt").innerText = "";
+        }
+        function RemoveValidatoOnCancel(){
+            var classList = document.getElementsByClassName("RemoveValidations");
+            for (var i = 0; i < classList.length; i++) {
+                classList[i].innerText = "";
+            }
         }
         function updateTaxDetails(tag) {
             var taxID = tag.getAttribute("data-id");
