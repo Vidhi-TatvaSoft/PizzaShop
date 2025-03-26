@@ -265,3 +265,8 @@ form i{
   color:#1138b8 !important;
   font-weight: bold;
 }
+
+.scrollableclass{
+  overflow: auto;
+  height: 350px;
+}

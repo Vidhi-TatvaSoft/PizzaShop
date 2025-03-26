@@ -323,9 +323,6 @@ public partial class PizzashopDbContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-            entity.Property(e => e.Democol)
-                .HasColumnType("char")
-                .HasColumnName("democol");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Isavailable)
                 .IsRequired()
@@ -598,6 +595,7 @@ public partial class PizzashopDbContext : DbContext
                 .HasColumnName("modified_at");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
             entity.Property(e => e.OrderDate)
+                .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("order_date");
             entity.Property(e => e.PaymentmethodId).HasColumnName("paymentmethod_id");

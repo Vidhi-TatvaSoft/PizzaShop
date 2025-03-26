@@ -4,6 +4,7 @@
 
 <!-- Tax list -->
 <div class="user-list-main-div row  d-md-flex justify-content-between mt-2">
+
     <!-- Tax txt -->
     <div class="user-text fs-2 fw-bold text-primary col-md-1">Orders</div>
     <div class="d-flex justify-content-end col-lg-10 row pe-0">
@@ -25,7 +26,7 @@
                 <option value="Failed">Failed</option>
             </select>
         </div>
-        <div class="d-md-flex  d-lg-none row justify-content-between pe-0 m-0">
+        <div class="d-md-flex d-lg-none row justify-content-between pe-0 m-0">
             <div class=" col-lg-3 ps-0 col-md-9 col-sm-8 col-7 ">
                 <select class="m-1 me-3 p-2 w-100" id="timePeriod">
                     <option value="All Time" selected>All Time</option>
@@ -36,11 +37,11 @@
                 </select>
 
             </div>
-            <a class="btn btn-primary m-1 me-0 p-2 ps-3 pe-3 " style="max-width: fit-content;"><i
+            <a class="btn btn-primary m-1 me-0 p-2 ps-3 pe-3 " id="ExportBtn" style="max-width: fit-content;"><i
                     class="fa-solid fa-share-from-square mt-1 "></i>&nbsp;Export</a>
 
         </div>
-        <div class="form-floating col-lg-3 pe-1 col-md-6 d-lg-flex d-none">
+        <div class="form-floating  d-lg-flex d-none col-lg-3 pe-1 col-md-6">
             <select class="m-1 me-3 p-2 w-100" id="timePeriod2">
                 <option value="All Time" selected>All Time</option>
                 <option value="7">Last 7 Days</option>
@@ -49,19 +50,20 @@
             </select>
 
         </div>
-        <a class="btn btn-primary m-1 p-1 pt-2 d-lg-flex d-none" style="max-width: fit-content;"><i
+        <a class="btn btn-primary d-lg-flex d-none m-1 p-1 pt-2 " id="ExportBtn2" style="max-width: fit-content;"><i
                 class="fa-solid fa-share-from-square mt-1"></i>&nbsp;&nbsp;Export</a>
         <div class="form-floating col-lg-3 col-6 ">
-            <input type="date" id="startDate" class="m-2 me-3 p-2 w-100 pe-0">
-
+            <input type="date"  id="startDate" class="form-control m-2 me-3 p-2 w-100 pe-0">
+            <label class="ms-3 mt-1">From Date</label>
+            
         </div>
         <div class="form-floating col-lg-3 col-6">
-            <input type="date" id="endDate" class="m-2 me-3 p-2 w-100 pe-0">
-
+            <input type="date" id="endDate" class="form-control m-2 me-3 p-2 w-100 pe-0">
+            <label class="ms-3 mt-1">To Date</label>
         </div>
-        <a class="btn btn-primary m-2 p-3 pt-2 pb-2" 
+        <a class="btn btn-primary m-2 p-3 pt-2 pb-2 pt-3" 
             style="max-width: fit-content;" id="searchfordate" >Search</a>
-        <a class="btn btn-outline-primary m-2 p-3 pb-2 pt-2"
+        <a class="btn btn-outline-primary m-2 p-3 pb-2 pt-3"
             style="max-width: fit-content;" id="clearBtnForDate" >Clear</a>
 
     </div>
@@ -248,7 +250,38 @@
                 endDate = "";
                 document.getElementById("startDate").value = "";
                 document.getElementById("endDate").value = "";
+                document.getElementById("timePeriod").value = "All Time";
+                document.getElementById("timePeriod2").value = "All Time";
+                document.getElementById("status").value = "All Status";
+                document.getElementById("searchbtn").value = "";
+                currentPage = 1;
+                timePeriod = "All Time";
+                status = "All Status";
+                searchText = "";
                 loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize,status,timePeriod,startDate,endDate);
+            });
+
+            $("#ExportBtn").on("click", function () {
+                $.ajax({
+                    url: "/Order/ExportOrders",
+                    type: "GET",
+                    data: { search: searchText,status,timePeriod },
+                    success: function (data) {
+                        console.log(data);
+                        
+                    }
+                })
+            });
+            $("#ExportBtn2").on("click", function () {
+                $.ajax({
+                    url: "/Order/ExportOrders",
+                    type: "GET",
+                    data: { search: searchText,status,timePeriod },
+                    success: function (data) {
+                        console.log(data);
+                        
+                    }
+                })
             });
 @* 
             $("#timePeriod").on("change", function () {

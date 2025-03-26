@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using BLL.Interfaces;
 using BLL.Service;
 using BLL.Services;
+using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -52,6 +53,7 @@ public class TableAndSectionController : Controller
         return PartialView("_SectionListPartial",tablesectionvm);
     }
 
+
     [PermissionAuthorize("TableSection.View")]
      public IActionResult TablePagination(long? SectionID, string search = "", int pageNumber = 1, int pageSize = 5)
     {
@@ -77,10 +79,11 @@ public class TableAndSectionController : Controller
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         bool addSectionstatus =await _tableSectionService.AddSection(Tablesection.Section,userId);
+        var sectionList =_tableSectionService.GetAllSections();
         if(addSectionstatus){
-            return Json(new { success = true, text = "Section Added successfully" });
+            return Json(new {sectionID= sectionList[0].SectionId,  success = true, text = "Section Added successfully" });
         }else{          
-            return Json(new { success = false, text = "Error While Adding Section. Try Again!" });
+            return Json(new {sectionID= sectionList[0].SectionId, success = false, text = "Error While Adding Section. Try Again!" });
         }
     }
 
@@ -94,10 +97,11 @@ public class TableAndSectionController : Controller
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         bool editSectionStatus =await _tableSectionService.EditSection(Tablesection.Section,userId);
+        var sectionList =_tableSectionService.GetAllSections();
         if(editSectionStatus){
-            return Json(new { success = true, text = "Section Updated successfully" });
+            return Json(new {sectionID= sectionList[0].SectionId, success = true, text = "Section Updated successfully" });
         }else{          
-            return Json(new { success = false, text = "Error While Updating Section. Try Again!" });
+            return Json(new {sectionID= sectionList[0].SectionId, success = false, text = "Error While Updating Section. Try Again!" });
         }
         // return RedirectToAction("TableAndSection",new{SectionID=Tablesection.Section.SectionId});
     
@@ -106,13 +110,18 @@ public class TableAndSectionController : Controller
     [PermissionAuthorize("TableSection.Delete")]
     public async Task<IActionResult> DeleteSection(long id){
         bool deleteSectionStatus = await _tableSectionService.DeleteSection(id);
+        var sectionList =_tableSectionService.GetAllSections();
         if(deleteSectionStatus){
-            var sectionList =_tableSectionService.GetAllSections();
             return Json(new {sectionID= sectionList[0].SectionId,success = true, text = "Section Deleted successfully" });
         }else{          
-            return Json(new { success = false, text = "Error While Deleting Section. Try Again!" });
+            return Json(new {sectionID= sectionList[0].SectionId, success = false, text = "Error While Deleting Section. Try Again!" });
         }
         // return RedirectToAction("TableAndSection");
+    }
+
+    public IActionResult GetSectionList(){
+        List<Section> sectionList = _tableSectionService.GetAllSections();
+        return Json(sectionList);
     }
 
     [PermissionAuthorize("TableSection.EditAdd")]
@@ -154,6 +163,9 @@ public class TableAndSectionController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteTable(long id){
         var table =await _tableSectionService.getTableByTableId(id);
+        if(table.Status == "Occupied"){
+            return Json(new { success = false, text = "Table is Occupied. Can't Delete this Table" });
+        }
         bool deleteTableStatus = await _tableSectionService.DeleteTable(id);
         if(deleteTableStatus){
             return Json(new { success = true, text = "Tables Deleted Successfully" });

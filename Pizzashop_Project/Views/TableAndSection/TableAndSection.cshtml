@@ -8,7 +8,7 @@
         <div class="fs-2 text-primary fw-bold mt-4 ">Table And Section</div>
         <div class="row ">
             <div
-                class="left-sidebar-category-main-div bg-light mt-2 pt-0 col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-md-start justify-content-center ">
+                class="left-sidebar-category-main-div scrollableclass bg-light mt-2 pt-0 col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-md-start justify-content-center ">
 
                 <div class=" w-100 justify-content-center">
 
@@ -76,20 +76,21 @@
 
                         </div>
                         <div class="additem-button">
-                            <button class="btn btn-primary text-light p-2 ms-3 border text" data-bs-toggle="modal"
-                                data-bs-target="#AddTableModal" onclick="EmptyAddTableForm()">+ Add Table</button>
+                            <button class="btn btn-primary text-light p-2 ms-3 border text" id="AddTableBtnId"
+                                data-bs-toggle="modal" data-bs-target="#AddTableModal" onclick="EmptyAddTableForm()">+
+                                Add Table</button>
 
                         </div>
 
                     </div>
                 </div>
                 <div class="table-main-div table-responsive mt-3 bg-white mx-auto w-100 ">
-                    @if (Model.TableList.Items.Count == 0)
+                    @* @if (Model.TableList.Items.Count == 0)
                     {
                         <h3 class="d-flex justify-content-center align-items-center text-danger">No data found</h3>
-                    }
-                    else
-                    {
+                    } *@
+                    @* else
+                    { *@
                         <table class="table" id="demo1">
                             <thead>
                                 <tr>
@@ -107,7 +108,7 @@
 
                             </tbody>
                         </table>
-                    }
+                    @* } *@
                     @*  Pagination div *@
                     <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
 
@@ -143,14 +144,16 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add Section</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyAddSectionForm()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    onclick="EmptyAddSectionForm()"></button>
             </div>
             <form id="AddSectionFormId">
                 <div class="modal-body">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="SectionName" asp-for="@Model.Section.SectionName"
                             placeholder="name" required>
-                        <span asp-validation-for="@Model.Section.SectionName" class="text-danger RemoveValidations" ></span>
+                        <span asp-validation-for="@Model.Section.SectionName"
+                            class="text-danger RemoveValidations"></span>
                         <label for="SectionName">Name</label>
                     </div>
                     <div class="form-floating">
@@ -161,7 +164,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">save</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyAddSectionForm()">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
+                        onclick="EmptyAddSectionForm()">cancel</button>
                 </div>
             </form>
         </div>
@@ -174,7 +178,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Section</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyAddTableForm()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    onclick="EmptyAddTableForm()"></button>
             </div>
             <form id="EditSectionFormId">
                 <div class="modal-body">
@@ -182,7 +187,8 @@
                         <input type="hidden" asp-for="@Model.Section.SectionId" id="section-id">
                         <input type="text" class="form-control" id="section-name" asp-for="@Model.Section.SectionName"
                             placeholder="name" required>
-                        <span asp-validation-for="@Model.Section.SectionName" class="text-danger RemoveValidations"></span>
+                        <span asp-validation-for="@Model.Section.SectionName"
+                            class="text-danger RemoveValidations"></span>
                         <label for="section-name">Name</label>
                     </div>
                     <div class="form-floating">
@@ -193,7 +199,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" id="updatebtn" class="btn btn-primary">save</button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyAddTableForm()">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
+                        onclick="EmptyAddTableForm()">cancel</button>
                 </div>
             </form>
         </div>
@@ -230,8 +237,9 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add table @ViewBag.sectionID</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyAddTableForm()"></button>
+                <h5 class="modal-title" id="exampleModalLabel">Add table </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    onclick="EmptyAddTableForm()"></button>
             </div>
             <form id="AddTableFormId">
                 <div class="modal-body row">
@@ -240,17 +248,18 @@
                             <input type="text" id="TableName" asp-for="@Model.table.TableName" class="form-control"
                                 placeholder="Name*">
                             <label for="TableName">Name*</label>
-                            <span class="text-danger RemoveValidations" asp-validation-for="@Model.table.TableName" ></span>
+                            <span class="text-danger RemoveValidations"
+                                asp-validation-for="@Model.table.TableName"></span>
                         </div>
                     </div>
                     <div class="col-6 mx-auto">
                         <div class="form-floating">
                             <select asp-for="@Model.table.SectionId" class="form-control" id="AddTableModaldropDown">
-                                @foreach (var items in Model.sectionList)
+                                @* @foreach (var items in Model.sectionList)
                                 {
                                     <option value="@items.SectionId" class="DemoDDL">@items.SectionName</option>
 
-                                }
+                                } *@
                                 @* <option value="1" class="DemoDDL">Section1</option>
                                         <option value="3" class="DemoDDL">Section2</option> *@
                             </select>
@@ -264,7 +273,8 @@
                             <input type="text" id="TableCapacity" asp-for="@Model.table.Capacity" class="form-control"
                                 placeholder="capacity">
                             <label for="TableCapacity">Capacity*</label>
-                            <span class="text-danger RemoveValidations" asp-validation-for="@Model.table.Capacity" ></span>
+                            <span class="text-danger RemoveValidations"
+                                asp-validation-for="@Model.table.Capacity"></span>
                         </div>
                     </div>
                     <div class="col-6 mx-auto mt-4">
@@ -280,7 +290,8 @@
                 </div>
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-primary" value="Save">
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyAddTableForm()">Cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
+                        onclick="EmptyAddTableForm()">Cancel</button>
                 </div>
             </form>
         </div>
@@ -292,8 +303,9 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit table @ViewBag.sectionID</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyAddTableForm()"></button>
+                <h5 class="modal-title" id="exampleModalLabel">Edit table </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    onclick="EmptyAddTableForm()"></button>
             </div>
             <form id="EditTableFormId">
                 <div class="modal-body row">
@@ -303,7 +315,8 @@
                             <input type="text" id="TableNameEdit" asp-for="@Model.table.TableName" class="form-control"
                                 placeholder="Name*">
                             <label for="TableNameEdit">Name*</label>
-                            <span class="text-danger RemoveValidations" asp-validation-for="@Model.table.TableName"></span>
+                            <span class="text-danger RemoveValidations"
+                                asp-validation-for="@Model.table.TableName"></span>
                         </div>
                     </div>
                     <div class="col-6 mx-auto">
@@ -318,7 +331,8 @@
                                         <option value="3" class="DemoDDL">Section2</option> *@
                             </select>
                             <label for="EditTableModaldropDown">Section</label>
-                            <span class="text-danger RemoveValidations" asp-validation-for="@Model.table.SectionId"></span>
+                            <span class="text-danger RemoveValidations"
+                                asp-validation-for="@Model.table.SectionId"></span>
                         </div>
                     </div>
 
@@ -343,7 +357,8 @@
                 </div>
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-primary" value="Save">
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyAddTableForm()">Cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
+                        onclick="EmptyAddTableForm()">Cancel</button>
                 </div>
             </form>
         </div>
@@ -409,18 +424,18 @@
 
         function loadSection() {
             @* let SectionIDforbhai = $("#section-id-div").val(); *@
-            $.ajax({
-                url: "/TableAndSection/SectionList",
-                type: "GET",
-                success: function (data) {
-                    @* console.log(data); *@    
-                        console.log("section ajax call");
-                    $("#SectionPartialViewId").html(data);
-                    @* loadSectionTable(SectionIDforbhai, searchText, currentPage, pageSize); *@
-                }
-            });
+                $.ajax({
+                    url: "/TableAndSection/SectionList",
+                    type: "GET",
+                    success: function (data) {
+                        @* console.log(data); *@    
+                            console.log("section ajax call");
+                        $("#SectionPartialViewId").html(data);
+                        @* loadSectionTable(SectionIDforbhai, searchText, currentPage, pageSize); *@
+                                            }
+                });
         }
-
+        
         function loadSectionTable(SectionID, search = "", page = 1, pageSize = 5) {
 
             console.log("functiocall")
@@ -441,9 +456,8 @@
                     $("#left-arrow").prop("disabled", currentPage === 1);
                     $("#right-arrow").prop("disabled", currentPage * pageSize >= totalRecords);
                     $("#checkboxForSelectAllSection").prop("checked", false);
-                    document.getElementById("AddTableModaldropDown").value = SectionID.toString();
-
-                },
+                    @* document.getElementById("AddTableModaldropDown").value = SectionID.toString(); *@
+                    },
                 error: function (data) {
                     console.log("error");
                     console.log(data);
@@ -507,24 +521,24 @@
         function EmptyAddSectionForm() {
             document.getElementById("SectionName").value = "";
             document.getElementById("sectionDescription").value = "";
-            var validatinclass=document.getElementsByClassName("RemoveValidations");
+            var validatinclass = document.getElementsByClassName("RemoveValidations");
             for (i = 0; i < validatinclass.length; i++) {
                 validatinclass[i].innerText = "";
             }
-            
+
         }
 
         function EmptyAddTableForm() {
             document.getElementById("TableName").value = "";
             document.getElementById("TableCapacity").value = "";
-            var validatinclass=document.getElementsByClassName("RemoveValidations");
+            var validatinclass = document.getElementsByClassName("RemoveValidations");
             for (i = 0; i < validatinclass.length; i++) {
                 validatinclass[i].innerText = "";
             }
 
         }
 
-        function RemoveValidatoOnCancel(){
+        function RemoveValidatoOnCancel() {
             var classList = document.getElementsByClassName("RemoveValidations");
             for (var i = 0; i < classList.length; i++) {
                 classList[i].innerText = "";
@@ -612,7 +626,40 @@
                 }
             })
 
-            //add section
+            //add table get
+            $(document).on("click", "#AddTableBtnId", function () {
+                $.ajax({
+                    url: "/TableAndSection/GetSectionList",
+                    type: "GET",
+                    success: function (data) {
+                        @* console.log(data); *@
+                            $("#AddTableModaldropDown").empty();
+                        for (i = 0; i < data.length; i++) {
+                            $("#AddTableModaldropDown").append(`<option value="${data[i].sectionId}">${data[i].sectionName}</option>`);
+                        }
+                        console.log(SectionID.toString());
+                        document.getElementById("AddTableModaldropDown").value = SectionID.toString();
+                    }
+                });
+            });
+
+            //Edit table get
+            $(document).on("click", "#EditTableBtnId", function () {
+                $.ajax({
+                    url: "/TableAndSection/GetSectionList",
+                    type: "GET",
+                    success: function (data) {
+                        console.log(data);
+                        $("#EditTableModaldropDown").empty();
+                        for (i = 0; i < data.length; i++) {
+                            $("#EditTableModaldropDown").append(`<option value="${data[i].sectionId}">${data[i].sectionName}</option>`);
+                        }
+                        document.getElementById("EditTableModaldropDown").value = SectionID.toString();
+                    }
+                });
+            });
+
+            //add section post
             $(document).on("submit", "#AddSectionFormId", function (e) {
                 e.preventDefault();
 
@@ -627,15 +674,17 @@
                         processData: false,
                         data: formData,
                         success: function (res) {
+                            console.log(res)
                             if (res.success) {
                                 successToaster(res.text);
                             } else {
                                 errorToaster(res.text);
                             }
                             $(".btn-close").click();
-                            @* console.log(res); *@
-                                loadSection();
-                            loadSectionTable(SectionID, searchText, currentPage, pageSize);
+                            console.log("addsec", res.sectionID);
+                            SectionID = res.sectionID;
+                            loadSection();
+                            loadSectionTable(res.sectionID, searchText, currentPage, pageSize);
                             EmptyAddSectionForm();
                         }
                     })
@@ -663,9 +712,10 @@
                                 errorToaster(res.text);
                             }
                             $(".btn-close").click();
+                            SectionID = res.sectionID;
                             loadSection();
-                            loadSectionTable(SectionIDforEdit, searchText, currentPage, pageSize);
-                            }
+                            loadSectionTable(SectionID, searchText, currentPage, pageSize);
+                        }
                     })
                 }
             })
@@ -685,11 +735,15 @@
                             errorToaster(res.text);
                         }
                         $(".btn-close").click();
-                        @* console.log(res); *@
+                        console.log(res);
+                        console.log(res.sectionID)
+                        SectionID = res.sectionID;
                         loadSection();
-                            loadSectionTable(res.sectionID, searchText, currentPage, pageSize);
+                        loadSectionTable(SectionID, searchText, currentPage, pageSize);
+
                     }
                 });
+
             })
 
             //Add Table
@@ -697,7 +751,7 @@
                 e.preventDefault();
                 let form = $("#AddTableFormId");
                 @* let SectionID = $("#AddTableModaldropDown").val(); *@
-                if (form.valid()) {
+                                            if (form.valid()) {
                     let formData = new FormData(this);
                     $.ajax({
                         url: "/TableAndSection/AddTable",
@@ -724,7 +778,7 @@
                 e.preventDefault();
                 let form = $("#EditTableFormId");
                 @* let SectionID = $("#EditTableModaldropDown").val(); *@
-                if (form.valid()) {
+                                            if (form.valid()) {
                     let formData = new FormData(this);
                     $.ajax({
                         url: "/TableAndSection/EditTable",
@@ -746,7 +800,7 @@
             })
 
             //delete Table
-            $(document).on("submit", "#DeleteTableFormId", function (e) {
+            $("#DeleteTableFormId").on("submit", function (e) {
                 e.preventDefault();
                 let id = document.getElementById("table-id-fordeleteTable").value;
                 $.ajax({
@@ -759,12 +813,12 @@
                             errorToaster(res.text);
                         }
                         $(".btn-close").click();
-                        currentPage=1;
-                        console.log("delete table");
+                        currentPage = 1;
+                        console.log("delete table",SectionID,  searchText, currentPage,  pageSize);
                         loadSectionTable(SectionID, searchText, currentPage, pageSize);
                         console.log(currentPage);
                         console.log(SectionID);
-                        console.log("delete table dn")                   
+                        console.log("delete table dn")
                     }
                 });
             })

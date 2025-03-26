@@ -187,11 +187,11 @@ public class TableAndSectionService : ITableAndSection
 
     #region delete table
     public async Task<bool> DeleteTable(long id){
-        Table table =await _context.Tables.FirstOrDefaultAsync(x=>x.TableId==id && x.Isdelete==false);
+        Table table = await _context.Tables.FirstOrDefaultAsync(x=>x.TableId==id && x.Isdelete==false);
         if(table==null){return false;}
         table.Isdelete=true;
         _context.Tables.Update(table);
-        _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
         return true;
     }
 

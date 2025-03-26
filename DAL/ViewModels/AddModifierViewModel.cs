@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 
 namespace DAL.ViewModels;
@@ -5,8 +6,8 @@ namespace DAL.ViewModels;
 public class AddModifierViewModel
 {
     public long ModifierId { get; set; }
-
-    public string ModifierName { get; set; }
+    [Required]
+    public string ModifierName { get; set; } = null!;
 
     public long ModifierGrpId { get; set; }
 

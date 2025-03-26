@@ -109,10 +109,15 @@ public class OrderService : IOrderService
         }
 
         //filter by date
-        if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+        if (!string.IsNullOrEmpty(startDate) && string.IsNullOrEmpty(endDate))
         {
-            query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.OrderDate <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
+            query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.OrderDate <= DateOnly.FromDateTime(DateTime.Now));
         }
+        if(string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+        {
+            query = query.Where(x => x.OrderDate <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
+        }
+
 
 
 
@@ -124,4 +129,92 @@ public class OrderService : IOrderService
 
         return new PaginationViewModel<OrderViewModel>(items, totalCount, pageNumber, pageSize);
     }
+
+    public PaginationViewModel<OrderViewModel> GetOrdersToExport(string search = "",string status="",string timePeriod=""){
+        var query = _context.Orders
+              .Include(x => x.Customer)
+              .Include(x => x.Paymentmethod)
+              .Where(x=>x.Isdelete==false)
+              .Select(x => new OrderViewModel
+              {
+                  OrderId = x.OrderId,
+                  CustomerId = x.CustomerId,
+                  CustomerName = x.Customer.CustomerName,
+                  OrderDate = DateOnly.FromDateTime(x.OrderDate),
+                  Status = x.Status,
+                  RatingId = x.RatingId,
+                  Rating = (int)Math.Ceiling(((double)x.Rating.Food + (double)x.Rating.Service + (double)x.Rating.Ambience) / 3),
+                  TotalAmount = x.TotalAmount,
+                  PaymentmethodId = x.PaymentmethodId,
+                  PaymentmethodName = x.Paymentmethod.Paymenttype
+              }).AsQueryable();
+
+        //search 
+        if (!string.IsNullOrEmpty(search))
+        {
+            string lowerSearchTerm = search.ToLower();
+            query = query.Where(u => u.CustomerName.ToLower().Contains(lowerSearchTerm)
+               
+            );
+        }
+
+        //filter by status
+        switch(status)
+        {
+            case "All Status":
+                query = query;
+                break;
+            case "Pending":
+                query = query.Where(x => x.Status == "Pending");
+                break;
+            case "In Progress":
+                query = query.Where(x => x.Status == "In Progress");
+                break;
+            case "Served":
+                query = query.Where(x => x.Status == "Served");
+                break;
+            case "Completed":
+                query = query.Where(x => x.Status == "Completed");
+                break;
+            case "Cancelled":
+                query = query.Where(x => x.Status == "Cancelled");
+                break;
+            case "On Hold":
+                query = query.Where(x => x.Status == "On Hold");
+                break;
+            case "Failed":
+                query = query.Where(x => x.Status == "Failed");
+                break;
+        }
+
+        //filter by time period
+        switch(timePeriod)
+        {
+            case "All Time":
+                query = query;
+                break;
+            case "7":
+                query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-7)));
+                break;
+            case "30":
+                query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-30)));
+                break;
+            case "Current Month":
+                query = query.Where(x => x.OrderDate.Month == DateTime.Now.Month);
+                break;
+        }
+
+        // Get total records count (before pagination)
+        int totalCount = query.Count();
+
+        // Apply pagination
+        var items = query.ToList();
+
+        return new PaginationViewModel<OrderViewModel>(items, totalCount, 1, 1);
+
+
+
+    }
+
+
 }

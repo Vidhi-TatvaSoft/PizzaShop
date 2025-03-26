@@ -17,7 +17,7 @@ public partial class Item
 
     public decimal Rate { get; set; }
 
-    public int? Quantity { get; set; }
+    public int Quantity { get; set; }
 
     public string? ItemImage { get; set; }
 
@@ -27,7 +27,7 @@ public partial class Item
 
     public bool? Isdefaulttax { get; set; }
 
-    public decimal? TaxValue { get; set; }
+    public decimal TaxValue { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
@@ -39,9 +39,7 @@ public partial class Item
 
     public bool Isdelete { get; set; }
 
-    public string? ShortCode { get; set; }
-
-    public char? Democol { get; set; }
+    public string ShortCode { get; set; } = null!;
 
     public virtual Category Category { get; set; } = null!;
 

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
 namespace DAL.ViewModels;
@@ -20,9 +21,9 @@ public class AddItemViewModel
 
     public decimal Rate { get; set; }
 
-    public string? ShortCode { get; set; }
+    public string ShortCode { get; set; }
 
-    public int? Quantity { get; set; }
+    public int Quantity { get; set; }
 
     public bool Isavailable { get; set; }
 
@@ -30,7 +31,7 @@ public class AddItemViewModel
 
     public bool Isdefaulttax { get; set; }
 
-    public decimal? TaxValue { get; set; }
+    public decimal TaxValue { get; set; }
 
     public List<ModifierGroupForItem> ModifierGroupList{get;set;}
 

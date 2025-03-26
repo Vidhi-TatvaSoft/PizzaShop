@@ -203,9 +203,10 @@ public class MenuService : IMenuService
             ItemName=items[0].ItemName,
             ItemTypeId = items[0].ItemTypeId,
             Rate = items[0].Rate,
-            Quantity = items[0].Quantity,
+            Quantity = (int)items[0].Quantity,
             Unit = items[0].Unit,
             Isavailable = (bool)items[0].Isavailable,
+            ItemImage=items[0].ItemImage,
             Isdefaulttax = (bool)items[0].Isdefaulttax,
             TaxValue = items[0].TaxValue,
             ShortCode = items[0].ShortCode,
@@ -246,7 +247,9 @@ public class MenuService : IMenuService
         item.TaxValue=editvm.TaxValue;
         item.ShortCode=editvm.ShortCode;
         item.Description=editvm.Description;
-        item.ItemImage = editvm.ItemImage;
+        if(editvm.ItemImage != null){
+            item.ItemImage = editvm.ItemImage;
+        }
         item.ModifiedBy=userId;
         item.ModifiedAt=DateTime.Now;
         _context.Update(item);
@@ -279,7 +282,13 @@ public class MenuService : IMenuService
         {
             return false;
         }
-        Item item = await _context.Items.FirstOrDefaultAsync(x => x.ItemId == itemID);
+        List<Itemmodifiergroupmapping> itemModifierGroupMappings = _context.Itemmodifiergroupmappings.Where(x => x.ItemId == itemID && x.Isdelete==false).ToList();
+        for(int i=0;i<itemModifierGroupMappings.Count;i++){
+            itemModifierGroupMappings[i].Isdelete=true;
+            _context.Itemmodifiergroupmappings.Update(itemModifierGroupMappings[i]);
+            await _context.SaveChangesAsync();
+        }
+        Item item = await _context.Items.FirstOrDefaultAsync(x => x.ItemId == itemID && x.Isdelete==false);
         item.Isdelete = true;
         _context.Update(item);
         await _context.SaveChangesAsync();

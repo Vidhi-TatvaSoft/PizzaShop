@@ -101,7 +101,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Add New Menu Item</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="removeValidationOnCancel()"></button>
             </div>
-            <form id="itemAddForms"  enctype="multipart/form-data">
+            <form method="post" id="itemAddForms"  enctype="multipart/form-data">
             <div class="modal-body">
                 <div class="container">
                     <div class="row">
@@ -188,6 +188,8 @@
                                         <input type="text" class="form-control" id="taxPercentage" asp-for="@Model.additem.TaxValue"
                                             placeholder="Tax-Percentage*">
                                         <label for="taxPercentage" style="text-wrap: noWrap;">Tax Percentage*</label>
+                                        <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.TaxValue"></span>
+
 
                                     </div>
                                 </div>
@@ -196,6 +198,8 @@
                                         <input type="text" class="form-control" id="shortCode" asp-for="@Model.additem.ShortCode"
                                             placeholder="Short Code*">
                                         <label for="shortCode">Short Code*</label>
+                                        <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.ShortCode"></span>
+
                                     </div>
                                 </div>
                             </div>
@@ -230,7 +234,7 @@
                                     <option value="@modgrp.ModifierGrpId">@modgrp.ModifierGrpName</option>
                                 }
                             </select>
-                            <div id="ItemByModifiers"></div>
+                            <div id="ItemByModifiers" class="scrollableclass"></div>
                             
                         </div>
                     </div>
@@ -388,7 +392,7 @@
                                     <option value="@modgrp.ModifierGrpId">@modgrp.ModifierGrpName</option>
                                 }
                             </select>
-                            <div id="EditItemByModifiers"></div>
+                            <div id="EditItemByModifiers" class="scrollableclass"></div>
                             
                         </div>
                         
@@ -415,7 +419,7 @@
                 <h5 class="modal-title">Add Modifier Group</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="EmptyFieldsAddModGrp();removeValidationOnCancel()"></button>
             </div>
-            <form id="addModifierGroupModalFormId">
+            <form method="post" id="addModifierGroupModalFormId">
                 <div class="modal-body">
                     <div class="form-floating mb-3">
                         <input type="hidden" asp-for="@Model.addmodgrpVm.tempIds" id="tempIdsHiddenField">
@@ -436,7 +440,7 @@
                     <div id="ExistingModifiers" class="col-11 mx-auto ms-4 d-flex row"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"  >save</button>
+                    <button type="submit" class="btn btn-primary" >save</button>
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="EmptyFieldsAddModGrp();removeValidationOnCancel()">cancel</button>
                 </div>
             </form>
@@ -791,7 +795,7 @@
                 <div class="categories-main-div container-fluid">
                     <div class="row">
                         <div
-                            class="left-sidebar-category-main-div bg-light mt-2 pt-0 col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-md-start justify-content-center ">
+                            class="left-sidebar-category-main-div scrollableclass bg-light mt-2 pt-0 col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-md-start justify-content-center ">
 
                             <div class=" w-100 justify-content-center">
 
@@ -921,7 +925,7 @@
                 <div class="categories-main-div container-fluid">
                     <div class="row ">
                         <div
-                            class="left-sidebar-category-main-div bg-light mt-2 pt-0 col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-md-start justify-content-center ">
+                            class="left-sidebar-category-main-div scrollableclass bg-light mt-2 pt-0 col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2 d-flex justify-content-md-start justify-content-center ">
 
                             <div class=" w-100 justify-content-center ">
                                 <!-- logo -->
@@ -1024,7 +1028,9 @@
 </div>
 
 
+
 @section scripts {
+
     <script>
         $(document).ready(function () {
             var successMessage = '@TempData["SuccessMessage"]';
@@ -1130,7 +1136,7 @@
 
                     $.ajax({
                         url: "/Menu/EditModifiersByGroup",
-                        type: "GET",
+                        type: "POST",
                         data: { data: JSON.stringify(editItemData) },
                         success: function (data) {
                             $('#EditItemByModifiers').html(data);
@@ -1815,6 +1821,9 @@
             $(document).on("submit","#addModifierModalId",function(e){
                 
                 e.preventDefault();
+
+                console.log($("#addModifierModalId").valid())
+               
                 modTempID=[];
                 modTempName=[];
                 
@@ -1953,7 +1962,7 @@
             //add modifier group post 
             $(document).on("submit","#addModifierGroupModalFormId", function (e) {
                 e.preventDefault();
-                document.getElementById("tempIdsHiddenField").value =modTempID;
+                document.getElementById("tempIdsHiddenField").value = modTempID;
                 let form = $("#addModifierGroupModalFormId");
                 if (form.valid()) {
                     let formData2 = new FormData(this);
@@ -2186,7 +2195,7 @@
             });
         }
 
-        $('#itemAddForms').on('submit', function (event) {
+        $(document).on('submit','#itemAddForms', function (event) {
             event.preventDefault();
             let formData = new FormData(this);
             AddItemData(formData);
@@ -2197,8 +2206,6 @@
     <!----edit item ---->
     
 <script>
-
-
 
     function EditModifierByGroup() {
         var selectedValue = $('#EditModifier').val();
@@ -2319,10 +2326,8 @@
 
 
 </script>
-
- @{
+   @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <partial name="_Toaster"/>
-
 }

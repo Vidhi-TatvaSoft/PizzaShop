@@ -293,6 +293,7 @@ public class MenuController : Controller
     #endregion
 
     #region EditModifiersByGroup for item
+    [HttpPost]
     public IActionResult EditModifiersByGroup(string data)
     {
         MenuViewModel mVM = new MenuViewModel();
@@ -384,10 +385,10 @@ public class MenuController : Controller
         var CategoryDeleteStatus = await _menuService.DeleteItem(itemID);
         if (CategoryDeleteStatus)
         {
-            TempData["SuccessMessage"] = "Category Deleted Successfully";
+            TempData["SuccessMessage"] = "Item Deleted Successfully";
             return RedirectToAction("Menu");
         }
-        TempData["ErrorMessage"] = "Failed to delete Category. Try Again";
+        TempData["ErrorMessage"] = "Failed to delete Item. Try Again";
         return RedirectToAction("Menu");
     }
     #endregion

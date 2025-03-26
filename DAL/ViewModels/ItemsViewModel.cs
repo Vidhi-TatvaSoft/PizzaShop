@@ -14,7 +14,7 @@ public class ItemsViewModel
 
     public decimal Rate { get; set; }
 
-    public int? Quantity { get; set; }
+    public int Quantity { get; set; }
 
     public string? ItemImage { get; set; }
 
