@@ -13,10 +13,10 @@ else
     @foreach (var item in Model.Items)
     {
         <tr class="border border-end-0 border-start-0 border-top-0 border-bottom-1">
-            <td class="text-nowrap align-content-center d-flex mt-1"><img src="@item.ProfileImage" class="rounded-circle " width="25px" height="25px" alt="" /><p class="ms-2 mt-0">@item.FirstName    @item.LastName</p></td>
+            <td class="text-nowrap   mt-1"><img src="@item.ProfileImage" class="rounded-circle " width="25px" height="25px" alt="" /><span class="ms-2 mt-0">@item.FirstName    @item.LastName</span></td>
             <td >@item.Userlogin.Email</td>
             <td>@item.Phone</td>
-            <td class="">@item.Userlogin.Role.RoleName</td>
+            <td class="text-nowrap">@item.Userlogin.Role.RoleName</td>
             <td>
                 @if (item.Status == true)
                 {
@@ -29,7 +29,7 @@ else
                         Inactive</div>
                 }
             </td>
-            <td>
+            <td class="text-nowrap">
                 @if (item.Userlogin.Email == ViewBag.email)
                 {
                     <i class="fa-solid fa-pen text-black-50 me-3 mt-2"></i>

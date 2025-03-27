@@ -1,3 +1,4 @@
+using System.Drawing;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
@@ -29,150 +30,280 @@ public class OrderController : Controller
         return PartialView("_OrderListPartial", orders);
     }
 
-    public IActionResult ExportOrders(string search, string status, string timePeriod)
+    // public IActionResult ExportOrders(string search, string status, string timePeriod)
+    // {
+    //     try
+    //     {
+    //         var orders = _orderService.GetOrdersToExport(search, status, timePeriod);
+
+    //         // Create Excel package
+    //         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+    //         using (var package = new ExcelPackage())
+    //         {
+    //             var worksheet = package.Workbook.Worksheets.Add("Orders");
+    //             var currentRow = 3;
+    //             var currentCol = 2;
+
+    //             // this is first row....................................
+    //             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1].Merge = true;
+    //             worksheet.Cells[currentRow, currentCol].Value = "Status: ";
+    //             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1])
+    //             {
+    //                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+    //                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
+    //                 headingCells.Style.Font.Bold = true;
+    //                 headingCells.Style.Font.Color.SetColor(Color.White);
+    //                 headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+
+    //                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+    //                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+    //             }
+    //             currentCol += 2;
+    //             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3].Merge = true;
+    //             worksheet.Cells[currentRow, currentCol].Value = status;
+    //             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3])
+    //             {
+    //                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+    //                 headingCells.Style.Fill.BackgroundColor.SetColor(Color.White);
+    //                 headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+
+
+    //                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+    //                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+    //             }
+
+    //             currentCol += 5;
+    //             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1].Merge = true;
+    //             worksheet.Cells[currentRow, currentCol].Value = "Search Text: ";
+    //             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1])
+    //             {
+    //                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+    //                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
+    //                 headingCells.Style.Font.Bold = true;
+    //                 headingCells.Style.Font.Color.SetColor(Color.White);
+    //                 headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+
+    //                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+    //                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+    //             }
+
+    //             currentCol += 2;
+    //             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3].Merge = true;
+    //             worksheet.Cells[currentRow, currentCol].Value = search;
+    //             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3])
+    //             {
+    //                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+    //                 headingCells.Style.Fill.BackgroundColor.SetColor(Color.White);
+    //                 headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+
+
+    //                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+    //                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+    //             }
+
+    //             currentCol += 5;
+
+    //             worksheet.Cells[currentRow, currentCol, currentRow + 4, currentCol + 1].Merge = true;
+
+    //             // Insert Logo
+    //             var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "logos", "pizzashop_logo.png");
+
+    //             if (System.IO.File.Exists(imagePath))
+    //             {
+    //                 var picture = worksheet.Drawings.AddPicture("Image", new FileInfo(imagePath));
+    //                 picture.SetPosition(currentRow - 1, 1, currentCol - 1, 1);
+    //                 picture.SetSize(125, 95);
+    //             }
+    //             else
+    //             {
+    //                 worksheet.Cells[currentRow, currentCol].Value = "Image not found";
+    //             }
+
+    //             // this is second row....................................
+    //             currentRow += 3;
+    //             currentCol = 2;
+    //             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1].Merge = true;
+    //             worksheet.Cells[currentRow, currentCol].Value = "Date: ";
+    //             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1])
+    //             {
+    //                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+    //                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
+    //                 headingCells.Style.Font.Bold = true;
+    //                 headingCells.Style.Font.Color.SetColor(Color.White);
+    //                 headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+
+    //                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+    //                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+    //             }
+
+    //             currentCol += 2;
+    //             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3].Merge = true;
+    //             worksheet.Cells[currentRow, currentCol].Value = timePeriod;
+    //             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3])
+    //             {
+    //                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+    //                 headingCells.Style.Fill.BackgroundColor.SetColor(Color.White);
+    //                 headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+
+
+    //                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+    //                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+    //             }
+
+    //             currentCol += 5;
+    //             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1].Merge = true;
+    //             worksheet.Cells[currentRow, currentCol].Value = "No. of Records: ";
+    //             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1])
+    //             {
+    //                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+    //                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
+    //                 headingCells.Style.Font.Bold = true;
+    //                 headingCells.Style.Font.Color.SetColor(Color.White);
+    //                 headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+
+    //                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+    //                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+    //             }
+
+    //             currentCol += 2;
+    //             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3].Merge = true;
+    //             worksheet.Cells[currentRow, currentCol].Value = orders.Items.Count;
+    //             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3])
+    //             {
+    //                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+    //                 headingCells.Style.Fill.BackgroundColor.SetColor(Color.White);
+    //                 headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+
+
+    //                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+    //                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+    //             }
+
+    //             // this is table ....................................
+    //             int headingRow = currentRow + 4;
+    //             int headingCol = 2;
+
+    //             worksheet.Cells[headingRow, headingCol].Value = "Order No";
+    //             headingCol++;
+
+    //             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 2].Merge = true;
+    //             worksheet.Cells[headingRow, headingCol].Value = "Order Date";
+    //             headingCol += 3;  // Move to next unmerged column
+
+    //             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 2].Merge = true;
+    //             worksheet.Cells[headingRow, headingCol].Value = "Customer Name";
+    //             headingCol += 3;
+
+    //             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 2].Merge = true;
+    //             worksheet.Cells[headingRow, headingCol].Value = "Status";
+    //             headingCol += 3;
+
+    //             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 1].Merge = true;
+    //             worksheet.Cells[headingRow, headingCol].Value = "Payment Mode";
+    //             headingCol += 2;
+
+    //             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 1].Merge = true;
+    //             worksheet.Cells[headingRow, headingCol].Value = "Rating";
+    //             headingCol += 2;
+
+    //             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 1].Merge = true;
+    //             worksheet.Cells[headingRow, headingCol].Value = "Total Amount";
+
+
+    //             using (var headingCells = worksheet.Cells[headingRow, 2, headingRow, headingCol + 1])
+    //             {
+    //                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+    //                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
+    //                 headingCells.Style.Font.Bold = true;
+    //                 headingCells.Style.Font.Color.SetColor(Color.White);
+
+    //                 headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+
+
+    //                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+    //                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+    //             }
+
+
+    //             // Populate data
+    //             int row = headingRow + 1;
+
+    //             foreach (var order in orders.Items)
+    //             {
+    //                 int startCol = 2;
+
+    //                 worksheet.Cells[row, startCol].Value = order.OrderId;
+    //                 startCol += 1;
+
+    //                 worksheet.Cells[row, startCol, row, startCol + 2].Merge = true;
+    //                 worksheet.Cells[row, startCol].Value = order.OrderDate;
+    //                 startCol += 3;
+
+    //                 worksheet.Cells[row, startCol, row, startCol + 2].Merge = true;
+    //                 worksheet.Cells[row, startCol].Value = order.CustomerName;
+    //                 startCol += 3;
+
+    //                 worksheet.Cells[row, startCol, row, startCol + 2].Merge = true;
+    //                 worksheet.Cells[row, startCol].Value = order.Status;
+    //                 startCol += 3;
+
+    //                 worksheet.Cells[row, startCol, row, startCol + 1].Merge = true;
+    //                 worksheet.Cells[row, startCol].Value = order.PaymentmethodName;
+    //                 startCol += 2;
+
+    //                 worksheet.Cells[row, startCol, row, startCol + 1].Merge = true;
+    //                 worksheet.Cells[row, startCol].Value = order.Rating;
+    //                 startCol += 2;
+
+    //                 worksheet.Cells[row, startCol, row, startCol + 1].Merge = true;
+    //                 worksheet.Cells[row, startCol].Value = order.TotalAmount;
+
+    //                 using (var rowCells = worksheet.Cells[row, 2, row, startCol + 1])
+    //                 {
+    //                     // Apply alternating row colors (light gray for better readability)
+    //                     if (row % 2 == 0)
+    //                     {
+    //                         rowCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
+    //                         rowCells.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+    //                     }
+
+    //                     // Apply black borders to each row
+    //                     rowCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+
+
+    //                     rowCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+    //                     rowCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+    //                 }
+
+    //                 row++;
+    //             }
+    //         }
+
+
+    //         return Json(new { success = true, text = "Exported Successfully", data = orders });
+
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return Json(new { success = false, message = ex.Message });
+    //     }
+    // }
+
+
+    public async Task<IActionResult> ExportOrderDataToExcel(string search = "", string status = "", string timePeriod = "")
     {
-        try
+        var FileData = await _orderService.ExportData(search, status, timePeriod);
+        var result = new FileContentResult(FileData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         {
-            var orders = _orderService.GetOrdersToExport(search, status, timePeriod);
+            FileDownloadName = "Orders.xlsx"
+        };
 
-            // Export to Excel
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (var pkg = new ExcelPackage())
-            {
-
-                var sheet = pkg.Workbook.Worksheets.Add("Expense");
-                sheet.Cells[2,1,3,2].Merge = true;
-                sheet.Cells[2,1].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[2,1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[2,1].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[2,1].Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#0d6efd"));
-                sheet.Cells[2,1].Value = "Status:";
-                sheet.Cells[2,3,3,6].Merge = true;
-                sheet.Cells[2,3,3,6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[2,3].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[2,3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[2,3].Value = "";
-
-                sheet.Cells[2,8,3,9].Merge = true;
-                sheet.Cells[2,8].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[2,8].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[2,8].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[2,8].Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#0d6efd"));
-                sheet.Cells[2,8].Value = "Search Text:";
-                sheet.Cells[2,10,3,13].Merge = true;
-                sheet.Cells[2,10,3,13].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[2,10].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[2,10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[2,10].Value = "";
-
-                sheet.Cells[5,1,6,2].Merge = true;
-                sheet.Cells[5,1].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[5,1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[5,1].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[5,1].Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#0d6efd"));
-                sheet.Cells[5,1].Value = "Date:";
-                sheet.Cells[5,3,6,6].Merge = true;
-                sheet.Cells[5,3,6,6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[5,3].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[5,3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[5,3].Value = "";
-
-                sheet.Cells[5,8,6,9].Merge = true;
-                sheet.Cells[5,8].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[5,8].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[5,8].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[5,8].Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#0d6efd"));
-                sheet.Cells[5,8].Value = "No. of records:";
-                sheet.Cells[5,10,6,13].Merge = true;
-                sheet.Cells[5,10,6,13].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[5,10].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[5,10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[5,10].Value = "";
-
-                sheet.Cells[9,1].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[9,1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[9,1].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[9,1].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[9,1].Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#0d6efd"));
-                sheet.Cells[9,1].Value = "Id";
-
-                sheet.Cells[9,2,9,4].Merge = true;
-                sheet.Cells[9,2].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[9,2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[9,2].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[9,2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[9,2].Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#0d6efd"));
-                sheet.Cells[9,2].Value = "Date";
-
-                sheet.Cells[9,5,9,7].Merge = true;
-                sheet.Cells[9,5].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[9,5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[9,5].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[9,5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[9,5].Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#0d6efd"));
-                sheet.Cells[9,5].Value = "Customer";
-
-                sheet.Cells[9,8,9,10].Merge = true;
-                sheet.Cells[9,8].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[9,8].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[9,8].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[9,8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[9,8].Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#0d6efd"));
-                sheet.Cells[9,8].Value = "Status";
-
-                sheet.Cells[9,11,9,12].Merge = true;
-                sheet.Cells[9,11].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[9,11].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[9,11].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[9,11].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[9,11].Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#0d6efd"));
-                sheet.Cells[9,11].Value = "Payment mode";
-
-                sheet.Cells[9,13,9,14].Merge = true;
-                sheet.Cells[9,13].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[9,13].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[9,13].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[9,13].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[9,13].Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#0d6efd"));
-                sheet.Cells[9,13].Value = "Rating";
-
-                sheet.Cells[9,15,9,16].Merge = true;
-                sheet.Cells[9,15].Style.HorizontalAlignment = ExcelHorizontalAlignment.CenterContinuous;
-                sheet.Cells[9,15].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[9,15].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[9,15].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[9,15].Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#0d6efd"));
-                sheet.Cells[9,15].Value = "Total amount";
-
-
-                for (int i = 0; i < orders.Items.Count; i++)
-                {
-                    sheet.Cells[i + 10, 1].Value = orders.Items[i].OrderId;
-                    sheet.Cells[i + 10, 2].Value = orders.Items[i].OrderDate;
-                    sheet.Cells[i + 10, 5].Value = orders.Items[i].CustomerName;
-                    sheet.Cells[i + 10, 8].Value = orders.Items[i].Status;
-                    sheet.Cells[i + 10, 11].Value = orders.Items[i].PaymentmethodName;
-                    sheet.Cells[i + 10, 13].Value = orders.Items[i].Rating;
-                    sheet.Cells[i + 10, 15].Value = orders.Items[i].TotalAmount;
-                }
-
-                string p_strPath = DateTime.Now.Hour.ToString() + "_OrdersExport.xlsx";
-
-                // Write content to excel file  
-                System.IO.File.WriteAllBytes(p_strPath, pkg.GetAsByteArray());
-                Console.WriteLine("Excel file created successfully with name: " + p_strPath);
-                //Close Excel package 
-                // pkg.Dispose(); 
-                // Console.ReadKey(); 
-            }
-
-
-            return Json(new { success = true, text = "Exported Successfully", data = orders });
-
-        }
-        catch (Exception ex)
-        {
-            return Json(new { success = false, message = ex.Message });
-        }
+        return result;
     }
+
+
+    public IActionResult ViewOrderDetails(){
+        return View();
+    }
+
 }

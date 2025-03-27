@@ -8,69 +8,53 @@ using OfficeOpenXml.Style;
 
 namespace BLL.Service;
 
-public class OrderService : IOrderService
+public class CustomerService : ICustomerService
 {
     private readonly PizzashopDbContext _context;
 
-    public OrderService(PizzashopDbContext context)
+    public CustomerService(PizzashopDbContext context)
     {
         _context = context;
     }
 
-    public PaginationViewModel<OrderViewModel> GetAllOrders(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5, string status = "", string timePeriod = "", string startDate = "", string endDate = "")
+    public PaginationViewModel<CustomerViewModel> GetAllCustomers(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5, string timePeriod = "", string startDate = "", string endDate = "")
     {
-        var query = _context.Orders
-              .Include(x => x.Customer)
-              .Include(x => x.Paymentmethod)
+        var query = _context.Customers
+              .Include(x => x.Orders)
               .Where(x => x.Isdelete == false)
-              .Select(x => new OrderViewModel
+              .Select(x => new CustomerViewModel
               {
-                  OrderId = x.OrderId,
                   CustomerId = x.CustomerId,
-                  CustomerName = x.Customer.CustomerName,
-                  OrderDate = DateOnly.FromDateTime(x.OrderDate),
-                  Status = x.Status,
-                  RatingId = x.RatingId,
-                  Rating = (int)Math.Ceiling(((double)x.Rating.Food + (double)x.Rating.Service + (double)x.Rating.Ambience) / 3),
-                  TotalAmount = x.TotalAmount,
-                  PaymentmethodId = x.PaymentmethodId,
-                  PaymentmethodName = x.Paymentmethod.Paymenttype
+                  CustomerName = x.CustomerName,
+                  Phoneno = x.Phoneno,
+                  Email = x.Email,
+                  date = DateOnly.FromDateTime((DateTime)x.CreatedAt),
+                  TotalOrders = x.Orders.Count().ToString()
               }).AsQueryable();
+
 
         //search
         if (!string.IsNullOrEmpty(search))
         {
             string lowerSearchTerm = search.ToLower();
-            query = query.Where(u => u.CustomerName.ToLower().Contains(lowerSearchTerm) ||
-            u.OrderId.ToString().Contains(lowerSearchTerm)
-            );
+            query = query.Where(u => u.CustomerName.ToLower().Contains(lowerSearchTerm) || u.Email.ToLower().Contains(lowerSearchTerm));
         }
         //sorting
         switch (sortColumn)
         {
-            case "OrderId":
-                query = sortDirection == "asc" ? query.OrderBy(u => u.OrderId) : query.OrderByDescending(u => u.OrderId);
-                break;
-
-            case "Date":
-                query = sortDirection == "asc" ? query.OrderBy(u => u.OrderDate) : query.OrderByDescending(u => u.OrderDate);
-                break;
-
-            case "Customer":
+            case "Name":
                 query = sortDirection == "asc" ? query.OrderBy(u => u.CustomerName) : query.OrderByDescending(u => u.CustomerName);
                 break;
 
-            case "Amount":
-                query = sortDirection == "asc" ? query.OrderBy(u => u.TotalAmount) : query.OrderByDescending(u => u.TotalAmount);
+            case "Date":
+                query = sortDirection == "asc" ? query.OrderBy(u => u.date) : query.OrderByDescending(u => u.date);
                 break;
-        }
 
 
 
-        //filter by status
-        if (!string.IsNullOrEmpty(status) && status != "All Status")
-        {
-            query = query.Where(x => x.Status == status);
+            case "TotalOrders":
+                query = sortDirection == "asc" ? query.OrderBy(u => u.TotalOrders) : query.OrderByDescending(u => u.TotalOrders);
+                break;
         }
 
         //filter by time period
@@ -80,32 +64,39 @@ public class OrderService : IOrderService
                 query = query;
                 break;
             case "7":
-                query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-7)));
+                query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Now.AddDays(-7)));
                 break;
             case "30":
-                query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-30)));
+                query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Now.AddDays(-30)));
                 break;
             case "Current Month":
-                query = query.Where(x => x.OrderDate.Month == DateTime.Now.Month);
+                query = query.Where(x => x.date.Month == DateTime.Now.Month);
+                break;
+            case "Custom Date":
+                if (!string.IsNullOrEmpty(startDate) && string.IsNullOrEmpty(endDate))
+                {
+                    query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.date <= DateOnly.FromDateTime(DateTime.Now));
+                }
+                if (string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+                {
+                    query = query.Where(x => x.date <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
+                }
                 break;
         }
 
         //filter by date
         if (!string.IsNullOrEmpty(startDate) && string.IsNullOrEmpty(endDate))
         {
-            query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.OrderDate <= DateOnly.FromDateTime(DateTime.Now));
+            query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.date <= DateOnly.FromDateTime(DateTime.Now));
         }
         if (string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
         {
-            query = query.Where(x => x.OrderDate <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
+            query = query.Where(x => x.date <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
         }
         if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
         {
-            query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.OrderDate <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
+            query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.date <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
         }
-
-
-
 
         // Get total records count (before pagination)
         int totalCount = query.Count();
@@ -113,129 +104,64 @@ public class OrderService : IOrderService
         // Apply pagination
         var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-        return new PaginationViewModel<OrderViewModel>(items, totalCount, pageNumber, pageSize);
+        return new PaginationViewModel<CustomerViewModel>(items, totalCount, pageNumber, pageSize);
     }
 
-    // public PaginationViewModel<OrderViewModel> GetOrdersToExport(string search = "", string status = "", string timePeriod = "")
-    // {
-    //     var query = _context.Orders
-    //           .Include(x => x.Customer)
-    //           .Include(x => x.Paymentmethod)
-    //           .Where(x => x.Isdelete == false)
-    //           .Select(x => new OrderViewModel
-    //           {
-    //               OrderId = x.OrderId,
-    //               CustomerId = x.CustomerId,
-    //               CustomerName = x.Customer.CustomerName,
-    //               OrderDate = DateOnly.FromDateTime(x.OrderDate),
-    //               Status = x.Status,
-    //               RatingId = x.RatingId,
-    //               Rating = (int)Math.Ceiling(((double)x.Rating.Food + (double)x.Rating.Service + (double)x.Rating.Ambience) / 3),
-    //               TotalAmount = x.TotalAmount,
-    //               PaymentmethodId = x.PaymentmethodId,
-    //               PaymentmethodName = x.Paymentmethod.Paymenttype
-    //           }).AsQueryable();
-
-    //     //search 
-    //     if (!string.IsNullOrEmpty(search))
-    //     {
-    //         string lowerSearchTerm = search.ToLower();
-    //         query = query.Where(u => u.CustomerName.ToLower().Contains(lowerSearchTerm) ||
-    //         u.OrderId.ToString().Contains(lowerSearchTerm)
-    //         );
-    //     }
-
-    //     //filter by status
-    //     if (!string.IsNullOrEmpty(status) && status != "All Status")
-    //     {
-    //         query = query.Where(x => x.Status == status);
-    //     }
-
-
-    //     //filter by time period
-    //     switch (timePeriod)
-    //     {
-    //         case "All Time":
-    //             query = query;
-    //             break;
-    //         case "7":
-    //             query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-7)));
-    //             break;
-    //         case "30":
-    //             query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-30)));
-    //             break;
-    //         case "Current Month":
-    //             query = query.Where(x => x.OrderDate.Month == DateTime.Now.Month);
-    //             break;
-    //     }
-
-    //     // Get total records count (before pagination)
-    //     int totalCount = query.Count();
-
-    //     // Apply pagination
-    //     var items = query.ToList();
-
-    //     return new PaginationViewModel<OrderViewModel>(items, totalCount, 1, 1);
 
 
 
-    // }
-
-
-    public Task<byte[]> ExportData(string search = "", string status = "", string timePeriod = "")
+    public Task<byte[]> ExportCustomerData(string search = "", string status = "", string timePeriod = "",string startDate = "", string endDate = "")
     {
-        var query = _context.Orders
-              .Include(x => x.Customer)
-              .Include(x => x.Paymentmethod)
+        var query = _context.Customers
+              .Include(x => x.Orders)
               .Where(x => x.Isdelete == false)
-              .Select(x => new OrderViewModel
+              .Select(x => new CustomerViewModel
               {
-                  OrderId = x.OrderId,
                   CustomerId = x.CustomerId,
-                  CustomerName = x.Customer.CustomerName,
-                  OrderDate = DateOnly.FromDateTime(x.OrderDate),
-                  Status = x.Status,
-                  RatingId = x.RatingId,
-                  Rating = (int)Math.Ceiling(((double)x.Rating.Food + (double)x.Rating.Service + (double)x.Rating.Ambience) / 3),
-                  TotalAmount = x.TotalAmount,
-                  PaymentmethodId = x.PaymentmethodId,
-                  PaymentmethodName = x.Paymentmethod.Paymenttype
+                  CustomerName = x.CustomerName,
+                  Phoneno = x.Phoneno,
+                  Email = x.Email,
+                  date = DateOnly.FromDateTime((DateTime)x.CreatedAt),
+                  TotalOrders = x.Orders.Count().ToString()
               }).AsQueryable();
 
-        //search 
+
+        //search
         if (!string.IsNullOrEmpty(search))
         {
             string lowerSearchTerm = search.ToLower();
-            query = query.Where(u => u.CustomerName.ToLower().Contains(lowerSearchTerm) ||
-            u.OrderId.ToString().Contains(lowerSearchTerm)
-            );
+            query = query.Where(u => u.CustomerName.ToLower().Contains(lowerSearchTerm) || u.Email.ToLower().Contains(lowerSearchTerm));
         }
 
-        //filter by status
-        if (!string.IsNullOrEmpty(status) && status != "All Status")
-        {
-            query = query.Where(x => x.Status == status);
-        }
-
-
-        //filter by time period
+//filter by time period
         switch (timePeriod)
         {
             case "All Time":
                 query = query;
                 break;
             case "7":
-                query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-7)));
+                query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Now.AddDays(-7)));
                 break;
             case "30":
-                query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-30)));
+                query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Now.AddDays(-30)));
                 break;
             case "Current Month":
-                query = query.Where(x => x.OrderDate.Month == DateTime.Now.Month);
+                query = query.Where(x => x.date.Month == DateTime.Now.Month);
+                break;
+            case "Custom Date":
+                if (!string.IsNullOrEmpty(startDate) && string.IsNullOrEmpty(endDate))
+                {
+                    query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.date <= DateOnly.FromDateTime(DateTime.Now));
+                }
+                if (string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+                {
+                    query = query.Where(x => x.date <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
+                }
                 break;
         }
 
-        var orders = query.ToList();
+
+        var customers = query.ToList();
 
         // Create Excel package
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -368,7 +294,7 @@ public class OrderService : IOrderService
 
             currentCol += 2;
             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3].Merge = true;
-            worksheet.Cells[currentRow, currentCol].Value = orders.Count;
+            worksheet.Cells[currentRow, currentCol].Value = customers.Count;
             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3])
             {
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -388,28 +314,24 @@ public class OrderService : IOrderService
             headingCol++;
 
             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 2].Merge = true;
-            worksheet.Cells[headingRow, headingCol].Value = "Date";
+            worksheet.Cells[headingRow, headingCol].Value = "Name";
             headingCol += 3;  // Move to next unmerged column
 
-            worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 2].Merge = true;
-            worksheet.Cells[headingRow, headingCol].Value = "Customer";
+            worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 3].Merge = true;
+            worksheet.Cells[headingRow, headingCol].Value = "Email";
             headingCol += 3;
 
             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 2].Merge = true;
-            worksheet.Cells[headingRow, headingCol].Value = "Status";
+            worksheet.Cells[headingRow, headingCol].Value = "Date";
             headingCol += 3;
 
-            worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 1].Merge = true;
-            worksheet.Cells[headingRow, headingCol].Value = "Payment Mode";
+            worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 2].Merge = true;
+            worksheet.Cells[headingRow, headingCol].Value = "Mobile Number";
             headingCol += 2;
 
             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 1].Merge = true;
-            worksheet.Cells[headingRow, headingCol].Value = "Rating";
+            worksheet.Cells[headingRow, headingCol].Value = "Total Order";
             headingCol += 2;
-
-            worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 1].Merge = true;
-            worksheet.Cells[headingRow, headingCol].Value = "Total Amount";
-
 
             using (var headingCells = worksheet.Cells[headingRow, 2, headingRow, headingCol + 1])
             {
@@ -429,35 +351,32 @@ public class OrderService : IOrderService
             // Populate data
             int row = headingRow + 1;
 
-            foreach (var order in orders)
+            foreach (var customer in customers)
             {
                 int startCol = 2;
 
-                worksheet.Cells[row, startCol].Value = order.OrderId;
+                worksheet.Cells[row, startCol].Value = customer.CustomerId;
                 startCol += 1;
 
                 worksheet.Cells[row, startCol, row, startCol + 2].Merge = true;
-                worksheet.Cells[row, startCol].Value = order.OrderDate;
+                worksheet.Cells[row, startCol].Value = customer.CustomerName;
                 startCol += 3;
 
                 worksheet.Cells[row, startCol, row, startCol + 2].Merge = true;
-                worksheet.Cells[row, startCol].Value = order.CustomerName;
+                worksheet.Cells[row, startCol].Value = customer.Email;
                 startCol += 3;
 
                 worksheet.Cells[row, startCol, row, startCol + 2].Merge = true;
-                worksheet.Cells[row, startCol].Value = order.Status;
+                worksheet.Cells[row, startCol].Value = customer.date;
                 startCol += 3;
 
                 worksheet.Cells[row, startCol, row, startCol + 1].Merge = true;
-                worksheet.Cells[row, startCol].Value = order.PaymentmethodName;
+                worksheet.Cells[row, startCol].Value = customer.Phoneno;
                 startCol += 2;
 
                 worksheet.Cells[row, startCol, row, startCol + 1].Merge = true;
-                worksheet.Cells[row, startCol].Value = order.Rating;
+                worksheet.Cells[row, startCol].Value = customer.TotalOrders;
                 startCol += 2;
-
-                worksheet.Cells[row, startCol, row, startCol + 1].Merge = true;
-                worksheet.Cells[row, startCol].Value = order.TotalAmount;
 
                 using (var rowCells = worksheet.Cells[row, 2, row, startCol + 1])
                 {
@@ -479,6 +398,8 @@ public class OrderService : IOrderService
                 row++;
             }
 
+
+
             //  It creates a Task that is already completed and contains the specified result 
             // (in this case, the byte array).
             // This is useful when you need to return a Task in an asynchronous method but already have 
@@ -488,6 +409,4 @@ public class OrderService : IOrderService
         }
 
     }
-
-
 }

@@ -127,10 +127,11 @@
 
                         <!-- customer -->
                         @if ((await AuthorizationService.AuthorizeAsync(User, "Customers.View")).Succeeded){
-                        <div class="inactive-div d-flex p-3">
+                        <a class="inactive-div d-flex p-3  @((ViewData["sidebar-active"] as string) == "Customer" ? "active-div" : "")"
+                            style="text-decoration: none;" asp-action="Customers" asp-controller="Customer">
                             <i class="fa-regular fa-id-card"></i>
                             <p class="customer-text-inactive text-size-set m-0 ms-3">Customer</p>
-                        </div>
+                        </a>
                         }
 
                     </div>
@@ -138,7 +139,7 @@
             </div>
 
             <!-- rightside  -->
-            <div class="right-side-main-div col-sm-8 col-md-9 col-lg-9 col-xl-10 col-12 vh-100 ">
+            <div class="right-side-main-div col-sm-8 col-md-9 col-lg-9 col-xl-10 col-12 ">
                 <div class="row">
                     <!-- navbar -->
                     <div class="header-line bg-primary d-flex justify-content-between">
@@ -194,7 +195,8 @@
 
                                     <!-- Table and Section -->
                                     @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.View")).Succeeded){
-                                    <a class=" d-flex p-3">
+                                    <a class=" d-flex p-3 @((ViewData["sidebar-active"] as string) == "TableAndSection" ? "active-div" : "")"
+                                        style="text-decoration: none;" asp-action="TableAndSection" asp-controller="TableAndSection">
                                         <i class="fa-solid fa-table-cells-large "></i>
                                         <p class="table-text-inactive text-size-set  m-0 ms-3">Table and Section</p>
                                 </a>
@@ -203,7 +205,8 @@
 
                                 <!-- taxes and fees -->
                                 @if ((await AuthorizationService.AuthorizeAsync(User, "TaxFees.View")).Succeeded){
-                                <a class=" d-flex p-3">
+                                <a class=" d-flex p-3  @((ViewData["sidebar-active"] as string) == "TaxAndFees" ? "active-div" : "")"
+                                    style="text-decoration: none;" asp-action="TaxAndFees" asp-controller="TaxAndFees">
                                     <i class="fa-solid fa-money-check-dollar "></i>
                                     <p class="taxes-text-inactive text-size-set m-0 ms-3">Taxes And Fees</p>
                                 </a>
@@ -211,18 +214,20 @@
 
                                 <!-- orders -->
                                 @if ((await AuthorizationService.AuthorizeAsync(User, "Orders.View")).Succeeded){
-                                <div class=" d-flex p-3">
+                                <a class=" d-flex p-3 @((ViewData["sidebar-active"] as string) == "Orders" ? "active-div" : "")"
+                                    style="text-decoration: none;" asp-action="Orders" asp-controller="Order">
                                     <i class="fa-solid fa-clipboard-check"></i>
                                     <p class="order-text-inactive text-size-set m-0 ms-4">Orders</p>
-                                </div>
+                                </a>
                                 }
 
                                 <!-- customer -->
                                 @if ((await AuthorizationService.AuthorizeAsync(User, "Customers.View")).Succeeded){
-                                <div class=" d-flex p-3">
+                                <a class=" d-flex p-3 @((ViewData["sidebar-active"] as string) == "Customer" ? "active-div" : "")"
+                            style="text-decoration: none;" asp-action="Customers" asp-controller="Customer">
                                     <i class="fa-regular fa-id-card"></i>
                                     <p class="customer-text-inactive text-size-set m-0 ms-3">Customer</p>
-                                </div>
+                                </a>
                                 }
                             </div>
                             </div>

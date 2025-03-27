@@ -1,0 +1,299 @@
+@using DAL.ViewModels;
+@model DAL.ViewModels.PaginationViewModel<CustomerViewModel>;
+
+
+<!-- Tax list -->
+<div class="user-list-main-div row  d-md-flex justify-content-between mt-2">
+
+    <!-- Tax txt -->
+    <div class="user-text fs-2 fw-bold text-primary col-md-1">Orders</div>
+    <div class="d-flex justify-content-end col-lg-10 row pe-0">
+        <div class="search-button-orders  col-lg-3 col-6 ">
+            <input type="text" id="searchbtn" placeholder="Search" class=" borderm-2 mt-1 me-3 p-2 w-100"
+                placeholder="Search">
+
+        </div>
+
+        <div class="col-lg-3 col-5">
+            <select class="m-1 me-3 p-2 w-100" id="timePeriod">
+                <option value="All Time" selected>All Time</option>
+                <option value="7">Last 7 Days</option>
+                <option value="30">Last 30 Days</option>
+                <option value="Current Month">Current Month</option>
+                <option value="custom Date"  data-bs-toggle="modal"
+                data-bs-target="#CustomDateModal">Custom Date
+                </option>
+
+
+            </select>
+        </div>
+        <div class="col-2 ">
+            <a class="btn btn-primary d-lg-flex d-none m-1 p-1 pt-2 w-100" id="ExportBtn2"
+                style="max-width: fit-content;" onclick="ExportOrders()"><i
+                    class="fa-solid fa-share-from-square mt-1"></i>&nbsp;&nbsp;Export</a>
+        </div>
+
+
+
+    </div>
+
+
+</div>
+
+<!-- table -->
+<div class="container">
+    <div class="table-main-div table-responsive mt-3 bg-white mx-auto ">
+        <table id="example" class="table display">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-nowrap">Name <i class="bi bi-arrow-down-up" id="sort-name"
+                            data-column="Name" data-direction="asc"></i></th>
+                    <th scope="col" class="text-nowrap text-center">Email</th>
+                    <th scope="col" class="text-nowrap text-center">Phone Number</th>
+                    <th scope="col" class="text-nowrap text-center">Date<i class="bi bi-arrow-down-up" id="sort-date"
+                            data-column="Date" data-direction="asc"></i></th>
+                    <th scope="col" class="text-nowrap text-center">Total Order<i class="bi bi-arrow-down-up"
+                            id="sort-totalorder" data-column="TotalOrder" data-direction="asc"></i></th>
+
+                </tr>
+            </thead>
+            <tbody id="TableBody">
+                @* @await Html.PartialAsync("_", Model) *@
+
+            </tbody>
+        </table>
+
+    </div>
+    @*  Pagination div *@
+    <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
+
+        <span class="mt-2">Items Per page:</span>
+
+        <select id="itemsperpage">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+        </select>
+
+        <span class=" mt-2 ms-1" id="pagination-text"></span>
+        <a id="left-arrow" class="btn border border-dark bg-light ms-2">&lt;</a>
+        <a id="right-arrow" class="btn border border-dark bg-light ms-2">&gt;</a>
+    </div>
+</div>
+
+<!------------------------------------- Modal ----------------------------------------------->
+<div id="CustomDateModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Tax</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    onclick="EnptyDateFormFiels()"></button>
+            </div>
+            <form id="customDatesFormId">
+                <div class="modal-body row">
+                    <div class="form-floating  col-6 ">
+                        <input type="date" id="startDate" class="form-control m-2 me-3 p-2 w-100 pe-0">
+                        <label class="ms-3 mt-1">From Date</label>
+
+                    </div>
+                    <div class="form-floating  col-6">
+                        <input type="date" id="endDate" class="form-control m-2 me-3 p-2 w-100 pe-0">
+                        <label class="ms-3 mt-1">To Date</label>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">save</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="EnptyDateFormFiels()">cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+    <script>
+        let currentPage = 1;
+            let pageSize = $("#itemsperpage").val();
+            let searchText = "";
+            let sortColumn = "";
+            let sortDirection = "asc";
+            let startDate;
+            let endDate;
+            let timePeriod = $("#timePeriod").val();
+
+        //Export
+        function ExportOrders() {
+            searchText = $("#searchbtn").val().trim();
+            status = $("#status").val();
+            timePeriod = $("#timePeriod").val();
+            $.ajax({
+                url: "/Customer/ExportCustomerDataToExcel",
+                type: "GET",
+                data: { search: searchText, status, timePeriod ,startDate, endDate},
+                xhrFields: {
+                    responseType: 'blob' //binary large object -- to handle binary response
+                },
+                success: function (data, status, xhr) {
+                    let filename = "Customers.xlsx";
+
+                    let disposition = xhr.getResponseHeader('Content-Disposition');
+                    @* console.log("disp", disposition); *@
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
+                        if (matches && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
+                        }
+                    }
+
+                    let blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
+                    let link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob); //timePeriod url points to blob obj
+                    link.download = filename; //Download file name
+                    document.body.appendChild(link); //appendChild so that it Cancelled be cliked
+                    link.click();
+                    document.body.removeChild(link);
+
+                    console.log("Export Successfully");
+                }
+            });
+        }
+
+
+        function loadTableForCustomer(page = 1, search = "", sortColumn = "", sortDirection = "asc", pageSize = 5, timePeriod = "", startDate = "", endDate = "") {
+            $.ajax({
+                url: "/Customer/PaginatedCustomersData",
+                type: "GET",
+                data: { search, sortColumn, sortDirection, pageNumber: page, pageSize, timePeriod, startDate, endDate },
+                success: function (data) {
+                    $("#TableBody").html(data);
+                    currentPage = page;
+
+                    pageSize = parseInt(pageSize);
+                    var totalRecords = parseInt($("#totalCount").val()) || 0;
+                    var startItem = totalRecords === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+                    var endItem = Math.min(currentPage * pageSize, totalRecords);
+
+                    $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
+                    $("#left-arrow").prop("disabled", page === 1);
+                    $("#right-arrow").prop("disabled", page * pageSize >= totalRecords);
+                }
+            });
+        }
+
+        function EnptyDateFormFiels(){
+            $("#startDate").val("");
+            $("#endDate").val("");
+        }
+
+
+        $(document).ready(function () {
+            
+
+            // Search on keyup
+            $("#searchbtn").on("keyup", function () {
+                searchText = $(this).val().trim();
+                currentPage = 1;
+                loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
+            });
+
+            // Sorting functionality
+            $("#sort-name").on("click", function () {
+                sortColumn = $(this).data("column");
+                console.log(sortColumn);
+                sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
+                $(this).attr("data-direction", sortDirection);
+                loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
+            });
+            $("#sort-date").on("click", function () {
+                sortColumn = $(this).data("column");
+                console.log(sortColumn);
+                sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
+                $(this).attr("data-direction", sortDirection);
+                loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
+            });
+            $("#sort-totalorder").on("click", function () {
+                sortColumn = $(this).data("column");
+                console.log(sortColumn);
+                sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
+                $(this).attr("data-direction", sortDirection);
+                loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
+            });
+
+
+            // Pagination buttons
+            $("#right-arrow").on("click", function () {
+                let rightarrow = !$(this).prop("disabled");
+                console.log(rightarrow);
+                if (rightarrow) {
+                    currentPage++;
+                    loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
+                }
+            });
+
+            $("#left-arrow").on("click", function () {
+                let leftarrow = !$(this).prop("disabled");
+                console.log(leftarrow);
+                if (leftarrow) {
+                    currentPage--;
+                    loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
+                }
+            });
+
+            $("#searchfordate").on("click", function () {
+                startDate = $("#startDate").val();
+                endDate = $("#endDate").val();
+                console.log(startDate);
+                console.log(endDate);
+                loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
+            });
+
+            // Items per page dropdown
+            $("#itemsperpage").on("change", function () {
+                pageSize = $(this).val();
+                console.log(pageSize);
+                currentPage = 1;
+                loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
+            });
+
+
+            $("#timePeriod").on("change", function () {
+                timePeriod = $(this).val();
+                if(timePeriod == "custom Date")
+                {
+                    $("#CustomDateModal").modal("show");
+                }
+                else
+                {
+                    startDate = "";
+                    endDate = "";
+                    currentPage = 1;
+                loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
+                }
+            });
+
+            $("#customDatesFormId").on("submit", function (e) {
+                e.preventDefault();
+                startDate = $("#startDate").val();
+                endDate = $("#endDate").val();
+                currentPage = 1;
+                loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
+                $('.btn-close').click();
+                @* EnptyDateFormFiels(); *@
+            });
+
+
+
+            // Initial table load
+            loadTableForCustomer();
+        });
+
+
+    </script>
+
+}

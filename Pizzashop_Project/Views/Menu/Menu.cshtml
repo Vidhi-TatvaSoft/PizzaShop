@@ -1206,7 +1206,6 @@
             document.getElementById("EditModGrpDescriptionForEdit").value="";
             document.getElementById("ExistingModifiersForEdit").innerHTML="";
 
-
         }
 
         function GetIdForDelete(tag) {
@@ -1534,11 +1533,11 @@
                 }
                 console.log(modTempName);
                 var modDiv=document.getElementById("ExistingModifiersForEdit");
-                console.log(modDiv);
-                console.log("heloooooooooo")
+                @* console.log(modDiv); *@
+                @* console.log("heloooooooooo") *@
                 modDiv.innerHTML = "";
                 for(i=0;i<modTempID.length;i++){
-                    console.log(modTempName[i]);
+                    @* console.log(modTempName[i]); *@
                     modDiv.innerHTML += `<div class="p-1 border border-1 rounded-pill ms-3 mb-2 me-2 d-inline justify-content-between align-items-center" style="max-width:fit-content;">
                     ${modTempName[i]} <i class="fa-solid fa-xmark" style="margin-left: 0px;" onclick="RemoveFromListForEdit(\`${modTempID[i]}\`,\`${modTempName[i]}\`)" ></i></div> `
                 }
@@ -1580,21 +1579,21 @@
                 modTempIdForCancel.splice(modTempIdForCancel.indexOf(id),1);
                 modTempNameForCancel.splice(modTempNameForCancel.indexOf(name),1);
 
-                console.log(modTempID);
-                console.log(modTempName);
+                @* console.log(modTempID);
+                console.log(modTempName); *@
                 DisplayNamesOfExistingMod();
             }
             
             function RemoveFromListForEdit(id,name){
-                console.log("remove")
+                @* console.log("remove")
                 console.log(id)
                 console.log(name);
-                console.log("splice id:",modTempID.indexOf(parseInt(id)));
+                console.log("splice id:",modTempID.indexOf(parseInt(id))); *@
                 modTempID.splice(modTempID.indexOf(parseInt(id)),1);
                 modTempName.splice(modTempName.indexOf(name),1);
                 modTempIdForCancel.splice(modTempIdForCancel.indexOf(id),1);
                 modTempNameForCancel.splice(modTempNameForCancel.indexOf(name),1);
-                console.log(modTempID);
+                @* console.log(modTempID); *@
                 DisplayNamesOfExistingModForEdit();
             }
 

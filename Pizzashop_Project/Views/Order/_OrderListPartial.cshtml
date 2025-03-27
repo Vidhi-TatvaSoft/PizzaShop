@@ -14,11 +14,11 @@ else
     {
         <tr class="border border-end-0 border-start-0 border-top-0 border-bottom-1">
             <td class="text-nowrap align-content-center d-flex mt-1"><p class="ms-2 mt-0">#@item.OrderId</p></td>
-            <td >@item.OrderDate</td>
-            <td>@item.CustomerName</td>
-            <td class="">@item.Status</td>
-            <td class="">@item.PaymentmethodName</td>
-            <td>
+            <td class="text-nowrap text-center">@item.OrderDate</td>
+            <td class="text-nowrap text-center">@item.CustomerName</td>
+            <td class="text-nowrap text-center">@item.Status</td>
+            <td class="text-nowrap text-center">@item.PaymentmethodName</td>
+            <td class="text-nowrap text-center">
                 @for(int i=0; i<item.Rating; i++)
                 {
                     <i class="bi bi-star-fill text-warning"></i>
@@ -29,11 +29,11 @@ else
                 }
                 
             </td>
-            <td class="">@item.TotalAmount</td>
+            <td class="text-nowrap text-center">@item.TotalAmount</td>
 
-            <td>
+            <td class="text-nowrap text-center">
                 <i class="fa-regular fa-file-pdf me-2"></i>
-                <i class="bi bi-eye"></i>
+                <a  asp-action="ViewOrderDetails" asp-controller="Order" style="text-decoration: none;"><i class="bi bi-eye"  ></i></a>
             </td>
         </tr>
     }

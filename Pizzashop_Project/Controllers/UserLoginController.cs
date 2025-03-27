@@ -65,7 +65,7 @@ namespace Pizzashop_Project.Controllers
 
             var verifictiontoken = _userLoginService.VerifyUserPassword(userlogin);
             CookieOptions options = new CookieOptions();
-            options.Expires = DateTime.Now.AddMinutes(60);
+            options.Expires = DateTime.Now.AddMinutes(120);
             if (verifictiontoken != null)
             {
                 Response.Cookies.Append("AuthToken", verifictiontoken, options);
