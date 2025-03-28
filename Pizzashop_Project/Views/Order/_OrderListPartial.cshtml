@@ -33,7 +33,7 @@ else
 
             <td class="text-nowrap text-center">
                 <i class="fa-regular fa-file-pdf me-2"></i>
-                <a  asp-action="ViewOrderDetails" asp-controller="Order" style="text-decoration: none;"><i class="bi bi-eye"  ></i></a>
+                <a  asp-action="ViewOrderDetails" asp-controller="Order" asp-route-orderid="@item.OrderId" style="text-decoration: none;"><i class="bi bi-eye"  ></i></a>
             </td>
         </tr>
     }

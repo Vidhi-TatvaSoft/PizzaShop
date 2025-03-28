@@ -9,4 +9,6 @@ public interface IOrderService
       // public PaginationViewModel<OrderViewModel> GetOrdersToExport(string search = "",string status="",string timePeriod="");
 
       public Task<byte[]> ExportData(string search = "", string status = "", string timePeriod = "");
+
+      public OrderDetaIlsInvoiceViewModel GetOrderDetails(long orderId);
 }

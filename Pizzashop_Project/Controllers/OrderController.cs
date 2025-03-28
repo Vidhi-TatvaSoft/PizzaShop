@@ -3,6 +3,7 @@ using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 
@@ -302,8 +303,9 @@ public class OrderController : Controller
     }
 
 
-    public IActionResult ViewOrderDetails(){
-        return View();
+    public IActionResult ViewOrderDetails(long orderid){
+        var orderDetails = _orderService.GetOrderDetails(orderid);
+        return View(orderDetails);
     }
 
 }

@@ -67,6 +67,8 @@ public partial class PizzashopDbContext : DbContext
 
     public virtual DbSet<Tax> Taxes { get; set; }
 
+    public virtual DbSet<Taxinvoicemapping> Taxinvoicemappings { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Userlogin> Userlogins { get; set; }
@@ -85,9 +87,7 @@ public partial class PizzashopDbContext : DbContext
 
             entity.ToTable("assigntable");
 
-            entity.Property(e => e.AssignId)
-                .ValueGeneratedNever()
-                .HasColumnName("assign_id");
+            entity.Property(e => e.AssignId).HasColumnName("assign_id");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnType("timestamp without time zone")
@@ -99,6 +99,8 @@ public partial class PizzashopDbContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("modified_at");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
+            entity.Property(e => e.NoOfPerson).HasColumnName("no_of_person");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.TableId).HasColumnName("table_id");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.AssigntableCreatedByNavigations)
@@ -113,6 +115,11 @@ public partial class PizzashopDbContext : DbContext
             entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.AssigntableModifiedByNavigations)
                 .HasForeignKey(d => d.ModifiedBy)
                 .HasConstraintName("assigntable_modified_by_fkey");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.Assigntables)
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("assigntable_order_id_fkey");
 
             entity.HasOne(d => d.Table).WithMany(p => p.Assigntables)
                 .HasForeignKey(d => d.TableId)
@@ -258,18 +265,12 @@ public partial class PizzashopDbContext : DbContext
             entity.ToTable("invoice");
 
             entity.Property(e => e.InvoiceId).HasColumnName("invoice_id");
-            entity.Property(e => e.CgstTax)
-                .HasPrecision(5, 2)
-                .HasColumnName("cgst_tax");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");
-            entity.Property(e => e.GstTax)
-                .HasPrecision(5, 2)
-                .HasColumnName("gst_tax");
             entity.Property(e => e.InvoiceNo)
                 .HasColumnType("character varying")
                 .HasColumnName("invoice_no");
@@ -279,19 +280,9 @@ public partial class PizzashopDbContext : DbContext
                 .HasColumnName("modified_at");
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
             entity.Property(e => e.OrderId).HasColumnName("order_id");
-            entity.Property(e => e.Other)
-                .HasPrecision(5, 2)
-                .HasColumnName("other");
-            entity.Property(e => e.SgstTax)
-                .HasPrecision(5, 2)
-                .HasColumnName("sgst_tax");
-            entity.Property(e => e.TotalAmount)
-                .HasPrecision(10, 2)
-                .HasColumnName("total_amount");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.InvoiceCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("invoice_created_by_fkey");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Invoices)
@@ -301,7 +292,6 @@ public partial class PizzashopDbContext : DbContext
 
             entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.InvoiceModifiedByNavigations)
                 .HasForeignKey(d => d.ModifiedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("invoice_modified_by_fkey");
 
             entity.HasOne(d => d.Order).WithMany(p => p.Invoices)
@@ -655,9 +645,6 @@ public partial class PizzashopDbContext : DbContext
             entity.ToTable("orderdetails");
 
             entity.Property(e => e.OrderdetailId).HasColumnName("orderdetail_id");
-            entity.Property(e => e.Amount)
-                .HasPrecision(10, 2)
-                .HasColumnName("amount");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnType("timestamp without time zone")
@@ -947,6 +934,27 @@ public partial class PizzashopDbContext : DbContext
             entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.TaxModifiedByNavigations)
                 .HasForeignKey(d => d.ModifiedBy)
                 .HasConstraintName("tax_modified_by_fkey");
+        });
+
+        modelBuilder.Entity<Taxinvoicemapping>(entity =>
+        {
+            entity.HasKey(e => e.TaxinvoicemappingId).HasName("taxinvoicemapping_pkey");
+
+            entity.ToTable("taxinvoicemapping");
+
+            entity.Property(e => e.TaxinvoicemappingId).HasColumnName("taxinvoicemapping_id");
+            entity.Property(e => e.InvoiceId).HasColumnName("invoice_id");
+            entity.Property(e => e.TaxId).HasColumnName("tax_id");
+
+            entity.HasOne(d => d.Invoice).WithMany(p => p.Taxinvoicemappings)
+                .HasForeignKey(d => d.InvoiceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("taxinvoicemapping_invoice_id_fkey");
+
+            entity.HasOne(d => d.Tax).WithMany(p => p.Taxinvoicemappings)
+                .HasForeignKey(d => d.TaxId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("taxinvoicemapping_tax_id_fkey");
         });
 
         modelBuilder.Entity<User>(entity =>

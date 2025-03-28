@@ -30,4 +30,6 @@ public partial class Tax
     public virtual User? CreatedByNavigation { get; set; }
 
     public virtual User? ModifiedByNavigation { get; set; }
+
+    public virtual ICollection<Taxinvoicemapping> Taxinvoicemappings { get; } = new List<Taxinvoicemapping>();
 }

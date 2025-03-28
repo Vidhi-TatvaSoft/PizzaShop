@@ -1,10 +1,15 @@
+@using DAL.ViewModels;
+@model DAL.ViewModels.OrderDetaIlsInvoiceViewModel;
+@{
+    int SrNo = 1;
+}
 <div class=" d-flex justify-content-center align-items-center  pb-3">
     <div class="container d-flex flex-column gap-2" style="max-width: 1000px;">
         <!-- Header -->
         <div class="d-flex justify-content-between p-3">
             <h2 class="fw-bold text-heading">Order Details</h2>
             <a asp-action="PaginatedOrdersData" asp-controller="Order">
-                <button class="text-heading p-2 rounded border-main btn-outline-primary" >
+                <button class="text-heading p-2 rounded border-main btn-outline-primary">
                     &lt; Back
                 </button></a>
         </div>
@@ -14,18 +19,24 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h2 class="fs-5 fw-bold mb-3">Order Summary <span class="status">InProgress</span></h2>
+                        <h2 class="fs-5 fw-bold mb-3">Order Summary <span class="orderStatus">@Model.OrderStatus</span></h2>
                     </div>
-                    <button class="bg-button p-1 px-3 rounded text-white border-0 text-nowrap btn-primary" id="export-order-data">
+                    <button class="bg-button p-1 px-3 rounded text-white border-0 text-nowrap btn-primary"
+                        id="export-order-data">
                         <i class="fa-solid fa-share-from-square "></i> Export
                     </button>
                 </div>
-                <p><strong>Invoice No. : </strong> #DOM2025000229</p>
-                <div class="d-flex gap-3">
-                    <span><strong>Paid on:</strong> </span>
-                    <span><strong>Placed on:</strong> 20-30-2024 15:12</span>
-                    <span><strong>Modified on:</strong> 22-01-2025 11:47</span>
-                    <span><strong>Order Duration:</strong> -</span>
+                <p><strong>Invoice No. : </strong> @Model.InvoiceNo</p>
+                <div class="row g-3">
+                    <div class="validate col-12 col-md-6 col-xl-3 "><strong class=" ">Paid on : </strong> </div>
+                    <div class="validate col-12 col-md-6 col-xl-3"><strong class=" ">Placed on : </strong> <span
+                            class="text-secondary">&nbsp;@Model.OrderDate </span></div>
+
+                    <div class="validate col-12 col-md-6 col-xl-3"><strong class=" ">Modified on : </strong><span
+                            class="text-secondary">&nbsp;22-01-2025 11:47</span></div>
+                    <div class="validate col-12 col-md-6 col-xl-3"><strong class=" ">Order Duration : </strong> <span
+                            class="text-secondary">-</span></div>
+
                 </div>
             </div>
         </div>
@@ -40,10 +51,10 @@
                             <h3 class="fs-6 fw-bold m-0">Customer Details</h3>
                         </div>
                         <div class="p-2 d-flex flex-column gap-2">
-                            <span>Name: ajeet lodhi</span>
-                            <span>Phone: 9012439231</span>
-                            <span>No of Person: 7</span>
-                            <span>Email: mailto:ajeet@yopmail.com</span>
+                            <span>Name: @Model.CustomerName</span>
+                            <span>Phone: @Model.Phoneno</span>
+                            <span>No of Person: @Model.NumberOfPerson</span>
+                            <span>Email: @Model.Email</span>
                         </div>
                     </div>
                 </div>
@@ -58,8 +69,12 @@
                             <h3 class="fs-6 fw-bold m-0">Table Details</h3>
                         </div>
                         <div class="p-2 d-flex flex-column gap-2">
-                            <span>Table: T3</span>
-                            <span>Section: Ground Floor</span>
+                            <span>Table: 
+                                @for(int i=0 ;i<Model.tableList.Count;i++){
+                                    <span>@Model.tableList[i].TableName</span>
+                                    if(i < Model.tableList.Count-1){<span>,</span>}
+                                }</span>
+                            <span>Section: @Model.SectionName</span>
                         </div>
                     </div>
                 </div>
@@ -82,27 +97,45 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Grilled burger<br><span class="sub-item"> - Tomato</span></td>
-                                <td>1</td>
-                                <td class="text-end">70.00</td>
-                                <td class="text-end">70.00</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>MARGRITA<br><span class="sub-item"> - test</span></td>
-                                <td>2</td>
-                                <td class="text-end">120.00</td>
-                                <td class="text-end">240.00</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Grilled burger<br><span class="sub-item"> - Babycorn</span></td>
-                                <td>1</td>
-                                <td class="text-end">70.00</td>
-                                <td class="text-end">70.00</td>
-                            </tr>
+                            @foreach (var item in Model.ItemsInOrderDetails)
+                            {
+                                <tr>
+                                    <td>@SrNo</td>
+                                    <td>@item.ItemName
+                                        @foreach (var modifier in item.ModifiersInItemInvoice)
+                                        {
+                                            <li class="list-item">@modifier.ModifierName</li>
+                                        }
+                                    </td>
+                                    <td>@item.Quantity
+                                        @foreach (var modifier in item.ModifiersInItemInvoice)
+                                        {
+                                            <br><span class="list-item">@modifier.Quantity</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">@item.Rate
+                                        @foreach (var modifier in item.ModifiersInItemInvoice)
+                                        {
+                                            <br><span class="list-item">@modifier.Rate</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">@item.TotalOfItemByQuantity
+                                        @foreach (var modifier in item.ModifiersInItemInvoice)
+                                        {
+                                            <br><span class="list-item">@modifier.TotalOfModifierByQuantity</span>
+                                        }
+                                    </td>
+                                    @* @foreach (var modifier in item.ModifiersInItemInvoice)
+                                    {
+                                        <td class="text-end">70.00</td>
+                                    } *@
+                                    @{
+                                    SrNo++;
+                                }
+                                </tr>
+                                
+                            }
+                    
                         </tbody>
                     </table>
                 </div>
@@ -112,27 +145,18 @@
                     <div class="d-flex flex-column " style="min-width: 150px;">
                         <div class="d-flex justify-content-between">
                             <span>Subtotal:</span>
-                            <span> ₹399.00</span>
+                            <span>@Model.SubTotalAmountOfOrder</span>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <span>CGST:</span>
-                            <span> ₹47.88</span>
+                        @foreach(var tax in Model.TaxesInOrderDetails){
+                            <div class="d-flex justify-content-between">
+                            <span>@tax.TaxName:</span>
+                            <span> ₹@tax.TaxValue</span>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <span>SGST:</span>
-                            <span> ₹150.00</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>GST:</span>
-                            <span> ₹78.88</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>Others:</span>
-                            <span> ₹19.95</span>
-                        </div>
+                        }
+
                         <div class="d-flex justify-content-between">
                             <span>Total:</span>
-                            <span> ₹624.81</span>
+                            <span> ₹@Model.TotalAmountOfOrderMain</span>
                         </div>
                     </div>
                 </div>
