@@ -29,7 +29,7 @@
         </div>
         <div class="col-2 ">
             <a class="btn btn-primary d-lg-flex d-none m-1 p-1 pt-2 w-100" id="ExportBtn2"
-                style="max-width: fit-content;" onclick="ExportOrders()"><i
+                style="max-width: fit-content;" onclick="ExportCustomerDetails()"><i
                     class="fa-solid fa-share-from-square mt-1"></i>&nbsp;&nbsp;Export</a>
         </div>
 
@@ -128,14 +128,14 @@
             let timePeriod = $("#timePeriod").val();
 
         //Export
-        function ExportOrders() {
+        function ExportCustomerDetails() {
             searchText = $("#searchbtn").val().trim();
-            status = $("#status").val();
+            @* status = $("#status").val(); *@
             timePeriod = $("#timePeriod").val();
             $.ajax({
                 url: "/Customer/ExportCustomerDataToExcel",
                 type: "GET",
-                data: { search: searchText, status, timePeriod ,startDate, endDate},
+                data: { search: searchText, timePeriod ,startDate, endDate},
                 xhrFields: {
                     responseType: 'blob' //binary large object -- to handle binary response
                 },

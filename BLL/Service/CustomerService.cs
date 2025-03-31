@@ -380,13 +380,6 @@ public class CustomerService : ICustomerService
 
                 using (var rowCells = worksheet.Cells[row, 2, row, startCol + 1])
                 {
-                    // Apply alternating row colors (light gray for better readability)
-                    if (row % 2 == 0)
-                    {
-                        rowCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        rowCells.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
-                    }
-
                     // Apply black borders to each row
                     rowCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
 

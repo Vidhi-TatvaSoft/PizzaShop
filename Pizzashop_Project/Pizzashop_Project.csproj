@@ -6,6 +6,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="7.0.4" />
+    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.1.0" />
+    <PackageReference Include="itext.html2pdf.core" Version="1.0.4" />
+    <PackageReference Include="itext7.pdfhtml" Version="6.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="7.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">

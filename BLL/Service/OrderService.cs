@@ -5,6 +5,10 @@ using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BLL.Service;
 
@@ -17,6 +21,7 @@ public class OrderService : IOrderService
         _context = context;
     }
 
+    #region Get al orders for pagination
     public PaginationViewModel<OrderViewModel> GetAllOrders(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5, string status = "", string timePeriod = "", string startDate = "", string endDate = "")
     {
         var query = _context.Orders
@@ -115,73 +120,9 @@ public class OrderService : IOrderService
 
         return new PaginationViewModel<OrderViewModel>(items, totalCount, pageNumber, pageSize);
     }
+    #endregion
 
-    // public PaginationViewModel<OrderViewModel> GetOrdersToExport(string search = "", string status = "", string timePeriod = "")
-    // {
-    //     var query = _context.Orders
-    //           .Include(x => x.Customer)
-    //           .Include(x => x.Paymentmethod)
-    //           .Where(x => x.Isdelete == false)
-    //           .Select(x => new OrderViewModel
-    //           {
-    //               OrderId = x.OrderId,
-    //               CustomerId = x.CustomerId,
-    //               CustomerName = x.Customer.CustomerName,
-    //               OrderDate = DateOnly.FromDateTime(x.OrderDate),
-    //               Status = x.Status,
-    //               RatingId = x.RatingId,
-    //               Rating = (int)Math.Ceiling(((double)x.Rating.Food + (double)x.Rating.Service + (double)x.Rating.Ambience) / 3),
-    //               TotalAmount = x.TotalAmount,
-    //               PaymentmethodId = x.PaymentmethodId,
-    //               PaymentmethodName = x.Paymentmethod.Paymenttype
-    //           }).AsQueryable();
-
-    //     //search 
-    //     if (!string.IsNullOrEmpty(search))
-    //     {
-    //         string lowerSearchTerm = search.ToLower();
-    //         query = query.Where(u => u.CustomerName.ToLower().Contains(lowerSearchTerm) ||
-    //         u.OrderId.ToString().Contains(lowerSearchTerm)
-    //         );
-    //     }
-
-    //     //filter by status
-    //     if (!string.IsNullOrEmpty(status) && status != "All Status")
-    //     {
-    //         query = query.Where(x => x.Status == status);
-    //     }
-
-
-    //     //filter by time period
-    //     switch (timePeriod)
-    //     {
-    //         case "All Time":
-    //             query = query;
-    //             break;
-    //         case "7":
-    //             query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-7)));
-    //             break;
-    //         case "30":
-    //             query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-30)));
-    //             break;
-    //         case "Current Month":
-    //             query = query.Where(x => x.OrderDate.Month == DateTime.Now.Month);
-    //             break;
-    //     }
-
-    //     // Get total records count (before pagination)
-    //     int totalCount = query.Count();
-
-    //     // Apply pagination
-    //     var items = query.ToList();
-
-    //     return new PaginationViewModel<OrderViewModel>(items, totalCount, 1, 1);
-
-
-
-    // }
-
-
+    #region Export data in excel
     public Task<byte[]> ExportData(string search = "", string status = "", string timePeriod = "")
     {
         var query = _context.Orders
@@ -244,7 +185,7 @@ public class OrderService : IOrderService
             var worksheet = package.Workbook.Worksheets.Add("Orders");
             var currentRow = 3;
             var currentCol = 2;
-
+            // var colorsforExcel = System.Drawing.Color;
             // this is first row....................................
             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1].Merge = true;
             worksheet.Cells[currentRow, currentCol].Value = "Status: ";
@@ -253,8 +194,8 @@ public class OrderService : IOrderService
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
                 headingCells.Style.Font.Bold = true;
-                headingCells.Style.Font.Color.SetColor(Color.White);
-                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+                headingCells.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
 
                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
@@ -265,8 +206,8 @@ public class OrderService : IOrderService
             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3])
             {
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                headingCells.Style.Fill.BackgroundColor.SetColor(Color.White);
-                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+                headingCells.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.White);
+                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
 
 
                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -281,8 +222,8 @@ public class OrderService : IOrderService
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
                 headingCells.Style.Font.Bold = true;
-                headingCells.Style.Font.Color.SetColor(Color.White);
-                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+                headingCells.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
 
                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
@@ -294,8 +235,8 @@ public class OrderService : IOrderService
             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3])
             {
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                headingCells.Style.Fill.BackgroundColor.SetColor(Color.White);
-                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+                headingCells.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.White);
+                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
 
 
                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -330,8 +271,8 @@ public class OrderService : IOrderService
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
                 headingCells.Style.Font.Bold = true;
-                headingCells.Style.Font.Color.SetColor(Color.White);
-                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+                headingCells.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
 
                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
@@ -343,8 +284,8 @@ public class OrderService : IOrderService
             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3])
             {
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                headingCells.Style.Fill.BackgroundColor.SetColor(Color.White);
-                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+                headingCells.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.White);
+                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
 
 
                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -359,8 +300,8 @@ public class OrderService : IOrderService
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
                 headingCells.Style.Font.Bold = true;
-                headingCells.Style.Font.Color.SetColor(Color.White);
-                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+                headingCells.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
 
                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 headingCells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
@@ -372,8 +313,8 @@ public class OrderService : IOrderService
             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3])
             {
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                headingCells.Style.Fill.BackgroundColor.SetColor(Color.White);
-                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+                headingCells.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.White);
+                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
 
 
                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -416,9 +357,9 @@ public class OrderService : IOrderService
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
                 headingCells.Style.Font.Bold = true;
-                headingCells.Style.Font.Color.SetColor(Color.White);
+                headingCells.Style.Font.Color.SetColor(System.Drawing.Color.White);
 
-                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+                headingCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
 
 
                 headingCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -461,15 +402,9 @@ public class OrderService : IOrderService
 
                 using (var rowCells = worksheet.Cells[row, 2, row, startCol + 1])
                 {
-                    // Apply alternating row colors (light gray for better readability)
-                    if (row % 2 == 0)
-                    {
-                        rowCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        rowCells.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
-                    }
 
                     // Apply black borders to each row
-                    rowCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
+                    rowCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
 
 
                     rowCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -488,84 +423,100 @@ public class OrderService : IOrderService
         }
 
     }
+    #endregion
 
-
+    #region Get order details from orderId
     public OrderDetaIlsInvoiceViewModel GetOrderDetails(long orderId)
     {
-        var orderdetils = _context.Invoices.Include(x => x.Order).ThenInclude(x=>x.Table).ThenInclude(x=>x.Section).Include(x => x.Customer).ThenInclude(x=>x.Waitinglists).Where(x => x.OrderId == orderId).FirstOrDefault();
-        
-        
+        var orderdetails = _context.Invoices.Include(x => x.Order).ThenInclude(x => x.Table).ThenInclude(x => x.Section).Include(x => x.Customer)
+        .Where(x => x.OrderId == orderId).FirstOrDefault();
+
+
         OrderDetaIlsInvoiceViewModel orderdetailsvm = new();
         //order
-        orderdetailsvm.OrderId = orderdetils.OrderId;
-        orderdetailsvm.OrderDate = orderdetils.Order.OrderDate;
-        orderdetailsvm.OrderStatus = orderdetils.Order.Status;
-        orderdetailsvm.InvoiceId=orderdetils.InvoiceId;
-        orderdetailsvm.InvoiceNo=orderdetils.InvoiceNo;
-    
+        orderdetailsvm.OrderId = orderdetails.OrderId;
+        orderdetailsvm.OrderDate = orderdetails.Order.OrderDate;
+        orderdetailsvm.OrderStatus = orderdetails.Order.Status;
+        orderdetailsvm.InvoiceId = orderdetails.InvoiceId;
+        orderdetailsvm.InvoiceNo = orderdetails.InvoiceNo;
+
 
         //customer
-        orderdetailsvm.CustomerId = orderdetils.Order.CustomerId;
-        orderdetailsvm.CustomerName = orderdetils.Order.Customer.CustomerName;
-        orderdetailsvm.Phoneno = orderdetils.Order.Customer.Phoneno;
-        orderdetailsvm.Email = orderdetils.Order.Customer.Email;
+        orderdetailsvm.CustomerId = orderdetails.Order.CustomerId;
+        orderdetailsvm.CustomerName = orderdetails.Order.Customer.CustomerName;
+        orderdetailsvm.Phoneno = orderdetails.Order.Customer.Phoneno;
+        orderdetailsvm.Email = orderdetails.Order.Customer.Email;
 
-        List<Assigntable> AssignTableList = _context.Assigntables.Include(x => x.Customer).Include(x => x.Order).Where(x => x.CustomerId == orderdetils.Order.CustomerId && x.OrderId == orderId).ToList();
+        List<Assigntable> AssignTableList = _context.Assigntables.Include(x => x.Customer).Include(x => x.Order)
+        .Where(x => x.CustomerId == orderdetails.Order.CustomerId && x.OrderId == orderId).ToList();
         orderdetailsvm.NumberOfPerson = AssignTableList.Sum(x => x.NoOfPerson);
 
         //table
-        orderdetailsvm.tableList =  _context.Assigntables.Include(x => x.Customer).Include(x => x.Order).Include(x => x.Table).Where(x => x.CustomerId == orderdetils.Order.CustomerId && x.OrderId == orderId).Select(x => new Table{
-            TableId = x.TableId,
-            TableName = x.Table.TableName
+        orderdetailsvm.tableList = _context.Invoices.Include(x => x.Customer).Include(x => x.Order).ThenInclude(x => x.Table)
+        .Where(x => x.CustomerId == orderdetails.Order.CustomerId && x.OrderId == orderId)
+        .Select(x => new Table
+        {
+            TableId = x.Order.Table.TableId,
+            TableName = x.Order.Table.TableName
 
         }).ToList();
-        orderdetailsvm.SectionId = orderdetils.Order.SectionId;
-        orderdetailsvm.SectionName = orderdetils.Order.Section.SectionName;
+        orderdetailsvm.SectionId = orderdetails.Order.SectionId;
+        orderdetailsvm.SectionName = orderdetails.Order.Section.SectionName;
 
         //items
-        orderdetailsvm.ItemsInOrderDetails = _context.Orderdetails.Include(x => x.Item).Where(x => x.OrderId == orderId).Select(x => new ItemForInvoiceOrderDetails
+        orderdetailsvm.ItemsInOrderDetails = _context.Orderdetails.Include(x => x.Item).Where(x => x.OrderId == orderId)
+        .Select(x => new ItemForInvoiceOrderDetails
         {
             ItemId = x.ItemId,
             ItemName = x.Item.ItemName,
             Quantity = x.Quantity,
             Rate = x.Item.Rate,
-            TotalOfItemByQuantity = Math.Round(x.Quantity * x.Item.Rate ,2),
-            ModifiersInItemInvoice = _context.Modifierorders.Include(m => m.Modifier).Include(m=>m.Orderdetail).ThenInclude(m=>m.Item).Where(m=> m.Orderdetail.ItemId==x.ItemId).Select(m => new ModifiersForItemInInvoiceOrderDetails
+            TotalOfItemByQuantity = Math.Round(x.Quantity * x.Item.Rate, 2),
+            ModifiersInItemInvoice = _context.Modifierorders.Include(m => m.Modifier).Include(m => m.Orderdetail).ThenInclude(m => m.Item)
+            .Where(m => m.Orderdetail.ItemId == x.ItemId)
+            .Select(m => new ModifiersForItemInInvoiceOrderDetails
             {
                 ModifierId = m.ModifierId,
                 ModifierName = m.Modifier.ModifierName,
                 Rate = m.Modifier.Rate,
-                Quantity = m.Modifier.Quantity,
-                TotalOfModifierByQuantity = Math.Round(m.Modifier.Quantity * (decimal)m.Modifier.Rate,2),
+                Quantity = m.ModifierQuantity,
+                TotalOfModifierByQuantity = Math.Round(m.Modifier.Quantity * (decimal)m.Modifier.Rate, 2),
             }).ToList()
         }).ToList();
-        orderdetailsvm.SubTotalAmountOfOrder = Math.Round((decimal)orderdetailsvm.ItemsInOrderDetails.Sum(x => x.TotalOfItemByQuantity + x.ModifiersInItemInvoice.Sum(x => x.TotalOfModifierByQuantity)),2);
-     
+        orderdetailsvm.SubTotalAmountOfOrder = Math.Round((decimal)orderdetailsvm.ItemsInOrderDetails
+        .Sum(x => x.TotalOfItemByQuantity + x.ModifiersInItemInvoice.Sum(x => x.TotalOfModifierByQuantity)), 2);
+
 
         //taxes
-        var taxedetails = _context.Taxinvoicemappings.Include(x => x.Invoice).Include(x=>x.Tax).Where(x => x.Invoice.OrderId == orderId).ToList();
+        var taxedetails = _context.Taxinvoicemappings.Include(x => x.Invoice).Include(x => x.Tax)
+        .Where(x => x.Invoice.OrderId == orderId).ToList();
 
         orderdetailsvm.TaxesInOrderDetails = new List<TaxForOrderDetailsInvoice>();
-        foreach(var tax in taxedetails){
+        foreach (var tax in taxedetails)
+        {
 
-            if(tax.Tax.TaxType=="Fix Amount"){
+            if (tax.Tax.TaxType == "Fix Amount")
+            {
                 orderdetailsvm.TaxesInOrderDetails.Add(
-                    new TaxForOrderDetailsInvoice{
-                    TaxId=tax.Tax.TaxId,
-                    TaxName=tax.Tax.TaxName,
-                    TaxType=tax.Tax.TaxType,
-                    TaxValue=tax.Tax.TaxValue
-                }
-                ); 
+                    new TaxForOrderDetailsInvoice
+                    {
+                        TaxId = tax.Tax.TaxId,
+                        TaxName = tax.Tax.TaxName,
+                        TaxType = tax.Tax.TaxType,
+                        TaxValue = tax.Tax.TaxValue
+                    }
+                );
             }
-            else{
+            else
+            {
                 orderdetailsvm.TaxesInOrderDetails.Add(
-                    new TaxForOrderDetailsInvoice{
-                    TaxId=tax.Tax.TaxId,
-                    TaxName=tax.Tax.TaxName,
-                    TaxType=tax.Tax.TaxType,
-                    TaxValue=Math.Round(tax.Tax.TaxValue/100 * orderdetailsvm.SubTotalAmountOfOrder,2)
-                }
+                    new TaxForOrderDetailsInvoice
+                    {
+                        TaxId = tax.Tax.TaxId,
+                        TaxName = tax.Tax.TaxName,
+                        TaxType = tax.Tax.TaxType,
+                        TaxValue = Math.Round(tax.Tax.TaxValue / 100 * orderdetailsvm.SubTotalAmountOfOrder, 2)
+                    }
                 );
             }
         }
@@ -574,6 +525,48 @@ public class OrderService : IOrderService
 
         return orderdetailsvm;
     }
-       
+    #endregion
 
+
+    #region  cpnver to pdf invoice
+    public byte[] Compose()
+    {
+        QuestPDF.Settings.License = LicenseType.Community;
+        using (var stream = new MemoryStream())
+        {
+            Document.Create(container =>
+            {
+                container
+                    .Page(page =>
+                    {
+                        page.Margin(50);
+
+                        page.Header().Element(ComposeHeader);
+                        page.Content().Background(Colors.Grey.Lighten3);
+                        page.Footer().Height(50).Background(Colors.Grey.Lighten1);
+                    });
+            }).GeneratePdf(stream);
+
+            return stream.ToArray();
+        }
+    }
+
+    void ComposeHeader(IContainer container)
+    {
+        container.Row(row =>
+        {
+            row.ConstantItem(150);
+            row.ConstantItem(100).Height(50).Image(File.ReadAllBytes("../Pizzashop_Project/wwwroot/images/logos/pizzashop_logo.png"));
+            row.RelativeItem().AlignMiddle().Column(column =>
+            {
+                column.Item()
+                    .Text("PIZZASHOP")
+                    .FontSize(20).SemiBold().FontColor(Colors.Blue.Medium);
+            });
+
+
+        });
+    }
+
+    #endregion
 }

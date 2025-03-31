@@ -76,17 +76,17 @@
         <table id="example" class="table display">
             <thead>
                 <tr>
-                    <th scope="col" class="text-nowrap">#Order <i class="bi bi-arrow-down-up" id="sort-orderId" data-column="OrderId"
-                            data-direction="asc"></i></th>
-                    <th scope="col" class="text-nowrap text-center">Date<i class="bi bi-arrow-down-up" id="sort-date" data-column="Date"
-                            data-direction="asc"></i></th>
-                    <th scope="col" class="text-nowrap text-center">Customer<i class="bi bi-arrow-down-up" id="sort-customer" data-column="Customer"
-                            data-direction="asc"></i></th>
+                    <th scope="col" class="text-nowrap">#Order <i class="bi bi-arrow-down-up" id="sort-orderId"
+                            data-column="OrderId" data-direction="asc"></i></th>
+                    <th scope="col" class="text-nowrap text-center">Date<i class="bi bi-arrow-down-up" id="sort-date"
+                            data-column="Date" data-direction="asc"></i></th>
+                    <th scope="col" class="text-nowrap text-center">Customer<i class="bi bi-arrow-down-up"
+                            id="sort-customer" data-column="Customer" data-direction="asc"></i></th>
                     <th scope="col" class="text-nowrap text-center">Status</th>
                     <th scope="col" class="text-nowrap text-center">Payment Mode</th>
                     <th scope="col" class="text-nowrap text-center">Rating</th>
-                    <th scope="col" class="text-nowrap text-center">Total Amount<i class="bi bi-arrow-down-up" id="sort-amount" data-column="Amount"
-                            data-direction="asc"></i></th>
+                    <th scope="col" class="text-nowrap text-center">Total Amount<i class="bi bi-arrow-down-up"
+                            id="sort-amount" data-column="Amount" data-direction="asc"></i></th>
                     <th scope="col" class="text-nowrap text-center">Action </th>
                 </tr>
             </thead>
@@ -133,7 +133,7 @@
 
                     let disposition = xhr.getResponseHeader('Content-Disposition');
                     @* console.log("disp", disposition); *@
-                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        if (disposition && disposition.indexOf('attachment') !== -1) {
                         let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
                         if (matches && matches[1]) {
                             filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
@@ -153,7 +153,56 @@
             });
         }
 
+        //download orderdetails (pdf)
+        function ExportToPdf(tag) {
+            var orderid = tag.getAttribute("data-orderid");
+            console.log(orderid);
+            $.ajax({
+                url: `/Order/GeneratePdf?orderid=${orderid}`,
+                type: "GET",
+                xhrFields: {
+                    responseType: 'blob' //binary large object -- to handle binary response
+                },
+                success: function (data, status, xhr) {
+                    let filename = "invoicefront.pdf";
 
+                    let disposition = xhr.getResponseHeader('Content-Disposition');
+                    @* console.log("disp", disposition); *@
+                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                        let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
+                        if (matches && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
+                        }
+                    }
+
+                    let blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
+                    let link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob); //timePeriod url points to blob obj
+                    link.download = filename; //Download file name
+                    document.body.appendChild(link); //appendChild so that it Cancelled be cliked
+                    link.click();
+                    document.body.removeChild(link);
+
+                    console.log("Export Successfully");
+                }
+            });
+        }
+
+        function ExportPdfJs(tag){
+              var orderid = tag.getAttribute("data-orderid");
+              console.log(typeof html2pdf);
+              console.log(orderid)
+                $.ajax({
+                url: `/Order/GeneratePdfJs?orderid=${orderid}`,
+                type: "GET",
+               
+                success: function (data) {
+                    html2pdf().from(data).save();
+                }
+            });
+        }
+
+        //pagination load partial view
         function loadTableForOrders(page = 1, search = "", sortColumn = "", sortDirection = "asc", pageSize = 5, status = "", timePeriod = "", startDate = "", endDate = "") {
             $.ajax({
                 url: "/Order/PaginatedOrdersData",
@@ -301,8 +350,9 @@
 
 
 
-                // Initial table load
-                loadTableForOrders();
+            // Initial table load
+            loadTableForOrders();
         });
     </script>
+   
 }
