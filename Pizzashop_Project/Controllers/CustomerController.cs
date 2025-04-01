@@ -26,14 +26,13 @@ public class CustomerController :Controller
     }
 
 
-        public async Task<IActionResult> ExportCustomerDataToExcel(string search = "", string status = "", string timePeriod = "", string startDate="", string endDate="")
+    public async Task<IActionResult> ExportCustomerDataToExcel(string search = "", string timePeriod = "", string startDate="", string endDate="")
     {
-        var FileData = await _customerService.ExportCustomerData(search, status, timePeriod,startDate,endDate);
+        var FileData = await _customerService.ExportCustomerData(search, timePeriod,startDate,endDate);
         var result = new FileContentResult(FileData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         {
             FileDownloadName = "Customers.xlsx"
         };
-
         return result;
     }
 }

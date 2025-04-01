@@ -21,10 +21,11 @@
                     <div>
                         <h2 class="fs-5 fw-bold mb-3">Order Summary <span class="orderStatus">@Model.OrderStatus</span></h2>
                     </div>
-                    <button class="bg-button p-1 px-3 rounded text-white border-0 text-nowrap btn-primary"
-                        id="export-order-data">
+                    <a asp-action="GeneratePdfOrderDetails" asp-controller="Order" asp-route-orderid="@Model.OrderId" 
+                        class="bg-button p-1 px-3 rounded text-white border-0 text-nowrap btn-primary" style="text-decoration: none;"
+                        id="export-order-data" >
                         <i class="fa-solid fa-share-from-square "></i> Export
-                    </button>
+                    </a>
                 </div>
                 <p><strong>Invoice No. : </strong> @Model.InvoiceNo</p>
                 <div class="row g-3">

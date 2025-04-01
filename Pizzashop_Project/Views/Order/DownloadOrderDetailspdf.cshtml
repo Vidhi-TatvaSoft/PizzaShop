@@ -1,0 +1,392 @@
+@model DAL.ViewModels.OrderDetaIlsInvoiceViewModel
+
+@{
+    Layout=null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Summary</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container{
+            max-width: 900px;
+            width: 100%;
+            min-width: 320px;
+            margin: 0 auto;
+        }
+
+        .orderStatus{
+            background-color: #87f0e7;
+            color:#003b28
+        }
+
+        .details-div{
+            width: 100%;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .cust-details-box{
+            width: 50%;
+            float: left;
+             box-sizing: border-box;
+            padding-right: 20px;
+            @* border: 1px solid #d1d9e6; 
+            border-radius: 5px; *@
+        }
+
+        .table-details-box{
+            width: 50%;
+            float: right;
+             box-sizing: border-box;
+            padding-left: 20px;
+            @* border: 1px solid #d1d9e6;  *@
+            @* border-radius: 5px;" *@
+        }
+
+        .details {
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .details-container {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .cust-details-box {
+            width: 50%;
+            float: left;
+            box-sizing: border-box;
+            padding-right: 20px;
+        }
+
+        .order-details-box{
+            width: 50%;
+            float: right;
+            box-sizing: border-box;
+            padding-left: 100px;
+        }
+
+        .details-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0084C3;
+        }
+
+        .details-content {
+            margin-top: 8px;
+        }
+
+        .details-content span {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 15px;
+
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        thead {
+            color: white;
+            background-color: #0084C3;
+        }
+
+        th,
+        td {
+            padding: 5px;
+            text-align: left;
+            border: none;
+        }
+
+        thead th:last-child {
+            text-align: right;
+        }
+
+        td:last-child {
+            text-align: right;
+        }
+
+        tr {
+            border-bottom: 1px solid #0084C3;
+        }
+
+        tbody tr{
+            page-break-inside: avoid;
+        }
+        thead tr {
+            border-bottom: 2px solid #0084C3;
+        }
+
+        .tableListDisplay{
+             display: inline !important;
+        }
+
+        .totals-container {
+            width: 100%;
+            @* margin-right: 0px; *@
+            @* margin-left: 400px; *@
+            margin-top: 20px;
+        }
+
+        .total-row {
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .total-row span:first-child {
+            float: left;
+        }
+
+        .total-row span:last-child {
+            float: right;
+        }
+
+        .divider {
+            border: none;
+            border-top: 2px solid #0084C3;
+            margin: 10px 0;
+        }
+
+        .total-amount {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0084C3;
+        }
+
+        .payment-info {
+            margin-top: 10px;
+        }
+
+        .payment-info p {
+            margin: 5px 0;
+        }
+
+    </style>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 20px; padding: 0; ">
+    <div class="container">
+    <!-- Header Section -->
+    <div >
+         <h2 class="fs-5 fw-bold mb-3">Order Summary <span class="orderStatus">@Model.OrderStatus</span></h2>
+        <p style=""><strong>Invoice No.:</strong> #DOM1234567890</p>
+        <div >
+            <p><strong>Paid on:</strong> 00:00:00</p>
+            <p><strong>Placed on:</strong> @Model.OrderDate</p>
+            <p><strong>Modified on:</strong> 22-01-2025 11:47</p>
+            <p><strong>Order Duration:</strong> -</p>
+        </div>
+    </div>
+
+            <div class="details">
+            <div class="details-container">
+                <!-- Customer details -->
+                <div class="cust-details-box">
+                    <p class="details-title">Customer Details</p>
+                    <div class="details-content">
+                        <span style="font-size: 17px;"> <strong> Name: </strong>@Model.CustomerName</span>
+                        <span style="font-size: 17px;"><strong>Phone: </strong> @Model.Phoneno</span>
+                        <span style="font-size: 17px;"><strong>No. of Persons: </strong> @Model.NumberOfPerson</span>
+                        <span style="font-size: 17px;"><strong>Email: </strong> @Model.Email</span>
+
+                    </div>
+                </div>
+
+                <!-- Table details -->
+                <div class="order-details-box">
+                    <p class="details-title">Table Details</p>
+                    <div class="details-content">
+                        <span style="font-size: 17px;"><strong>Table:</strong> 
+                        @for (int i = 0; i < Model.tableList.Count; i++){
+                            <span  class="tableListDisplay" style="font-size: 17px;">@Model.tableList[i].TableName</span>
+                            if (i < Model.tableList.Count - 1)
+                            {
+                                <span  class="tableListDisplay" style="font-size: 17px;">,</span>
+                            }
+                        }
+                        </span>
+                        <span style="font-size: 17px;"><strong>Section:</strong> @Model.SectionName</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="details">
+            <!-- Ordered items table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sr.No.</th>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int srNo = 1;
+                    }
+                    @foreach (var item in Model.ItemsInOrderDetails)
+                    {
+                        <tr>
+                            <td>@srNo</td>
+                            <td style="font-size: 20px;">
+                                @item.ItemName
+                                @foreach (var modifierItem in item.ModifiersInItemInvoice)
+                                {
+                                    <br>
+                                    <span style="font-size: 17px;">@modifierItem.ModifierName</span>
+                                }
+                            </td>
+                            <td style="font-size: 20px;">
+                                @item.Quantity
+                                @foreach (var modifierItem in item.ModifiersInItemInvoice)
+                                {
+                                    <br>
+                                    <span style="font-size: 17px;">@modifierItem.Quantity</span>
+                                }
+                            </td>
+                            <td style="font-size: 20px;">
+                                @item.Rate
+                                @foreach (var modifierItem in item.ModifiersInItemInvoice)
+                                {
+                                    <br>
+                                    <span style="font-size: 17px;">@modifierItem.Rate</span>
+                                }
+                            </td>
+                            <td style="font-size: 20px;">
+                                @item.TotalOfItemByQuantity
+                                @foreach (var modifier in item.ModifiersInItemInvoice)
+                                {
+                                    <br>
+                                    <span style="font-size: 17px;">@modifier.TotalOfModifierByQuantity</span>
+                                }
+                            </td>
+                        </tr>
+                        srNo++;
+                    }
+                
+                </tbody>
+            </table>
+
+            <br>
+
+            <div class="totals-container">
+                <div class="total-row">
+                    <span style="font-size: 17px;"><strong>Sub Total:</strong></span>
+                    <span style="font-size: 17px;">@Model.SubTotalAmountOfOrder</span>
+                </div>
+
+                @foreach (var tax in Model.TaxesInOrderDetails)
+                {
+                    <div class="total-row">
+                        <span style="font-size: 17px;">@tax.TaxName:</span>
+                        <span style="font-size: 17px;">@tax.TaxValue</span>
+                    </div>
+                }
+            </div>
+
+            <hr class="divider" />
+
+            <!-- Total amount -->
+            <div class="total-row">
+                <span style="font-size: 20px;" class="total-amount">Total Amount Due:</span>
+                <span style="font-size: 20px;" class="total-amount">@Model.TotalAmountOfOrderMain</span>
+            </div>
+      
+
+
+        </div>
+
+
+    @* <!-- Customer and Table Details Section -->
+    <div class="details-div" >
+        <!-- Customer Details -->
+        <div class="cust-details-box" >
+            <h3 style="margin-bottom: 30px;" >Customer Details</h3>
+            <p ><strong>Name:</strong> vidhi</p>
+            <p ><strong>Phone:</strong> 1234567890</p>
+            <p ><strong>No of Person:</strong> 8</p>
+            <p ><strong>Email:</strong> mailto:vidhi@gmail.com</p>
+        </div>
+
+        <!-- Table Details -->
+        <div class="table-details-box" >
+            <h3 style="margin-bottom: 30px;" >Table Details</h3>
+            <p ><strong>Table:</strong> t1 s1</p>
+            <p ><strong>Section:</strong> section 1</p>
+        </div>
+    </div>
+
+    <!-- Order Items Section -->
+    <div style="margin-top: 20px;">
+        <h3 style="margin: 0 0 10px 0; color: #333;">Order Items</h3>
+        <table style="width: 100%; border-collapse: collapse; background-color: #e6f0fa; border: 1px solid #d1d9e6;">
+            <thead>
+                <tr style="background-color: #d1d9e6;">
+                    <th style="padding: 10px; text-align: left; border: 1px solid #d1d9e6;">Sr.No</th>
+                    <th style="padding: 10px; text-align: left; border: 1px solid #d1d9e6;">Item</th>
+                    <th style="padding: 10px; text-align: left; border: 1px solid #d1d9e6;">Quantity</th>
+                    <th style="padding: 10px; text-align: left; border: 1px solid #d1d9e6;">Price</th>
+                    <th style="padding: 10px; text-align: left; border: 1px solid #d1d9e6;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #d1d9e6;">1</td>
+                    <td style="padding: 10px; border: 1px solid #d1d9e6;">
+                        pizza<br>
+                        <ul style="margin: 5px 0 0 20px; padding: 0;">
+                            <li>capsicum</li>
+                            <li>onion</li>
+                        </ul>
+                    </td>
+                    <td style="padding: 10px; border: 1px solid #d1d9e6;">
+                        2<br>
+                        1
+                    </td>
+                    <td style="padding: 10px; border: 1px solid #d1d9e6;">
+                        200.00<br>
+                        20.00
+                    </td>
+                    <td style="padding: 10px; border: 1px solid #d1d9e6;">
+                        400.00<br>
+                        60.00
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #d1d9e6;">2</td>
+                    <td style="padding: 10px; border: 1px solid #d1d9e6;">pasta</td>
+                    <td style="padding: 10px; border: 1px solid #d1d9e6;">1</td>
+                    <td style="padding: 10px; border: 1px solid #d1d9e6;">100.00</td>
+                    <td style="padding: 10px; border: 1px solid #d1d9e6;">100.00</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Total Section -->
+        <div style="text-align: right; margin-top: 10px;">
+            <p style="margin: 5px 0; color: #333;"><strong>Subtotal:</strong> 610.00</p>
+            <p style="margin: 5px 0; color: #333;"><strong>tax 1:</strong> ₹ 100</p>
+            <p style="margin: 5px 0; color: #333;"><strong>tax 2:</strong> ₹ 6.10</p>
+            <p style="margin: 5px 0; color: #333;"><strong>TOTAL:</strong> ₹ 716.10</p>
+        </div>
+    </div> *@
+    </div>
+</body>
+</html>

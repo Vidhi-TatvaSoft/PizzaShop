@@ -50,8 +50,6 @@ public class CustomerService : ICustomerService
                 query = sortDirection == "asc" ? query.OrderBy(u => u.date) : query.OrderByDescending(u => u.date);
                 break;
 
-
-
             case "TotalOrders":
                 query = sortDirection == "asc" ? query.OrderBy(u => u.TotalOrders) : query.OrderByDescending(u => u.TotalOrders);
                 break;
@@ -107,10 +105,7 @@ public class CustomerService : ICustomerService
         return new PaginationViewModel<CustomerViewModel>(items, totalCount, pageNumber, pageSize);
     }
 
-
-
-
-    public Task<byte[]> ExportCustomerData(string search = "", string status = "", string timePeriod = "",string startDate = "", string endDate = "")
+    public Task<byte[]> ExportCustomerData(string search = "",  string timePeriod = "",string startDate = "", string endDate = "")
     {
         var query = _context.Customers
               .Include(x => x.Orders)
@@ -133,7 +128,7 @@ public class CustomerService : ICustomerService
             query = query.Where(u => u.CustomerName.ToLower().Contains(lowerSearchTerm) || u.Email.ToLower().Contains(lowerSearchTerm));
         }
 
-//filter by time period
+        //filter by time period
         switch (timePeriod)
         {
             case "All Time":
@@ -167,13 +162,13 @@ public class CustomerService : ICustomerService
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using (var package = new ExcelPackage())
         {
-            var worksheet = package.Workbook.Worksheets.Add("Orders");
+            var worksheet = package.Workbook.Worksheets.Add("Customers");
             var currentRow = 3;
             var currentCol = 2;
 
             // this is first row....................................
             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1].Merge = true;
-            worksheet.Cells[currentRow, currentCol].Value = "Status: ";
+            worksheet.Cells[currentRow, currentCol].Value = "Account: ";
             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1])
             {
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -187,7 +182,7 @@ public class CustomerService : ICustomerService
             }
             currentCol += 2;
             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3].Merge = true;
-            worksheet.Cells[currentRow, currentCol].Value = status;
+            worksheet.Cells[currentRow, currentCol].Value = "";
             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 3])
             {
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -279,7 +274,7 @@ public class CustomerService : ICustomerService
 
             currentCol += 5;
             worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1].Merge = true;
-            worksheet.Cells[currentRow, currentCol].Value = "No. of Orders: ";
+            worksheet.Cells[currentRow, currentCol].Value = "No. of Records: ";
             using (var headingCells = worksheet.Cells[currentRow, currentCol, currentRow + 1, currentCol + 1])
             {
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -319,7 +314,7 @@ public class CustomerService : ICustomerService
 
             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 3].Merge = true;
             worksheet.Cells[headingRow, headingCol].Value = "Email";
-            headingCol += 3;
+            headingCol += 4;
 
             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 2].Merge = true;
             worksheet.Cells[headingRow, headingCol].Value = "Date";
@@ -327,13 +322,13 @@ public class CustomerService : ICustomerService
 
             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 2].Merge = true;
             worksheet.Cells[headingRow, headingCol].Value = "Mobile Number";
-            headingCol += 2;
+            headingCol += 3;
 
             worksheet.Cells[headingRow, headingCol, headingRow, headingCol + 1].Merge = true;
             worksheet.Cells[headingRow, headingCol].Value = "Total Order";
             headingCol += 2;
 
-            using (var headingCells = worksheet.Cells[headingRow, 2, headingRow, headingCol + 1])
+            using (var headingCells = worksheet.Cells[headingRow, 2, headingRow, headingCol - 1 ])
             {
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
@@ -362,23 +357,23 @@ public class CustomerService : ICustomerService
                 worksheet.Cells[row, startCol].Value = customer.CustomerName;
                 startCol += 3;
 
-                worksheet.Cells[row, startCol, row, startCol + 2].Merge = true;
+                worksheet.Cells[row, startCol, row, startCol + 3].Merge = true;
                 worksheet.Cells[row, startCol].Value = customer.Email;
-                startCol += 3;
+                startCol += 4;
 
                 worksheet.Cells[row, startCol, row, startCol + 2].Merge = true;
                 worksheet.Cells[row, startCol].Value = customer.date;
                 startCol += 3;
 
-                worksheet.Cells[row, startCol, row, startCol + 1].Merge = true;
+                worksheet.Cells[row, startCol, row, startCol + 2].Merge = true;
                 worksheet.Cells[row, startCol].Value = customer.Phoneno;
-                startCol += 2;
+                startCol += 3;
 
                 worksheet.Cells[row, startCol, row, startCol + 1].Merge = true;
                 worksheet.Cells[row, startCol].Value = customer.TotalOrders;
                 startCol += 2;
 
-                using (var rowCells = worksheet.Cells[row, 2, row, startCol + 1])
+                using (var rowCells = worksheet.Cells[row, 2, row, startCol -1])
                 {
                     // Apply black borders to each row
                     rowCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);

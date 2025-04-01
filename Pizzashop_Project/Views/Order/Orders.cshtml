@@ -52,7 +52,7 @@
         </div>
         <a class="btn btn-primary d-lg-flex d-none m-1 p-1 pt-2 " id="ExportBtn2" style="max-width: fit-content;"
             onclick="ExportOrders()"><i class="fa-solid fa-share-from-square mt-1"></i>&nbsp;&nbsp;Export</a>
-        <div class="form-floating col-lg-3 col-6 ">
+        @* <div class="form-floating col-lg-3 col-6 ">
             <input type="date" id="startDate" class="form-control m-2 me-3 p-2 w-100 pe-0">
             <label class="ms-3 mt-1">From Date</label>
 
@@ -63,7 +63,23 @@
         </div>
         <a class="btn btn-primary m-2 p-3 pt-2 pb-2 pt-3" style="max-width: fit-content;" id="searchfordate">Search</a>
         <a class="btn btn-outline-primary m-2 p-3 pb-2 pt-3" style="max-width: fit-content;"
-            id="clearBtnForDate">Clear</a>
+            id="clearBtnForDate">Clear</a> *@
+
+            <div class="form-floating col-lg-3 col-6 ">
+            <input type="text" id="startDate"  placeholder="Start date" onfocus="(this.type='date')"
+                onblur="(this.type='text')" class="m-2 me-3 p-2 w-100 pe-0">
+
+        </div>
+        <div class="form-floating col-lg-3 col-6">
+            <input type="text" id="endDate" class="m-2 me-3 p-2 w-100 pe-0" placeholder="End date"
+                onfocus="(this.type='date')" onblur="(this.type='text')">
+
+        </div>
+        <a id="searchfordate" class="btn btn-primary m-2 p-3 pt-2 pb-2" style="max-width: fit-content;"
+            >Search</a>
+        <a id="clearBtnForDate" class="btn btn-outline-primary m-2 p-3 pb-2 pt-2" style="max-width: fit-content;"
+            >Clear</a>
+
 
     </div>
 
@@ -78,14 +94,14 @@
                 <tr>
                     <th scope="col" class="text-nowrap">#Order <i class="bi bi-arrow-down-up" id="sort-orderId"
                             data-column="OrderId" data-direction="asc"></i></th>
-                    <th scope="col" class="text-nowrap text-center">Date<i class="bi bi-arrow-down-up" id="sort-date"
+                    <th scope="col" class="text-nowrap text-center">Date  <i class="bi bi-arrow-down-up" id="sort-date"
                             data-column="Date" data-direction="asc"></i></th>
-                    <th scope="col" class="text-nowrap text-center">Customer<i class="bi bi-arrow-down-up"
+                    <th scope="col" class="text-nowrap text-center">Customer  <i class="bi bi-arrow-down-up"
                             id="sort-customer" data-column="Customer" data-direction="asc"></i></th>
                     <th scope="col" class="text-nowrap text-center">Status</th>
                     <th scope="col" class="text-nowrap text-center">Payment Mode</th>
                     <th scope="col" class="text-nowrap text-center">Rating</th>
-                    <th scope="col" class="text-nowrap text-center">Total Amount<i class="bi bi-arrow-down-up"
+                    <th scope="col" class="text-nowrap text-center">Total Amount  <i class="bi bi-arrow-down-up"
                             id="sort-amount" data-column="Amount" data-direction="asc"></i></th>
                     <th scope="col" class="text-nowrap text-center">Action </th>
                 </tr>
@@ -188,7 +204,7 @@
             });
         }
 
-        function ExportPdfJs(tag){
+        @* function ExportPdfJs(tag){
               var orderid = tag.getAttribute("data-orderid");
               console.log(typeof html2pdf);
               console.log(orderid)
@@ -200,7 +216,7 @@
                     html2pdf().from(data).save();
                 }
             });
-        }
+        } *@
 
         //pagination load partial view
         function loadTableForOrders(page = 1, search = "", sortColumn = "", sortDirection = "asc", pageSize = 5, status = "", timePeriod = "", startDate = "", endDate = "") {

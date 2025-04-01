@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using iText.Html2pdf;
+using Rotativa.AspNetCore;
 
 namespace Pizzashop_Project.Controllers;
 
@@ -61,9 +62,22 @@ public class OrderController : Controller
         return View(orderDetails);
     }
 
-    public IActionResult GeneratePdfJs(long orderid){
+    public IActionResult GeneratePdfInvoice(long orderid){
           OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid); 
-          return PartialView("_DownloadInvoicePartial", orderDetails);
+        //   return PartialView("DownloadInvoicePdf", orderDetails);
+        var generatedpdf = new ViewAsPdf("DownloadInvoicePdf", orderDetails){
+            FileName="Invoice.pdf"
+        };
+        return generatedpdf;
+    }
+
+        public IActionResult GeneratePdfOrderDetails(long orderid){
+          OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid); 
+        //   return PartialView("DownloadOrderDetailspdf", orderDetails);
+        var generatedpdf = new ViewAsPdf("DownloadOrderDetailspdf", orderDetails){
+            FileName="OrderDetails.pdf"
+        };
+        return generatedpdf;
     }
 
 }

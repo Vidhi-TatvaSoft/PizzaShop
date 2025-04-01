@@ -46,13 +46,13 @@
         <table id="example" class="table display">
             <thead>
                 <tr>
-                    <th scope="col" class="text-nowrap">Name <i class="bi bi-arrow-down-up" id="sort-name"
+                    <th scope="col" class="text-nowrap">Name  <i class="bi bi-arrow-down-up" id="sort-name"
                             data-column="Name" data-direction="asc"></i></th>
                     <th scope="col" class="text-nowrap text-center">Email</th>
                     <th scope="col" class="text-nowrap text-center">Phone Number</th>
-                    <th scope="col" class="text-nowrap text-center">Date<i class="bi bi-arrow-down-up" id="sort-date"
+                    <th scope="col" class="text-nowrap text-center">Date  <i class="bi bi-arrow-down-up" id="sort-date"
                             data-column="Date" data-direction="asc"></i></th>
-                    <th scope="col" class="text-nowrap text-center">Total Order<i class="bi bi-arrow-down-up"
+                    <th scope="col" class="text-nowrap text-center">Total Order  <i class="bi bi-arrow-down-up"
                             id="sort-totalorder" data-column="TotalOrder" data-direction="asc"></i></th>
 
                 </tr>
@@ -106,7 +106,7 @@
 
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">save</button>
-                    <button type="button" class="btn btn-outline-primary" onclick="EnptyDateFormFiels()">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="EnptyDateFormFiels()" data-bs-dismiss="modal">cancel</button>
                 </div>
             </form>
         </div>
@@ -127,7 +127,7 @@
             let endDate;
             let timePeriod = $("#timePeriod").val();
 
-        //Export
+        //Export customers data to Excel
         function ExportCustomerDetails() {
             searchText = $("#searchbtn").val().trim();
             @* status = $("#status").val(); *@
@@ -266,7 +266,7 @@
                 timePeriod = $(this).val();
                 if(timePeriod == "custom Date")
                 {
-                    $("#CustomDateModal").modal("show");
+                    $("#CustomDateModal").modal("toggle");
                 }
                 else
                 {

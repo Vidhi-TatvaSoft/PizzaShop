@@ -32,7 +32,7 @@ else
             <td class="text-nowrap text-center">@item.TotalAmount</td>
 
             <td class="text-nowrap text-center">
-                <a data-orderid="@item.OrderId"   onclick="ExportPdfJs(this)"><i class="fa-regular fa-file-pdf me-2"></i></a>
+                <a data-orderid="@item.OrderId" asp-action="GeneratePdfInvoice" asp-controller="order" asp-route-orderid="@item.OrderId"><i class="fa-regular fa-file-pdf me-2"></i></a>
                 <a  asp-action="ViewOrderDetails" asp-controller="Order" asp-route-orderid="@item.OrderId" style="text-decoration: none;"><i class="bi bi-eye"  ></i></a>
             </td>
         </tr>

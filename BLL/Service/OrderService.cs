@@ -480,7 +480,7 @@ public class OrderService : IOrderService
                 ModifierName = m.Modifier.ModifierName,
                 Rate = m.Modifier.Rate,
                 Quantity = m.ModifierQuantity,
-                TotalOfModifierByQuantity = Math.Round(m.Modifier.Quantity * (decimal)m.Modifier.Rate, 2),
+                TotalOfModifierByQuantity = Math.Round(m.ModifierQuantity * (decimal)m.Modifier.Rate, 2),
             }).ToList()
         }).ToList();
         orderdetailsvm.SubTotalAmountOfOrder = Math.Round((decimal)orderdetailsvm.ItemsInOrderDetails
