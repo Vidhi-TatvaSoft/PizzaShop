@@ -50,7 +50,7 @@ public class CustomerService : ICustomerService
                 query = sortDirection == "asc" ? query.OrderBy(u => u.date) : query.OrderByDescending(u => u.date);
                 break;
 
-            case "TotalOrders":
+            case "TotalOrder":
                 query = sortDirection == "asc" ? query.OrderBy(u => u.TotalOrders) : query.OrderByDescending(u => u.TotalOrders);
                 break;
         }
@@ -70,7 +70,7 @@ public class CustomerService : ICustomerService
             case "Current Month":
                 query = query.Where(x => x.date.Month == DateTime.Now.Month);
                 break;
-            case "Custom Date":
+            case "custom Date":
                 if (!string.IsNullOrEmpty(startDate) && string.IsNullOrEmpty(endDate))
                 {
                     query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.date <= DateOnly.FromDateTime(DateTime.Now));
@@ -79,23 +79,14 @@ public class CustomerService : ICustomerService
                 {
                     query = query.Where(x => x.date <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
                 }
+                if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+                {
+                    query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.date <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
+                }
                 break;
         }
 
-        //filter by date
-        if (!string.IsNullOrEmpty(startDate) && string.IsNullOrEmpty(endDate))
-        {
-            query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.date <= DateOnly.FromDateTime(DateTime.Now));
-        }
-        if (string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
-        {
-            query = query.Where(x => x.date <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
-        }
-        if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
-        {
-            query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.date <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
-        }
-
+       
         // Get total records count (before pagination)
         int totalCount = query.Count();
 
@@ -105,7 +96,7 @@ public class CustomerService : ICustomerService
         return new PaginationViewModel<CustomerViewModel>(items, totalCount, pageNumber, pageSize);
     }
 
-    public Task<byte[]> ExportCustomerData(string search = "",  string timePeriod = "",string startDate = "", string endDate = "")
+    public Task<byte[]> ExportCustomerData(string search = "", string timePeriod = "", string startDate = "", string endDate = "")
     {
         var query = _context.Customers
               .Include(x => x.Orders)
@@ -143,7 +134,7 @@ public class CustomerService : ICustomerService
             case "Current Month":
                 query = query.Where(x => x.date.Month == DateTime.Now.Month);
                 break;
-            case "Custom Date":
+            case "custom Date":
                 if (!string.IsNullOrEmpty(startDate) && string.IsNullOrEmpty(endDate))
                 {
                     query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.date <= DateOnly.FromDateTime(DateTime.Now));
@@ -151,6 +142,11 @@ public class CustomerService : ICustomerService
                 if (string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
                 {
                     query = query.Where(x => x.date <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
+                }
+                if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+                {
+                    var demo = DateOnly.FromDateTime(DateTime.Parse(startDate));
+                    query = query.Where(x => x.date >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.date <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
                 }
                 break;
         }
@@ -328,7 +324,7 @@ public class CustomerService : ICustomerService
             worksheet.Cells[headingRow, headingCol].Value = "Total Order";
             headingCol += 2;
 
-            using (var headingCells = worksheet.Cells[headingRow, 2, headingRow, headingCol - 1 ])
+            using (var headingCells = worksheet.Cells[headingRow, 2, headingRow, headingCol - 1])
             {
                 headingCells.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 headingCells.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#0066A7"));
@@ -373,7 +369,7 @@ public class CustomerService : ICustomerService
                 worksheet.Cells[row, startCol].Value = customer.TotalOrders;
                 startCol += 2;
 
-                using (var rowCells = worksheet.Cells[row, 2, row, startCol -1])
+                using (var rowCells = worksheet.Cells[row, 2, row, startCol - 1])
                 {
                     // Apply black borders to each row
                     rowCells.Style.Border.BorderAround(ExcelBorderStyle.Thin, Color.Black);
@@ -386,8 +382,6 @@ public class CustomerService : ICustomerService
                 row++;
             }
 
-
-
             //  It creates a Task that is already completed and contains the specified result 
             // (in this case, the byte array).
             // This is useful when you need to return a Task in an asynchronous method but already have 
@@ -397,4 +391,53 @@ public class CustomerService : ICustomerService
         }
 
     }
+
+    #region GetCustomerHistoryById
+    public async Task<CustomerHistoryViewModel> GetCustomerHistoryById(long custid)
+    {
+        try
+        {
+            Customer? customerdetails = await _context.Customers.Include(x => x.Orders).ThenInclude(x => x.Orderdetails)
+            .Include(x => x.Orders).ThenInclude(x => x.Paymentstatus)
+            .FirstOrDefaultAsync(x => x.CustomerId == custid && x.Isdelete == false);
+            if (customerdetails == null) return null;
+
+            CustomerHistoryViewModel customerHistoryvm = new CustomerHistoryViewModel();
+
+            customerHistoryvm.CustomerId = customerdetails.CustomerId;
+            customerHistoryvm.CustomerName = customerdetails.CustomerName;
+            customerHistoryvm.Phoneno = customerdetails.Phoneno;
+            customerHistoryvm.ComingSince = (DateTime)customerdetails.CreatedAt;
+            if (customerdetails.Orders.Count() == 0)
+            {
+                customerHistoryvm.AvgBill = 0;
+                customerHistoryvm.MaxOrder = 0;
+                customerHistoryvm.Visits = 0;
+                customerHistoryvm.ordersList = null;
+                return customerHistoryvm;
+            }
+            customerHistoryvm.AvgBill = customerdetails.Orders.Average(x => x.TotalAmount);
+            customerHistoryvm.MaxOrder = customerdetails.Orders.Max(x => x.TotalAmount);
+            customerHistoryvm.Visits = customerdetails.Orders.Count();
+            customerHistoryvm.ordersList = customerdetails.Orders.Select(m => new OrderInCustomerForHistory
+            {
+                OrderId = m.OrderId,
+                OrderDate = DateOnly.FromDateTime(m.OrderDate),
+                OrderType = "DineIn",
+                Payment = m.Paymentstatus.Paymentstatus,
+                NoOfItems = m.Orderdetails.Count(),
+                Amount = m.TotalAmount
+            }).ToList();
+
+            return customerHistoryvm;
+
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+
+    }
+
+    #endregion
 }

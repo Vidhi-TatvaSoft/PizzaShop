@@ -108,6 +108,12 @@ public class TableAndSectionService : ITableAndSection
     }
     #endregion
 
+    #region ckeckOccupiedTable
+    public bool ckeckOccupiedTable(long sectionId){
+        return _context.Tables.Any(x => x.Section.SectionId == sectionId && x.Isdelete == false && x.Status == "Occupied");
+    }
+    #endregion
+
     #region Delete section
     public async Task<bool> DeleteSection(long sectionID){
         var tablesInSection = _context.Tables.Where(x=>x.SectionId==sectionID ).ToList();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Models;
 
@@ -7,6 +8,7 @@ public partial class Modifier
 {
     public long ModifierId { get; set; }
 
+    [RegularExpression(@"\S.*", ErrorMessage = "Only white space is not allowed")]
     public string ModifierName { get; set; } = null!;
 
     public string? Description { get; set; }

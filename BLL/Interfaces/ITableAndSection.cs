@@ -11,6 +11,7 @@ public interface ITableAndSection
     Task<bool> AddSection(Section section, long userID);
     Task<Section> GetSectionByNameForEdit(Section section);
     Task<bool> EditSection(Section section,long userId);
+    public bool ckeckOccupiedTable(long sectionId);
     Task<bool> DeleteSection(long sectionID);
     Task<Table> GetTableByNameInSameSection(TableViewModel table);
     Task<bool> AddTable(TableViewModel table, long userId);

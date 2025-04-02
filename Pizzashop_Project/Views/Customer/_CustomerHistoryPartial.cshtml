@@ -1,0 +1,95 @@
+@model DAL.ViewModels.CustomerHistoryViewModel;
+
+<div class="modal-content rounded-3 shadow">
+    <div class="modal-header bg-light border-bottom">
+        <h5 class="modal-title fs-5 fw-semibold" id="customerHistoryModalLabel">Customer History</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body bg-light p-3 p-sm-4">
+        <!-- Customer Info Section -->
+        <div class=" bg-white  g-3 mb-4">
+            <div class="d-lg-flex justify-content-between mb-2">
+                <div
+                    class=" d-flex customerHistoryDetailsFields justify-content-between border border-2 rounded p-2 h-50 me-lg-2 mb-2 mb-lg-0">
+                    <div class="text-secondary  fw-medium ">Name</div>
+                    <div class=" fw-bold ">@Model.CustomerName</div>
+                </div>
+                <div
+                    class="customerHistoryDetailsFields d-flex  justify-content-between border border-2 rounded p-2 h-50">
+                    <div class="text-secondary  fw-medium ">Average Bill</div>
+                    <div class=" fw-bold ">@Model.AvgBill</div>
+                </div>
+            </div>
+
+            <div class="d-lg-flex justify-content-between mb-2">
+
+                <div
+                    class="customerHistoryDetailsFields d-flex justify-content-between border border-2 rounded p-2 h-50  me-lg-2 mb-2 mb-lg-0">
+                    <div class="text-secondary  fw-medium text-nowrap">Mobile Number</div>
+                    <div class=" fw-bold text-nowrap">@Model.Phoneno</div>
+                </div>
+                <div
+                    class="customerHistoryDetailsFields  d-flex justify-content-between border border-2 rounded p-2 h-50 ">
+                    <div class="text-secondary  fw-medium text-nowrap">Coming Since</div>
+                    <div class=" fw-bold text-nowrap">@Model.ComingSince</div>
+                </div>
+            </div>
+
+            <div class="d-lg-flex justify-content-between mb-2">
+                <div
+                    class="customerHistoryDetailsFields d-flex justify-content-between border border-2 rounded p-2 h-50 me-lg-2 mb-2 mb-lg-0">
+                    <div class="text-secondary  fw-medium ">Max Order</div>
+                    <div class=" fw-bold ">@Model.MaxOrder</div>
+                </div>
+                <div
+                    class="customerHistoryDetailsFields  d-flex justify-content-between border border-2 rounded p-2 h-50 ">
+                    <div class="text-secondary  fw-medium ">Visits</div>
+                    <div class=" fw-bold ">@Model.Visits</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Orders Table -->
+        <div class="table-responsive customerHistoryTable bg-white">
+            <table class="table table-sm">
+                <thead>
+                    <tr class="bg-light">
+                        <th class="text-muted fw-medium">Order Date</th>
+                        <th class="text-muted fw-medium">Order Type</th>
+                        <th class="text-muted fw-medium">Payment</th>
+                        <th class="text-muted fw-medium">Items</th>
+                        <th class="text-muted fw-medium">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ordersList != null)
+                    {
+                        @foreach (var orders in Model.ordersList)
+                        {
+                            <tr>
+                                <td>@orders.OrderDate</td>
+                                <td>@orders.OrderType</td>
+                                <td>@orders.Payment</td>
+                                <td>@orders.NoOfItems</td>
+                                <td>@orders.Amount</td>
+                            </tr>
+                        }
+                    }
+                    else{
+                        <tr>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+
+                        </tr>
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

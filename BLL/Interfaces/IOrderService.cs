@@ -11,6 +11,7 @@ public interface IOrderService
 
       public Task<byte[]> ExportData(string search = "", string status = "", string timePeriod = "");
 
-      public OrderDetaIlsInvoiceViewModel GetOrderDetails(long orderId);
+    public OrderDetaIlsInvoiceViewModel GetOrderDetails(long orderId);
+
       public byte[] Compose();
 }

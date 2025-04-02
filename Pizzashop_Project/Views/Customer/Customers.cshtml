@@ -6,7 +6,9 @@
 <div class="user-list-main-div row  d-md-flex justify-content-between mt-2">
 
     <!-- Tax txt -->
-    <div class="user-text fs-2 fw-bold text-primary col-md-1">Orders</div>
+
+
+    <div class="user-text fs-2 fw-bold text-primary col-md-1">Customers</div>
     <div class="d-flex justify-content-end col-lg-10 row pe-0">
         <div class="search-button-orders  col-lg-3 col-6 ">
             <input type="text" id="searchbtn" placeholder="Search" class=" borderm-2 mt-1 me-3 p-2 w-100"
@@ -20,8 +22,7 @@
                 <option value="7">Last 7 Days</option>
                 <option value="30">Last 30 Days</option>
                 <option value="Current Month">Current Month</option>
-                <option value="custom Date"  data-bs-toggle="modal"
-                data-bs-target="#CustomDateModal">Custom Date
+                <option value="custom Date" data-bs-toggle="modal" data-bs-target="#CustomDateModal">Custom Date
                 </option>
 
 
@@ -35,7 +36,7 @@
 
 
 
-    </div>
+    </div> 
 
 
 </div>
@@ -46,13 +47,13 @@
         <table id="example" class="table display">
             <thead>
                 <tr>
-                    <th scope="col" class="text-nowrap">Name  <i class="bi bi-arrow-down-up" id="sort-name"
+                    <th scope="col" class="text-nowrap">Name <i class="bi bi-arrow-down-up" id="sort-name"
                             data-column="Name" data-direction="asc"></i></th>
                     <th scope="col" class="text-nowrap text-center">Email</th>
                     <th scope="col" class="text-nowrap text-center">Phone Number</th>
-                    <th scope="col" class="text-nowrap text-center">Date  <i class="bi bi-arrow-down-up" id="sort-date"
+                    <th scope="col" class="text-nowrap text-center">Date <i class="bi bi-arrow-down-up" id="sort-date"
                             data-column="Date" data-direction="asc"></i></th>
-                    <th scope="col" class="text-nowrap text-center">Total Order  <i class="bi bi-arrow-down-up"
+                    <th scope="col" class="text-nowrap text-center">Total Order <i class="bi bi-arrow-down-up"
                             id="sort-totalorder" data-column="TotalOrder" data-direction="asc"></i></th>
 
                 </tr>
@@ -86,9 +87,8 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Tax</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                    onclick="EnptyDateFormFiels()"></button>
+                <h5 class="modal-title">Customer date</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="customDatesFormId">
                 <div class="modal-body row">
@@ -106,62 +106,71 @@
 
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">save</button>
-                    <button type="button" class="btn btn-outline-primary" onclick="EnptyDateFormFiels()" data-bs-dismiss="modal">cancel</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<div id="customerHistoryModal" class="modal fade" tabindex="-1" aria-labelledby="customerHistoryModalLabel"
+    aria-hidden="true">
+    <div id="customerHistoryDiv" class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+
+    </div>
+</div>
 
 
 @section Scripts {
 
     <script>
         let currentPage = 1;
-            let pageSize = $("#itemsperpage").val();
-            let searchText = "";
-            let sortColumn = "";
-            let sortDirection = "asc";
-            let startDate;
-            let endDate;
-            let timePeriod = $("#timePeriod").val();
+        let pageSize = $("#itemsperpage").val();
+        let searchText = "";
+        let sortColumn = "";
+        let sortDirection = "asc";
+        let startDate;
+        let endDate;
+        let timePeriod = $("#timePeriod").val();
 
         //Export customers data to Excel
         function ExportCustomerDetails() {
             searchText = $("#searchbtn").val().trim();
             @* status = $("#status").val(); *@
-            timePeriod = $("#timePeriod").val();
-            $.ajax({
-                url: "/Customer/ExportCustomerDataToExcel",
-                type: "GET",
-                data: { search: searchText, timePeriod ,startDate, endDate},
-                xhrFields: {
-                    responseType: 'blob' //binary large object -- to handle binary response
-                },
-                success: function (data, status, xhr) {
-                    let filename = "Customers.xlsx";
+                timePeriod = $("#timePeriod").val();
+            @* if(timePeriod=="custom Date"){
+                
+            } *@
+                $.ajax({
+                    url: "/Customer/ExportCustomerDataToExcel",
+                    type: "GET",
+                    data: { search: searchText, timePeriod, startDate, endDate },
+                    xhrFields: {
+                        responseType: 'blob' //binary large object -- to handle binary response
+                    },
+                    success: function (data, status, xhr) {
+                        let filename = "Customers.xlsx";
 
-                    let disposition = xhr.getResponseHeader('Content-Disposition');
-                    @* console.log("disp", disposition); *@
-                    if (disposition && disposition.indexOf('attachment') !== -1) {
-                        let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
-                        if (matches && matches[1]) {
-                            filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
+                        let disposition = xhr.getResponseHeader('Content-Disposition');
+                        @* console.log("disp", disposition); *@
+                                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                            let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
+                            if (matches && matches[1]) {
+                                filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
+                            }
                         }
+
+                        let blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
+                        let link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob); //timePeriod url points to blob obj
+                        link.download = filename; //Download file name
+                        document.body.appendChild(link); //appendChild so that it Cancelled be cliked
+                        link.click();
+                        document.body.removeChild(link);
+
+                        console.log("Export Successfully");
                     }
-
-                    let blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
-                    let link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob); //timePeriod url points to blob obj
-                    link.download = filename; //Download file name
-                    document.body.appendChild(link); //appendChild so that it Cancelled be cliked
-                    link.click();
-                    document.body.removeChild(link);
-
-                    console.log("Export Successfully");
-                }
-            });
+                });
         }
 
 
@@ -186,14 +195,14 @@
             });
         }
 
-        function EnptyDateFormFiels(){
+        function EnptyDateFormFiels() {
             $("#startDate").val("");
             $("#endDate").val("");
         }
 
 
         $(document).ready(function () {
-            
+
 
             // Search on keyup
             $("#searchbtn").on("keyup", function () {
@@ -264,16 +273,15 @@
 
             $("#timePeriod").on("change", function () {
                 timePeriod = $(this).val();
-                if(timePeriod == "custom Date")
-                {
+                if (timePeriod == "custom Date") {
                     $("#CustomDateModal").modal("toggle");
                 }
-                else
-                {
+                else {
+                    EnptyDateFormFiels();
                     startDate = "";
                     endDate = "";
                     currentPage = 1;
-                loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
+                    loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
                 }
             });
 
@@ -285,12 +293,27 @@
                 loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
                 $('.btn-close').click();
                 @* EnptyDateFormFiels(); *@
-            });
-
-
+                            });
 
             // Initial table load
             loadTableForCustomer();
+
+
+
+            //show customer history
+            $("#customerHistoryModal").on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var custid = button.data("custid");
+                $.ajax({
+                    url: "/Customer/ShowCustomerHistoryModal",
+                    type: "GET",
+                    data: { custid },
+                    success: function (data) {
+                        $("#customerHistoryDiv").html(data);
+
+                    }
+                })
+            })
         });
 
 

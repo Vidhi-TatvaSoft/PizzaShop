@@ -41,7 +41,14 @@ else
                     }
                 </div>
             </td>
-            <td  class="text-nowrap ">@item.TaxValue</td>
+            <td  class="text-nowrap ">
+                @if(item.TaxType == "Percentage"){
+                    <span>@item.TaxValue%</span> 
+                }
+                else{
+                    <span>₹@item.TaxValue</span>
+                }
+            </td>
 
             <td class="text-nowrap">
                 <i class="fa-solid fa-pen mt-2 me-2" data-bs-toggle="modal" data-bs-target="#EditTaxModal" data-id="@item.TaxId" onclick="updateTaxDetails(this);RemoveValidatoOnCancel()"></i>

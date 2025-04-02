@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Models;
 
 public partial class Modifiergroup
 {
     public long ModifierGrpId { get; set; }
-
+    [RegularExpression(@"\S.*", ErrorMessage = "Only white space is not allowed")]
+    [StringLength(50, ErrorMessage = "Modifier group Name cannot exceed 50 characters.")]
     public string ModifierGrpName { get; set; } = null!;
 
     public string? Desciption { get; set; }

@@ -170,7 +170,6 @@ public class UserService : IUserService
         userlogin.Password = _userLoginService.EncryptPassword(userVM.Password);
         userlogin.RoleId = userVM.RoleId;
 
-
         await _context.AddAsync(userlogin);
         await _context.SaveChangesAsync();
 

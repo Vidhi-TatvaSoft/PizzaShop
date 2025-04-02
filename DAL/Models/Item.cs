@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Models;
 
 public partial class Item
 {
     public long ItemId { get; set; }
+    [RegularExpression(@"\S.*", ErrorMessage = "Only white space is not allowed")]
 
     public string ItemName { get; set; } = null!;
 

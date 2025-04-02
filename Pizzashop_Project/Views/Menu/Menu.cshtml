@@ -12,13 +12,13 @@
                 <h5 class="modal-title">Add Category</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="removeValidationOnCancel()"></button>
             </div>
-            <form asp-action="AddCategory" asp-controller="Menu">
+            <form asp-action="AddCategory" asp-controller="Menu" onsubmit="AddcategoryValidation()">
                 <div class="modal-body">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput"
+                        <input type="text" class="form-control" id="categoryNameAdd"
                             asp-for="@Model.category.CategoryName" placeholder="name" required>
-                        <span asp-validation-for="@Model.category.CategoryName" class="text-danger removeValidationOnCancel"></span>
-                        <label for="floatingInput">Name</label>
+                        <span asp-validation-for="@Model.category.CategoryName" class="text-danger removeValidationOnCancel" id="validationForAddCategory"></span>
+                        <label for="categoryNameAdd">Name</label>
                     </div>
                     <div class="form-floating">
                         <textarea class="form-control" placeholder="Leave a comment here"
@@ -1165,11 +1165,11 @@
                         editModTempId.push(x.modifierId); //static
                         modTempIdForCancel.push(x.modifierId);
                         modTempNameForCancel.push(x.modifierName);
-                        console.log("hii");
+                        @* console.log("hii"); *@
                    });
-                   console.log(data.modifierGroup.modifierGrpId);
+                   @* console.log(data.modifierGroup.modifierGrpId); *@
                     document.getElementById("EditModifierGrpIdForEdit").value=data.modifierGroup.modifierGrpId;
-                    console.log(document.getElementById("EditModifierGrpIdForEdit").value);
+                    @* console.log(document.getElementById("EditModifierGrpIdForEdit").value); *@
                     document.getElementById("EditModGrpNameForEdit").value=data.modifierGroup.modifierGrpName;
                     document.getElementById("EditModGrpDescriptionForEdit").value=data.modifierGroup.desciption;
 
@@ -1598,7 +1598,7 @@
             }
 
 
-            // AddToListofModifierGroup  add modifier group tomodifiergrpList
+            // AddToListofModifierGroup  add modifier group to modifiergrpList
             function AddToListOfModifierGroup(modGrpId){
                 if(modifierGroupForItemIds.indexOf(modGrpId)==-1){
                      modifierGroupForItemIds.push(modGrpId);
@@ -2318,13 +2318,16 @@
         EditItemData(formData);
     });
 
-    $(document).ready(function () {
-       @* console.log("1",editItemData); *@
-    });
+   
+
+
+
 
 
 
 </script>
+
+
    @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

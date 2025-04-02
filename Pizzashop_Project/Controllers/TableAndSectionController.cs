@@ -109,8 +109,12 @@ public class TableAndSectionController : Controller
 
     [PermissionAuthorize("TableSection.Delete")]
     public async Task<IActionResult> DeleteSection(long id){
-        bool deleteSectionStatus = await _tableSectionService.DeleteSection(id);
         var sectionList =_tableSectionService.GetAllSections();
+        bool checkcIfAnyTableOccupied = _tableSectionService.ckeckOccupiedTable(id);
+        if(checkcIfAnyTableOccupied){
+            return Json(new {sectionID= sectionList[0].SectionId, success = false, text = "Section Can not be deleted because of Occupied Table" });
+        }
+        bool deleteSectionStatus = await _tableSectionService.DeleteSection(id);
         if(deleteSectionStatus){
             return Json(new {sectionID= sectionList[0].SectionId,success = true, text = "Section Deleted successfully" });
         }else{          

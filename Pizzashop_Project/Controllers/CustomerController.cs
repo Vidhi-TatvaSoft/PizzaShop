@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using BLL.Interfaces;
+using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Pizzashop_Project.Controllers;
@@ -25,7 +27,6 @@ public class CustomerController :Controller
         return PartialView("_CustomerListPartial", customers);
     }
 
-
     public async Task<IActionResult> ExportCustomerDataToExcel(string search = "", string timePeriod = "", string startDate="", string endDate="")
     {
         var FileData = await _customerService.ExportCustomerData(search, timePeriod,startDate,endDate);
@@ -35,4 +36,11 @@ public class CustomerController :Controller
         };
         return result;
     }
+
+    #region shoe customer history modal
+    public async Task<IActionResult> ShowCustomerHistoryModal(long custid){
+        CustomerHistoryViewModel customerHistoryvm =await _customerService.GetCustomerHistoryById(custid);
+        return PartialView("_CustomerHistoryPartial" , customerHistoryvm);
+    }
+    #endregion
 }

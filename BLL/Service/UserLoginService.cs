@@ -37,13 +37,13 @@ namespace BLL.Services
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
             return System.Convert.ToBase64String(plainTextBytes);
         }
- 
+
         public string Base64Decode(string base64EncodedData)
         {
             var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
- 
+
 
         public async Task<List<Userlogin>> getusers()
         {
@@ -70,11 +70,12 @@ namespace BLL.Services
 
         public bool CheckEmailExist(string email)
         {
-            if (_context.Userlogins.FirstOrDefault(e => e.Email == email && e.IsDelete==false) != null)
-            {
-                return true;
-            }
-            return false;
+            // if (_context.Userlogins.FirstOrDefault(e => e.Email == email && e.IsDelete==false) != null)
+            // {
+            //     return true;
+            // }
+            // return false;
+            return _context.Userlogins.Any(e => e.Email == email && !e.IsDelete);
         }
 
 
@@ -93,15 +94,16 @@ namespace BLL.Services
             return _context.Users.FirstOrDefault(x => x.Userlogin.Email == Email).UserId;
         }
 
-        public string GetPassword(string Email){
-            return _context.Userlogins.FirstOrDefault(x=>x.Email==Email).Password;
+        public string GetPassword(string Email)
+        {
+            return _context.Userlogins.FirstOrDefault(x => x.Email == Email).Password;
         }
 
         public bool ResetPassword(ResetPasswordViewModel resetpassdata)
         {
-            if (_context.Userlogins.FirstOrDefault(e => e.Email == resetpassdata.Email && e.IsDelete==false) != null)
+            if (_context.Userlogins.FirstOrDefault(e => e.Email == resetpassdata.Email && e.IsDelete == false) != null)
             {
-                Userlogin user = _context.Userlogins.FirstOrDefault(e => e.Email == resetpassdata.Email && e.IsDelete==false);
+                Userlogin user = _context.Userlogins.FirstOrDefault(e => e.Email == resetpassdata.Email && e.IsDelete == false);
                 user.Password = EncryptPassword(resetpassdata.Password);
                 _context.SaveChanges();
                 return true;
