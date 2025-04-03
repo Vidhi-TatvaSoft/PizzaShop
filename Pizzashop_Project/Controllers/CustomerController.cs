@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
 
@@ -13,6 +14,7 @@ public class CustomerController :Controller
         _customerService = customerService;
     }
 
+    [PermissionAuthorize("Customers.View")]
     public IActionResult Customers()
     {
         var customers = _customerService.GetAllCustomers();
@@ -20,6 +22,7 @@ public class CustomerController :Controller
         return View(customers);
     }
 
+    [PermissionAuthorize("Customers.View")]
         public IActionResult PaginatedCustomersData(string search, string sortColumn, string sortDirection, string timePeriod, string startDate, string endDate, int pageNumber = 1, int pageSize = 5)
     {
 
@@ -27,6 +30,7 @@ public class CustomerController :Controller
         return PartialView("_CustomerListPartial", customers);
     }
 
+    [PermissionAuthorize("Customers.View")]
     public async Task<IActionResult> ExportCustomerDataToExcel(string search = "", string timePeriod = "", string startDate="", string endDate="")
     {
         var FileData = await _customerService.ExportCustomerData(search, timePeriod,startDate,endDate);
@@ -37,6 +41,7 @@ public class CustomerController :Controller
         return result;
     }
 
+    [PermissionAuthorize("Customers.View")]
     #region shoe customer history modal
     public async Task<IActionResult> ShowCustomerHistoryModal(long custid){
         CustomerHistoryViewModel customerHistoryvm =await _customerService.GetCustomerHistoryById(custid);

@@ -99,7 +99,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add New Menu Item</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="removeValidationOnCancel()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="removeValidationOnCancel();EmptyPartialViewOfModGrp()"></button>
             </div>
             <form method="post" id="itemAddForms"  enctype="multipart/form-data">
             <div class="modal-body">
@@ -108,7 +108,7 @@
                         <!-- Left Section (Form) -->
                         <div class="col-lg-7 col-md-12">
                             <div class="row mt-2">
-                                <div class="col-md-6">
+                                <div class="col-lg-6 ">
                                     <div class="form-floating">
                                         <select class="form-select" id="floatingSelect" asp-for="@Model.additem.CategoryId" >
                                             @foreach(var cat in Model.categories){
@@ -119,7 +119,7 @@
                                         <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.CategoryId"></span>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-lg-6 mt-3 mt-lg-0">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="floatingInput" asp-for="@Model.additem.ItemName" placeholder="Name*">
                                         <label for="floatingInput">Name*</label>
@@ -130,7 +130,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-floating">
                                         <select class="form-select" id="floatingSelect" asp-for="@Model.additem.ItemTypeId">
                                             <option value="1" selected>veg</option>
@@ -140,7 +140,7 @@
                                         <label for="floatingSelect">Item Type*</label>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3 mt-3 mt-lg-0">
                                     <div class="form-floating mb-3">
                                         <input type="number" class="form-control" id="floatingInput" placeholder="Rate*" asp-for="@Model.additem.Rate"
                                            >
@@ -149,7 +149,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-floating mb-3">
                                         <input type="number" class="form-control" id="floatingInput" asp-for="@Model.additem.Quantity"
                                             placeholder="Quantity*" >
@@ -157,7 +157,7 @@
                                         <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.Quantity"></span>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-floating">
                                         <select class="form-select" id="floatingSelect" asp-for="@Model.additem.Unit">
                                             <option value="pcs">Pieces</option>
@@ -169,21 +169,21 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="available" asp-for="@Model.additem.Isavailable">
                                         <label class="form-check-label" for="available">Available</label>
                                         
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="defaultTax" asp-for="@Model.additem.Isdefaulttax" >
                                         <label class="form-check-label" for="defaultTax">Default Tax</label>
                                         
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="taxPercentage" asp-for="@Model.additem.TaxValue"
                                             placeholder="Tax-Percentage*">
@@ -193,7 +193,7 @@
 
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="shortCode" asp-for="@Model.additem.ShortCode"
                                             placeholder="Short Code*">
@@ -230,6 +230,7 @@
                         <!-- Right Section (Modifiers) -->
                         <div class="col-lg-5 col-md-12 bg-light p-3 rounded">
                             <select class="w-100 p-1" id="Modifier" onchange="GetModifierByGroup()">
+                                <option value="default" selected>Select Modifier Group</option>
                                 @foreach(var modgrp in Model.modifiergroupList){
                                     <option value="@modgrp.ModifierGrpId">@modgrp.ModifierGrpName</option>
                                 }
@@ -244,7 +245,7 @@
             <!-- Footer Buttons -->
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="removeValidationOnCancel()">Cancel</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="removeValidationOnCancel();EmptyPartialViewOfModGrp()">Cancel</button>
             </div>
             </form>
         </div>
@@ -258,7 +259,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Edit Menu Item</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="removeValidationOnCancel()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="removeValidationOnCancel();EditEmptyPartialViewOfModGrp()"></button>
             </div>
             <form enctype="multipart/form-data" id="itemEditForm">
             <div class="modal-body">
@@ -267,7 +268,7 @@
                         <!-- Left Section (Form) -->
                         <div class="col-lg-7 col-md-12">
                             <div class="row mt-2">
-                                <div class="col-md-6">
+                                <div class="col-lg-6">
                                     <div class="form-floating">
                                         <select class="form-select" id="floatingSelect" asp-for="@Model.additem.CategoryId" >
                                             @foreach(var cat in Model.categories){
@@ -278,7 +279,7 @@
                                         <span class="text-danger" asp-validation-for="@Model.additem.CategoryId"></span>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-lg-6  mt-3 mt-lg-0">
                                     <div class="form-floating mb-3">
                                         <input type="hidden" id="itemIdForDeleteItem" asp-for="@Model.additem.ItemId">
                                         <input type="text" class="form-control" id="itemName" asp-for="@Model.additem.ItemName" placeholder="Name*">
@@ -290,7 +291,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-floating">
                                         <select class="form-select" id="itemType" asp-for="@Model.additem.ItemTypeId">
                                             <option value="1" id="veg" class="itemtypeclass">veg</option>
@@ -302,7 +303,7 @@
 
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3  mt-3 mt-lg-0">
                                     <div class="form-floating mb-3">
                                         <input type="number" class="form-control" id="itemrate" placeholder="Rate*" asp-for="@Model.additem.Rate"
                                            >
@@ -311,7 +312,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-floating mb-3">
                                         <input type="number" class="form-control" id="itemQuantity" asp-for="@Model.additem.Quantity"
                                             placeholder="Quantity*" >
@@ -319,7 +320,7 @@
                                         <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.Quantity"></span>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-floating">
                                         <select class="form-select" id="floatingSelect" asp-for="@Model.additem.Unit">
                                             <option value="pcs" id="pcs" class="itemUnitClass">Pieces</option>
@@ -331,21 +332,21 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="isAvailable1" asp-for="@Model.additem.Isavailable">
                                         <label class="form-check-label" for="isAvailable1">Available</label>
                                         
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="isDefaultTax1" asp-for="@Model.additem.Isdefaulttax" >
                                         <label class="form-check-label" for="isDefaultTax1">Default Tax</label>
                                         
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="taxPercentage1" asp-for="@Model.additem.TaxValue"
                                             placeholder="Tax-Percentage*">
@@ -353,7 +354,7 @@
 
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-3">
+                                <div class="col-lg-6 col-xl-3">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="shortCode1" asp-for="@Model.additem.ShortCode"
                                             placeholder="Short Code*">
@@ -372,7 +373,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mt-2">
+                            <div class="row mt-3">
                                 <div class="col-12">
                                     <input type="file" class="d-none" id="choose-file-editItem" asp-for="@Model.additem.ItemFormImage">
                                     <label for="choose-file-editItem" class="border border-dashed rounded p-3 text-center w-100">
@@ -388,6 +389,7 @@
                         <!-- Right Section (Modifiers) -->
                         <div class="col-lg-5 col-md-12 bg-light p-3 rounded">
                             <select class="w-100 p-1" id="EditModifier" onchange="EditModifierByGroup()">
+                                <option value="default" selected>Select Modifier Group</option>
                                 @foreach(var modgrp in Model.modifiergroupList){
                                     <option value="@modgrp.ModifierGrpId">@modgrp.ModifierGrpName</option>
                                 }
@@ -403,7 +405,7 @@
             <!-- Footer Buttons -->
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="removeValidationOnCancel()">Cancel</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="removeValidationOnCancel();EditEmptyPartialViewOfModGrp()">Cancel</button>
             </div>
             </form>
         </div>
@@ -772,7 +774,7 @@
                     type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">
                     <div class="item-div d-flex align-items-center justify-content-start ms-3">
                         <i class="fa-solid fa-list-ul  fs-5"></i>
-                        <p class="  fs-5 ms-2 mt-2 fw-semibold">Items</p>
+                        <p class="  fs-5 ms-2 mt-2 fw-semibold ">Items</p>
                     </div>
                 </button>
             </li>
@@ -781,7 +783,7 @@
                     type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">
                     <div class="modifiers-div d-flex fs-5 ms-4 align-items-center ">
                         <i class="fa-solid fa-table"></i>
-                        <p class="fs-5 ms-2 mt-2 fw-semibold">Modofiers</p>
+                        <p class="fs-5 ms-2 mt-2 fw-semibold">Modifiers</p>
                     </div>
                 </button>
             </li>
@@ -1992,7 +1994,7 @@
             })  
 
 
-            //Eidt modifier group post method
+            //Edit modifier group post method
             $(document).on("submit","#EditModifierGroupModalFormId",function(e){
                 e.preventDefault();
                 console.log(document.getElementById("EditModifierGrpIdForEdit").value);
@@ -2200,6 +2202,13 @@
             AddItemData(formData);
         });
 
+        function EmptyPartialViewOfModGrp(){
+            itemData=[];
+            $('#ItemByModifiers').html("");
+             $("#Modifier option[value='default']").prop("selected",true);
+
+        }
+
     </script>
 
     <!----edit item ---->
@@ -2272,13 +2281,11 @@
     }
 
     function EditRemoveFromList(element) {
-        console.log(element,'element');
         var selectedValue = $(element).data('id');
 
         var index = editItemData.findIndex(item => item.ModifierGrpId == selectedValue);
 
         if (index != -1) {
-            console.log("if");
             editItemData.splice(index, 1);
             $.ajax({
                 url: '/Menu/EditModifiersByGroup/',
@@ -2297,7 +2304,6 @@
         console.log("3",formData);
 
         formData.append('itemData', JSON.stringify(editItemData));
-        console.log("4",formData);
         $.ajax({
             url: "/Menu/EditItem",
             type: "POST",
@@ -2314,16 +2320,15 @@
     $('#itemEditForm').on('submit', function (event) {
         event.preventDefault();
         let formData = new FormData(this);
-        console.log("hereeeeeeee");
         EditItemData(formData);
     });
 
+    function EditEmptyPartialViewOfModGrp(){
+        editItemData=editItemDatastatic;
+        $('#EditItemByModifiers').html("");
+        $("#EditModifier option[value='default']").prop("selected",true);
+    }
    
-
-
-
-
-
 
 </script>
 

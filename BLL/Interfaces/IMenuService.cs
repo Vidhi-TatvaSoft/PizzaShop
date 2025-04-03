@@ -7,6 +7,7 @@ public interface IMenuService
 {
     List<Category> GetAllCategories();
     List<Modifiergroup> GetAllModifierGroups();
+    Task<bool> IsCategoryNameExist(MenuViewModel menuvm);
     Task<bool> AddCategory(Category category, long userId);
     Task<bool> EditCategory(Category category, long catID, long userId);
     Task<bool> DeleteCategory(long catID);

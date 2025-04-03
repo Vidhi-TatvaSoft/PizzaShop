@@ -17,6 +17,8 @@ public class RolesPermissionController : Controller
         _rolesPermission = rolesPermission;
     }
 
+
+    #region get all  roles
     [PermissionAuthorize("Role.View")]
     public IActionResult Roles()
     {
@@ -24,14 +26,18 @@ public class RolesPermissionController : Controller
         ViewData["sidebar-active"] = "Roles";
         return View(roles);
     }
+    #endregion
 
+    #region  get all permissions
     [PermissionAuthorize("Role.View")]
     public IActionResult Permissions(string name)
     {
         List<RolesPermissionViewModel> permissions = _rolesPermission.permissionByRole(name);
         return View(permissions);
     }
+    #endregion
 
+    #region permissions post to edit
     [PermissionAuthorize("Role.EditAdd")]
     [HttpPost]
     public IActionResult Permissions(List<RolesPermissionViewModel> rolesPermissionViewModel)
@@ -50,6 +56,7 @@ public class RolesPermissionController : Controller
         return RedirectToAction("Permissions", "RolesPermission", new { name = rolesPermissionViewModel[0].rolename });// 3rdpara ma obj create krvopade bcoz
         //  redirectToAction ma 3rd para obj accept kre string nai..nd get method ma name pass krva mate ahiyathi name no ob banavvi moklvu
     }
+    #endregion
 
 
 }

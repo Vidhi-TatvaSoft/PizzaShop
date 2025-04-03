@@ -103,7 +103,7 @@ public class MenuController : Controller
     }
     #endregion
 
-        #region menu modifiers Pagination
+    #region menu modifiers Pagination
     [PermissionAuthorize("Menu.View")]
     public IActionResult MenuModifierAllPaginationForEdit(string search = "", int pageNumber = 1, int pageSize = 5)
     {
@@ -116,9 +116,6 @@ public class MenuController : Controller
     }
     #endregion
 
-
-
-
     #region menu list of modifier group get
     [PermissionAuthorize("Menu.View")]
     public IActionResult GetAllModifierGroups()
@@ -129,11 +126,15 @@ public class MenuController : Controller
     }
     #endregion
 
-
     #region Add Category 
     [PermissionAuthorize("Menu.EditAdd")]
     public async Task<IActionResult> AddCategory(MenuViewModel menuvm)
     {
+        bool CatNamePresent =await _menuService.IsCategoryNameExist(menuvm);
+        if(CatNamePresent){
+            TempData["ErrorMessage"] = "CategoryName Already Present. Try Another Name";
+            return RedirectToAction("Menu");
+        }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
@@ -167,7 +168,6 @@ public class MenuController : Controller
 
     }
     #endregion
-
 
     #region delete category
     [PermissionAuthorize("Menu.Delete")]
@@ -221,7 +221,6 @@ public class MenuController : Controller
     }
 
     #endregion
-
 
     #region AddItems
     [PermissionAuthorize("Menu.EditAdd")]
@@ -294,6 +293,7 @@ public class MenuController : Controller
 
     #region EditModifiersByGroup for item
     [HttpPost]
+    [PermissionAuthorize("Menu.EditAdd")]
     public IActionResult EditModifiersByGroup(string data)
     {
         MenuViewModel mVM = new MenuViewModel();
@@ -318,8 +318,6 @@ public class MenuController : Controller
         return PartialView("_EditModifierGroupInItemPartial", mVM);
     }
     #endregion
-
-
 
     #region  edititem post
     [PermissionAuthorize("Menu.EditAdd")]
@@ -457,7 +455,6 @@ public class MenuController : Controller
 
     #endregion
 
-
     #region Delete Modifier post
     [Authorize(Roles = "Admin")]
     [PermissionAuthorize("Menu.Delete")]
@@ -506,7 +503,7 @@ public class MenuController : Controller
     #endregion
 
     #region editmod grp post
-    // [PermissionAuthorize("Menu.EditAdd")]
+    [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
     public async Task<IActionResult> EditModifierGroup(MenuViewModel menuvm)
     {
@@ -527,7 +524,7 @@ public class MenuController : Controller
 
     //deleteModifierFromModGrpAfterEdit?modGrpID=${modGrpID}&modifierID=${editModTempId[i]}
     #region deleteModifierFromModGrpAfterEdit post
-    // [PermissionAuthorize("Menu.EditAdd")]
+    [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
     public async Task<IActionResult> DeleteModifierFromModGrpAfterEdit(long modGrpID, long modifierID)
     {
@@ -542,7 +539,7 @@ public class MenuController : Controller
 
     //addModifierToModGrpAfterEdit?modGrpID=${modGrpID}&modifierID=${modTempID[i]}
     #region addModifierToModGrpAfterEdit post
-    // [PermissionAuthorize("Menu.EditAdd")]
+    [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
     public async Task<IActionResult> addModifierToModGrpAfterEdit(long modGrpID, long modifierID)
     {

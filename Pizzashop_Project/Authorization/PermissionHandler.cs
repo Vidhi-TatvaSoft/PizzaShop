@@ -116,6 +116,18 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                     if (permissionsData[6].Candelete == true)
                         context.Succeed(requirement);
                     break;
+                case "AdminRole":
+                    if(roleName == "Admin")
+                        context.Succeed(requirement);
+                    break;
+                case "AccountManagerRole":
+                    if(roleName == "Account Manager")
+                        context.Succeed(requirement);
+                    break;
+                case "ChefRole":
+                    if(roleName == "Chef")
+                        context.Succeed(requirement);
+                    break;
                 default:
                     break; 
             }

@@ -65,8 +65,8 @@
         <a class="btn btn-outline-primary m-2 p-3 pb-2 pt-3" style="max-width: fit-content;"
             id="clearBtnForDate">Clear</a> *@
 
-            <div class="form-floating col-lg-3 col-6 ">
-            <input type="text" id="startDate"  placeholder="Start date" onfocus="(this.type='date')"
+        <div class="form-floating col-lg-3 col-6 ">
+            <input type="text" id="startDate" placeholder="Start date" onfocus="(this.type='date')"
                 onblur="(this.type='text')" class="m-2 me-3 p-2 w-100 pe-0">
 
         </div>
@@ -75,10 +75,9 @@
                 onfocus="(this.type='date')" onblur="(this.type='text')">
 
         </div>
-        <a id="searchfordate" class="btn btn-primary m-2 p-3 pt-2 pb-2" style="max-width: fit-content;"
-            >Search</a>
-        <a id="clearBtnForDate" class="btn btn-outline-primary m-2 p-3 pb-2 pt-2" style="max-width: fit-content;"
-            >Clear</a>
+        <a id="searchfordate" class="btn btn-primary m-2 p-3 pt-2 pb-2" style="max-width: fit-content;">Search</a>
+        <a id="clearBtnForDate" class="btn btn-outline-primary m-2 p-3 pb-2 pt-2"
+            style="max-width: fit-content;">Clear</a>
 
 
     </div>
@@ -94,14 +93,14 @@
                 <tr>
                     <th scope="col" class="text-nowrap">#Order <i class="bi bi-arrow-down-up" id="sort-orderId"
                             data-column="OrderId" data-direction="asc"></i></th>
-                    <th scope="col" class="text-nowrap text-center">Date  <i class="bi bi-arrow-down-up" id="sort-date"
+                    <th scope="col" class="text-nowrap text-center">Date <i class="bi bi-arrow-down-up" id="sort-date"
                             data-column="Date" data-direction="asc"></i></th>
-                    <th scope="col" class="text-nowrap text-center">Customer  <i class="bi bi-arrow-down-up"
+                    <th scope="col" class="text-nowrap text-center">Customer <i class="bi bi-arrow-down-up"
                             id="sort-customer" data-column="Customer" data-direction="asc"></i></th>
                     <th scope="col" class="text-nowrap text-center">Status</th>
                     <th scope="col" class="text-nowrap text-center">Payment Mode</th>
                     <th scope="col" class="text-nowrap text-center">Rating</th>
-                    <th scope="col" class="text-nowrap text-center">Total Amount  <i class="bi bi-arrow-down-up"
+                    <th scope="col" class="text-nowrap text-center">Total Amount <i class="bi bi-arrow-down-up"
                             id="sort-amount" data-column="Amount" data-direction="asc"></i></th>
                     <th scope="col" class="text-nowrap text-center">Action </th>
                 </tr>
@@ -149,7 +148,7 @@
 
                     let disposition = xhr.getResponseHeader('Content-Disposition');
                     @* console.log("disp", disposition); *@
-                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                            if (disposition && disposition.indexOf('attachment') !== -1) {
                         let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
                         if (matches && matches[1]) {
                             filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
@@ -184,7 +183,7 @@
 
                     let disposition = xhr.getResponseHeader('Content-Disposition');
                     @* console.log("disp", disposition); *@
-                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                            if (disposition && disposition.indexOf('attachment') !== -1) {
                         let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
                         if (matches && matches[1]) {
                             filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
@@ -218,27 +217,27 @@
             });
         } *@
 
-        //pagination load partial view
-        function loadTableForOrders(page = 1, search = "", sortColumn = "", sortDirection = "asc", pageSize = 5, status = "", timePeriod = "", startDate = "", endDate = "") {
-            $.ajax({
-                url: "/Order/PaginatedOrdersData",
-                type: "GET",
-                data: { search, sortColumn, sortDirection, pageNumber: page, pageSize, status, timePeriod, startDate, endDate },
-                success: function (data) {
-                    $("#TableBody").html(data);
-                    currentPage = page;
+            //pagination load partial view
+            function loadTableForOrders(page = 1, search = "", sortColumn = "", sortDirection = "asc", pageSize = 5, status = "", timePeriod = "", startDate = "", endDate = "") {
+                $.ajax({
+                    url: "/Order/PaginatedOrdersData",
+                    type: "GET",
+                    data: { search, sortColumn, sortDirection, pageNumber: page, pageSize, status, timePeriod, startDate, endDate },
+                    success: function (data) {
+                        $("#TableBody").html(data);
+                        currentPage = page;
 
-                    pageSize = parseInt(pageSize);
-                    var totalRecords = parseInt($("#totalCount").val()) || 0;
-                    var startItem = totalRecords === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-                    var endItem = Math.min(currentPage * pageSize, totalRecords);
+                        pageSize = parseInt(pageSize);
+                        var totalRecords = parseInt($("#totalCount").val()) || 0;
+                        var startItem = totalRecords === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+                        var endItem = Math.min(currentPage * pageSize, totalRecords);
 
-                    $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
-                    $("#left-arrow").prop("disabled", page === 1);
-                    $("#right-arrow").prop("disabled", page * pageSize >= totalRecords);
-                }
-            });
-        }
+                        $("#pagination-text").text("Showing " + startItem + " - " + endItem + " of " + totalRecords);
+                        $("#left-arrow").prop("disabled", page === 1);
+                        $("#right-arrow").prop("disabled", page * pageSize >= totalRecords);
+                    }
+                });
+            }
 
 
         $(document).ready(function () {
@@ -362,6 +361,39 @@
                 loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize, status, timePeriod, startDate, endDate);
             });
 
+            @* $("#startDate").on("change",function(){
+                startDate = document.getElementById("startDate").value;
+                endDateInput= document.getElementById("endDate");
+
+                endDateInput.min = startDate;
+                if(endDateInput.value < startDate){
+                  errorToaster("To date should be greater than from date.Reset to date");  
+                  endDateInput.value ="";
+                }
+            }) *@
+
+            $("#startDate").on("change",function(){
+                startDate = document.getElementById("startDate").value;
+                endDateInput= document.getElementById("endDate").value;
+                @* startDate.min = new Date();
+
+                endDateInput.min = startDate; *@
+                if(endDateInput=="")return
+                if(endDateInput.value < startDate){
+                  errorToaster("To date should be greater than from date.Reset to date");  
+                     document.getElementById("endDate").value ="";
+                }
+            })
+
+            $("#endDate").on("change",function(){
+                startDate = document.getElementById("startDate").value;
+                endDate= document.getElementById("endDate").value;
+
+                if(endDate<startDate){
+                    errorToaster("To date should be greater than from date.Reset to date");  
+                     document.getElementById("endDate").value ="";
+                }
+            })
 
 
 
@@ -370,5 +402,32 @@
             loadTableForOrders();
         });
     </script>
-   
+
+
+@* <script>
+    document.getElementById("startDate").addEventListener("change", function() {
+        let startDate = this.value;
+        let endDateInput = document.getElementById("endDate");
+        
+        endDateInput.min = startDate; // Set min date for endDate
+        if (endDateInput.value < startDate) {
+            endDateInput.value = ""; // Reset endDate if it's invalid
+        }
+    });
+
+    document.getElementById("endDate").addEventListener("change", function() {
+        let startDate = document.getElementById("startDate").value;
+        let endDate = this.value;
+
+        if (endDate < startDate) {
+            alert("End date must be greater than or equal to the start date.");
+            this.value = "";
+        }
+    });
+</script> *@
+
+
+    <partial name="_Toaster"/>
+
+
 }

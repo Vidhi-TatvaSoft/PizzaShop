@@ -21,23 +21,23 @@ namespace Pizzashop_Project.Controllers
         private readonly IUserLoginService _userLoginService;
         private readonly IJWTTokenService _jwtTokenService;
 
-        public UserLoginController(IUserLoginService userLoginService,IJWTTokenService jwtTokenService)
+        public UserLoginController(IUserLoginService userLoginService, IJWTTokenService jwtTokenService)
         {
             _userLoginService = userLoginService;
             _jwtTokenService = jwtTokenService;
         }
 
-        
 
+        #region Index
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var userData = await _userLoginService.getusers();
             return View(userData);
         }
+        #endregion
 
-
-
+        #region  verify user
         // GET: UserLogin/Create
         public IActionResult VerifyPassword()
         {
@@ -50,14 +50,15 @@ namespace Pizzashop_Project.Controllers
                 // Response.Cookies.Append("profileImage", _userLoginService.GetProfileImage(email), options);
                 // Response.Cookies.Append("username", _userLoginService.GetUsername(email), options);
 
-               
-                ViewData["sidebar-active"] ="Dashboard";
+
+                ViewData["sidebar-active"] = "Dashboard";
                 return RedirectToAction("Dashboard", "User");
             }
             return View();
         }
+        #endregion
 
-
+        #region  verify user post
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VerifyPassword(UserLoginViewModel userlogin)
@@ -77,21 +78,22 @@ namespace Pizzashop_Project.Controllers
                     Response.Cookies.Append("email", userlogin.Email, options);
                     ViewBag.ProfileImage = _userLoginService.GetProfileImage(userlogin.Email);
                     TempData["SuccessMessage"] = "Login Successfully";
-                    ViewData["sidebar-active"] ="Dashboard";
+                    ViewData["sidebar-active"] = "Dashboard";
                     return RedirectToAction("Dashboard", "User");
                 }
                 else
                 {
                     TempData["SuccessMessage"] = "Login Successfully";
-                    ViewData["sidebar-active"] ="Dashboard";
+                    ViewData["sidebar-active"] = "Dashboard";
                     return RedirectToAction("Dashboard", "User");
                 }
             }
             ViewBag.message = "Enter valid Credentials";
             return View();
         }
+        #endregion
 
-
+        #region  get email
         public string GetEmail(string Email)
         {
             ForgotPasswordViewModel forgotPasswordViewModel = new ForgotPasswordViewModel();
@@ -99,14 +101,16 @@ namespace Pizzashop_Project.Controllers
             TempData["Email"] = Email;
             return Email;
         }
+        #endregion
 
-
+        #region forgot password get
         public IActionResult ForgotPassword()
         {
             return View();
         }
+        #endregion
 
-
+        #region forgot password post
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel forgorpassword)
         {
@@ -127,7 +131,7 @@ namespace Pizzashop_Project.Controllers
                     var receiverEmail = new MailAddress(forgorpassword.Email, forgorpassword.Email);
                     var password = "P}N^{z-]7Ilp";
                     var sub = "reset Password sub";
-                    var resetLink = Url.Action("ResetPassword", "UserLogin", new {resetPassToken=_jwtTokenService.GenerateTokenEmailPassword(email,savedPassword)}, Request.Scheme);
+                    var resetLink = Url.Action("ResetPassword", "UserLogin", new { resetPassToken = _jwtTokenService.GenerateTokenEmailPassword(email, savedPassword) }, Request.Scheme);
                     var body = $@"     <div style='max-width: 500px; font-family: Arial, sans-serif; border: 1px solid #ddd;'>
                 <div style='background: #006CAC; padding: 10px; text-align: center; height:90px; max-width:100%; display: flex; justify-content: center; align-items: center;'>
                     <img src='https://images.vexels.com/media/users/3/128437/isolated/preview/2dd809b7c15968cb7cc577b2cb49c84f-pizza-food-restaurant-logo.png' style='max-width: 50px;' />
@@ -174,53 +178,58 @@ namespace Pizzashop_Project.Controllers
             }
             return View();
         }
+        #endregion
 
+        #region Reset password get
         // GET 
         public IActionResult ResetPassword(string resetPassToken)
         {
 
-             var email = _jwtTokenService.GetClaimValue(resetPassToken, "email");
+            var email = _jwtTokenService.GetClaimValue(resetPassToken, "email");
             var newpassword = _jwtTokenService.GetClaimValue(resetPassToken, "password");
             var savedPassword = _userLoginService.GetPassword(email);
 
-            if (savedPassword==newpassword)
+            if (savedPassword == newpassword)
             {
                 ResetPasswordViewModel reserpassdata = new();
-                reserpassdata.Email=_jwtTokenService.GetClaimValue(resetPassToken, "email");
+                reserpassdata.Email = _jwtTokenService.GetClaimValue(resetPassToken, "email");
                 return View(reserpassdata);
             }
             TempData["ErrorMessage"] = "You have already changed the Password once";
-            return RedirectToAction("VerifyPassword","UserLogin");
+            return RedirectToAction("VerifyPassword", "UserLogin");
             // resetpassdata.Email =_userLoginService.Base64Decode(Email) ;
             // return View(resetpassdata);
         }
+        #endregion
 
+        #region reset password post
         // POST
         [HttpPost]
         public IActionResult ResetPassword(ResetPasswordViewModel resetpassdata)
         {
-                var emailExistStatus = _userLoginService.CheckEmailExist(resetpassdata.Email);
-                if (!emailExistStatus)
-                {
-                    ViewBag.message = "Email does not exist Enter Existing email to set password";
-                    return View("ResetPassword");
-                }
+            var emailExistStatus = _userLoginService.CheckEmailExist(resetpassdata.Email);
+            if (!emailExistStatus)
+            {
+                ViewBag.message = "Email does not exist Enter Existing email to set password";
+                return View("ResetPassword");
+            }
 
-                if (resetpassdata.Password != resetpassdata.ConfirmPassword)
-                {
-                    ViewBag.message = "Password and Confirm Password should be same";
-                    return View("ResetPassword");
-                }
-                var resetStatus = _userLoginService.ResetPassword(resetpassdata);
-                if (resetStatus)
-                {
-                    TempData["SuccessMessage"] = "Password Reseted successfully";
-                    return RedirectToAction("VerifyPassword");
-                }
+            if (resetpassdata.Password != resetpassdata.ConfirmPassword)
+            {
+                ViewBag.message = "Password and Confirm Password should be same";
+                return View("ResetPassword");
+            }
+            var resetStatus = _userLoginService.ResetPassword(resetpassdata);
+            if (resetStatus)
+            {
+                TempData["SuccessMessage"] = "Password Reseted successfully";
+                return RedirectToAction("VerifyPassword");
+            }
             // }
             TempData["ErrorMessage"] = "Password not updated. Try again";
             return View("ResetPassword");
         }
+        #endregion
 
 
     }

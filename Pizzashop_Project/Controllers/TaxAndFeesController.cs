@@ -19,6 +19,8 @@ public class TaxAndFeesController: Controller
         _userService=userService;
     }
 
+    #region Tax And fee index
+    [PermissionAuthorize("TaxFees.View")]
     public async Task<IActionResult> TaxAndFees(){
         TaxANdFeesViewModel taxFeesvm= new();
         taxFeesvm.TaxList = _taxAndFeeService.GetTaxes();
@@ -26,10 +28,11 @@ public class TaxAndFeesController: Controller
         return View(taxFeesvm);
 
     }
+    #endregion
 
 
     #region PaginatedData
-    [PermissionAuthorize("User.View")]
+    [PermissionAuthorize("TaxFees.View")]
     //    [Authorize(Roles = "Admin")]
     public IActionResult PaginatedTax(string search = "",  int pageNumber = 1, int pageSize = 5)
     {
@@ -40,6 +43,8 @@ public class TaxAndFeesController: Controller
     #endregion
 
     #region AddTax
+    [PermissionAuthorize("TaxFees.EditAdd")]
+    [HttpPost]
     public async Task<IActionResult> AddTax(TaxANdFeesViewModel taxFeesvm){
 
         var taxNamePresent =await _taxAndFeeService.GetTaxByName(taxFeesvm.taxViewModel);
@@ -59,6 +64,7 @@ public class TaxAndFeesController: Controller
     #endregion
 
     #region GetTaxDetailsById
+    [PermissionAuthorize("TaxFees.View")]
     public async Task<IActionResult> GetTaxDetailsById(long taxID){
         TaxViewModel taxvm =await _taxAndFeeService.GetTaxDetailsById(taxID);
         return Json(taxvm);
@@ -66,6 +72,8 @@ public class TaxAndFeesController: Controller
     #endregion
     
     #region EditTax
+    [PermissionAuthorize("TaxFees.EditAdd")]
+    [HttpPost]
     public async Task<IActionResult> EditTax(TaxANdFeesViewModel taxfeesvm){
         var taxNamePresent =await _taxAndFeeService.GetTaxByNameForEdit(taxfeesvm.taxViewModel);
         if(taxNamePresent!=null){
@@ -84,6 +92,7 @@ public class TaxAndFeesController: Controller
     #endregion
 
     #region deleteTax
+    [PermissionAuthorize("TaxFees.Delete")]
     public async Task<IActionResult> deleteTax(long id){
         bool deleteTaxStatus = await _taxAndFeeService.DeleteTax(id);
         if(deleteTaxStatus){

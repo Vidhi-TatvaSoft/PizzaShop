@@ -1,0 +1,80 @@
+@using DAL.ViewModels
+@using Microsoft.AspNetCore.Authorization
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PizzaSshop_Project</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PizzaSshop_Project.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    
+    <div class="container-fluid ">
+        <div  class="row">
+
+            <!-- rightside  -->
+            <div class="right-side-main-div col-sm-8 col-md-9 col-lg-9 col-xl-10 col-12 ">
+                <div class="row">
+                    <!-- navbar -->
+                    <div class="header-line bg-primary d-flex justify-content-between">
+
+                        <div class="d-sm-block d-none"></div>
+                        
+                        <!-- logo -->
+                        <div class="logo-main-div d-flex justify-content-start mb-3 d-sm-none mt-2">
+                            <div class="logo-image  me-2">
+                                <img src="images/logos/pizzashop_logo.png" width="50px" alt="">
+                            </div>
+                        </div>
+                        <!-- profile -->
+                        <div class="profilepic-div d-flex mt-2 mb-2">
+                            <a class="mobileicon mt-0 me-2 " asp-action="KOT" asp-controller="KOT"><i class="bi bi-tablet text-white fs-3"></i></a>      
+                            <div class="dropdown mt-1">
+                                <div class=" dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="@(HttpContextAccessor.HttpContext.Request.Cookies["ProfileImage"])"
+                                        style="border-radius: 50%;" width="40px" height="35px" alt="">
+                                </div>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li>
+                                        <div class="dropdown-item"><img
+                                                src="@(HttpContextAccessor.HttpContext.Request.Cookies["ProfileImage"])"
+                                                style="border-radius: 50%;" width="30px" height="25px" alt="">
+                                            @(HttpContextAccessor.HttpContext.Request.Cookies["username"])</div>
+                                    </li>
+                                    <li><a class="dropdown-item" asp-action="MyProfile" asp-controller="User">My
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" asp-action="ChangePassword"
+                                            asp-controller="User">Change Password</a></li>
+                                    <li><a class="dropdown-item" data-bs-toggle="modal"
+                                            data-bs-target="#logout">Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

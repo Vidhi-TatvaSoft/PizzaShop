@@ -24,6 +24,7 @@ public class TableAndSectionController : Controller
         _userLoginSerivce = userLoginService;
     }
 
+    #region table and section index 
     [PermissionAuthorize("TableSection.View")]
     public IActionResult TableAndSection(long? SectionID, string search = "", int pageNumber = 1, int pageSize = 5){
         TableSectionViewModel tablesectionvm = new();
@@ -44,16 +45,18 @@ public class TableAndSectionController : Controller
          ViewData["sidebar-active"] = "TableAndSection";
         return View(tablesectionvm);
     }
+    #endregion
 
-
+    #region section List to et all sectio
     [PermissionAuthorize("TableSection.View")]
     public IActionResult SectionList(){
         TableSectionViewModel tablesectionvm = new();
         tablesectionvm.sectionList = _tableSectionService.GetAllSections();
         return PartialView("_SectionListPartial",tablesectionvm);
     }
+    #endregion
 
-
+    #region table pagination
     [PermissionAuthorize("TableSection.View")]
      public IActionResult TablePagination(long? SectionID, string search = "", int pageNumber = 1, int pageSize = 5)
     {
@@ -68,8 +71,11 @@ public class TableAndSectionController : Controller
         }
         return PartialView("_TablesListPartial",  tablesectionvm.TableList);
     }
+    #endregion
 
+    #region Add section
     [PermissionAuthorize("TableSection.EditAdd")]
+    [HttpPost]
     public async Task<IActionResult> AddSection(TableSectionViewModel Tablesection){
         var sectionNamePresent =await _tableSectionService.GetSectionByName(Tablesection.Section);
         if(sectionNamePresent!=null){
@@ -86,8 +92,11 @@ public class TableAndSectionController : Controller
             return Json(new {sectionID= sectionList[0].SectionId, success = false, text = "Error While Adding Section. Try Again!" });
         }
     }
+    #endregion
 
+    #region Edit section
     [PermissionAuthorize("TableSection.EditAdd")]
+    [HttpPost]
     public async Task<IActionResult> EditSection(TableSectionViewModel Tablesection){
         var sectionNamePresent =await _tableSectionService.GetSectionByNameForEdit(Tablesection.Section);
         if(sectionNamePresent!=null){
@@ -106,7 +115,9 @@ public class TableAndSectionController : Controller
         // return RedirectToAction("TableAndSection",new{SectionID=Tablesection.Section.SectionId});
     
     }
+    #endregion
 
+    #region Delete setion
     [PermissionAuthorize("TableSection.Delete")]
     public async Task<IActionResult> DeleteSection(long id){
         var sectionList =_tableSectionService.GetAllSections();
@@ -122,13 +133,18 @@ public class TableAndSectionController : Controller
         }
         // return RedirectToAction("TableAndSection");
     }
+    #endregion
 
+    #region get all section in json
     public IActionResult GetSectionList(){
         List<Section> sectionList = _tableSectionService.GetAllSections();
         return Json(sectionList);
     }
+    #endregion
 
+    #region Addtable
     [PermissionAuthorize("TableSection.EditAdd")]
+    [HttpPost]
     public async Task<IActionResult> AddTable(TableSectionViewModel Tablesection){
         var TableNamePresentInSection =await _tableSectionService.GetTableByNameInSameSection(Tablesection.table);
         if(TableNamePresentInSection!=null){
@@ -144,9 +160,11 @@ public class TableAndSectionController : Controller
             return Json(new { success = false, text = "Error While Adding Table. Try Again!" });
         }
     }
+    #endregion
 
+    #region Edittable
     [PermissionAuthorize("TableSection.EditAdd")]
-
+    [HttpPost]
     public async Task<IActionResult> EditTable(TableSectionViewModel Tablesection){
         var TableNamePresentInSection =await _tableSectionService.GetTableByNameInSameSection(Tablesection.table);
         if(TableNamePresentInSection!=null){
@@ -162,7 +180,9 @@ public class TableAndSectionController : Controller
             return Json(new { success = false, text = "Error While Updating Table. Try Again!" });
         }
     }
+    #endregion
 
+    #region deleettable
     [PermissionAuthorize("TableSection.Delete")]
     [HttpPost]
     public async Task<IActionResult> DeleteTable(long id){
@@ -179,6 +199,7 @@ public class TableAndSectionController : Controller
         }
        
     }
+    #endregion
 
     
 }

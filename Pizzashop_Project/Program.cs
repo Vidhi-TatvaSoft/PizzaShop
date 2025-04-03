@@ -73,13 +73,13 @@ builder.Services.AddAuthentication(x=>{
             {
                 // Redirect to login page when unauthorized 
                 context.HandleResponse();
-                context.Response.Redirect("/ErrorPage/pageNotFoundError");
+                context.Response.Redirect("/ErrorPage/Unauthorize");
                 return Task.CompletedTask;
             },
             OnForbidden = context =>
             {
                 // Redirect to login when access is forbidden (403)
-                context.Response.Redirect("/ErrorPage/pageNotFoundError");
+                context.Response.Redirect("/ErrorPage/Forbidden");
                 return Task.CompletedTask;
             }
         };
@@ -96,7 +96,8 @@ builder.Services.AddAuthorization(options =>
         "TableSection.View", "TableSection.EditAdd", "TableSection.Delete",
         "TaxFees.View", "TaxFees.EditAdd", "TaxFees.Delete",
         "Orders.View", "Orders.EditAdd", "Orders.Delete",
-        "Customers.View", "Customers.EditAdd", "Customers.Delete"
+        "Customers.View", "Customers.EditAdd", "Customers.Delete",
+        "AdminRole","AccountManagerRole","ChefRole"
     };
 
     foreach (var permission in permissions)
@@ -130,12 +131,15 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Errorpage/InternalServerError");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+
+app.UseStatusCodePagesWithReExecute("/ErrorPage/{0}");
+
 app.UseStaticFiles();
 
 app.UseRotativa();

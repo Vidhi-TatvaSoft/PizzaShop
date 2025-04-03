@@ -38,7 +38,7 @@ public class UserController : Controller
         return View();
     }
 
-        #region Userlist
+    #region Userlist
      [PermissionAuthorize("User.View")]
     // [Authorize(Roles = "Admin")]
     public IActionResult UsersList()
@@ -50,7 +50,6 @@ public class UserController : Controller
 
     #endregion
 
-
     #region PaginatedData
      [PermissionAuthorize("User.View")]
     //    [Authorize(Roles = "Admin")]
@@ -61,9 +60,6 @@ public class UserController : Controller
         return PartialView("_UserListPartial", users);
     }
     #endregion
-
-
-
 
     #region MyProfile get
     // [Authorize(Roles = "Admin")]
@@ -168,7 +164,6 @@ public class UserController : Controller
     }
     #endregion
 
-
     #region Adduser get
     // [Authorize(Roles = "Admin")]
      [PermissionAuthorize("User.EditAdd")]
@@ -185,7 +180,6 @@ public class UserController : Controller
         return View();
     }
     #endregion
-
 
     #region  addUser post
      [PermissionAuthorize("User.EditAdd")]
@@ -307,7 +301,6 @@ public class UserController : Controller
     }
     #endregion
 
-
     #region  EditUser get
      [PermissionAuthorize("User.EditAdd")]
     public IActionResult EditUser(string Email)
@@ -344,7 +337,6 @@ public class UserController : Controller
         return View(userViewModel);
     }
     #endregion
-
 
     #region EditUser post
      [PermissionAuthorize("User.EditAdd")]
@@ -411,7 +403,6 @@ public class UserController : Controller
     }
     #endregion
 
-
     #region changepassword get
      [PermissionAuthorize("User.EditAdd")]
     public IActionResult ChangePassword()
@@ -450,7 +441,6 @@ public class UserController : Controller
     }
     #endregion
 
-
     #region deleteUser 
      [PermissionAuthorize("User.Delete")]
     public async Task<IActionResult> deleteUser(string Email)
@@ -479,8 +469,6 @@ public class UserController : Controller
     }
     #endregion
 
-
-
     #region Getstates
     [HttpGet]
     public IActionResult GetStates(long? countryId)
@@ -490,7 +478,6 @@ public class UserController : Controller
         return Json(new SelectList(states, "StateId", "StateName"));
     }
     #endregion
-
 
     #region Getcities
     [HttpGet]

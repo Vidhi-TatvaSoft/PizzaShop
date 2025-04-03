@@ -599,7 +599,7 @@
             $("#deleteAllTablesModalYesButton").on("click", function () {
                 var classess = document.getElementsByClassName("massDeleteClassforSection");
                 @* console.log("delete all") *@
-                    let toasterflag = true;
+                    @* let toasterflag = true; *@
                 for (i = 0; i < classess.length; i++) {
                     if (classess[i].checked) {
 
@@ -609,11 +609,11 @@
                             url: `/TableAndSection/DeleteTable?id=${tableID}`,
                             type: "GET",
                             success: function (data) {
-                                if (data.success && toasterflag) {
+                                if (data.success ) {
                                     successToaster(data.text);
                                     toasterflag = false;
                                 }
-                                if (data.success == false && toasterflag) {
+                                if (data.success == false) {
                                     errorToaster(data.text);
                                     toasterflag = false;
                                 }

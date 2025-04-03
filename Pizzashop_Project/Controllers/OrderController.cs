@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using iText.Html2pdf;
 using Rotativa.AspNetCore;
+using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
 
@@ -23,7 +24,7 @@ public class OrderController : Controller
 {
     public readonly IOrderService _orderService;
 
-    private readonly ICompositeViewEngine  _ViewEngine;
+    private readonly ICompositeViewEngine _ViewEngine;
 
 
 
@@ -32,6 +33,8 @@ public class OrderController : Controller
         _orderService = orderService;
         _ViewEngine = viewEngine;
     }
+
+    [PermissionAuthorize("Orders.View")]
     public IActionResult Orders()
     {
         var orders = _orderService.GetAllOrders();
@@ -39,6 +42,7 @@ public class OrderController : Controller
         return View(orders);
     }
 
+    [PermissionAuthorize("Orders.View")]
     public IActionResult PaginatedOrdersData(string search, string sortColumn, string sortDirection, string Status, string timePeriod, string startDate, string endDate, int pageNumber = 1, int pageSize = 5)
     {
 
@@ -46,6 +50,7 @@ public class OrderController : Controller
         return PartialView("_OrderListPartial", orders);
     }
 
+    [PermissionAuthorize("Orders.View")]
     public async Task<IActionResult> ExportOrderDataToExcel(string search = "", string status = "", string timePeriod = "")
     {
         var FileData = await _orderService.ExportData(search, status, timePeriod);
@@ -56,26 +61,33 @@ public class OrderController : Controller
         return result;
     }
 
+    [PermissionAuthorize("Orders.View")]
     public IActionResult ViewOrderDetails(long orderid)
     {
         OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid);
         return View(orderDetails);
     }
 
-    public IActionResult GeneratePdfInvoice(long orderid){
-          OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid); 
+    [PermissionAuthorize("Orders.View")]
+    public IActionResult GeneratePdfInvoice(long orderid)
+    {
+        OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid);
         //   return PartialView("DownloadInvoicePdf", orderDetails);
-        var generatedpdf = new ViewAsPdf("DownloadInvoicePdf", orderDetails){
-            FileName="Invoice.pdf"
+        var generatedpdf = new ViewAsPdf("DownloadInvoicePdf", orderDetails)
+        {
+            FileName = "Invoice.pdf"
         };
         return generatedpdf;
     }
 
-        public IActionResult GeneratePdfOrderDetails(long orderid){
-          OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid); 
+    [PermissionAuthorize("Orders.View")]
+    public IActionResult GeneratePdfOrderDetails(long orderid)
+    {
+        OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid);
         //   return PartialView("DownloadOrderDetailspdf", orderDetails);
-        var generatedpdf = new ViewAsPdf("DownloadOrderDetailspdf", orderDetails){
-            FileName="OrderDetails.pdf"
+        var generatedpdf = new ViewAsPdf("DownloadOrderDetailspdf", orderDetails)
+        {
+            FileName = "OrderDetails.pdf"
         };
         return generatedpdf;
     }
