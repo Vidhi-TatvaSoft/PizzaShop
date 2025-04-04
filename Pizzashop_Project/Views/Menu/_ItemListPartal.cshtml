@@ -36,7 +36,7 @@ else
                 </div>
             </td>
             <td>
-                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" data-id="@item.ItemId" onclick="getDetailsForEditItem(this)" data-bs-toggle="modal" data-bs-target="#EditItemModal"></i>
+                <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" data-id="@item.ItemId" onclick="getDetailsForEditItem(this); GetModGrpListEdit();" data-bs-toggle="modal" data-bs-target="#EditItemModal"></i>
                 <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteItem"
                     data-id="@item.ItemId" onclick="getIdForDeleteItem(this)"></i>
             </td>

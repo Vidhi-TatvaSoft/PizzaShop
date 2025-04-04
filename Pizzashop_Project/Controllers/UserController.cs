@@ -19,11 +19,8 @@ namespace Pizzashop_Project.Controllers;
 public class UserController : Controller
 {
     private readonly IUserService _userService;
-
     private readonly IUserLoginService _userLoginService;
     private readonly IJWTTokenService _jwttokenService;
-    private readonly IWebHostEnvironment _env;
-
 
     public UserController(IUserService userService, IJWTTokenService jwttokenService, IUserLoginService userLoginService)
     {
@@ -129,21 +126,22 @@ public class UserController : Controller
             {
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
 
-                //create folder if not exist
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
+                // //create folder if not exist
+                // if (!Directory.Exists(path))
+                //     Directory.CreateDirectory(path);
 
-                string fileName = $"{Guid.NewGuid()}_{user.ProfileImage.FileName}";
-                string fileNameWithPath = Path.Combine(path, fileName);
+                // string fileName = $"{Guid.NewGuid()}_{user.ProfileImage.FileName}";
+                // string fileNameWithPath = Path.Combine(path, fileName);
 
-                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                {
-                    user.ProfileImage.CopyTo(stream);
-                }
+                // using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                // {
+                //     user.ProfileImage.CopyTo(stream);
+                // }
+                string fileName = BLL.Common.ImageUpload.UploadImage(user.ProfileImage, path);
                 user.Image = $"/uploads/{fileName}";
             }else{
                 TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
-                return RedirectToAction("EditUser", "User", new { Email = user.Email });
+                return RedirectToAction("MyProfile", "User", new { Email = user.Email });
             }
         }
         if ( _userService.IsUserNameExistsForEdit(user.Username, userEmail))
@@ -181,7 +179,7 @@ public class UserController : Controller
     }
     #endregion
 
-    #region  addUser post
+    #region addUser post
      [PermissionAuthorize("User.EditAdd")]
     [HttpPost]
     // [Authorize(Roles = "Admin")]
@@ -285,7 +283,7 @@ public class UserController : Controller
             {
                 await smtp.SendMailAsync(mess);
             }
-            TempData["SuccessMessage"] = "User added successfully. Check your email for login details";
+            TempData["SuccessMessage"] = "User added successfully.";
              return RedirectToAction("UsersList","User");
 
         }
@@ -301,7 +299,7 @@ public class UserController : Controller
     }
     #endregion
 
-    #region  EditUser get
+    #region EditUser get
      [PermissionAuthorize("User.EditAdd")]
     public IActionResult EditUser(string Email)
     {
@@ -372,17 +370,7 @@ public class UserController : Controller
             {
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
 
-                //create folder if not exist
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
-
-                string fileName = $"{Guid.NewGuid()}_{user.ProfileImage.FileName}";
-                string fileNameWithPath = Path.Combine(path, fileName);
-
-                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                {
-                    user.ProfileImage.CopyTo(stream);
-                }
+                 string fileName = BLL.Common.ImageUpload.UploadImage(user.ProfileImage, path);
                 user.Image = $"/uploads/{fileName}";
             }else{
                 TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";

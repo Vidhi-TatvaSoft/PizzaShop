@@ -130,7 +130,7 @@ public class MenuController : Controller
     [PermissionAuthorize("Menu.EditAdd")]
     public async Task<IActionResult> AddCategory(MenuViewModel menuvm)
     {
-        bool CatNamePresent =await _menuService.IsCategoryNameExist(menuvm);
+        bool CatNamePresent = _menuService.IsCategoryNameExist(menuvm);
         if(CatNamePresent){
             TempData["ErrorMessage"] = "CategoryName Already Present. Try Another Name";
             return RedirectToAction("Menu");
@@ -153,6 +153,10 @@ public class MenuController : Controller
     [PermissionAuthorize("Menu.EditAdd")]
     public async Task<IActionResult> EditCategory(MenuViewModel menuvm)
     {
+        if(_menuService.IsCategoryNameExistForEdit(menuvm.category)){
+            TempData["ErrorMessage"] = "CategoryName Already Present. Try Another Name";
+            return RedirectToAction("Menu");
+        }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
@@ -222,11 +226,25 @@ public class MenuController : Controller
 
     #endregion
 
+
+    #region GetModifierGroupList to fill dropDown od item
+    public IActionResult GetModifierGroupList()
+    {
+        MenuViewModel menuvm = new MenuViewModel();
+        menuvm.modifiergroupList = _menuService.GetAllModifierGroups();
+        return Json(menuvm.modifiergroupList);
+    }
+
+    #endregion
+
     #region AddItems
     [PermissionAuthorize("Menu.EditAdd")]
     [HttpPost]
     public async Task<IActionResult> AddItem(MenuViewModel MenuViewModel)
     {
+        if(_menuService.IsItemNameExist(MenuViewModel.additem)){
+            return Json(new { success = false, text = "ItemName Already Present. Try Another Name" });
+        }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
@@ -250,35 +268,23 @@ public class MenuController : Controller
             if (extension[extension.Length - 1] == "jpg" || extension[extension.Length - 1] == "jpeg" || extension[extension.Length - 1] == "png")
             {
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-
-                //create folder if not exist
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
-
-                string fileName = $"{Guid.NewGuid()}_{MenuViewModel.additem.ItemFormImage.FileName}";
-                string fileNameWithPath = Path.Combine(path, fileName);
-
-                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                {
-                    MenuViewModel.additem.ItemFormImage.CopyTo(stream);
-                }
+                string fileName = BLL.Common.ImageUpload.UploadImage(MenuViewModel.additem.ItemFormImage, path);
                 MenuViewModel.additem.ItemImage = $"/uploads/{fileName}";
             }
             else
             {
-                TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
-                return RedirectToAction("AddItem", "Menu");
+                return Json(new{ success = false, text = "Please Upload an Image in JPEG, PNG or JPG format." });
             }
         }
 
         var addItemStatus = await _menuService.AddItem(MenuViewModel.additem, userId);
         if (addItemStatus)
         {
-            TempData["SuccessMessage"] = "Item Added SuccessFully.";
-            return RedirectToAction("Menu",new{catId=MenuViewModel.additem.CategoryId});
+            // TempData["SuccessMessage"] = "Item Added SuccessFully.";
+            return Json(new { success = true, text = "Item Added SuccessFully." });
         }
-        TempData["ErrorMessage"] = "Error while ItemAdd. Try Again..";
-        return RedirectToAction("Menu",new{catId=MenuViewModel.additem.CategoryId});
+        // TempData["ErrorMessage"] = "Error while ItemAdd. Try Again..";
+        return Json(new { success = false, text = "Error while ItemAdd. Try Again.." });
     }
     #endregion
 
@@ -286,7 +292,6 @@ public class MenuController : Controller
     [PermissionAuthorize("Menu.EditAdd")]
     public IActionResult EditItem(long itemID)
     {
-
         return Json(_menuService.GetItemByItemID(itemID));
     }
     #endregion
@@ -304,12 +309,17 @@ public class MenuController : Controller
             mVM.additem = mVM.additem ?? new AddItemViewModel();
             mVM.additem.ModifierGroupList = mVM.additem.ModifierGroupList ?? new List<ModifierGroupForItem>();
             var i = 0;
+            try{
+
             foreach (ModifierGroupForItem deItems in deserializedData)
             {
                 mVM.additem.ModifierGroupList.Add(deItems);
                 mVM.additem.ModifierGroupList[i].modifierList = _menuService.GetModifiersByGroup(deItems.ModifierGrpId);
                 mVM.additem.ModifierGroupList[i].ModifierGrpName = _menuService.GetModifiersGroupName(deItems.ModifierGrpId);
                 i++;
+            }
+            }catch(Exception e){
+
             }
         }
 
@@ -324,6 +334,9 @@ public class MenuController : Controller
     [HttpPost]
     public async Task<IActionResult> EditItem([FromForm]MenuViewModel menuvm)
     {
+        if(_menuService.IsItemNameExistForEdit(menuvm.additem)){
+            return Json(new { success = false, text = "ItemName Already Present. Try Another Name" });
+        }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
@@ -345,33 +358,23 @@ public class MenuController : Controller
             if (extension[extension.Length - 1] == "jpg" || extension[extension.Length - 1] == "jpeg" || extension[extension.Length - 1] == "png")
             {
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                string fileName = BLL.Common.ImageUpload.UploadImage(menuvm.additem.ItemFormImage, path);
 
-                //create folder if not exist
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
-
-                string fileName = $"{Guid.NewGuid()}_{menuvm.additem.ItemFormImage.FileName}";
-                string fileNameWithPath = Path.Combine(path, fileName);
-
-                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                {
-                    menuvm.additem.ItemFormImage.CopyTo(stream);
-                }
                 menuvm.additem.ItemImage = $"/uploads/{fileName}";
             }
             else
             {
-                TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
-                return RedirectToAction("AddItem", "Menu");
+                // TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
+                return Json(new { success = false, text = "Please Upload an Image in JPEG, PNG or JPG format." });
             }
         }
         if (await _menuService.EditItem(menuvm.additem, userId))
         {
-            TempData["SuccessMessage"] = "Item Updated Successfully";
-            return RedirectToAction("Menu");
+            // TempData["SuccessMessage"] = "Item Updated Successfully";
+            return Json(new { success = true, text = "Item Updated Successfully" });
         }
-        TempData["ErrorMessage"] = "Failed to Update Item. Try Again!";
-        return RedirectToAction("Menu");
+        // TempData["ErrorMessage"] = "Failed to Update Item. Try Again!";
+        return Json(new { success = false, text = "Failed to Update Item. Try Again!" });
 
     }
     #endregion
@@ -383,11 +386,11 @@ public class MenuController : Controller
         var CategoryDeleteStatus = await _menuService.DeleteItem(itemID);
         if (CategoryDeleteStatus)
         {
-            TempData["SuccessMessage"] = "Item Deleted Successfully";
-            return RedirectToAction("Menu");
+            // TempData["SuccessMessage"] = "Item Deleted Successfully";
+            return Json(new { success = true, text = "Item Deleted Successfully" });
         }
-        TempData["ErrorMessage"] = "Failed to delete Item. Try Again";
-        return RedirectToAction("Menu");
+        // TempData["ErrorMessage"] = "Failed to delete Item. Try Again";
+        return Json(new { success = false, text = "Failed to delete Item. Try Again" });
     }
     #endregion
 
@@ -406,6 +409,9 @@ public class MenuController : Controller
     [HttpPost]
     public async Task<IActionResult> AddModifier([FromForm] MenuViewModel menuvm)
     {
+        // if(_menuService.IsModifierNameExist(menuvm.addModifier)){
+        //     return Json(new { success = false, text = "ModifierName Already Present. Try Another Name" });
+        // }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
@@ -438,6 +444,9 @@ public class MenuController : Controller
     [HttpPost]
     public async Task<IActionResult> EditModifier([FromForm] MenuViewModel Menuvm)
     {
+        // if(_menuService.IsModifierNameExistForEdit(Menuvm.addModifier)){
+        //     return Json(new { success = false, text = "ModifierName Already Present. Try Another Name" });
+        // }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
@@ -478,15 +487,19 @@ public class MenuController : Controller
     [HttpPost]
     public async Task<IActionResult> AddModifierGroup(MenuViewModel menuvm)
     {
+        List<Modifiergroup> modgrplist = _menuService.GetAllModifierGroups();
+        if(_menuService.IsModifierGroupNameExist(menuvm.addmodgrpVm)){
+            return Json(new {modgrpid = modgrplist[0].ModifierGrpId, success = false, text = "ModifierGroupName Already Present. Try Another Name" });
+        }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         var addModifierGrpStatus = await _menuService.AddModifierGroup(menuvm.addmodgrpVm, userId);
         if (addModifierGrpStatus)
         {
-            return Json(new { success = true, text = "modifierGroup added successfully" });
+            return Json(new {modgrpid = modgrplist[0].ModifierGrpId, success = true, text = "modifierGroup added successfully" });
         }
-        return Json(new { success = false, text = "Error while Add Modifier group. Try Again!" });
+        return Json(new {modgrpid = modgrplist[0].ModifierGrpId, success = false, text = "Error while Add Modifier group. Try Again!" });
     }
     #endregion
 
@@ -507,17 +520,21 @@ public class MenuController : Controller
     [HttpPost]
     public async Task<IActionResult> EditModifierGroup(MenuViewModel menuvm)
     {
+        List<Modifiergroup> modgrplist = _menuService.GetAllModifierGroups();
+        if(_menuService.IsModifierGroupNameExistForEdit(menuvm.addmodgrpVm)){
+            return Json(new { firstmodgrpid = modgrplist[0].ModifierGrpId, success = false, text = "ModifierGroupName Already Present. Try Another Name" });
+        }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         var editModStatus = await _menuService.EditModifierGroup(menuvm.addmodgrpVm, userId);
         if (editModStatus)
         {
-            return Json(new { grpId = menuvm.addmodgrpVm.ModifierGrpId, success = true, text = "modifierGroup Updated successfully" });
+            return Json(new { grpId = menuvm.addmodgrpVm.ModifierGrpId,firstmodgrpid = modgrplist[0].ModifierGrpId, success = true, text = "modifierGroup Updated successfully" });
         }
         else
         {
-            return Json(new { success = false, text = "modifierGroup not Updated.Try Again!" });
+            return Json(new  { firstmodgrpid = modgrplist[0].ModifierGrpId, success = false, text = "modifierGroup not Updated.Try Again!" });
         }
     }
     #endregion
@@ -562,11 +579,12 @@ public class MenuController : Controller
     public async Task<IActionResult> DeleteModGrp(long modGrpid)
     {
         var deletemodgrpStatus = await _menuService.DeleteModifierGroup(modGrpid);
+        List<Modifiergroup> modgrplist = _menuService.GetAllModifierGroups();
         if (deletemodgrpStatus)
         {
-            return Json(new { success = true, text = "modifier group deleted successfully" });
+            return Json(new {modgrpid = modgrplist[0].ModifierGrpId, success = true, text = "modifier group deleted successfully" });
         }
-        return Json(new { success = false, text = "modifier group not deleted" });
+        return Json(new { modgrpid = modgrplist[0].ModifierGrpId, success = false, text = "modifier group not deleted" });
     }
     #endregion
 

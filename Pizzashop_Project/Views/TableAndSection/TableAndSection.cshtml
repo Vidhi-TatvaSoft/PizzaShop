@@ -607,7 +607,7 @@
                         console.log(tableID)
                         $.ajax({
                             url: `/TableAndSection/DeleteTable?id=${tableID}`,
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 if (data.success ) {
                                     successToaster(data.text);

@@ -115,7 +115,13 @@ form i{
     font-weight: 600;
   }
   
-  
+  .nav-link.active{
+    color: #0084C3 !important;
+}
+
+.nav-link{
+    color: black !important;
+}
   
   .right-side-main-div {
     background-color: #dfe9f3;
@@ -272,6 +278,20 @@ form i{
 .scrollableclass{
   overflow: auto;
   height: 350px;
+}
+
+
+@media (min-width : 1200px){
+  #AddItemModalRightBar{
+      height: 408px !important;
+  }
+}
+
+
+@media (max-width : 1199px){
+  #AddItemModalRightBar{
+      height: 508px !important;
+  }
 }
 
 .order-items-main-div{

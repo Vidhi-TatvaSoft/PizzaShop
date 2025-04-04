@@ -428,102 +428,114 @@ public class OrderService : IOrderService
     #region Get order details from orderId
     public OrderDetaIlsInvoiceViewModel GetOrderDetails(long orderId)
     {
-        var orderdetails = _context.Invoices.Include(x => x.Order).ThenInclude(x => x.Table).ThenInclude(x => x.Section).Include(x => x.Customer)
-        .Where(x => x.OrderId == orderId).FirstOrDefault();
-
-
-        OrderDetaIlsInvoiceViewModel orderdetailsvm = new();
-        //order
-        orderdetailsvm.OrderId = orderdetails.OrderId;
-        orderdetailsvm.OrderDate = orderdetails.Order.OrderDate;
-        orderdetailsvm.OrderStatus = orderdetails.Order.Status;
-        orderdetailsvm.InvoiceId = orderdetails.InvoiceId;
-        orderdetailsvm.InvoiceNo = orderdetails.InvoiceNo;
-
-
-        //customer
-        orderdetailsvm.CustomerId = orderdetails.Order.CustomerId;
-        orderdetailsvm.CustomerName = orderdetails.Order.Customer.CustomerName;
-        orderdetailsvm.Phoneno = orderdetails.Order.Customer.Phoneno;
-        orderdetailsvm.Email = orderdetails.Order.Customer.Email;
-
-        List<Assigntable> AssignTableList = _context.Assigntables.Include(x => x.Customer).Include(x => x.Order)
-        .Where(x => x.CustomerId == orderdetails.Order.CustomerId && x.OrderId == orderId).ToList();
-        orderdetailsvm.NumberOfPerson = AssignTableList.Sum(x => x.NoOfPerson);
-
-        //table
-        orderdetailsvm.tableList = _context.Invoices.Include(x => x.Customer).Include(x => x.Order).ThenInclude(x => x.Table)
-        .Where(x => x.CustomerId == orderdetails.Order.CustomerId && x.OrderId == orderId)
-        .Select(x => new Table
+        try
         {
-            TableId = x.Order.Table.TableId,
-            TableName = x.Order.Table.TableName
+            var orderdetails = _context.Invoices.Include(x => x.Order).ThenInclude(x => x.Table).ThenInclude(x => x.Section).Include(x => x.Customer)
+            .Where(x => x.OrderId == orderId).FirstOrDefault();
 
-        }).ToList();
-        orderdetailsvm.SectionId = orderdetails.Order.SectionId;
-        orderdetailsvm.SectionName = orderdetails.Order.Section.SectionName;
-
-        //items
-        orderdetailsvm.ItemsInOrderDetails = _context.Orderdetails.Include(x => x.Item).Where(x => x.OrderId == orderId)
-        .Select(x => new ItemForInvoiceOrderDetails
-        {
-            ItemId = x.ItemId,
-            ItemName = x.Item.ItemName,
-            Quantity = x.Quantity,
-            Rate = x.Item.Rate,
-            TotalOfItemByQuantity = Math.Round(x.Quantity * x.Item.Rate, 2),
-            ModifiersInItemInvoice = _context.Modifierorders.Include(m => m.Modifier).Include(m => m.Orderdetail).ThenInclude(m => m.Item)
-            .Where(m => m.Orderdetail.ItemId == x.ItemId)
-            .Select(m => new ModifiersForItemInInvoiceOrderDetails
+            if (orderdetails == null)
             {
-                ModifierId = m.ModifierId,
-                ModifierName = m.Modifier.ModifierName,
-                Rate = m.Modifier.Rate,
-                Quantity = m.ModifierQuantity,
-                TotalOfModifierByQuantity = Math.Round(m.ModifierQuantity * (decimal)m.Modifier.Rate, 2),
-            }).ToList()
-        }).ToList();
-        orderdetailsvm.SubTotalAmountOfOrder = Math.Round((decimal)orderdetailsvm.ItemsInOrderDetails
-        .Sum(x => x.TotalOfItemByQuantity + x.ModifiersInItemInvoice.Sum(x => x.TotalOfModifierByQuantity)), 2);
-
-
-        //taxes
-        var taxedetails = _context.Taxinvoicemappings.Include(x => x.Invoice).Include(x => x.Tax)
-        .Where(x => x.Invoice.OrderId == orderId).ToList();
-
-        orderdetailsvm.TaxesInOrderDetails = new List<TaxForOrderDetailsInvoice>();
-        foreach (var tax in taxedetails)
-        {
-
-            if (tax.Tax.TaxType == "Fix Amount")
-            {
-                orderdetailsvm.TaxesInOrderDetails.Add(
-                    new TaxForOrderDetailsInvoice
-                    {
-                        TaxId = tax.Tax.TaxId,
-                        TaxName = tax.Tax.TaxName,
-                        TaxType = tax.Tax.TaxType,
-                        TaxValue = tax.Tax.TaxValue
-                    }
-                );
+                return null;
             }
-            else
+
+            OrderDetaIlsInvoiceViewModel orderdetailsvm = new();
+            //order
+            orderdetailsvm.OrderId = orderdetails.OrderId;
+            orderdetailsvm.OrderDate = orderdetails.Order.OrderDate;
+            orderdetailsvm.OrderStatus = orderdetails.Order.Status;
+            orderdetailsvm.InvoiceId = orderdetails.InvoiceId;
+            orderdetailsvm.InvoiceNo = orderdetails.InvoiceNo;
+
+
+            //customer
+            orderdetailsvm.CustomerId = orderdetails.Order.CustomerId;
+            orderdetailsvm.CustomerName = orderdetails.Order.Customer.CustomerName;
+            orderdetailsvm.Phoneno = orderdetails.Order.Customer.Phoneno;
+            orderdetailsvm.Email = orderdetails.Order.Customer.Email;
+
+            List<Assigntable> AssignTableList = _context.Assigntables.Include(x => x.Customer).Include(x => x.Order)
+            .Where(x => x.CustomerId == orderdetails.Order.CustomerId && x.OrderId == orderId).ToList();
+            orderdetailsvm.NumberOfPerson = AssignTableList.Sum(x => x.NoOfPerson);
+
+            //table
+            orderdetailsvm.tableList = _context.Invoices.Include(x => x.Customer).Include(x => x.Order).ThenInclude(x => x.Table)
+            .Where(x => x.CustomerId == orderdetails.Order.CustomerId && x.OrderId == orderId)
+            .Select(x => new Table
             {
-                orderdetailsvm.TaxesInOrderDetails.Add(
-                    new TaxForOrderDetailsInvoice
-                    {
-                        TaxId = tax.Tax.TaxId,
-                        TaxName = tax.Tax.TaxName,
-                        TaxType = tax.Tax.TaxType,
-                        TaxValue = Math.Round(tax.Tax.TaxValue / 100 * orderdetailsvm.SubTotalAmountOfOrder, 2)
-                    }
-                );
+                TableId = x.Order.Table.TableId,
+                TableName = x.Order.Table.TableName
+
+            }).ToList();
+            orderdetailsvm.SectionId = orderdetails.Order.SectionId;
+            orderdetailsvm.SectionName = orderdetails.Order.Section.SectionName;
+
+            //items
+            orderdetailsvm.ItemsInOrderDetails = _context.Orderdetails.Include(x => x.Item).Where(x => x.OrderId == orderId)
+            .Select(x => new ItemForInvoiceOrderDetails
+            {
+                ItemId = x.ItemId,
+                ItemName = x.Item.ItemName,
+                Quantity = x.Quantity,
+                Rate = x.Item.Rate,
+                TotalOfItemByQuantity = Math.Round(x.Quantity * x.Item.Rate, 2),
+                ModifiersInItemInvoice = _context.Modifierorders.Include(m => m.Modifier).Include(m => m.Orderdetail).ThenInclude(m => m.Item)
+                .Where(m => m.Orderdetail.ItemId == x.ItemId)
+                .Select(m => new ModifiersForItemInInvoiceOrderDetails
+                {
+                    ModifierId = m.ModifierId,
+                    ModifierName = m.Modifier.ModifierName,
+                    Rate = m.Modifier.Rate,
+                    Quantity = m.ModifierQuantity,
+                    TotalOfModifierByQuantity = Math.Round(m.ModifierQuantity * (decimal)m.Modifier.Rate, 2),
+                }).ToList()
+            }).ToList();
+            orderdetailsvm.SubTotalAmountOfOrder = Math.Round((decimal)orderdetailsvm.ItemsInOrderDetails
+            .Sum(x => x.TotalOfItemByQuantity + x.ModifiersInItemInvoice.Sum(x => x.TotalOfModifierByQuantity)), 2);
+
+
+            //taxes
+            var taxedetails = _context.Taxinvoicemappings.Include(x => x.Invoice).Include(x => x.Tax)
+            .Where(x => x.Invoice.OrderId == orderId).ToList();
+
+            orderdetailsvm.TaxesInOrderDetails = new List<TaxForOrderDetailsInvoice>();
+            foreach (var tax in taxedetails)
+            {
+
+                if (tax.Tax.TaxType == "Fix Amount")
+                {
+                    orderdetailsvm.TaxesInOrderDetails.Add(
+                        new TaxForOrderDetailsInvoice
+                        {
+                            TaxId = tax.Tax.TaxId,
+                            TaxName = tax.Tax.TaxName,
+                            TaxType = tax.Tax.TaxType,
+                            TaxValue = tax.Tax.TaxValue
+                        }
+                    );
+                }
+                else
+                {
+                    orderdetailsvm.TaxesInOrderDetails.Add(
+                        new TaxForOrderDetailsInvoice
+                        {
+                            TaxId = tax.Tax.TaxId,
+                            TaxName = tax.Tax.TaxName,
+                            TaxType = tax.Tax.TaxType,
+                            TaxValue = Math.Round(tax.Tax.TaxValue / 100 * orderdetailsvm.SubTotalAmountOfOrder, 2)
+                        }
+                    );
+                }
             }
+
+            orderdetailsvm.TotalAmountOfOrderMain = orderdetailsvm.SubTotalAmountOfOrder + orderdetailsvm.TaxesInOrderDetails.Sum(x => x.TaxValue);
+
+            return orderdetailsvm;
         }
-
-        orderdetailsvm.TotalAmountOfOrderMain = orderdetailsvm.SubTotalAmountOfOrder + orderdetailsvm.TaxesInOrderDetails.Sum(x => x.TaxValue);
-
-        return orderdetailsvm;
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return null;
+        }
     }
     #endregion
 

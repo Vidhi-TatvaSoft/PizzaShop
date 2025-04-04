@@ -121,8 +121,8 @@
                                 </div>
                                 <div class="col-lg-6 mt-3 mt-lg-0">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="floatingInput" asp-for="@Model.additem.ItemName" placeholder="Name*">
-                                        <label for="floatingInput">Name*</label>
+                                        <input type="text" class="form-control" id="AddItemName" asp-for="@Model.additem.ItemName" placeholder="Name*">
+                                        <label for="AddItemName">Name*</label>
                                         <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.ItemName"></span>
 
                                     </div>
@@ -142,18 +142,18 @@
                                 </div>
                                 <div class="col-lg-6 col-xl-3 mt-3 mt-lg-0">
                                     <div class="form-floating mb-3">
-                                        <input type="number" class="form-control" id="floatingInput" placeholder="Rate*" asp-for="@Model.additem.Rate"
+                                        <input type="number" class="form-control" id="AddItemRate" placeholder="Rate*" asp-for="@Model.additem.Rate"
                                            >
-                                        <label for="floatingInput">Rate*</label>
+                                        <label for="AddItemRate">Rate*</label>
                                         <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.Rate"></span>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 col-xl-3">
                                     <div class="form-floating mb-3">
-                                        <input type="number" class="form-control" id="floatingInput" asp-for="@Model.additem.Quantity"
+                                        <input type="number" class="form-control" id="AddItemQuantity" asp-for="@Model.additem.Quantity"
                                             placeholder="Quantity*" >
-                                        <label for="floatingInput">Quantity*</label>
+                                        <label for="AddItemQuantity">Quantity*</label>
                                         <span class="text-danger removeValidationOnCancel" asp-validation-for="@Model.additem.Quantity"></span>
                                     </div>
                                 </div>
@@ -229,11 +229,11 @@
 
                         <!-- Right Section (Modifiers) -->
                         <div class="col-lg-5 col-md-12 bg-light p-3 rounded">
-                            <select class="w-100 p-1" id="Modifier" onchange="GetModifierByGroup()">
-                                <option value="default" selected>Select Modifier Group</option>
-                                @foreach(var modgrp in Model.modifiergroupList){
+                            <select class="w-100 p-1" id="Modifier" onchange="GetModifierByGroup()" >
+                                @* <option value="" selected>Select Modifier Group</option> *@
+                                @* @foreach(var modgrp in Model.modifiergroupList){
                                     <option value="@modgrp.ModifierGrpId">@modgrp.ModifierGrpName</option>
-                                }
+                                } *@
                             </select>
                             <div id="ItemByModifiers" class="scrollableclass"></div>
                             
@@ -389,7 +389,7 @@
                         <!-- Right Section (Modifiers) -->
                         <div class="col-lg-5 col-md-12 bg-light p-3 rounded">
                             <select class="w-100 p-1" id="EditModifier" onchange="EditModifierByGroup()">
-                                <option value="default" selected>Select Modifier Group</option>
+                                <option value="" selected>Select Modifier Group</option>
                                 @foreach(var modgrp in Model.modifiergroupList){
                                     <option value="@modgrp.ModifierGrpId">@modgrp.ModifierGrpName</option>
                                 }
@@ -645,7 +645,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Delete Conformation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="btn-close"></button>
             </div>
             <div class="modal-body ">
                 <div class="delete-cat-image d-flex flex-column  align-items-center">
@@ -654,9 +654,9 @@
                 </div>
 
             </div>
-            <form asp-action="DeleteItem" asp-controller="Menu">
+            <form id="DeleteItemFormId">
             <div class="modal-footer d-flex justify-content-center">
-                <input type="hidden"  id="deleteItemId" name="itemID">
+                <input type="hidden"  id="deleteItemId" name="itemID" asp-for="@Model.additem.ItemId">
                 <button type="submit" class="btn btn-primary" >Yes</button>
                 <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
             </div>
@@ -867,17 +867,17 @@
                                     </div>
                                     <div class="additem-button">
                                         <button class="btn btn-primary text-light p-2 ms-3 border text"
-                                            data-bs-toggle="modal" data-bs-target="#addItemModal">+ Add Item</button>
+                                            data-bs-toggle="modal" data-bs-target="#addItemModal" onclick="GetModGrpListAdd()">+ Add Item</button>
                                        
                                         </div>
 
                                 </div>
                             </div>
                             <div class="table-main-div table-responsive mt-3 bg-white mx-auto w-100 ">
-                                @if(Model.Pagination.Items.Count == 0){
+                                @* @if(Model.Pagination.Items.Count == 0){
                                     <h3 class="d-flex justify-content-center align-items-center text-danger">No data found</h3>
                                 }
-                                else{
+                                else{ *@
                                     <table class="table" id="demo1">
                                     <thead>
                                         <tr>
@@ -896,7 +896,7 @@
 
                                     </tbody>
                                 </table>
-                                }
+                                @* } *@
                                 @*  Pagination div *@
                                 <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
 
@@ -1076,7 +1076,8 @@
             document.getElementById("category-description").value = tag.parentElement.children[0].value;
             @* console.log(tag.parentElement.parentElement.children[1].value;) *@
         }
-
+        var editItemDatastatic;
+        var editItemData;
         //details of edit items
         function getDetailsForEditItem(tag){
 
@@ -1094,8 +1095,8 @@
                             }));*@
 
                     var editItemData = data.modifierGroupList || []; 
+                    editItemDatastatic = data.modifierGroupList || [];
 
-                    console.log(editItemData,"test2");
                     document.getElementById("itemIdForDeleteItem").value =tag.getAttribute("data-id");
                     document.getElementById("itemName").value = data.itemName;
                     document.getElementById("itemrate").value=data.rate;
@@ -1412,9 +1413,7 @@
                 }
             })
         } *@
-    </script>
-
-    <script>
+    
             let currentPage = 1;
             let pageSize = $("#itemsperpage").val();
             let searchText = "";  
@@ -1779,7 +1778,29 @@
             });
 
 
-
+            $("#DeleteItemFormId").on("submit",function(e){
+                e.preventDefault();
+                @* console.log("delete item") *@
+                let itemID = document.getElementById("deleteItemId").value;
+                console.log(itemID);
+                $.ajax({
+                    url:"/Menu/DeleteItem",
+                    type:"POST",
+                    data:{itemID},
+                    success: function(data){
+                        if (data.success) {
+                            successToaster(data.text);
+                        } else {
+                            errorToaster(data.text);
+                        } 
+                        console.log("nooooo");
+                        $("#btn-close").click();
+                        console.log("thyu");
+                        currentPage=1;
+                        loadTable(catID, searchText, currentPage, pageSize);
+                    }
+                })
+            })
 
             //delete all items
             $("#deleteAllItemsModalYesButton").on("click",function(){
@@ -1794,6 +1815,11 @@
                              url: `/Menu/DeleteItem?itemID=${itemID}`,
                             type: "GET",
                             success: function (data) {
+                                if (data.success) {
+                                     successToaster(data.text);
+                                } else {
+                                    errorToaster(data.text);
+                                } 
                                 currentPage=1;
                                 loadTable(catID, searchText, currentPage, pageSize);
                             }
@@ -1944,6 +1970,11 @@
                             url: `/Menu/DeleteModifier?modid=${modifierID}`,
                             type: "POST",
                             success: function (data) {
+                                if (data.success) {
+                                successToaster(data.text);
+                            } else {
+                                errorToaster(data.text);
+                            } 
                                 $("#checkboxForSelectAllModifier").prop("disabled", true);
                                 currentPageMod = 1;
                                 $(".btn-close").click();
@@ -1981,8 +2012,8 @@
                                 errorToaster(res.text);
                             } 
                             $(".btn-close").click();
-                            loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
                             loadModifierGroup();
+                            loadTablemodifier(res.modgrpid, searchTextMod, currentPageMod, pageSizeMod);
                             SelectAllModifiers();
                             modTempID=[];
                             modTempName=[];
@@ -2044,7 +2075,7 @@
                                 errorToaster(res.text);
                             }
                             $(".btn-close").click();
-                            loadTablemodifier(res.grpId, searchTextMod, currentPageMod, pageSizeMod);
+                            loadTablemodifier(res.firstmodgrpid, searchTextMod, currentPageMod, pageSizeMod);
                             loadModifierGroup();
                             SelectAllModifiers();
                             modTempID=[];
@@ -2073,7 +2104,7 @@
                                 errorToaster(res.text);
                             }
                         $(".btn-close").click();
-                        loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
+                        loadTablemodifier(res.modgrpid, searchTextMod, currentPageMod, pageSizeMod);
                         loadModifierGroup();
                     }
                 });
@@ -2087,15 +2118,45 @@
                 
             }) *@
           
-            
-            
-
         });
-    </script>
+   
 
-    <!----//Add item script -->
-     <script>
+    //<!----//Add item script -->
+    
         var itemData = [];
+
+        function GetModGrpListAdd(){
+            $.ajax({
+                url:"/Menu/GetModifierGroupList",
+                type:"GET",
+                success:function(data){
+                    console.log("modifier group list", data);
+                    @* $("#Modifier").html(data); *@
+                    var modDropDown = document.getElementById("Modifier");
+                    modDropDown.innerHTML = "";
+                    for(i=0;i<data.length;i++){
+                        modDropDown.innerHTML += `<option value="${data[i].modifierGrpId}">${data[i].modifierGrpName}</option>`;
+                    }
+                }
+            })
+        }
+
+        function GetModGrpListEdit(){
+            $.ajax({
+                url:"/Menu/GetModifierGroupList",
+                type:"GET",
+                success:function(data){
+                    console.log("modifier group list", data);
+                    @* $("#Modifier").html(data); *@
+                    var modDropDown = document.getElementById("EditModifier");
+                    modDropDown.innerHTML = "";
+                    for(i=0;i<data.length;i++){
+                        modDropDown.innerHTML += `<option value="${data[i].modifierGrpId}">${data[i].modifierGrpName}</option>`;
+                    }
+
+                }
+            })
+        }
 
         function GetModifierByGroup() {
             var selectedValue = $('#Modifier').val();
@@ -2134,12 +2195,12 @@
 
             var selectedValue = $(element).data('id');
             var minOption = $(`#min-selection-${selectedValue}`).val() ?? 0;
+            @* minOption = Math.min() *@
             console.log(minOption);
             console.log(itemData);
             var index = itemData.findIndex(item => item.ModifierGrpId == selectedValue);
 
             if (index != -1) {
-
                 itemData[index].min = minOption;
             }
         }
@@ -2189,9 +2250,15 @@
                 contentType: false,
                 processData: false,
                 data: formData,
-                success: function () {
+                success: function (res) {
+                    if (res.success) {
+                        successToaster(res.text);
+                    } else {
+                        errorToaster(res.text);
+                    }
                     loadTable(catID, searchText, currentPage, pageSize);
                     $('.btn-close').click();
+
                 }
             });
         }
@@ -2203,18 +2270,23 @@
         });
 
         function EmptyPartialViewOfModGrp(){
-            itemData=[];
+            itemData=[]; 
+            document.getElementById("AddItemName").value = "";
+            document.getElementById("AddItemRate").value = "";
+            document.getElementById("AddItemQuantity").value = "";
+            document.getElementById("description").value = "";
+            document.getElementById("available").checked = false;
+            document.getElementById("defaultTax").checked = false;
+            document.getElementById("taxPercentage").value = "";
+            document.getElementById("shortCode").value = "";
+
             $('#ItemByModifiers').html("");
-             $("#Modifier option[value='default']").prop("selected",true);
+             $("#Modifier option[value='']").prop("selected",true);
 
         }
 
-    </script>
-
-    <!----edit item ---->
+    //<!----edit item ---->
     
-<script>
-
     function EditModifierByGroup() {
         var selectedValue = $('#EditModifier').val();
         var minOption = $(`#edit-min-selection-${selectedValue}`).val() ?? 0;
@@ -2310,7 +2382,12 @@
             contentType: false,
             processData: false,
             data: formData,
-            success: function () {
+            success: function (res) {
+                    if (res.success) {
+                        successToaster(res.text);
+                    } else {
+                        errorToaster(res.text);
+                    }
                 loadTable(catID, searchText, currentPage, pageSize);
                 $('.btn-close').click();
             }
@@ -2326,7 +2403,7 @@
     function EditEmptyPartialViewOfModGrp(){
         editItemData=editItemDatastatic;
         $('#EditItemByModifiers').html("");
-        $("#EditModifier option[value='default']").prop("selected",true);
+        $("#EditModifier option[value='']").prop("selected",true);
     }
    
 

@@ -64,14 +64,32 @@ public class OrderController : Controller
     [PermissionAuthorize("Orders.View")]
     public IActionResult ViewOrderDetails(long orderid)
     {
+        try{
         OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid);
+        if(orderDetails == null)
+        {
+            TempData["ErrorMessage"] = $"Order not found for OrderId {orderid}.";
+            return RedirectToAction("Orders");
+        }
         return View(orderDetails);
+        }catch(Exception ex)
+        {
+            // Handle the exception
+            Console.WriteLine(ex.Message);
+            TempData["ErrorMessage"] = "Something Went wrong";
+            return RedirectToAction("Orders");
+        }
     }
 
     [PermissionAuthorize("Orders.View")]
     public IActionResult GeneratePdfInvoice(long orderid)
     {
         OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid);
+        if(orderDetails == null)
+        {
+            TempData["ErrorMessage"] = $"Order not found for OrderId {orderid}.";
+            return RedirectToAction("Orders");
+        }
         //   return PartialView("DownloadInvoicePdf", orderDetails);
         var generatedpdf = new ViewAsPdf("DownloadInvoicePdf", orderDetails)
         {
@@ -84,6 +102,11 @@ public class OrderController : Controller
     public IActionResult GeneratePdfOrderDetails(long orderid)
     {
         OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid);
+        if(orderDetails == null)
+        {
+            TempData["ErrorMessage"] = $"Order not found for OrderId {orderid}.";
+            return RedirectToAction("Orders");
+        }
         //   return PartialView("DownloadOrderDetailspdf", orderDetails);
         var generatedpdf = new ViewAsPdf("DownloadOrderDetailspdf", orderDetails)
         {
