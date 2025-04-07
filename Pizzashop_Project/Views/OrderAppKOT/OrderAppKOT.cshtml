@@ -1,0 +1,369 @@
+@using DAL.ViewModels;
+@model OrderAppKOTViewModel
+
+@{
+    Layout = "~/Views/Shared/_OrderAppLayout.cshtml";
+}
+    <div class="fs-2 text-primary ps-0 fw-bold">KOT</div>
+
+    <div class="bg-white  mt-2 p-2 pb-0  d-flex justify-content-start align-item-center "
+        style=" overflow:auto; scrollbar-width: thin;">
+        <div class="allCategory KOTCategorySelect ms-3 me-3  pb-1 fs-5 text-secondary fw-bold  text-wrap-nowrap"
+            style="max-width-content=fit;" onclick="categorySelected(this)">All</div>
+        @foreach (var item in Model.categoryList)
+        {
+            <div class="allCategory ms-3 me-3 pb-1 fs-5  fw-bold text-secondary text-wrap-nowrap"
+                style="max-width-content=fit;" onclick="categorySelected(this)">@item.CategoryName</div>
+        }
+        
+    </div>
+
+    <div class="bg-white mt-4 p-2 pb-0  " style=" height:435px;">
+        <div class="d-flex flex-column flex-sm-row  justify-content-between align-item-center">
+            <div class="heading-category text-primary fs-3 fw-bold ms-2">All</div>
+            <div>
+                <div class="btn btn-primary mt-1 me-2 text-wrap-nowrap">In Progress</div>
+                <div class="btn btn-outline-primary mt-1 me-2 text-wrap-nowrap">Ready</div>
+                <div class="btn btn-outline-primary mt-1 me-2 " onclick="LeftShift()"> < </div>
+                        <div class="btn btn-outline-primary mt-1 me-2" onclick="RightShift()"> > </div>
+                </div>
+            </div>
+
+
+            <!-------------------------- cards ----------------------->
+            <div class=" p-3 ps-4 d-flex" id="allCardsMainDiv" style="overflow: auto; scrollbar-width: thin;">
+                <div class="KOTCardClass rounded me-3 border-1"
+                    style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                        <div class="text-primary fw-bold"># 223</div>
+                        <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+                        </div>
+                    </div>
+                    <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">First floor<li
+                            class="ms-3">
+                            T1</li>
+                    </div>
+                    <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                        <div class="d-flex justify-content-between">
+                            <div>Grilled burger</div>
+                            <div class="text-dark">3</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                        <div class="d-flex mt-2 justify-content-between">
+                            <div>Aloo sandwich</div>
+                            <div>1</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                    </div>
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    </div>
+                </div>
+                 <div class="KOTCardClass rounded me-3 border-1"
+                    style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                        <div class="text-primary fw-bold"># 223</div>
+                        <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+                        </div>
+                    </div>
+                    <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">First floor<li
+                            class="ms-3">
+                            T1</li>
+                    </div>
+                    <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                        <div class="d-flex justify-content-between">
+                            <div>Grilled burger</div>
+                            <div class="text-dark">3</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                        <div class="d-flex mt-2 justify-content-between">
+                            <div>Aloo sandwich</div>
+                            <div>1</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                    </div>
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    </div>
+                </div>
+                 <div class="KOTCardClass rounded me-3 border-1"
+                    style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                        <div class="text-primary fw-bold"># 223</div>
+                        <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+                        </div>
+                    </div>
+                    <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">First floor<li
+                            class="ms-3">
+                            T1</li>
+                    </div>
+                    <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                        <div class="d-flex justify-content-between">
+                            <div>Grilled burger</div>
+                            <div class="text-dark">3</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                        <div class="d-flex mt-2 justify-content-between">
+                            <div>Aloo sandwich</div>
+                            <div>1</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                    </div>
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    </div>
+                </div>
+                 <div class="KOTCardClass rounded me-3 border-1"
+                    style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                        <div class="text-primary fw-bold"># 223</div>
+                        <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+                        </div>
+                    </div>
+                    <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">First floor<li
+                            class="ms-3">
+                            T1</li>
+                    </div>
+                    <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                        <div class="d-flex justify-content-between">
+                            <div>Grilled burger</div>
+                            <div class="text-dark">3</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                        <div class="d-flex mt-2 justify-content-between">
+                            <div>Aloo sandwich</div>
+                            <div>1</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                    </div>
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    </div>
+                </div>
+                 <div class="KOTCardClass rounded me-3 border-1"
+                    style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                        <div class="text-primary fw-bold"># 223</div>
+                        <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+                        </div>
+                    </div>
+                    <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">First floor<li
+                            class="ms-3">
+                            T1</li>
+                    </div>
+                    <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                        <div class="d-flex justify-content-between">
+                            <div>Grilled burger</div>
+                            <div class="text-dark">3</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                        <div class="d-flex mt-2 justify-content-between">
+                            <div>Aloo sandwich</div>
+                            <div>1</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                    </div>
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    </div>
+                </div>
+                <div class="KOTCardClass rounded me-3 border-1"
+                    style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                        <div class="text-primary fw-bold"># 223</div>
+                        <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+                        </div>
+                    </div>
+                    <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">First floor<li
+                            class="ms-3">
+                            T1</li>
+                    </div>
+                    <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                        <div class="d-flex justify-content-between">
+                            <div>Grilled burger</div>
+                            <div class="text-dark">3</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                        <div class="d-flex mt-2 justify-content-between">
+                            <div>Aloo sandwich</div>
+                            <div>1</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                    </div>
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    </div>
+                </div>
+                <div class="KOTCardClass rounded me-3 border-1"
+                    style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                        <div class="text-primary fw-bold"># 223</div>
+                        <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+                        </div>
+                    </div>
+                    <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">First floor<li
+                            class="ms-3">
+                            T1</li>
+                    </div>
+                    <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                        <div class="d-flex justify-content-between">
+                            <div>Grilled burger</div>
+                            <div class="text-dark">3</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                        <div class="d-flex mt-2 justify-content-between">
+                            <div>Aloo sandwich</div>
+                            <div>1</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                    </div>
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    </div>
+                </div>
+                <div class="KOTCardClass rounded me-3 border-1"
+                    style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                        <div class="text-primary fw-bold"># 223</div>
+                        <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+                        </div>
+                    </div>
+                    <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">First floor<li
+                            class="ms-3">
+                            T1</li>
+                    </div>
+                    <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                        <div class="d-flex justify-content-between">
+                            <div>Grilled burger</div>
+                            <div class="text-dark">3</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                        <div class="d-flex mt-2 justify-content-between">
+                            <div>Aloo sandwich</div>
+                            <div>1</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                    </div>
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    </div>
+                </div>
+                <div class="KOTCardClass rounded me-3 border-1"
+                    style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                        <div class="text-primary fw-bold"># 223</div>
+                        <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+                        </div>
+                    </div>
+                    <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">First floor<li
+                            class="ms-3">
+                            T1</li>
+                    </div>
+                    <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                        <div class="d-flex justify-content-between">
+                            <div>Grilled burger</div>
+                            <div class="text-dark">3</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                        <div class="d-flex mt-2 justify-content-between">
+                            <div>Aloo sandwich</div>
+                            <div>1</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                    </div>
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    </div>
+                </div>
+                <div class="KOTCardClass rounded me-3 border-1"
+                    style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                        <div class="text-primary fw-bold"># 223</div>
+                        <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+                        </div>
+                    </div>
+                    <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">First floor<li
+                            class="ms-3">
+                            T1</li>
+                    </div>
+                    <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                        <div class="d-flex justify-content-between">
+                            <div>Grilled burger</div>
+                            <div class="text-dark">3</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                        <div class="d-flex mt-2 justify-content-between">
+                            <div>Aloo sandwich</div>
+                            <div>1</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                    </div>
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    </div>
+                </div>
+                <div class="KOTCardClass rounded me-3 border-1"
+                    style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                        <div class="text-primary fw-bold"># 223</div>
+                        <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+                        </div>
+                    </div>
+                    <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">First floor<li
+                            class="ms-3">
+                            T1</li>
+                    </div>
+                    <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                        <div class="d-flex justify-content-between">
+                            <div>Grilled burger</div>
+                            <div class="text-dark">3</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                        <div class="d-flex mt-2 justify-content-between">
+                            <div>Aloo sandwich</div>
+                            <div>1</div>
+                        </div>
+                        <li class="ms-2">Tomato</li>
+
+                    </div>
+                    <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+@section scripts {
+    <script>
+        function categorySelected(tag) {
+            var allclasses = document.getElementsByClassName("allCategory");
+            for (var i = 0; i < allclasses.length; i++) {
+                @* allclasses[i].classList.remove("text-secondary"); *@
+                    allclasses[i].classList.remove("KOTCategorySelect");
+            }
+            tag.classList.add("KOTCategorySelect");
+
+
+        }
+
+        function LeftShift(){
+            document.getElementById("allCardsMainDiv").scrollLeft -= 300;
+        }
+
+        function RightShift(){
+            document.getElementById("allCardsMainDiv").scrollLeft += 300;
+        }
+    </script>
+}

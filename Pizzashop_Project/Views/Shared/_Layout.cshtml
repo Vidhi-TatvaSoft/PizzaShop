@@ -245,7 +245,9 @@
                         </div> *@
                         <!-- profile -->
                         <div class="profilepic-div d-flex mt-2 mb-2">
-                            <a class="mobileicon mt-0 me-2 " asp-action="KOT" asp-controller="KOT"><i class="bi bi-tablet text-white fs-3"></i></a>      
+                            @if ((await AuthorizationService.AuthorizeAsync(User, "AccountManagerRole")).Succeeded){
+                                <a class="mobileicon mt-0 me-2 " asp-action="OrderAppTable" asp-controller="OrderAppTable"><i class="bi bi-tablet text-white fs-3"></i></a>      
+                            }
                             <div class="dropdown mt-1">
                                 <div class=" dropdown-toggle" type="button" id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown" aria-expanded="false">

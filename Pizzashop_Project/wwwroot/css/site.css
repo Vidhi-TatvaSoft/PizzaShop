@@ -322,3 +322,20 @@ form i{
 .customerHistoryTable{
   box-shadow: 5px 5px 10px rgb(192, 192, 192);
 }
+
+
+/* ------------------------order app css------------- */
+.orderApp-active-div{
+  background-color: #71c5ec !important;
+  color: white !important;
+}
+
+/* .orderAppdd-active-div{
+  background-color: #71c5ec !important;
+  color: white !important;
+} */
+
+.KOTCategorySelect{
+  color: #0084C3 !important;
+  border-bottom: 3px solid #0084C3 !important;
+}

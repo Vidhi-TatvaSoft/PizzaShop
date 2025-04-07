@@ -22,12 +22,19 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var cookieSavedToken = httpContext.Request.Cookies["AuthToken"];
-            if(cookieSavedToken == null)
+            if(string.IsNullOrEmpty(cookieSavedToken))
             {
-                context.Fail();
+                httpContext.Response.Cookies.Delete("email");
+                httpContext.Response.Cookies.Delete("profileImage");
+                httpContext.Response.Cookies.Delete("username");
+                httpContext.Response.Redirect("/UserLogin/VerifyPassword");
                 return Task.CompletedTask;
             }
             var roleName = _jWTService.GetClaimValue(cookieSavedToken, "role");
+            if(string.IsNullOrEmpty(roleName)){
+                httpContext.Response.Redirect("/ErrorPage/Unauthorize");
+                return Task.CompletedTask;
+            }
             var permissionsData = _rolesPermission.permissionByRole(roleName);
 
             switch (requirement.Permission)

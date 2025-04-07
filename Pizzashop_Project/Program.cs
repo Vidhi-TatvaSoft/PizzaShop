@@ -30,6 +30,7 @@ builder.Services.AddScoped<ITableAndSection,TableAndSectionService>();
 builder.Services.AddScoped<ITaxAndFees, TaxAndFeesService>();
 builder.Services.AddScoped<IOrderService,OrderService>();
 builder.Services.AddScoped<ICustomerService,CustomerService>();
+builder.Services.AddScoped<IOrderAppKotService,OrderAppKotService>();
 builder.Services.AddControllersWithViews();
 
 
