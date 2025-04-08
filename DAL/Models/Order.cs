@@ -35,6 +35,8 @@ public partial class Order
 
     public long TableId { get; set; }
 
+    public string? OtherInstruction { get; set; }
+
     public virtual ICollection<Assigntable> Assigntables { get; } = new List<Assigntable>();
 
     public virtual User? CreatedByNavigation { get; set; }

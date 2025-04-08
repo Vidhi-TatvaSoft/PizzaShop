@@ -588,6 +588,7 @@ public partial class PizzashopDbContext : DbContext
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("order_date");
+            entity.Property(e => e.OtherInstruction).HasColumnName("otherInstruction");
             entity.Property(e => e.PaymentmethodId).HasColumnName("paymentmethod_id");
             entity.Property(e => e.PaymentstatusId).HasColumnName("paymentstatus_id");
             entity.Property(e => e.RatingId).HasColumnName("rating_id");
@@ -659,6 +660,7 @@ public partial class PizzashopDbContext : DbContext
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
             entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.ReadyQuantity).HasColumnName("readyQuantity");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
                 .HasColumnName("status");

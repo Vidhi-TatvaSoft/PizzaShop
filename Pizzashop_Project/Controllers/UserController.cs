@@ -126,17 +126,6 @@ public class UserController : Controller
             {
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
 
-                // //create folder if not exist
-                // if (!Directory.Exists(path))
-                //     Directory.CreateDirectory(path);
-
-                // string fileName = $"{Guid.NewGuid()}_{user.ProfileImage.FileName}";
-                // string fileNameWithPath = Path.Combine(path, fileName);
-
-                // using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                // {
-                //     user.ProfileImage.CopyTo(stream);
-                // }
                 string fileName = BLL.Common.ImageUpload.UploadImage(user.ProfileImage, path);
                 user.Image = $"/uploads/{fileName}";
             }else{

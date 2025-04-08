@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
@@ -21,5 +22,10 @@ public class OrderAppKOTController : Controller
         orderAppKOTViewModel.categoryList = _menuService.GetAllCategories();
         ViewData["orderApp-Active"] = "KOT";
         return View(orderAppKOTViewModel);
+    }
+
+    public async Task<IActionResult> GetDetailsByCategory(long categoryId, string status){
+        List<KotCardDetailsViewModel> kotCardDetailsvm = await _orderAppKotService.GetDetailsByCategory(categoryId, status);
+        return PartialView("_displayCardsPartial", kotCardDetailsvm);
     }
 }

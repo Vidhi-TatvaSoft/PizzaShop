@@ -458,7 +458,8 @@ public class OrderService : IOrderService
             orderdetailsvm.NumberOfPerson = AssignTableList.Sum(x => x.NoOfPerson);
 
             //table
-            orderdetailsvm.tableList = _context.Invoices.Include(x => x.Customer).Include(x => x.Order).ThenInclude(x => x.Table)
+
+            orderdetailsvm.tableList = _context.Assigntables.Include(x =>x.Table)
             .Where(x => x.CustomerId == orderdetails.Order.CustomerId && x.OrderId == orderId)
             .Select(x => new Table
             {
