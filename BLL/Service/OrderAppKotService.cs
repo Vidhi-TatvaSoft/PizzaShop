@@ -31,6 +31,7 @@ public class OrderAppKotService : IOrderAppKotService
                         {
                             OrderId = x.Order.OrderId,
                             orderDate = x.Order.OrderDate,
+                            OrderInstruction = x.Order.OtherInstruction,
                             SectionId = x.Order.Table.SectionId,
                             SectionName = x.Order.Table.Section.SectionName,
                             tableList = x.Order.Assigntables
@@ -45,6 +46,7 @@ public class OrderAppKotService : IOrderAppKotService
                                         {
                                             ItemId = k.ItemId,
                                             ItemName = k.Item.ItemName,
+                                            ItemInstruction = k.ExtraInstruction,
                                             PendingItem = k.Quantity - (int)k.ReadyQuantity,
                                             ReadyItem = (int)k.ReadyQuantity,
                                             Quantity = status == "InProgress" ? (k.Quantity - (int)k.ReadyQuantity) : (int)k.ReadyQuantity,
@@ -63,6 +65,7 @@ public class OrderAppKotService : IOrderAppKotService
                         {
                             OrderId = x.Order.OrderId,
                             orderDate = x.Order.OrderDate,
+                            OrderInstruction = x.Order.OtherInstruction,
                             SectionId = x.Order.Table.SectionId,
                             SectionName = x.Order.Table.Section.SectionName,
                             tableList = x.Order.Assigntables
@@ -77,6 +80,7 @@ public class OrderAppKotService : IOrderAppKotService
                                         {
                                             ItemId = k.ItemId,
                                             ItemName = k.Item.ItemName,
+                                            ItemInstruction = k.ExtraInstruction,
                                             PendingItem = k.Quantity - (int)k.ReadyQuantity,
                                             ReadyItem = (int)k.ReadyQuantity,
                                             Quantity = status == "InProgress" ? (k.Quantity - (int)k.ReadyQuantity) : (int)k.ReadyQuantity,
@@ -89,6 +93,16 @@ public class OrderAppKotService : IOrderAppKotService
                                         }).ToList()
                         }).ToList();
             return kotdetails;
+    }
+
+    public async Task<KotCardDetailsViewModel> GetDetailsOfCardForSelectedOrder(long orderid,long catid,string status){
+        List<KotCardDetailsViewModel> kotcardDetails =await GetDetailsByCategory(catid,status);
+        var pericularOrderDetails = kotcardDetails.Where(x => x.OrderId == orderid).FirstOrDefault();
+        if(pericularOrderDetails == null){
+            return new KotCardDetailsViewModel();
+        }
+        return pericularOrderDetails;
+
     }
 
 }

@@ -12,5 +12,7 @@ public class ItemDetailsForKot
 
     public int Quantity { get; set; }
 
+    public string ItemInstruction { get; set; } = null!;
+
     public List<ModifiersforItemInKot> ModifiersInItem { get; set; }
 }

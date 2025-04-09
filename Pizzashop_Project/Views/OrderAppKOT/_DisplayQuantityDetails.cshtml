@@ -1,0 +1,23 @@
+@using DAL.ViewModels;
+@model KotCardDetailsViewModel;
+
+@foreach (var item in Model.ItemsInOneCard)
+{
+    <tr class="">
+        <td><input type="checkbox" class="ItemStatusModalCBClass" onclick="ItemInKOTCheckBoxClickFunction(this)"
+                checked>&nbsp;&nbsp;@item.ItemName
+                @foreach(var modifier in item.ModifiersInItem){
+                    <li class="ms-2">@modifier.ModifierName</li>
+                }
+        </td>
+        <td >
+            <div class="d-flex justify-content-end">
+            <div class="p-2 border border-2 border-primary rounded d-flex " style="max-width: fit-content;">
+                <div class="me-4"  style="cursor: pointer;">-</div>
+                <span>@item.Quantity</span>
+                <div class="ms-4"  style="cursor: pointer;">+</div>
+            </div>
+            </div>
+        </td>
+    </tr>
+}

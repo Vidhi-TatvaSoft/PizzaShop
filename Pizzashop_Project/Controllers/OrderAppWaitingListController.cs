@@ -7,6 +7,7 @@ public class OrderAppWaitingListController :Controller
     public IActionResult OrderAppWaitingList()
     {
         ViewData["orderApp-Active"] = "WaitingList";
+        ViewData["orderAppDDIcon"] = "fa-clock";
 
         return View();
     }

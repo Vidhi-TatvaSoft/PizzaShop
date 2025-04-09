@@ -12,5 +12,7 @@ public class KotCardDetailsViewModel
     public long SectionId { get; set; }
     public string SectionName { get; set; } = null!;
 
+    public string OrderInstruction { get; set; } = null!;
+
     public List<ItemDetailsForKot> ItemsInOneCard { get; set; }
 }

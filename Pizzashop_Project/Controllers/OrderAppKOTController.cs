@@ -21,11 +21,17 @@ public class OrderAppKOTController : Controller
         OrderAppKOTViewModel orderAppKOTViewModel = new();
         orderAppKOTViewModel.categoryList = _menuService.GetAllCategories();
         ViewData["orderApp-Active"] = "KOT";
+        ViewData["orderAppDDIcon"] = "fa-clipboard";
         return View(orderAppKOTViewModel);
     }
 
     public async Task<IActionResult> GetDetailsByCategory(long categoryId, string status){
         List<KotCardDetailsViewModel> kotCardDetailsvm = await _orderAppKotService.GetDetailsByCategory(categoryId, status);
         return PartialView("_displayCardsPartial", kotCardDetailsvm);
+    }
+
+    public async Task<IActionResult> GetDetailsOfCardForSelectedOrder(long orderid,long catid,string status ){
+        KotCardDetailsViewModel kotPerticularOrderDetailsvm =await _orderAppKotService.GetDetailsOfCardForSelectedOrder(orderid,catid,status);
+        return PartialView("_DisplayQuantityDetails",kotPerticularOrderDetailsvm);
     }
 }

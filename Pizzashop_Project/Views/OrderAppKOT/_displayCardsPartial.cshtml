@@ -1,53 +1,156 @@
 @using DAL.ViewModels;
 @model List<KotCardDetailsViewModel>
 
+
 @if (Model.Count != 0)
 {
     @foreach (var card in Model)
     {
-        if(card.ItemsInOneCard.Sum(x => x.Quantity) != 0)
+        if (card.ItemsInOneCard.Sum(x => x.Quantity) != 0)
         {
-            <div class="KOTCardClass rounded me-3 border-1"
-            style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
-            <div class="d-flex" style="background-color: rgb(221, 218, 218);">
-                <div class="text-primary fw-bold"># @card.OrderId</div>
-                <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i> 3 days 20 hours 10 min 34 sec
+            <div class="KOTCardClass rounded me-3 border-1" onclick="getDetailsOfCardForOrder(this)" data-id="@card.OrderId"
+                style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+                <div class="d-flex" style="background-color: rgb(221, 218, 218);">
+                    <div class="text-primary fw-bold"># @card.OrderId</div>
+                    <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i>
+                        <span class="d-none">@card.orderDate</span><span class="orderTimeDisplay"></span>
+                    </div>
+                </div>
+                <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">@card.SectionName
+                    <li class="ms-3">
+                        @for (int i = 0; i < card.tableList.Count; i++)
+                        {
+                            <span> @card.tableList[i].TableName</span>
+                            if (i < card.tableList.Count - 1)
+                            {
+
+                                <span>,</span>
+                            }
+                        }
+                    </li>
+                </div>
+                <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
+                    @foreach (var item in card.ItemsInOneCard)
+                    {
+                        if (item.Quantity > 0)
+                        {
+                            <div class="d-flex justify-content-between">
+                                <div>@item.ItemName</div>
+                                <div class="text-dark">@item.Quantity</div>
+                            </div>
+                            @foreach (var modifier in item.ModifiersInItem)
+                            {
+                                <li class="ms-2">@modifier.ModifierName</li>
+                            }
+                            @if (item.ItemInstruction != null)
+                            {
+                                <div class="text-primary">Instruction: <span class="text-dark">@item.ItemInstruction</span></div>
+                            }
+                        }
+
+                    }
+
+                </div>
+                <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
+                    @if (card.OrderInstruction != null)
+                    {
+                        <div class="text-primary">Order Instruction: <span class="text-dark">@card.OrderInstruction</span></div>
+                    }
                 </div>
             </div>
-            <div class="d-flex fw-semibold pt-2 pb-2" style="background-color: rgb(221, 218, 218);">@card.SectionName
-                <li class="ms-3">
-                    @for (int i = 0; i < card.tableList.Count; i++)
-                    {
-                        <span> @card.tableList[i].TableName</span>
-                        if (i < card.tableList.Count - 1)
-                        {
-
-                            <span>,</span>
-                        }
-                    }
-                </li>
-            </div>
-            <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
-                @foreach (var item in card.ItemsInOneCard)
-                {
-                    if(item.Quantity >0){
-                        <div class="d-flex justify-content-between">
-                            <div>@item.ItemName</div>
-                            <div class="text-dark">@item.Quantity</div>
-                        </div>
-                        @foreach (var modifier in item.ModifiersInItem)
-                        {
-                            <li class="ms-2">@modifier.ModifierName</li>
-                        }
-                    }
-                }
-
-            </div>
-            <div class="d-flex" style="background-color: rgb(221, 218, 218); height: 64px;">
-            </div>
-        </div>
         }
-        
+
     }
 
 }
+
+<!------------------------------------------- Modal--------------------------------------------->
+<div id="DisplayCardDetails" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order ID: #<span id="orderIdInModal"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body ">
+                <table class="table" >
+                    <thead>
+                        @* d-flex justify-content-between border-0 border-bottom-2 border-top-0 border-start-0 border-end-0 border-dark *@
+                        <tr >
+                            
+                            <th scope="col">Item</th>
+                            <th scope="col " class="text-end">Quantity</th>
+                            
+                        </tr>
+                    </thead>
+
+                    <tbody id="modalTableDetails">
+                       
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Mark As Prepared</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+
+    function orderTimeDisplay() {
+        var orderdateclass = document.getElementsByClassName("orderTimeDisplay");
+        for (i = 0; i < orderdateclass.length; i++) {
+            var curdate = Date.now();
+            var orderDate = orderdateclass[i].parentElement.children[1].innerHTML;
+            var Dateonly = orderDate.split(" ");
+            var orderday = Dateonly[0].split("-")[0];
+            var ordermonth = Dateonly[0].split("-")[1];
+            var orderyear = Dateonly[0].split("-")[2];
+            var orderDateformated = orderyear + "-" + ordermonth + "-" + orderday + "T" + Dateonly[1];
+            var orderDateToCal = new Date(orderDateformated);
+            @* console.log(curdate);
+            console.log(orderDateToCal);
+            console.log(curdate - orderDateToCal); *@
+            var timeDiff = curdate - orderDateToCal;
+
+            const timeDiffday = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
+            const daysms = timeDiff % (24 * 60 * 60 * 1000);
+            const timeDiffHours = Math.floor(daysms / (60 * 60 * 1000));
+            const hoursms = timeDiff % (60 * 60 * 1000);
+            const timeDiffMins = Math.floor(hoursms / (60 * 1000));
+            const minutesms = timeDiff % (60 * 1000);
+            const timeDiffSecs = Math.floor(minutesms / 1000);
+            orderdateclass[i].innerHTML = timeDiffday + " days " + timeDiffHours + " hours " + timeDiffMins + " min " + timeDiffSecs + " sec"
+        }
+    }
+
+    var displaytime = window.setInterval(function () {
+        orderTimeDisplay()
+    }, 1000);
+
+    function getDetailsOfCardForOrder() {
+        $("#DisplayCardDetails").modal("show");
+        var orderid = event.currentTarget.getAttribute("data-id");
+        document.getElementById("orderIdInModal").innerHTML = orderid;
+        var catid = document.getElementById("categoryIdSet").value;
+        var status = document.getElementById("statusSet").value;
+        console.log(catid);
+        console.log(status)
+        $.ajax({
+            url:"/OrderAppKOT/GetDetailsOfCardForSelectedOrder",
+            type:"GET",
+            data:{orderid,catid,status},
+            success:function(data){
+                $("#modalTableDetails").html(data);
+            }
+        })
+    }
+
+</script>

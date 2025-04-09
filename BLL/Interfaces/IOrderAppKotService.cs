@@ -5,4 +5,6 @@ namespace BLL.Interfaces;
 public interface IOrderAppKotService
 {
    Task<List<KotCardDetailsViewModel>> GetDetailsByCategory(long categoryId, string status);
+
+   Task<KotCardDetailsViewModel> GetDetailsOfCardForSelectedOrder(long orderid,long catid,string status);
 }

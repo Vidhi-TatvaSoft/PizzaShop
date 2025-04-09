@@ -89,7 +89,6 @@ public class UserController : Controller
         ViewBag.States = new SelectList(States, "StateId", "StateName");
         ViewBag.Cities = new SelectList(Cities, "CityId", "CityName");
         // var data = userData[0].Userlogin.Email;
-
         return View(userViewModel);
     }
     #endregion

@@ -83,9 +83,10 @@
                             <div class="logo-main-div d-flex  mt-2 mb-2 ">
                                 <div class="logo-image bg-white  me-2 d-flex">
                                     <img src="~/images/logos/pizzashop_logo.png" width="50px" alt="">
-                                  
+
                                 </div>
-                                <div class="logo-text text-white fs-5 mt-2 fw-semibold d-none d-sm-block">PIZZASHOP</div>
+                                <div class="logo-text text-white fs-5 mt-2 fw-semibold d-none d-sm-block">PIZZASHOP
+                                </div>
                             </div>
                         </div>
 
@@ -93,36 +94,45 @@
                         <!-- profile -->
                         <div class="profilepic-div d-flex  mt-2 mb-2 ">
                             <div class="orderAppMenu d-md-flex d-none align-items-center justify-content-between me-3">
-                                <a asp-action="OrderAppKOT" asp-controller="OrderAppKOT" class="btn btn-primary text-white border  rounded-pill p-1 px-3 me-2 @((ViewData["orderApp-Active"] as string) == "KOT" ? "orderApp-active-div" : "")"><i
+                                <a asp-action="OrderAppKOT" asp-controller="OrderAppKOT"
+                                    class="btn btn-primary text-white border  rounded-pill p-1 px-3 me-2 @((ViewData["orderApp-Active"] as string) == "KOT" ? "orderApp-active-div" : "")"><i
                                         class="fa-solid fa-clipboard me-1"></i>KOT</a>
-                                <a asp-action="OrderAppWaitingList" asp-controller="OrderAppWaitingList" class="btn btn-primary text-white border  rounded-pill p-1 px-3 me-2 @((ViewData["orderApp-Active"] as string) == "WaitingList" ? "orderApp-active-div" : "")"><i
+                                <a asp-action="OrderAppWaitingList" asp-controller="OrderAppWaitingList"
+                                    class="btn btn-primary text-white border  rounded-pill p-1 px-3 me-2 @((ViewData["orderApp-Active"] as string) == "WaitingList" ? "orderApp-active-div" : "")"><i
                                         class="fa-solid fa-clock me-1"></i>Waiting List</a>
-                                <a asp-action="OrderAppTable" asp-controller="OrderAppTable" class="btn btn-primary text-white border  rounded-pill p-1 px-3 me-2 @((ViewData["orderApp-Active"] as string) == "Table" ? "orderApp-active-div" : "")"><i
+                                <a asp-action="OrderAppTable" asp-controller="OrderAppTable"
+                                    class="btn btn-primary text-white border  rounded-pill p-1 px-3 me-2 @((ViewData["orderApp-Active"] as string) == "Table" ? "orderApp-active-div" : "")"><i
                                         class="fa-solid fa-table me-1"></i>Tables</a>
-                                <a asp-action="OrderAppMenu" asp-controller="OrderAppMenu" class="btn btn-primary text-white border  rounded-pill p-1 px-3 me-2 @((ViewData["orderApp-Active"] as string) == "Menu" ? "orderApp-active-div" : "")"><i
+                                <a asp-action="OrderAppMenu" asp-controller="OrderAppMenu"
+                                    class="btn btn-primary text-white border  rounded-pill p-1 px-3 me-2 @((ViewData["orderApp-Active"] as string) == "Menu" ? "orderApp-active-div" : "")"><i
                                         class="fa-solid fa-burger me-1"></i>Menu</a>
                             </div>
                             <div class="dropdown-start mt-1 d-md-none d-block">
-                                        <div class="dropdown-toggle d-flex align-items-center btn btn-primary text-white border  rounded-pill p-1 px-3 me-2" type="button" id="dropdownMenuButton1"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            @* <img src="~/images/logos/pizzashop_logo.png" width="50px" alt=""> *@
-                                             <a class="d-flex align-items-center  text-white text-nowrap text-decoration-none"><i
-                                                    class="fa-solid fa-clipboard me-1"></i>@ViewData["orderApp-Active"]</a>
-                                        </div>
+                                <div class="dropdown-toggle d-flex align-items-center btn btn-primary text-white border  rounded-pill p-1 px-3 me-2"
+                                    type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    @* <img src="~/images/logos/pizzashop_logo.png" width="50px" alt=""> *@
+                                    <a class="d-flex align-items-center  text-white text-nowrap text-decoration-none"><i
+                                            class="fa-solid @ViewData["orderAppDDIcon"] me-1"></i>@ViewData["orderApp-Active"]</a>
+                                </div>
 
-                                        <div class="orderAppMenu  align-items-center justify-content-between me-3 dropdown-menu"
-                                            aria-labelledby="dropdownMenuButton1">
-                                            <a asp-action="OrderAppKOT" asp-controller="OrderAppKOT" class="d-flex align-items-center justify-content-start text-dark fw-semibold p-2 ms-2 me-2 text-nowrap text-decoration-none  @((ViewData["orderApp-Active"] as string) == "KOT" ? "orderApp-active-div" : "")"><i
-                                                    class="fa-solid fa-clipboard me-1"></i>KOT</a>
-                                            <a asp-action="OrderAppWaitingList" asp-controller="OrderAppWaitingList"  class="d-flex align-items-center justify-content-start text-dark fw-semibold p-2 ms-2 me-2 text-nowrap text-decoration-none  @((ViewData["orderApp-Active"] as string) == "WaitingList" ? "orderApp-active-div" : "")"><i
-                                                    class="fa-solid fa-clock me-1"></i>Waiting List</a>
-                                            <a asp-action="OrderAppTable" asp-controller="OrderAppTable" class="d-flex align-items-center justify-content-start text-dark fw-semibold p-2 ms-2 me-2 text-nowrap text-decoration-none  @((ViewData["orderApp-Active"] as string) == "Table" ? "orderApp-active-div" : "")"><i
-                                                    class="fa-solid fa-table me-1"></i>Tables</a>
-                                            <a asp-action="OrderAppMenu" asp-controller="OrderAppMenu" class="d-flex align-items-center justify-content-start text-dark fw-semibold p-2 ms-2 me-2 text-nowrap text-decoration-none  @((ViewData["orderApp-Active"] as string) == "Menu" ? "orderApp-active-div" : "")"><i
-                                                    class="fa-solid fa-burger me-1"></i>Menu</a>
-                                        </div>
+                                <div class="orderAppMenu  align-items-center justify-content-between me-3 dropdown-menu"
+                                    aria-labelledby="dropdownMenuButton1">
+                                    <a asp-action="OrderAppKOT" asp-controller="OrderAppKOT"
+                                        class="d-flex align-items-center justify-content-start text-dark fw-semibold p-2 ms-2 me-2 text-nowrap text-decoration-none  @((ViewData["orderApp-Active"] as string) == "KOT" ? "orderApp-active-div" : "")"><i
+                                            class="fa-solid fa-clipboard me-1"></i>KOT</a>
+                                    <a asp-action="OrderAppWaitingList" asp-controller="OrderAppWaitingList"
+                                        class="d-flex align-items-center justify-content-start text-dark fw-semibold p-2 ms-2 me-2 text-nowrap text-decoration-none  @((ViewData["orderApp-Active"] as string) == "WaitingList" ? "orderApp-active-div" : "")"><i
+                                            class="fa-solid fa-clock me-1"></i>Waiting List</a>
+                                    <a asp-action="OrderAppTable" asp-controller="OrderAppTable"
+                                        class="d-flex align-items-center justify-content-start text-dark fw-semibold p-2 ms-2 me-2 text-nowrap text-decoration-none  @((ViewData["orderApp-Active"] as string) == "Table" ? "orderApp-active-div" : "")"><i
+                                            class="fa-solid fa-table me-1"></i>Tables</a>
+                                    <a asp-action="OrderAppMenu" asp-controller="OrderAppMenu"
+                                        class="d-flex align-items-center justify-content-start text-dark fw-semibold p-2 ms-2 me-2 text-nowrap text-decoration-none  @((ViewData["orderApp-Active"] as string) == "Menu" ? "orderApp-active-div" : "")"><i
+                                            class="fa-solid fa-burger me-1"></i>Menu</a>
+                                </div>
 
-                                    </div>
+                            </div>
 
 
                             <!-- profile-->
@@ -139,20 +149,21 @@
                                                 style="border-radius: 50%;" width="30px" height="25px" alt="">
                                             @(HttpContextAccessor.HttpContext.Request.Cookies["username"])</div>
                                     </li>
-                                    <li><a class="dropdown-item" asp-action="MyProfile" asp-controller="User">My
+                                    <li><a class="dropdown-item" asp-action="ProfilePage" asp-controller="OrderApp">My
                                             Profile</a></li>
-                                    <li><a class="dropdown-item" asp-action="ChangePassword"
-                                            asp-controller="User">Change Password</a></li>
+                                    <li><a class="dropdown-item" asp-action="ChangePasswordOrderApp"
+                                            asp-controller="OrderApp">Change Password</a></li>
                                     <li><a class="dropdown-item" data-bs-toggle="modal"
                                             data-bs-target="#logout">Logout</a></li>
-                                    <li><a class="dropdown-item" asp-action="Dashboard" asp-controller="User">Exit OrderApp</a></li>
+                                    <li><a class="dropdown-item" asp-action="Dashboard" asp-controller="User">Exit
+                                            OrderApp</a></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div class="container ps-lg-5  pe-lg-5 pe-md-4 ps-md-4 pt-3 pb-3">
-                    
-                    @RenderBody()
+
+                        @RenderBody()
                     </div>
                 </div>
             </div>
@@ -194,4 +205,25 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 
+    <script>
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+             toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "timeOut": "2000"
+            };
+            console.log("successMessage", successMessage);
+            if (successMessage) {
+                toastr.success(successMessage);
+            }
+            if (errorMessage) {
+                toastr.error(errorMessage);
+            }
+        });
+    </script>
+
 </html>
+
+

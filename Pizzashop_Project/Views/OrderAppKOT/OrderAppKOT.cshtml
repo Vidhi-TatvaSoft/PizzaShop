@@ -66,6 +66,8 @@
                 type: "GET",
                 data: { categoryId,status },
                 success: function (data) {
+                    data+= `<input type="hidden" value="${categoryId}" id="categoryIdSet">`;
+                    data+= `<input type="hidden" value="${status}" id="statusSet">`;
                     $("#allCardsMainDiv").html(data);
                 },
             })
