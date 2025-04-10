@@ -4,6 +4,8 @@ public class ItemDetailsForKot
 {
     public long ItemId { get; set; }
 
+    public long OrderDetailId { get; set; }
+
     public string ItemName { get; set; }
 
     public int PendingItem { get; set; }

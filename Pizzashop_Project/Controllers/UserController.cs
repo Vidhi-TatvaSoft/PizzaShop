@@ -15,7 +15,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
-// [Authorize(Roles = "Admin")]
+// [Authorize(Roles = "Admin" )]
+
 public class UserController : Controller
 {
     private readonly IUserService _userService;
@@ -87,7 +88,7 @@ public class UserController : Controller
         var Cities = _userService.GetCity(userData[0].StateId);
         ViewBag.Countries = new SelectList(Countries, "CountryId", "CountryName");
         ViewBag.States = new SelectList(States, "StateId", "StateName");
-        ViewBag.Cities = new SelectList(Cities, "CityId", "CityName");
+        ViewBag.Cities = new SelectList(Cities, "CityId", "CityName");  
         // var data = userData[0].Userlogin.Email;
         return View(userViewModel);
     }

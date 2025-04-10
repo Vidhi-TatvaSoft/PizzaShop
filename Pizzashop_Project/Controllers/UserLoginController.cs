@@ -13,6 +13,7 @@ using NuGet.Common;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.AspNetCore.Authorization;
 using BLL.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace Pizzashop_Project.Controllers
 {
@@ -79,10 +80,19 @@ namespace Pizzashop_Project.Controllers
                     ViewBag.ProfileImage = _userLoginService.GetProfileImage(userlogin.Email);
                     TempData["SuccessMessage"] = "Login Successfully";
                     ViewData["sidebar-active"] = "Dashboard";
+                    var Role = _jwtTokenService.GetClaimValue(verifictiontoken, "role");
+                    if(Role == "Chef"){
+                        return RedirectToAction("OrderAppKOT","OrderAppKOT");
+                    }
                     return RedirectToAction("Dashboard", "User");
                 }
                 else
                 {
+                    // string token = Request.Cookies["AuthToken"];
+                    var Role = _jwtTokenService.GetClaimValue(verifictiontoken, "role");
+                    if(Role == "Chef"){
+                        return RedirectToAction("OrderAppKOT","OrderAppKOT");
+                    }
                     TempData["SuccessMessage"] = "Login Successfully";
                     ViewData["sidebar-active"] = "Dashboard";
                     return RedirectToAction("Dashboard", "User");

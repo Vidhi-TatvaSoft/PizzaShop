@@ -18,20 +18,20 @@
         
     </div>
 
-    <div class="bg-white mt-4 p-2 pb-0  " style=" height:435px;">
+    <div class="bg-white mt-4 p-2 pb-0  " style=" min-height:435px;">
         <div class="d-flex flex-column flex-sm-row  justify-content-between align-item-center">
             <div class="heading-category text-primary fs-3 fw-bold ms-2" id="selectedCategoryName">All</div>
             <div>
                 <div class="btn btn-primary mt-1 me-2 text-wrap-nowrap" id="inProgressDiv">In Progress</div>
                 <div class="btn btn-outline-primary mt-1 me-2 text-wrap-nowrap" id="readyDiv">Ready</div>
-                <div class="btn btn-outline-primary mt-1 me-2 " onclick="LeftShift()"> < </div>
-                        <div class="btn btn-outline-primary mt-1 me-2" onclick="RightShift()"> > </div>
+                <div class="btn btn-outline-primary mt-1 me-2 " id="left-arrow"  onclick="LeftShift(this)"> < </div>
+                        <div class="btn btn-outline-primary mt-1 me-2" id="right-arrow" onclick="RightShift(this)"> > </div>
                 </div>
             </div>
 
 
             <!-------------------------- cards ----------------------->
-            <div class=" p-3 ps-4 d-flex" id="allCardsMainDiv" style="overflow: auto; scrollbar-width: thin;">
+            <div class=" p-3 ps-4 d-flex  " id="allCardsMainDiv" style=" overflow:auto; scrollbar-width: thin;">
                 
             </div>
         </div>
@@ -42,6 +42,9 @@
     <script>
         var status;
         var categoryId;
+        var pageNumber =1;
+        var pageSize = 5;
+        var totalRecords;
 
         function categorySelected(tag) {
             categoryId = tag.getAttribute("data-categoryid");
@@ -57,28 +60,44 @@
             document.getElementById("inProgressDiv").classList.add("btn-primary");
             document.getElementById("readyDiv").classList.remove("btn-primary");
             document.getElementById("readyDiv").classList.add("btn-outline-primary"); *@
-            GetDetailsByCategory(categoryId,status);
+            GetDetailsByCategory(categoryId,status, pageNumber);
         }
 
-        function GetDetailsByCategory(categoryId,status){
+        function GetDetailsByCategory(categoryId,status,pageNumber){
              $.ajax({
-                url: "/OrderAppKOT/GetDetailsByCategory",
+                url: "/OrderAppKOT/GetDetailsByCategorypagination",
                 type: "GET",
-                data: { categoryId,status },
+                data: { categoryId,status, pageNumber ,pageSize  },
                 success: function (data) {
                     data+= `<input type="hidden" value="${categoryId}" id="categoryIdSet">`;
                     data+= `<input type="hidden" value="${status}" id="statusSet">`;
                     $("#allCardsMainDiv").html(data);
+                    totalRecords = document.getElementById("totalcount").value;
                 },
             })
+            $("#left-arrow").prop("disabled", pageNumber === 1);
+            $("#right-arrow").prop("disabled", pageNumber * pageSize >= totalRecords);
         }
 
-        function LeftShift(){
-            document.getElementById("allCardsMainDiv").scrollLeft -= 300;
+        function LeftShift(tag){
+            @* if(pageNumber>0){
+                pageNumber--;
+                GetDetailsByCategory(categoryId,status,pageNumber)
+            } *@
+            let leftarrow = !$(tag).prop("disabled");
+                console.log(leftarrow);
+                if (leftarrow) {
+                    pageNumber--;
+                    GetDetailsByCategory(categoryId,status,pageNumber);
+                }
         }
 
-        function RightShift(){
-            document.getElementById("allCardsMainDiv").scrollLeft += 300;
+        function RightShift(tag){
+            let rightarrow = !$(tag).prop("disabled");
+                if (rightarrow) {
+                    pageNumber++;
+                    GetDetailsByCategory(categoryId,status,pageNumber);
+                }
         }
 
         $(document).ready(function () {
@@ -90,7 +109,7 @@
                 $(this).addClass("btn-primary");
                 $("#readyDiv").removeClass("btn-primary");
                 $("#readyDiv").addClass("btn-outline-primary");
-                GetDetailsByCategory(categoryId,status);
+                GetDetailsByCategory(categoryId,status, pageNumber);
             });
 
             $("#readyDiv").click(function () {
@@ -99,7 +118,7 @@
                 $(this).addClass("btn-primary");
                 $("#inProgressDiv").removeClass("btn-primary");
                 $("#inProgressDiv").addClass("btn-outline-primary");
-                GetDetailsByCategory(categoryId,status);
+                GetDetailsByCategory(categoryId,status, pageNumber);
             });
         });
     </script>

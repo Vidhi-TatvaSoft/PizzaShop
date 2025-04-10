@@ -1,14 +1,14 @@
 @using DAL.ViewModels;
-@model List<KotCardDetailsViewModel>
+@model PaginationViewModel<KotCardDetailsViewModel>
 
 
-@if (Model.Count != 0)
+@if (Model.TotalCount != 0)
 {
-    @foreach (var card in Model)
+    @foreach (var card in Model.Items)
     {
         if (card.ItemsInOneCard.Sum(x => x.Quantity) != 0)
         {
-            <div class="KOTCardClass rounded me-3 border-1" onclick="getDetailsOfCardForOrder(this)" data-id="@card.OrderId"
+            <div class="KOTCardClass rounded mt-3 me-3 border-1 col-auto" onclick="getDetailsOfCardForOrder(this)" data-id="@card.OrderId"
                 style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
                 <div class="d-flex" style="background-color: rgb(221, 218, 218);">
                     <div class="text-primary fw-bold"># @card.OrderId</div>
@@ -22,10 +22,7 @@
                         {
                             <span> @card.tableList[i].TableName</span>
                             if (i < card.tableList.Count - 1)
-                            {
-
-                                <span>,</span>
-                            }
+                            {<span>,</span>}
                         }
                     </li>
                 </div>
@@ -61,7 +58,7 @@
         }
 
     }
-
+    <input type="hidden" value="@Model.TotalCount" id="totalcount">
 }
 
 <!------------------------------------------- Modal--------------------------------------------->
@@ -74,25 +71,26 @@
             </div>
 
             <div class="modal-body ">
-                <table class="table" >
+                <table class="table">
                     <thead>
                         @* d-flex justify-content-between border-0 border-bottom-2 border-top-0 border-start-0 border-end-0 border-dark *@
-                        <tr >
-                            
+                        <tr>
+
                             <th scope="col">Item</th>
                             <th scope="col " class="text-end">Quantity</th>
-                            
+
                         </tr>
                     </thead>
 
                     <tbody id="modalTableDetails">
-                       
+
                     </tbody>
                 </table>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Mark As Prepared</button>
+                <button type="button" class="btn btn-primary" id="modalSaveButtonId"
+                    onclick="ChangeItemQuantityDetails()">Mark As Prepared</button>
                 <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
             </div>
         </div>
@@ -101,8 +99,10 @@
 
 
 <script>
-
-
+    var catid;
+    var status;
+    var orderdetailIdarr = [];
+    var itemquantityarr = [];
 
     function orderTimeDisplay() {
         var orderdateclass = document.getElementsByClassName("orderTimeDisplay");
@@ -133,24 +133,98 @@
 
     var displaytime = window.setInterval(function () {
         orderTimeDisplay()
-    }, 1000);
+    }, -1000);
 
     function getDetailsOfCardForOrder() {
         $("#DisplayCardDetails").modal("show");
         var orderid = event.currentTarget.getAttribute("data-id");
         document.getElementById("orderIdInModal").innerHTML = orderid;
-        var catid = document.getElementById("categoryIdSet").value;
-        var status = document.getElementById("statusSet").value;
-        console.log(catid);
-        console.log(status)
+        catid = document.getElementById("categoryIdSet").value;
+        status = document.getElementById("statusSet").value;
+        if (status == "InProgress") {
+            document.getElementById("modalSaveButtonId").innerHTML = `Mark As Ready`;
+        }
+        else {
+            document.getElementById("modalSaveButtonId").innerHTML = `Mark As InProgress`;
+        }
+        @* console.log(catid);
+        console.log(status) *@
+            $.ajax({
+                url: "/OrderAppKOT/GetDetailsOfCardForSelectedOrder",
+                type: "GET",
+                data: { orderid, catid, status },
+                success: function (data) {
+                    $("#modalTableDetails").html(data);
+                }
+            })
+    }
+
+
+    function checkboxClickFunction(tag) {
+        console.log(tag.parentElement.parentElement.children[1].children[0].children[0].children[1].innerHTML);
+        if (tag.checked) {
+            tag.parentElement.parentElement.children[1].children[0].children[0].children[1].innerHTML = 1;
+        }
+        else {
+            tag.parentElement.parentElement.children[1].children[0].children[0].children[1].innerHTML = 0;
+        }
+    }
+
+    function minusButton(tag) {
+        tag.nextElementSibling.innerHTML = parseInt(tag.nextElementSibling.innerHTML) - 1;
+        if (tag.nextElementSibling.innerHTML < 0) {
+            tag.nextElementSibling.innerHTML = 0;
+        }
+        if(tag.nextElementSibling.innerHTML == 0){
+            tag.parentElement.parentElement.parentElement.previousElementSibling.children[0].checked = false;
+        }
+    }
+
+    function plusButton(tag, itemquantity) {
+        tag.previousElementSibling.innerHTML = parseInt(tag.previousElementSibling.innerHTML) + 1;
+        if (tag.previousElementSibling.innerHTML > itemquantity) {
+            tag.previousElementSibling.innerHTML = itemquantity;
+        }
+        if(tag.previousElementSibling.innerHTML > 0){
+            tag.parentElement.parentElement.parentElement.previousElementSibling.children[0].checked = true;
+        }
+
+    }
+
+    function ChangeItemQuantityDetails() {
+        var orderid = document.getElementById("orderIdInModal").innerHTML;
+        var ItemcheckboxClass = document.getElementsByClassName("ItemcheckboxClass");
+        for (i = 0; i < ItemcheckboxClass.length; i++) {
+            if (ItemcheckboxClass[i].checked) {
+                orderdetailIdarr.push(parseInt(ItemcheckboxClass[i].nextElementSibling.innerHTML));
+
+                itemquantityarr.push(parseInt(ItemcheckboxClass[i].parentElement.nextElementSibling.children[0].children[0].children[1].innerHTML))
+            }
+        }
+        console.log(orderdetailIdarr);
+        console.log(itemquantityarr);
         $.ajax({
-            url:"/OrderAppKOT/GetDetailsOfCardForSelectedOrder",
-            type:"GET",
-            data:{orderid,catid,status},
-            success:function(data){
-                $("#modalTableDetails").html(data);
+            url: "/OrderAppKOT/ChangeItemQuantitiesAndStatus",
+            type: "POST",
+            data: { orderdetailIdarr, itemquantityarr, status },
+            success: function (res) {
+                if (res.success) {
+                    successToaster(res.text);
+                } else {
+                    errorToaster(res.text);
+                }
+                $(".btn-close").click();
+                if(status == "InProgress"){
+                    $("#inProgressDiv").click();
+                }else{
+                    $("#readyDiv").click();
+                }
             }
         })
+
+        orderdetailIdarr = [];
+        itemquantityarr = []
     }
 
 </script>
+<partial name="_Toaster" />
