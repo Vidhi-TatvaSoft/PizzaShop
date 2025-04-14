@@ -4,49 +4,52 @@
 @{
     Layout = "~/Views/Shared/_OrderAppLayout.cshtml";
 }
-    <div class="fs-2 text-primary ps-0 fw-bold">KOT</div>
+<div class="fs-2 text-primary ps-0 fw-bold">KOT</div>
 
-    <div class="bg-white  mt-2 p-2 pb-0  d-flex justify-content-start align-item-center "
-        style=" overflow:auto; scrollbar-width: thin;">
-        <div class="allCategory KOTCategorySelect ms-3 me-3  pb-1 fs-5 text-secondary fw-bold  text-wrap-nowrap"
-            style="max-width-content=fit;" onclick="categorySelected(this)" data-categoryid="0">All</div>
-        @foreach (var item in Model.categoryList)
-        {
-            <div class="allCategory ms-3 me-3 pb-1 fs-5  fw-bold text-secondary text-wrap-nowrap"
-                style="max-width-content=fit;" onclick="categorySelected(this)" data-categoryid="@item.CategoryId">@item.CategoryName</div>
-        }
-        
-    </div>
+<div class="bg-white  mt-2 p-2 pb-0  d-flex justify-content-start align-item-center "
+    style=" overflow:auto; scrollbar-width: thin;">
+    <div class="allCategory KOTCategorySelect ms-3 me-3  pb-1 fs-5 text-secondary fw-bold  text-wrap-nowrap"
+        style="max-width-content=fit;" onclick="categorySelected(this)" data-categoryid="0">All</div>
+    @foreach (var item in Model.categoryList)
+    {
+        <div class="allCategory ms-3 me-3 pb-1 fs-5  fw-bold text-secondary text-wrap-nowrap" style="max-width-content=fit;"
+            onclick="categorySelected(this)" data-categoryid="@item.CategoryId">@item.CategoryName</div>
+    }
 
-    <div class="bg-white mt-4 p-2 pb-0  " style=" min-height:435px;">
-        <div class="d-flex flex-column flex-sm-row  justify-content-between align-item-center">
-            <div class="heading-category text-primary fs-3 fw-bold ms-2" id="selectedCategoryName">All</div>
-            <div>
-                <div class="btn btn-primary mt-1 me-2 text-wrap-nowrap" id="inProgressDiv">In Progress</div>
-                <div class="btn btn-outline-primary mt-1 me-2 text-wrap-nowrap" id="readyDiv">Ready</div>
-                <div class="btn btn-outline-primary mt-1 me-2 " id="left-arrow"  onclick="LeftShift(this)"> < </div>
-                        <div class="btn btn-outline-primary mt-1 me-2" id="right-arrow" onclick="RightShift(this)"> > </div>
-                </div>
-            </div>
+</div>
 
-
-            <!-------------------------- cards ----------------------->
-            <div class=" p-3 ps-4 d-flex  " id="allCardsMainDiv" style=" overflow:auto; scrollbar-width: thin;">
-                
-            </div>
+<div class="bg-white mt-4 p-2 pb-0  " style=" min-height:435px;">
+    <div class="d-flex flex-column flex-sm-row  justify-content-between align-item-center">
+        <div class="heading-category text-primary fs-3 fw-bold ms-2" id="selectedCategoryName">All</div>
+        <div>
+            <div class="btn btn-primary mt-1 me-2 text-wrap-nowrap" id="inProgressDiv">In Progress</div>
+            <div class="btn btn-outline-primary mt-1 me-2 text-wrap-nowrap" id="readyDiv">Ready</div>
+            <button class="btn btn-outline-primary mt-1 me-2 " id="left-arrow" onclick="LeftShift(this)">
+                < </button>
+                    <button class="btn btn-outline-primary mt-1 me-2" id="right-arrow" onclick="RightShift(this)"> >
+                    </button>
         </div>
     </div>
+
+
+    <!-------------------------- cards ----------------------->
+    <div class=" p-3 ps-4 d-flex  " id="allCardsMainDiv" style=" overflow:auto; scrollbar-width: thin;">
+
+    </div>
+</div>
+</div>
 
 
 @section scripts {
     <script>
         var status;
         var categoryId;
-        var pageNumber =1;
+        var pageNumber = 1;
         var pageSize = 5;
         var totalRecords;
 
         function categorySelected(tag) {
+            pageNumber =1;
             categoryId = tag.getAttribute("data-categoryid");
             status = document.getElementById("inProgressDiv").classList.contains("btn-primary") ? "InProgress" : "Ready";
             var allclasses = document.getElementsByClassName("allCategory");
@@ -60,44 +63,45 @@
             document.getElementById("inProgressDiv").classList.add("btn-primary");
             document.getElementById("readyDiv").classList.remove("btn-primary");
             document.getElementById("readyDiv").classList.add("btn-outline-primary"); *@
-            GetDetailsByCategory(categoryId,status, pageNumber);
+                GetDetailsByCategory(categoryId, status, pageNumber);
         }
 
-        function GetDetailsByCategory(categoryId,status,pageNumber){
-             $.ajax({
+        function GetDetailsByCategory(categoryId, status, pageNumber) {
+            $.ajax({
                 url: "/OrderAppKOT/GetDetailsByCategorypagination",
                 type: "GET",
-                data: { categoryId,status, pageNumber ,pageSize  },
+                data: { categoryId, status, pageNumber, pageSize },
                 success: function (data) {
-                    data+= `<input type="hidden" value="${categoryId}" id="categoryIdSet">`;
-                    data+= `<input type="hidden" value="${status}" id="statusSet">`;
+                    data += `<input type="hidden" value="${categoryId}" id="categoryIdSet">`;
+                    data += `<input type="hidden" value="${status}" id="statusSet">`;
+                    data += `<input type="hidden" value="${pageNumber}" id="PageNumberset">`;
                     $("#allCardsMainDiv").html(data);
                     totalRecords = document.getElementById("totalcount").value;
+                    @* console.log(totalRecords); *@
+                        $("#left-arrow").prop("disabled", pageNumber === 1);
+                    $("#right-arrow").prop("disabled", pageNumber * pageSize >= totalRecords);
                 },
             })
-            $("#left-arrow").prop("disabled", pageNumber === 1);
-            $("#right-arrow").prop("disabled", pageNumber * pageSize >= totalRecords);
         }
 
-        function LeftShift(tag){
-            @* if(pageNumber>0){
-                pageNumber--;
-                GetDetailsByCategory(categoryId,status,pageNumber)
-            } *@
+        function LeftShift(tag) {
+
             let leftarrow = !$(tag).prop("disabled");
-                console.log(leftarrow);
+            @* console.log(leftarrow); *@
                 if (leftarrow) {
-                    pageNumber--;
-                    GetDetailsByCategory(categoryId,status,pageNumber);
-                }
+                pageNumber--;
+                GetDetailsByCategory(categoryId, status, pageNumber);
+            }
         }
 
-        function RightShift(tag){
+        function RightShift(tag) {
             let rightarrow = !$(tag).prop("disabled");
+            @* console.log(rightarrow); *@
                 if (rightarrow) {
-                    pageNumber++;
-                    GetDetailsByCategory(categoryId,status,pageNumber);
-                }
+                pageNumber++;
+                @* console.log(pageNumber) *@
+                    GetDetailsByCategory(categoryId, status, pageNumber);
+            }
         }
 
         $(document).ready(function () {
@@ -105,20 +109,22 @@
             categorySelected(document.getElementsByClassName("allCategory")[0]);
             $("#inProgressDiv").click(function () {
                 status = "InProgress";
+                pageNumber=1;
                 $(this).removeClass("btn-outline-primary");
                 $(this).addClass("btn-primary");
                 $("#readyDiv").removeClass("btn-primary");
                 $("#readyDiv").addClass("btn-outline-primary");
-                GetDetailsByCategory(categoryId,status, pageNumber);
+                GetDetailsByCategory(categoryId, status, pageNumber);
             });
 
             $("#readyDiv").click(function () {
                 status = "Ready";
+                pageNumber=1;
                 $(this).removeClass("btn-outline-primary");
                 $(this).addClass("btn-primary");
                 $("#inProgressDiv").removeClass("btn-primary");
                 $("#inProgressDiv").addClass("btn-outline-primary");
-                GetDetailsByCategory(categoryId,status, pageNumber);
+                GetDetailsByCategory(categoryId, status, pageNumber);
             });
         });
     </script>

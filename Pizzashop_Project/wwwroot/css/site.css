@@ -339,3 +339,50 @@ form i{
   color: #0084C3 !important;
   border-bottom: 3px solid #0084C3 !important;
 }
+
+/* tabels in order app */
+/*  change accordian  */
+.accordion-button:not(.collapsed)::after {
+  transform: rotate(90deg) !important;
+}
+
+.accordion-button {
+  margin: 11px !important;
+  padding: 4px !important;
+  color: gray !important;
+  background-color: #fff !important;
+  border: 1px solid gray !important;
+  border-radius: 50% !important;
+  transform: rotate(-90deg) !important;
+}
+.accordion-button:focus {
+  z-index: 3;
+  border-color: #fff !important;
+  background-color: #fff !important;
+  border: 1px solid gray !important;
+  outline: 0;
+  box-shadow: none !important;
+}
+.accordion-button:not(.collapsed) {
+  color: #fff !important;
+  background-color: #e7f1ff;
+  box-shadow: none !important;
+  border: 1px solid #0066a7 !important;
+  border-radius: 50% !important;
+}
+
+.tableassigned {
+  border: 1px solid #60ad13 !important;
+  background-color: #d8e6cb !important;
+}
+
+.tableRunning{
+  border: 1px solid #77b4e0 !important;
+  background-color: #d2e9fa !important;
+}
+
+.tableAvailable{
+  border: 1px solid rgb(54, 52, 52) !important;
+  background-color: rgb(250, 247, 247) !important;
+}
+/*  change accordian  */

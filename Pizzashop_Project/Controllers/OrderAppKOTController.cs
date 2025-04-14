@@ -35,8 +35,8 @@ public class OrderAppKOTController : Controller
         return PartialView("_displayCardsPartial", kotCardDetailsvm);
     }
 
-    public async Task<IActionResult> GetDetailsOfCardForSelectedOrder(long orderid,long catid,string status ){
-        KotCardDetailsViewModel kotPerticularOrderDetailsvm =await _orderAppKotService.GetDetailsOfCardForSelectedOrder(orderid,catid,status);
+    public async Task<IActionResult> GetDetailsOfCardForSelectedOrder(long orderid,long catid,string status,int pageNumber = 1, int pageSize = 5 ){
+        KotCardDetailsViewModel kotPerticularOrderDetailsvm =await _orderAppKotService.GetDetailsOfCardForSelectedOrder(orderid,catid,status, pageNumber,pageSize);
         return PartialView("_DisplayQuantityDetails",kotPerticularOrderDetailsvm);
     }
 

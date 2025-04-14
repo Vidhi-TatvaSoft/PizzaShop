@@ -17,7 +17,88 @@ public class OrderAppKotService : IOrderAppKotService
         _context = context;
     }
 
-    public async Task<List<KotCardDetailsViewModel>> GetDetailsByCategory(long categoryId, string status)
+    // public async Task<List<KotCardDetailsViewModel>> GetDetailsByCategory(long categoryId, string status)
+    // {
+    //     var data = await _context.Kots.Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Item).ThenInclude(x => x.Category)
+    //                                 .Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Modifierorders).ThenInclude(x => x.Modifier)
+    //                                 .Include(x => x.Order).ThenInclude(x => x.Assigntables).ThenInclude(x => x.Table).ThenInclude(x => x.Section)
+    //                                 .Where(x => x.Isdelete == false).ToListAsync();
+
+    //     if (categoryId == 0)
+    //     {
+    //         var kotdetailsall = data.Where(x => x.Isdelete == false)
+    //                     .Select(x => new KotCardDetailsViewModel
+    //                     {
+    //                         OrderId = x.Order.OrderId,
+    //                         orderDate = x.Order.OrderDate,
+    //                         OrderInstruction = x.Order.OtherInstruction,
+    //                         SectionId = x.Order.Table.SectionId,
+    //                         SectionName = x.Order.Table.Section.SectionName,
+    //                         tableList = x.Order.Assigntables
+    //                                     .Select(t => new Table
+    //                                     {
+    //                                         TableId = t.Table.TableId,
+    //                                         TableName = t.Table.TableName,
+    //                                     }).ToList(),
+
+    //                         ItemsInOneCard = x.Order.Orderdetails.Where(x => x.Isdelete == false)
+    //                                     .Select(k => new ItemDetailsForKot
+    //                                     {
+    //                                         ItemId = k.ItemId,
+    //                                         OrderDetailId = k.OrderdetailId,
+    //                                         ItemName = k.Item.ItemName,
+    //                                         ItemInstruction = k.ExtraInstruction,
+    //                                         PendingItem = k.Quantity - (int)k.ReadyQuantity,
+    //                                         ReadyItem = (int)k.ReadyQuantity,
+    //                                         Quantity = status == "InProgress" ? (k.Quantity - (int)k.ReadyQuantity) : (int)k.ReadyQuantity,
+    //                                         ModifiersInItem = k.Modifierorders
+    //                                             .Select(m => new ModifiersforItemInKot
+    //                                             {
+    //                                                 ModifierId = m.ModifierId,
+    //                                                 ModifierName = m.Modifier.ModifierName,
+    //                                             }).ToList()
+    //                                     }).ToList()
+    //                     }).ToList();
+    //         return kotdetailsall;
+    //     }
+    //     var kotdetails = data.Where(x => x.Isdelete == false)
+    //                     .Select(x => new KotCardDetailsViewModel
+    //                     {
+    //                         OrderId = x.Order.OrderId,
+    //                         orderDate = x.Order.OrderDate,
+    //                         OrderInstruction = x.Order.OtherInstruction,
+    //                         SectionId = x.Order.Table.SectionId,
+    //                         SectionName = x.Order.Table.Section.SectionName,
+    //                         tableList = x.Order.Assigntables
+    //                                     .Select(t => new Table
+    //                                     {
+    //                                         TableId = t.Table.TableId,
+    //                                         TableName = t.Table.TableName,
+    //                                     }).ToList(),
+
+    //                         ItemsInOneCard = x.Order.Orderdetails.Where(x => x.Item.CategoryId == categoryId && x.Isdelete == false)
+    //                                     .Select(k => new ItemDetailsForKot
+    //                                     {
+    //                                         ItemId = k.ItemId,
+    //                                         OrderDetailId = k.OrderdetailId,
+    //                                         ItemName = k.Item.ItemName,
+    //                                         ItemInstruction = k.ExtraInstruction,
+    //                                         PendingItem = k.Quantity - (int)k.ReadyQuantity,
+    //                                         ReadyItem = (int)k.ReadyQuantity,
+    //                                         Quantity = status == "InProgress" ? (k.Quantity - (int)k.ReadyQuantity) : (int)k.ReadyQuantity,
+    //                                         ModifiersInItem = k.Modifierorders
+    //                                             .Select(m => new ModifiersforItemInKot
+    //                                             {
+    //                                                 ModifierId = m.ModifierId,
+    //                                                 ModifierName = m.Modifier.ModifierName,
+    //                                             }).ToList()
+    //                                     }).ToList()
+    //                     }).ToList();
+    //     return kotdetails;
+    // }
+
+
+    public async Task<PaginationViewModel<KotCardDetailsViewModel>> GetDetailsByCategorypagination(long categoryId, string status,  int pageNumber , int pageSize = 5)
     {
         var data = await _context.Kots.Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Item).ThenInclude(x => x.Category)
                                     .Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Modifierorders).ThenInclude(x => x.Modifier)
@@ -26,88 +107,9 @@ public class OrderAppKotService : IOrderAppKotService
 
         if (categoryId == 0)
         {
-            var kotdetailsall = data.Where(x => x.Isdelete == false)
-                        .Select(x => new KotCardDetailsViewModel
-                        {
-                            OrderId = x.Order.OrderId,
-                            orderDate = x.Order.OrderDate,
-                            OrderInstruction = x.Order.OtherInstruction,
-                            SectionId = x.Order.Table.SectionId,
-                            SectionName = x.Order.Table.Section.SectionName,
-                            tableList = x.Order.Assigntables
-                                        .Select(t => new Table
-                                        {
-                                            TableId = t.Table.TableId,
-                                            TableName = t.Table.TableName,
-                                        }).ToList(),
-
-                            ItemsInOneCard = x.Order.Orderdetails.Where(x => x.Isdelete == false)
-                                        .Select(k => new ItemDetailsForKot
-                                        {
-                                            ItemId = k.ItemId,
-                                            OrderDetailId = k.OrderdetailId,
-                                            ItemName = k.Item.ItemName,
-                                            ItemInstruction = k.ExtraInstruction,
-                                            PendingItem = k.Quantity - (int)k.ReadyQuantity,
-                                            ReadyItem = (int)k.ReadyQuantity,
-                                            Quantity = status == "InProgress" ? (k.Quantity - (int)k.ReadyQuantity) : (int)k.ReadyQuantity,
-                                            ModifiersInItem = k.Modifierorders
-                                                .Select(m => new ModifiersforItemInKot
-                                                {
-                                                    ModifierId = m.ModifierId,
-                                                    ModifierName = m.Modifier.ModifierName,
-                                                }).ToList()
-                                        }).ToList()
-                        }).ToList();
-            return kotdetailsall;
-        }
-        var kotdetails = data.Where(x => x.Isdelete == false)
-                        .Select(x => new KotCardDetailsViewModel
-                        {
-                            OrderId = x.Order.OrderId,
-                            orderDate = x.Order.OrderDate,
-                            OrderInstruction = x.Order.OtherInstruction,
-                            SectionId = x.Order.Table.SectionId,
-                            SectionName = x.Order.Table.Section.SectionName,
-                            tableList = x.Order.Assigntables
-                                        .Select(t => new Table
-                                        {
-                                            TableId = t.Table.TableId,
-                                            TableName = t.Table.TableName,
-                                        }).ToList(),
-
-                            ItemsInOneCard = x.Order.Orderdetails.Where(x => x.Item.CategoryId == categoryId && x.Isdelete == false)
-                                        .Select(k => new ItemDetailsForKot
-                                        {
-                                            ItemId = k.ItemId,
-                                            OrderDetailId = k.OrderdetailId,
-                                            ItemName = k.Item.ItemName,
-                                            ItemInstruction = k.ExtraInstruction,
-                                            PendingItem = k.Quantity - (int)k.ReadyQuantity,
-                                            ReadyItem = (int)k.ReadyQuantity,
-                                            Quantity = status == "InProgress" ? (k.Quantity - (int)k.ReadyQuantity) : (int)k.ReadyQuantity,
-                                            ModifiersInItem = k.Modifierorders
-                                                .Select(m => new ModifiersforItemInKot
-                                                {
-                                                    ModifierId = m.ModifierId,
-                                                    ModifierName = m.Modifier.ModifierName,
-                                                }).ToList()
-                                        }).ToList()
-                        }).ToList();
-        return kotdetails;
-    }
-
-
-    public async Task<PaginationViewModel<KotCardDetailsViewModel>> GetDetailsByCategorypagination(long categoryId, string status,  int pageNumber = 1, int pageSize = 5)
-    {
-        var data = await _context.Kots.Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Item).ThenInclude(x => x.Category)
-                                    .Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Modifierorders).ThenInclude(x => x.Modifier)
-                                    .Include(x => x.Order).ThenInclude(x => x.Assigntables).ThenInclude(x => x.Table).ThenInclude(x => x.Section)
-                                    .Where(x => x.Isdelete == false).ToListAsync();
-
-        if (categoryId == 0)
-        {
-            var kotdetailsall = data.Where(x => x.Isdelete == false)
+            // data =data.Where(x => x.Order.Any(od => !od.Item.Isdelete && ((status == "Ready") ? (od.ReadyQuantity > 0) : (od.Quantity - od.ReadyQuantity > 0))));
+            
+            var kotdetailsall = data.Where(x => x.Isdelete == false && x.Order.Orderdetails.Any(od => !od.Item.Isdelete &&   ((status == "Ready") ? (od.ReadyQuantity > 0) : (od.Quantity - od.ReadyQuantity > 0))))
                         .Select(x => new KotCardDetailsViewModel
                         {
                             OrderId = x.Order.OrderId,
@@ -145,7 +147,7 @@ public class OrderAppKotService : IOrderAppKotService
             var items = kotdetailsall.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             return new PaginationViewModel<KotCardDetailsViewModel>(items, totalCount, pageNumber, pageSize);
         }
-        var kotdetails = data.Where(x => x.Isdelete == false)
+        var kotdetails = data.Where(x => (x.Isdelete == false) && x.Order.Orderdetails.Any(i => i.Item.CategoryId == categoryId) && x.Order.Orderdetails.Any(od => !od.Item.Isdelete && ((status == "Ready") ? (od.ReadyQuantity > 0) : (od.Quantity - od.ReadyQuantity > 0))))
                         .Select(x => new KotCardDetailsViewModel
                         {
                             OrderId = x.Order.OrderId,
@@ -184,10 +186,10 @@ public class OrderAppKotService : IOrderAppKotService
         return new PaginationViewModel<KotCardDetailsViewModel>(items1, totalCount1, pageNumber, pageSize);
     }
 
-    public async Task<KotCardDetailsViewModel> GetDetailsOfCardForSelectedOrder(long orderid, long catid, string status)
+    public async Task<KotCardDetailsViewModel> GetDetailsOfCardForSelectedOrder(long orderid, long catid, string status,int pageNumber = 1, int pageSize = 5)
     {
-        List<KotCardDetailsViewModel> kotcardDetails = await GetDetailsByCategory(catid, status);
-        var pericularOrderDetails = kotcardDetails.Where(x => x.OrderId == orderid).FirstOrDefault();
+        PaginationViewModel<KotCardDetailsViewModel> kotcardDetails = await GetDetailsByCategorypagination(catid, status, pageNumber, pageSize);
+        var pericularOrderDetails = kotcardDetails.Items.Where(x => x.OrderId == orderid).FirstOrDefault();
         if (pericularOrderDetails == null)
         {
             return new KotCardDetailsViewModel();

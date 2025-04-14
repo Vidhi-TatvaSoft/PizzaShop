@@ -101,6 +101,8 @@
 <script>
     var catid;
     var status;
+    var pageNumber=parseInt(document.getElementById("PageNumberset").value);
+    var pageSize = 5;
     var orderdetailIdarr = [];
     var itemquantityarr = [];
 
@@ -152,7 +154,7 @@
             $.ajax({
                 url: "/OrderAppKOT/GetDetailsOfCardForSelectedOrder",
                 type: "GET",
-                data: { orderid, catid, status },
+                data: { orderid, catid, status ,pageNumber,pageSize},
                 success: function (data) {
                     $("#modalTableDetails").html(data);
                 }

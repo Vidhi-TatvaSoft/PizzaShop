@@ -31,4 +31,6 @@ public partial class Section
     public virtual ICollection<Order> Orders { get; } = new List<Order>();
 
     public virtual ICollection<Table> Tables { get; } = new List<Table>();
+
+    public virtual ICollection<Waitinglist> Waitinglists { get; } = new List<Waitinglist>();
 }
