@@ -15,7 +15,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
-// [Authorize(Roles = "Admin" )]
+
+
 
 public class UserController : Controller
 {
@@ -29,13 +30,13 @@ public class UserController : Controller
         _jwttokenService = jwttokenService;
         _userLoginService = userLoginService;
     }
-
+    [PermissionAuthorize("AdminManager")]
     public IActionResult Dashboard()
     {
         ViewData["sidebar-active"] = "Dashboard";
         return View();
     }
-
+   
     #region Userlist
      [PermissionAuthorize("User.View")]
     // [Authorize(Roles = "Admin")]
@@ -47,7 +48,7 @@ public class UserController : Controller
     }
 
     #endregion
-
+   
     #region PaginatedData
      [PermissionAuthorize("User.View")]
     //    [Authorize(Roles = "Admin")]
@@ -58,7 +59,7 @@ public class UserController : Controller
         return PartialView("_UserListPartial", users);
     }
     #endregion
-
+  
     #region MyProfile get
     // [Authorize(Roles = "Admin")]
     [PermissionAuthorize("User.View")]

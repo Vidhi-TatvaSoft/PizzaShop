@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
+    [PermissionAuthorize("AdminManager")]
+
 
 public class CustomerController :Controller
 {

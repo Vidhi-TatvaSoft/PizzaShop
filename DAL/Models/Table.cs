@@ -36,6 +36,4 @@ public partial class Table
     public virtual ICollection<Order> Orders { get; } = new List<Order>();
 
     public virtual Section Section { get; set; } = null!;
-
-    public virtual ICollection<Waitinglist> Waitinglists { get; } = new List<Waitinglist>();
 }

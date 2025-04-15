@@ -118,7 +118,6 @@ public partial class PizzashopDbContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.Assigntables)
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("assigntable_order_id_fkey");
 
             entity.HasOne(d => d.Table).WithMany(p => p.Assigntables)
@@ -1072,7 +1071,6 @@ public partial class PizzashopDbContext : DbContext
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
             entity.Property(e => e.NoOfPerson).HasColumnName("no_of_person");
             entity.Property(e => e.SectionId).HasColumnName("section_id");
-            entity.Property(e => e.TableId).HasColumnName("table_id");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.WaitinglistCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
@@ -1091,10 +1089,6 @@ public partial class PizzashopDbContext : DbContext
                 .HasForeignKey(d => d.SectionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("section_id");
-
-            entity.HasOne(d => d.Table).WithMany(p => p.Waitinglists)
-                .HasForeignKey(d => d.TableId)
-                .HasConstraintName("waitinglist_table_id_fkey");
         });
 
         OnModelCreatingPartial(modelBuilder);

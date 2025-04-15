@@ -9,24 +9,34 @@ else
 {
     @foreach (var table in Model)
     {
-        <div class="table-card  card border border-1 rounded-2 " style="width: 270px;" onclick="SelectTable(this,@table.Status)">
-            <div class=" card-body rounded-1  d-flex flex-column bg-light text-secondary @(table.Status == "Assigned" || table.Status == "Occupied" ? "tableassigned": table.Status == "Running"? "tableRunning" : "tableAvailable")" >
+        <div class="table-card  card border border-1 rounded-2 " style="width: 270px;">
+            <div class="d-none">@table.TableId</div>
+            <div class="d-none">@table.SectionId</div>
+            <div class="card-body rounded-1  d-flex flex-column bg-light text-secondary @(table.Status == "Assigned" || table.Status == "Occupied" ? "tableassigned" : table.Status == "Running" ? "tableRunning" : "tableAvailable")"
+                @(table.Status == "Available" ? "onclick=SelectTable(this)" : "")>
                 <div class="d-flex justify-content-between align-items-center mx-1">
-                    <div class="fs-4 fw-bold @(table.Status == "Assigned" || table.Status == "Occupied" ? "text-success": table.Status == "Running"? "text-primary" : "text-secondary")" >@table.TableName</div>
-                    @if(table.TotalSpend > 0){
+                    <div
+                        class="fs-4 fw-bold @(table.Status == "Assigned" || table.Status == "Occupied" ? "text-success" : table.Status == "Running" ? "text-primary" : "text-secondary")">
+                        @table.TableName</div>
+                    @if (table.TotalSpend > 0)
+                    {
                         <div>₹@table.TotalSpend</div>
                     }
                 </div>
-                
+
                 <div class="d-flex justify-content-between align-items-center mx-1">
                     <div class="d-flex flex-column align-items-center flex-column">
                         <div><i class="bi bi-people"></i></div>
-                        <div>@table.Capacity</div>
+                        <div >@table.Capacity</div>
                         <div>&nbsp;</div>
                     </div>
                     <div class="d-flex flex-column align-items-center ">
                         <div><i class="bi bi-stopwatch"></i></div>
+                        @if(table.Status == "Available"){
+                            <div>0</div>
+                        }else{
                         <div>@table.Totaltime</div>
+                        }
                         <div>min</div>
                     </div>
                 </div>
@@ -35,3 +45,14 @@ else
     }
 }
 
+
+@section scripts {
+
+    <script>
+
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <partial name="_Toaster" />
+}

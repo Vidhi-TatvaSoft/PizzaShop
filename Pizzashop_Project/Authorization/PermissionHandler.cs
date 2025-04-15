@@ -135,6 +135,11 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
                     if(roleName == "Chef")
                         context.Succeed(requirement);
                     break;
+                case "AdminManager":
+                    if(roleName == "Admin" || roleName == "Account Manager")
+                        context.Succeed(requirement);
+                    break;
+
                 default:
                     break; 
             }

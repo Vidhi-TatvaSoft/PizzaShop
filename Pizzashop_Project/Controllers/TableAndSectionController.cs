@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
+    [PermissionAuthorize("AdminManager")]
 
 public class TableAndSectionController : Controller
 {

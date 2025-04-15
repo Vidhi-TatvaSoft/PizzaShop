@@ -15,7 +15,8 @@ using Pizzashop_Project.Authorization;
 using Newtonsoft.Json;
 
 namespace Pizzashop_Project.Controllers;
-// [Authorize(Roles = "Admin")]
+    [PermissionAuthorize("AdminManager")]
+
 public class MenuController : Controller
 {
 

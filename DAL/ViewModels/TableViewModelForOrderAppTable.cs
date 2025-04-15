@@ -17,4 +17,6 @@ public class TableViewModelForOrderAppTable
 
     public DateTime Totaltime {get;set;}
 
+    
+
 }

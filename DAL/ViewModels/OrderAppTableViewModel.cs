@@ -9,4 +9,6 @@ public class OrderAppTableViewModel
     public List<TableViewModelForOrderAppTable> tablesInSection {get;set;}
 
     public WaitingTokenDetailsViewModel waitingTokenDetailsViewModel{get;set;}
+
+    public List<OrderAppTableWaitingDetails> waitinglistdetails {get;set;}
 }

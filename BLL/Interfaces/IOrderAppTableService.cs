@@ -1,3 +1,4 @@
+using DAL.Models;
 using DAL.ViewModels;
 
 namespace BLL.Interfaces;
@@ -13,4 +14,7 @@ public interface IOrderAppTableService
         public long IsCustomerPresent(string Email);
 
         Task<bool> AddCustomerToWaitingList(WaitingTokenDetailsViewModel waitingTokenvm, long userId);
+        
+        public List<OrderAppTableWaitingDetails> GetListOfCustomerWaiting(long sectionId);
+        Task<bool> Assigntable(string Email, int[] TableIds, long userId);
 }

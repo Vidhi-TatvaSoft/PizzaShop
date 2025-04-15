@@ -76,7 +76,7 @@ builder.Services.AddAuthentication(x=>{
             {
                 // Redirect to login page when unauthorized 
                 context.HandleResponse();
-                context.Response.Redirect("/ErrorPage/Unauthorize");
+                context.Response.Redirect("/UserLogin/VerifyPassword");
                 return Task.CompletedTask;
             },
             OnForbidden = context =>
@@ -100,7 +100,8 @@ builder.Services.AddAuthorization(options =>
         "TaxFees.View", "TaxFees.EditAdd", "TaxFees.Delete",
         "Orders.View", "Orders.EditAdd", "Orders.Delete",
         "Customers.View", "Customers.EditAdd", "Customers.Delete",
-        "AdminRole","AccountManagerRole","ChefRole"
+        "AdminRole","AccountManagerRole","ChefRole",
+        "AdminManager"
     };
 
     foreach (var permission in permissions)

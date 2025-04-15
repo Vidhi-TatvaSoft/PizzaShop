@@ -22,7 +22,6 @@ public class OrderAppController :Controller
 
     #region MyProfile get
     // [Authorize(Roles = "Admin")]
-    [PermissionAuthorize("User.View")]
     public IActionResult ProfilePage()
     {
         var token = Request.Cookies["AuthToken"];
@@ -59,7 +58,6 @@ public class OrderAppController :Controller
 
     #region Myprofile post
     // post method
-    [PermissionAuthorize("User.EditAdd")]
     [HttpPost]
     public async Task<IActionResult> ProfilePage(UserViewModel user)
     {
@@ -114,12 +112,11 @@ public class OrderAppController :Controller
         TempData["SuccessMessage"] = "Profile updated successfully";
 
 
-        return RedirectToAction("OrderAppTable", "OrderAppTable");
+        return RedirectToAction("OrderAppKOT", "OrderAppKOT");
     }
     #endregion
 
         #region changepassword get
-     [PermissionAuthorize("User.EditAdd")]
     public IActionResult ChangePasswordOrderApp()
     {
          ViewData["orderApp-Active"] = "Table";
@@ -129,7 +126,6 @@ public class OrderAppController :Controller
     #endregion
 
     #region changepassword post
-     [PermissionAuthorize("User.EditAdd")]
     [HttpPost]
     public IActionResult ChangePasswordOrderApp(ChangePasswordViewModel changePassword)
     {

@@ -385,4 +385,8 @@ form i{
   border: 1px solid rgb(54, 52, 52) !important;
   background-color: rgb(250, 247, 247) !important;
 }
+
+.TableSelected{
+  border: 2px solid #80ec14 !important;
+}
 /*  change accordian  */

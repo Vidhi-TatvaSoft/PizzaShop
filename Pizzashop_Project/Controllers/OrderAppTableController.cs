@@ -3,8 +3,10 @@ using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
+    [PermissionAuthorize("AccountManagerRole")]
 
 public class OrderAppTableController:Controller
 {
@@ -22,23 +24,36 @@ public class OrderAppTableController:Controller
         _userLoginSerivce = userLoginService;
         _userService = userService;
     }
+
+    #region  OrderAppTable
     public IActionResult OrderAppTable()
     {
-        OrderAppTableViewModel orderappTablevm = new();
         ViewData["orderApp-Active"] = "Table";
         ViewData["orderAppDDIcon"] = "fa-table";
         // orderappTablevm.sectionList = ;
-        orderappTablevm.sectionList = _orderAppTableService.GetSectionList();
-        return View(orderappTablevm);
+        return View();
     }
+    #endregion
 
+    #region getsection List
+    public IActionResult GetsectionList(){
+        OrderAppTableViewModel orderappTablevm = new();
+         orderappTablevm.sectionList = _orderAppTableService.GetSectionList();
+         return PartialView("_SectionListPartial", orderappTablevm);
+    }
+    #endregion
+
+    #region GetTableDetailsBySection
     public IActionResult GetTableDetailsBySection(long SectionId){
         OrderAppTableViewModel orderAppTablevm = new();
         orderAppTablevm.tablesInSection = _orderAppTableService.GetTableDetailsBySection(SectionId);
         return PartialView("_TableListInSectionPartial",orderAppTablevm.tablesInSection);
 
     }
+    #endregion
 
+    #region WaitingTokenDetails
+    [HttpPost]
     public async Task<IActionResult> WaitingTokenDetails(OrderAppTableViewModel orderappTablevm){
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
@@ -57,4 +72,24 @@ public class OrderAppTableController:Controller
         }
         return Json(new {success= false, text="Error While Adding Customer to waiting List. Try Again!"});
     }
+    #endregion
+
+    #region  GetWaitingListAndCustomerDetails
+    public IActionResult GetWaitingListAndCustomerDetails(long sectionId){
+        OrderAppTableViewModel orderAppTablevm = new();
+        orderAppTablevm.waitinglistdetails = _orderAppTableService.GetListOfCustomerWaiting(sectionId);
+        return PartialView("_WaitingListOffcanvasPartial", orderAppTablevm);
+    }
+    #endregion
+
+    #region AssignTable
+    [HttpPost]
+    public async Task<IActionResult> AssignTable(string Email, int [] TableIds){
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        bool tableAssignStatus =await _orderAppTableService.Assigntable(Email, TableIds, userId);
+        return Json("ok");
+    }
+    #endregion
 }

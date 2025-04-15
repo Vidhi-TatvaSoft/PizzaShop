@@ -19,6 +19,7 @@ using Rotativa.AspNetCore;
 using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
+    [PermissionAuthorize("AdminManager")]
 
 public class OrderController : Controller
 {
@@ -68,7 +69,7 @@ public class OrderController : Controller
         OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid);
         if(orderDetails == null)
         {
-            TempData["ErrorMessage"] = $"Order not found for OrderId {orderid}.";
+            TempData["ErrorMessage"] = $"OrderDetails not found for OrderId {orderid}.";
             return RedirectToAction("Orders");
         }
         return View(orderDetails);
@@ -87,7 +88,7 @@ public class OrderController : Controller
         OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid);
         if(orderDetails == null)
         {
-            TempData["ErrorMessage"] = $"Order not found for OrderId {orderid}.";
+            TempData["ErrorMessage"] = $"OrderDetails not found for OrderId {orderid}.";
             return RedirectToAction("Orders");
         }
         //   return PartialView("DownloadInvoicePdf", orderDetails);
@@ -104,7 +105,7 @@ public class OrderController : Controller
         OrderDetaIlsInvoiceViewModel orderDetails = _orderService.GetOrderDetails(orderid);
         if(orderDetails == null)
         {
-            TempData["ErrorMessage"] = $"Order not found for OrderId {orderid}.";
+            TempData["ErrorMessage"] = $"OrderDetails not found for OrderId {orderid}.";
             return RedirectToAction("Orders");
         }
         //   return PartialView("DownloadOrderDetailspdf", orderDetails);
