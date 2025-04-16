@@ -1,4 +1,8 @@
 @using DAL.ViewModels;
+@using Microsoft.AspNetCore.Authorization
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
 @model PaginationViewModel<ItemsViewModel>
 
 @* @{bool ismassdelete = false;} *@
@@ -36,9 +40,20 @@ else
                 </div>
             </td>
             <td>
+                 @if((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded){
                 <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" data-id="@item.ItemId" onclick="getDetailsForEditItem(this); GetModGrpListEdit();" data-bs-toggle="modal" data-bs-target="#EditItemModal"></i>
                 <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteItem"
                     data-id="@item.ItemId" onclick="getIdForDeleteItem(this)"></i>
+                }
+                else if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
+                   <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" data-id="@item.ItemId" onclick="getDetailsForEditItem(this); GetModGrpListEdit();" data-bs-toggle="modal" data-bs-target="#EditItemModal"></i>
+                    <i class="fa-solid fa-trash-can text-black-50"></i>
+                }
+                else
+                {
+                    <i class="fa-solid fa-pen text-black-50 me-3 mt-2"></i>
+                    <i class="fa-solid fa-trash-can text-black-50"></i>
+                }
             </td>
             
         </tr>

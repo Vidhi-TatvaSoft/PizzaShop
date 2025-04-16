@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
-[Authorize(Roles = "Admin")]
+// [Authorize(Roles = "Admin")]
 public class RolesPermissionController : Controller
 {
     private readonly IRolesPermission _rolesPermission;

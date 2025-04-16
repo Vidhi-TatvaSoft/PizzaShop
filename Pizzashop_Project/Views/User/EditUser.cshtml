@@ -1,4 +1,8 @@
 @model DAL.ViewModels.UserViewModel
+@using Microsoft.AspNetCore.Authorization
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -54,8 +58,9 @@
             </div>
             <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-12 mt-3">
                 <div class="form-floating">
+                    <input type="hidden" asp-for="RoleId">
                     <select class="form-select" asp-for="RoleId" asp-items="@ViewBag.Roles" id="Roles"
-                        aria-label="Floating label select example">
+                        aria-label="Floating label select example" disabled>
                         @* <option selected>Select Role</option>
                         <option value="1">One</option>
                         <option value="2">Two</option>
@@ -144,6 +149,7 @@
             </div>
 
             <span>@TempData["EmailErrorMessage"]</span>
+             @if ((await AuthorizationService.AuthorizeAsync(User, "User.EditAdd")).Succeeded){
             <div class="d-flex mb-4">
                 <div class="craete-button mt-3">
                     <button type="submit" class="btn btn-primary text-light  border text">
@@ -155,6 +161,7 @@
                         Cancel</a>
                 </div>
             </div>
+            }
 
 </form>
 

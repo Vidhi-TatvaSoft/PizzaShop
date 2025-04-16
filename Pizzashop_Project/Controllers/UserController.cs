@@ -36,9 +36,9 @@ public class UserController : Controller
         ViewData["sidebar-active"] = "Dashboard";
         return View();
     }
-   
+
     #region Userlist
-     [PermissionAuthorize("User.View")]
+    [PermissionAuthorize("User.View")]
     // [Authorize(Roles = "Admin")]
     public IActionResult UsersList()
     {
@@ -48,9 +48,9 @@ public class UserController : Controller
     }
 
     #endregion
-   
+
     #region PaginatedData
-     [PermissionAuthorize("User.View")]
+    [PermissionAuthorize("User.View")]
     //    [Authorize(Roles = "Admin")]
     public IActionResult PaginatedData(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
     {
@@ -59,7 +59,7 @@ public class UserController : Controller
         return PartialView("_UserListPartial", users);
     }
     #endregion
-  
+
     #region MyProfile get
     // [Authorize(Roles = "Admin")]
     [PermissionAuthorize("User.View")]
@@ -89,7 +89,7 @@ public class UserController : Controller
         var Cities = _userService.GetCity(userData[0].StateId);
         ViewBag.Countries = new SelectList(Countries, "CountryId", "CountryName");
         ViewBag.States = new SelectList(States, "StateId", "StateName");
-        ViewBag.Cities = new SelectList(Cities, "CityId", "CityName");  
+        ViewBag.Cities = new SelectList(Cities, "CityId", "CityName");
         // var data = userData[0].Userlogin.Email;
         return View(userViewModel);
     }
@@ -123,18 +123,20 @@ public class UserController : Controller
         if (user.ProfileImage != null)
         {
             var extension = user.ProfileImage.FileName.Split(".");
-            if (extension[extension.Length -1] == "jpg" || extension[extension.Length -1] == "jpeg" || extension[extension.Length -1] == "png")
+            if (extension[extension.Length - 1] == "jpg" || extension[extension.Length - 1] == "jpeg" || extension[extension.Length - 1] == "png")
             {
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
 
                 string fileName = BLL.Common.ImageUpload.UploadImage(user.ProfileImage, path);
                 user.Image = $"/uploads/{fileName}";
-            }else{
+            }
+            else
+            {
                 TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
                 return RedirectToAction("MyProfile", "User", new { Email = user.Email });
             }
         }
-        if ( _userService.IsUserNameExistsForEdit(user.Username, userEmail))
+        if (_userService.IsUserNameExistsForEdit(user.Username, userEmail))
         {
             TempData["ErrorMessage"] = "UserName Already Exists. Try Another Username";
             return RedirectToAction("MyProfile", "User", new { Email = userEmail });
@@ -154,13 +156,21 @@ public class UserController : Controller
 
     #region Adduser get
     // [Authorize(Roles = "Admin")]
-     [PermissionAuthorize("User.EditAdd")]
+    [PermissionAuthorize("User.EditAdd")]
     public IActionResult AddUser()
     {
+
+        string token = Request.Cookies["AuthToken"];
+        var roleName = _jwttokenService.GetClaimValue(token,"role");
+
         var Roles = _userService.GetRole();
         var Countries = _userService.GetCountry();
         var States = _userService.GetState(-1);
         var Cities = _userService.GetCity(-1);
+
+        if(roleName == "Account Manager"){
+            Roles.RemoveAt(0);
+        }
         ViewBag.Roles = new SelectList(Roles, "RoleId", "RoleName");
         ViewBag.Countries = new SelectList(Countries, "CountryId", "CountryName");
         ViewBag.States = new SelectList(States, "StateId", "StateName");
@@ -170,7 +180,7 @@ public class UserController : Controller
     #endregion
 
     #region addUser post
-     [PermissionAuthorize("User.EditAdd")]
+    [PermissionAuthorize("User.EditAdd")]
     [HttpPost]
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddUser(UserViewModel user)
@@ -197,7 +207,7 @@ public class UserController : Controller
         if (user.ProfileImage != null)
         {
             var extension = user.ProfileImage.FileName.Split(".");
-            if (extension[extension.Length -1] == "jpg" || extension[extension.Length -1] == "jpeg" || extension[extension.Length -1] == "png")
+            if (extension[extension.Length - 1] == "jpg" || extension[extension.Length - 1] == "jpeg" || extension[extension.Length - 1] == "png")
             {
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
 
@@ -213,7 +223,9 @@ public class UserController : Controller
                     user.ProfileImage.CopyTo(stream);
                 }
                 user.Image = $"/uploads/{fileName}";
-            }else{
+            }
+            else
+            {
                 TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
                 return RedirectToAction("EditUser", "User", new { Email = user.Email });
             }
@@ -274,13 +286,13 @@ public class UserController : Controller
                 await smtp.SendMailAsync(mess);
             }
             TempData["SuccessMessage"] = "User added successfully.";
-             return RedirectToAction("UsersList","User");
+            return RedirectToAction("UsersList", "User");
 
         }
         catch (Exception ex)
         {
-            TempData["SuccessMessage"] ="User Added But Mail not sent because of mail server error";
-            return RedirectToAction("UsersList","User");
+            TempData["SuccessMessage"] = "User Added But Mail not sent because of mail server error";
+            return RedirectToAction("UsersList", "User");
         }
 
 
@@ -290,7 +302,7 @@ public class UserController : Controller
     #endregion
 
     #region EditUser get
-     [PermissionAuthorize("User.EditAdd")]
+    [PermissionAuthorize("User.EditAdd")]
     public IActionResult EditUser(string Email)
     {
         // var token = Request.Cookies["AuthToken"];
@@ -327,7 +339,7 @@ public class UserController : Controller
     #endregion
 
     #region EditUser post
-     [PermissionAuthorize("User.EditAdd")]
+    [PermissionAuthorize("User.EditAdd")]
     [HttpPost]
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> EditUser(UserViewModel user)
@@ -356,13 +368,15 @@ public class UserController : Controller
         if (user.ProfileImage != null)
         {
             var extension = user.ProfileImage.FileName.Split(".");
-            if (extension[extension.Length -1] == "jpg" || extension[extension.Length -1] == "jpeg" || extension[extension.Length -1] == "png")
+            if (extension[extension.Length - 1] == "jpg" || extension[extension.Length - 1] == "jpeg" || extension[extension.Length - 1] == "png")
             {
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
 
-                 string fileName = BLL.Common.ImageUpload.UploadImage(user.ProfileImage, path);
+                string fileName = BLL.Common.ImageUpload.UploadImage(user.ProfileImage, path);
                 user.Image = $"/uploads/{fileName}";
-            }else{
+            }
+            else
+            {
                 TempData["ErrorMessage"] = "Please Upload an Image in JPEG, PNG or JPG format.";
                 return RedirectToAction("EditUser", "User", new { Email = user.Email });
             }
@@ -382,7 +396,7 @@ public class UserController : Controller
     #endregion
 
     #region changepassword get
-     [PermissionAuthorize("User.EditAdd")]
+    [PermissionAuthorize("User.EditAdd")]
     public IActionResult ChangePassword()
     {
         return View();
@@ -390,7 +404,7 @@ public class UserController : Controller
     #endregion
 
     #region changepassword post
-     [PermissionAuthorize("User.EditAdd")]
+    [PermissionAuthorize("User.EditAdd")]
     [HttpPost]
     public IActionResult ChangePassword(ChangePasswordViewModel changePassword)
     {
@@ -420,7 +434,7 @@ public class UserController : Controller
     #endregion
 
     #region deleteUser 
-     [PermissionAuthorize("User.Delete")]
+    [PermissionAuthorize("User.Delete")]
     public async Task<IActionResult> deleteUser(string Email)
     {
         var deleteStatus = await _userService.deleteUser(Email);

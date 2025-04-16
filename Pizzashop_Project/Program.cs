@@ -33,6 +33,7 @@ builder.Services.AddScoped<ICustomerService,CustomerService>();
 builder.Services.AddScoped<IOrderAppService,OrderAppService>();
 builder.Services.AddScoped<IOrderAppKotService,OrderAppKotService>();
 builder.Services.AddScoped<IOrderAppTableService, OrderAppTableService>();
+builder.Services.AddScoped<IOrderAppWaitingService,OrderAppWaitingService>();
 builder.Services.AddControllersWithViews();
 
 

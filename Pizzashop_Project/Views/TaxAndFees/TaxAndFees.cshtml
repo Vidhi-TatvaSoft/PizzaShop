@@ -1,4 +1,8 @@
 @using DAL.ViewModels;
+@using Microsoft.AspNetCore.Authorization
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
 @model DAL.ViewModels.TaxANdFeesViewModel;
 
 @* <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css"> *@
@@ -17,10 +21,12 @@
             <input type="text" id="searchbtn" placeholder="Search" class="p-1 border ">
             <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
         </div>
+        @if ((await AuthorizationService.AuthorizeAsync(User, "TaxFees.EditAdd")).Succeeded){
         <div class="adduser-button">
             <div class="btn btn-primary text-light p-2 ms-3 border text" data-bs-toggle="modal"
                 data-bs-target="#AddTaxModal" onclick="EmptyAddTaxForm()">+ Add Tax</div>
         </div>
+        }
 
     </div>
 </div>

@@ -1,3 +1,7 @@
+@using Microsoft.AspNetCore.Authorization
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
 @model DAL.ViewModels.TableSectionViewModel;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,10 +22,14 @@
                         <div class="logo-text text-primary fs-5 mt-2  ms-1 fw-semibold">
                             Section
                         </div>
-                        <div class="logo-image ">
-                            <i class="fa-regular fa-square-plus fs-4 text-primary mt-3" data-bs-toggle="modal"
-                                data-bs-target="#AddSectionModal" onclick="EmptyAddSectionForm()"></i>
-                        </div>
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.EditAdd")).Succeeded)
+                        {
+                            <div class="logo-image ">
+                                <i class="fa-regular fa-square-plus fs-4 text-primary mt-3" data-bs-toggle="modal"
+                                    data-bs-target="#AddSectionModal" onclick="EmptyAddSectionForm()"></i>
+                            </div>
+                        }
+
                     </div>
                     <div id="SectionPartialViewId">
 
@@ -70,17 +78,22 @@
                                 <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
                             }
                         </div>
-                        <div class="discard-button">
-                            <a href="#" class="btn  p-1 ps-2 pe-2 ms-3 border" data-bs-toggle="modal"
-                                data-bs-target="#DeleteAllTableModal"><i class="fa-solid fa-trash-can "></i></a>
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.Delete")).Succeeded)
+                        {
+                            <div class="discard-button">
+                                <a href="#" class="btn  p-1 ps-2 pe-2 ms-3 border" data-bs-toggle="modal"
+                                    data-bs-target="#DeleteAllTableModal"><i class="fa-solid fa-trash-can "></i></a>
 
-                        </div>
-                        <div class="additem-button">
-                            <button class="btn btn-primary text-light p-2 ms-3 border text" id="AddTableBtnId"
-                                data-bs-toggle="modal" data-bs-target="#AddTableModal" onclick="EmptyAddTableForm()">+
-                                Add Table</button>
-
-                        </div>
+                            </div>
+                        }
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.EditAdd")).Succeeded)
+                        {
+                            <div class="additem-button">
+                                <button class="btn btn-primary text-light p-2 ms-3 border text" id="AddTableBtnId"
+                                    data-bs-toggle="modal" data-bs-target="#AddTableModal" onclick="EmptyAddTableForm()">+
+                                    Add Table</button>
+                            </div>
+                        }
 
                     </div>
                 </div>
@@ -91,23 +104,23 @@
                     } *@
                     @* else
                     { *@
-                        <table class="table" id="demo1">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="text-start text-nowrap"><input type="checkbox"
-                                            id="checkboxForSelectAllSection" onclick="SelectAllSection()" class="me-3">
-                                        Name</th>
-                                    <th scope="col" class="text-center">Capacity</th>
-                                    <th scope="col" class="text-center">Status</th>
-                                    <th scope="col" class="text-center">Action </th>
-                                </tr>
-                            </thead>
-                            <tbody id="TableListBody" style="white-space: nowrap; ">
+                    <table class="table" id="demo1">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-start text-nowrap"><input type="checkbox"
+                                        id="checkboxForSelectAllSection" onclick="SelectAllSection()" class="me-3">
+                                    Name</th>
+                                <th scope="col" class="text-center">Capacity</th>
+                                <th scope="col" class="text-center">Status</th>
+                                <th scope="col" class="text-center">Action </th>
+                            </tr>
+                        </thead>
+                        <tbody id="TableListBody" style="white-space: nowrap; ">
 
-                                @await Html.PartialAsync("_TablesListPartial", Model.TableList)
+                            @await Html.PartialAsync("_TablesListPartial", Model.TableList)
 
-                            </tbody>
-                        </table>
+                        </tbody>
+                    </table>
                     @* } *@
                     @*  Pagination div *@
                     <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
@@ -325,7 +338,6 @@
                                 @foreach (var items in Model.sectionList)
                                 {
                                     <option value="@items.SectionId">@items.SectionName</option>
-
                                 }
                                 @* <option value="1" class="DemoDDL">Section1</option>
                                         <option value="3" class="DemoDDL">Section2</option> *@
@@ -432,10 +444,10 @@
                             console.log("section ajax call");
                         $("#SectionPartialViewId").html(data);
                         @* loadSectionTable(SectionIDforbhai, searchText, currentPage, pageSize); *@
-                                            }
+                                                }
                 });
         }
-        
+
         function loadSectionTable(SectionID, search = "", page = 1, pageSize = 5) {
 
             console.log("functiocall")
@@ -457,7 +469,7 @@
                     $("#right-arrow").prop("disabled", currentPage * pageSize >= totalRecords);
                     $("#checkboxForSelectAllSection").prop("checked", false);
                     @* document.getElementById("AddTableModaldropDown").value = SectionID.toString(); *@
-                    },
+                        },
                 error: function (data) {
                     console.log("error");
                     console.log(data);
@@ -600,7 +612,7 @@
                 var classess = document.getElementsByClassName("massDeleteClassforSection");
                 @* console.log("delete all") *@
                     @* let toasterflag = true; *@
-                for (i = 0; i < classess.length; i++) {
+                    for (i = 0; i < classess.length; i++) {
                     if (classess[i].checked) {
 
                         let tableID = classess[i].getAttribute("data-checkid");
@@ -609,7 +621,7 @@
                             url: `/TableAndSection/DeleteTable?id=${tableID}`,
                             type: "POST",
                             success: function (data) {
-                                if (data.success ) {
+                                if (data.success) {
                                     successToaster(data.text);
                                     toasterflag = false;
                                 }
@@ -751,7 +763,7 @@
                 e.preventDefault();
                 let form = $("#AddTableFormId");
                 @* let SectionID = $("#AddTableModaldropDown").val(); *@
-                                            if (form.valid()) {
+                                                if (form.valid()) {
                     let formData = new FormData(this);
                     $.ajax({
                         url: "/TableAndSection/AddTable",
@@ -778,7 +790,7 @@
                 e.preventDefault();
                 let form = $("#EditTableFormId");
                 @* let SectionID = $("#EditTableModaldropDown").val(); *@
-                                            if (form.valid()) {
+                                                if (form.valid()) {
                     let formData = new FormData(this);
                     $.ajax({
                         url: "/TableAndSection/EditTable",
@@ -814,7 +826,7 @@
                         }
                         $(".btn-close").click();
                         currentPage = 1;
-                        console.log("delete table",SectionID,  searchText, currentPage,  pageSize);
+                        console.log("delete table", SectionID, searchText, currentPage, pageSize);
                         loadSectionTable(SectionID, searchText, currentPage, pageSize);
                         console.log(currentPage);
                         console.log(SectionID);

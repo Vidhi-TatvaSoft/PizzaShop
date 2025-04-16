@@ -55,6 +55,10 @@ public class OrderAppTableController:Controller
     #region WaitingTokenDetails
     [HttpPost]
     public async Task<IActionResult> WaitingTokenDetails(OrderAppTableViewModel orderappTablevm){
+        bool IscustomerPresentInWaiting =await _orderAppTableService.IsCustomerPresentInWaiting(orderappTablevm.waitingTokenDetailsViewModel.Email);
+        if(IscustomerPresentInWaiting){
+            return Json( new { success = false, text = "This Customer is Already present In waitingList"});
+        }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
@@ -89,7 +93,10 @@ public class OrderAppTableController:Controller
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         bool tableAssignStatus =await _orderAppTableService.Assigntable(Email, TableIds, userId);
-        return Json("ok");
+        if(tableAssignStatus){
+            return Json(new{ success = true, text = "Table Assigned "});
+        }
+        return Json(new { success=false, text="Something Went wrong, Try Again!"});
     }
     #endregion
 }

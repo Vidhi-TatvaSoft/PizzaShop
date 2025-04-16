@@ -1,4 +1,8 @@
 @using DAL.ViewModels;
+@using Microsoft.AspNetCore.Authorization
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
 @model PaginationViewModel<Tax>
 
 
@@ -51,8 +55,20 @@ else
             </td>
 
             <td class="text-nowrap">
+                @if((await AuthorizationService.AuthorizeAsync(User, "TaxFees.Delete")).Succeeded){
                 <i class="fa-solid fa-pen mt-2 me-2" data-bs-toggle="modal" data-bs-target="#EditTaxModal" data-id="@item.TaxId" onclick="updateTaxDetails(this);RemoveValidatoOnCancel()"></i>
                 <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#DeleteTaxModal" data-id="@item.TaxId" onclick="taxDetailsForDelete(this)"></i>
+                }
+                else if ((await AuthorizationService.AuthorizeAsync(User, "TaxFees.EditAdd")).Succeeded)
+                    {
+                        <i class="fa-solid fa-pen mt-2 me-2" data-bs-toggle="modal" data-bs-target="#EditTaxModal" data-id="@item.TaxId" onclick="updateTaxDetails(this);RemoveValidatoOnCancel()"></i>
+                        <i class="fa-solid fa-trash-can text-black-50"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-pen text-black-50 me-3 mt-2"></i>
+                        <i class="fa-solid fa-trash-can text-black-50"></i>
+                    }
 
             </td>
         </tr>

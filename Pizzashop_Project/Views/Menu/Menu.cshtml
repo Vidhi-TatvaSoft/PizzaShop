@@ -1,4 +1,8 @@
-@using DAL.ViewModels
+@using DAL.ViewModels;
+@using Microsoft.AspNetCore.Authorization
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
 @model DAL.ViewModels.MenuViewModel;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -807,10 +811,12 @@
                                     <div class="logo-text text-primary fs-5 mt-2  ms-1 fw-semibold">
                                         Category
                                     </div>
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
                                     <div class="logo-image ">
                                         <i class="fa-regular fa-square-plus fs-4 text-primary mt-3"
                                             data-bs-toggle="modal" data-bs-target="#exampleModal-addcategory"></i>
                                     </div>
+                                    }
                                 </div>
 
                                 <!-- Sandwich -->
@@ -827,12 +833,19 @@
                                         </div>
                                         <div>
                                             <input type="hidden" value="@cat.Description">
+                                             @if((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded){
                                             <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdate(this)"
                                                 data-id="@cat.CategoryId" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal-editcategory"></i>
                                             <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal-deleteCategory" data-id="@cat.CategoryId"
                                                 onclick="GetIdForDelete(this)"></i>
+                                                }
+                                            else if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
+                                                <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdate(this)"
+                                                data-id="@cat.CategoryId" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal-editcategory"></i>
+                                            }
                                         </div>
 
                                     </div>
@@ -860,16 +873,19 @@
                                         <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
                                         }
                                     </div>
+                                     @if((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded){
                                     <div class="discard-button">
                                         <a href="#" class="btn  p-1 ps-2 pe-2 ms-3 border" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteAllItem" ><i
                                                 class="fa-solid fa-trash-can "></i></a>
-
                                     </div>
+                                    }
+                                     @if((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
                                     <div class="additem-button">
                                         <button class="btn btn-primary text-light p-2 ms-3 border text"
                                             data-bs-toggle="modal" data-bs-target="#addItemModal" onclick="GetModGrpListAdd()">+ Add Item</button>
                                        
                                         </div>
+                                    }
 
                                 </div>
                             </div>
@@ -936,10 +952,12 @@
                                     <div class="logo-text text-primary  fs-5 mt-2  ms-1 fw-semibold">
                                         Modifier Group
                                     </div>
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
                                     <div class="logo-image ">
                                         <i class="fa-regular fa-square-plus fs-4 text-primary mt-3"
                                             data-bs-toggle="modal" data-bs-target="#exampleModal-addmodifiergroup"></i>
                                     </div>
+                                    }
                                 </div>
                                 <div id="ModifierListPartialViewID">
 
@@ -965,16 +983,20 @@
                                         <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
                                         }
                                     </div>
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded){
                                     <div class="discard-button">
                                         <a  class="btn  p-1 ps-2 pe-2 ms-3 border"  data-bs-toggle="modal" data-bs-target="#exampleModal-deleteAllModifiers" ><i
                                                 class="fa-solid fa-trash-can "></i></a>
 
                                     </div>
+                                    }
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
                                     <div class="additem-button">
                                         <a  class="btn btn-primary text-light p-2 ms-3 border text" id="AddModifierButton" data-bs-toggle="modal" data-bs-target="#exampleModal-addmodifier">+
                                             Add
                                             Modifier</a>
                                     </div>
+                                    }
 
                                 </div>
                             </div>
@@ -2195,9 +2217,12 @@
 
             var selectedValue = $(element).data('id');
             var minOption = $(`#min-selection-${selectedValue}`).val() ?? 0;
-            @* minOption = Math.min() *@
+            
+            minOption = Math.min($(`#max-selection-${selectedValue}`).val(),minOption);
+            $(`#min-selection-${selectedValue}`).val(minOption);
+            
             console.log(minOption);
-            console.log(itemData);
+            @* console.log(itemData); *@
             var index = itemData.findIndex(item => item.ModifierGrpId == selectedValue);
 
             if (index != -1) {
@@ -2209,6 +2234,9 @@
 
             var selectedValue = $(element).data('id');
             var maxOption = $(`#max-selection-${selectedValue}`).val() ?? 0;
+
+            maxOption = Math.max($(`#min-selection-${selectedValue}`).val(),maxOption);
+        $(`#max-selection-${selectedValue}`).val(maxOption);
 
             var index = itemData.findIndex(item => item.ModifierGrpId == selectedValue);
 
@@ -2327,6 +2355,10 @@
 
         var selectedValue = $(element).data('id');
         var minOption = $(`#edit-min-selection-${selectedValue}`).val() ?? 0;
+
+        minOption = Math.min($(`#edit-max-selection-${selectedValue}`).val(),minOption);
+        $(`#edit-min-selection-${selectedValue}`).val(minOption);
+            
         console.log(minOption);
         console.log(itemData);
         var index = editItemData.findIndex(item => item.ModifierGrpId == selectedValue);
@@ -2341,6 +2373,10 @@
 
         var selectedValue = $(element).data('id');
         var maxOption = $(`#edit-max-selection-${selectedValue}`).val() ?? 0;
+
+        maxOption = Math.max($(`#edit-min-selection-${selectedValue}`).val(),maxOption);
+        $(`#edit-max-selection-${selectedValue}`).val(maxOption);
+
         console.log("element max",element);
         var index = editItemData.findIndex(item => item.ModifierGrpId == selectedValue);
 

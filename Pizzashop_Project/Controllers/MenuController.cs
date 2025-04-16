@@ -290,7 +290,6 @@ public class MenuController : Controller
     #endregion
 
     #region  edit item Get
-    [PermissionAuthorize("Menu.EditAdd")]
     public IActionResult EditItem(long itemID)
     {
         return Json(_menuService.GetItemByItemID(itemID));
@@ -396,7 +395,6 @@ public class MenuController : Controller
     #endregion
 
     #region AddModifier get
-    [PermissionAuthorize("Menu.EditAdd")]
     public IActionResult AddModifierModal()
     {
         MenuViewModel menuvm = new MenuViewModel();
@@ -429,7 +427,6 @@ public class MenuController : Controller
     #endregion
 
     #region GetModifierDetailsByModifierId
-    [PermissionAuthorize("Menu.EditAdd")]
     public IActionResult GetModifierDetailsByModifierId(long modID)
     {
         MenuViewModel MenuVM = new MenuViewModel();
@@ -505,7 +502,6 @@ public class MenuController : Controller
     #endregion
 
     #region Edit Modifier Group get
-    [PermissionAuthorize("Menu.EditAdd")]
     public IActionResult EditModGrp(long ModGrpId)
     {
         var modifiers = _menuService.GetModifiersByModifierGrpId(ModGrpId);

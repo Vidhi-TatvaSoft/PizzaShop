@@ -49,7 +49,7 @@
         var totalRecords;
 
         function categorySelected(tag) {
-            pageNumber =1;
+            pageNumber = 1;
             categoryId = tag.getAttribute("data-categoryid");
             status = document.getElementById("inProgressDiv").classList.contains("btn-primary") ? "InProgress" : "Ready";
             var allclasses = document.getElementsByClassName("allCategory");
@@ -88,7 +88,7 @@
 
             let leftarrow = !$(tag).prop("disabled");
             @* console.log(leftarrow); *@
-                if (leftarrow) {
+                    if (leftarrow) {
                 pageNumber--;
                 GetDetailsByCategory(categoryId, status, pageNumber);
             }
@@ -97,7 +97,7 @@
         function RightShift(tag) {
             let rightarrow = !$(tag).prop("disabled");
             @* console.log(rightarrow); *@
-                if (rightarrow) {
+                    if (rightarrow) {
                 pageNumber++;
                 @* console.log(pageNumber) *@
                     GetDetailsByCategory(categoryId, status, pageNumber);
@@ -109,7 +109,7 @@
             categorySelected(document.getElementsByClassName("allCategory")[0]);
             $("#inProgressDiv").click(function () {
                 status = "InProgress";
-                pageNumber=1;
+                pageNumber = 1;
                 $(this).removeClass("btn-outline-primary");
                 $(this).addClass("btn-primary");
                 $("#readyDiv").removeClass("btn-primary");
@@ -119,7 +119,7 @@
 
             $("#readyDiv").click(function () {
                 status = "Ready";
-                pageNumber=1;
+                pageNumber = 1;
                 $(this).removeClass("btn-outline-primary");
                 $(this).addClass("btn-primary");
                 $("#inProgressDiv").removeClass("btn-primary");

@@ -1,4 +1,8 @@
 @using DAL.ViewModels;
+@using Microsoft.AspNetCore.Authorization
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
 @model DAL.ViewModels.TableSectionViewModel;
 
 
@@ -16,13 +20,20 @@
             </div>
             <div>
                 <input type="hidden" value="@sections.Description">
-                <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="UpdatesectionDetails(this);RemoveValidatoOnCancel()"
-                    data-id="@sections.SectionId" data-bs-toggle="modal" data-bs-target="#EditSectionModal"></i>
-                <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
-                    onclick="DeleteSectionDetails(this)" data-bs-target="#DeleteSectionModal" data-id="@sections.SectionId"></i>
+                @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.Delete")).Succeeded)
+                {
+                    <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="UpdatesectionDetails(this);RemoveValidatoOnCancel()"
+                        data-id="@sections.SectionId" data-bs-toggle="modal" data-bs-target="#EditSectionModal"></i>
+                    <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
+                        onclick="DeleteSectionDetails(this)" data-bs-target="#DeleteSectionModal" data-id="@sections.SectionId"></i>
+                }else if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.EditAdd")).Succeeded){
+                     <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="UpdatesectionDetails(this);RemoveValidatoOnCancel()"
+                        data-id="@sections.SectionId" data-bs-toggle="modal" data-bs-target="#EditSectionModal"></i>
+                }
+
             </div>
 
         </div>
-    flag2 = false;
+        flag2 = false;
     }
 }

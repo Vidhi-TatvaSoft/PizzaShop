@@ -4,6 +4,8 @@ namespace DAL.ViewModels;
 
 public class WaitingTokenDetailsViewModel
 {
+    public long waitingId{get;set;}
+
     [Required(ErrorMessage = "Email is required.")]
     [EmailAddress(ErrorMessage = "Enter a valid email address.")]
     [RegularExpression(@"\S.*", ErrorMessage = "Only white space is not allowed")]
