@@ -89,7 +89,7 @@ public class OrderAppTableService : IOrderAppTableService
     #endregion
 
     #region AddCustomerToWaitingList
-    public async Task<bool> AddCustomerToWaitingList(WaitingTokenDetailsViewModel waitingTokenvm, long userId)
+    public async Task<bool> AddEditCustomerToWaitingList(WaitingTokenDetailsViewModel waitingTokenvm, long userId)
     {
         try
         {

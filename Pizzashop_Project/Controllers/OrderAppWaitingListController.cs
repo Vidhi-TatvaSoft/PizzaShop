@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
-    [PermissionAuthorize("AccountManagerRole")]
+[PermissionAuthorize("AccountManagerRole")]
 
-public class OrderAppWaitingListController :Controller
+public class OrderAppWaitingListController : Controller
 {
     private readonly IOrderAppWaitingService _orderAppWaitingService;
 
@@ -18,7 +18,8 @@ public class OrderAppWaitingListController :Controller
 
     private readonly IUserService _userService;
 
-    public OrderAppWaitingListController(IOrderAppWaitingService orderAppWaitingService, IOrderAppTableService orderAppTableService, IUserLoginService userLoginService, IUserService userService){
+    public OrderAppWaitingListController(IOrderAppWaitingService orderAppWaitingService, IOrderAppTableService orderAppTableService, IUserLoginService userLoginService, IUserService userService)
+    {
         _orderAppWaitingService = orderAppWaitingService;
         _orderAppTableService = orderAppTableService;
         _userLoginSerivce = userLoginService;
@@ -35,48 +36,110 @@ public class OrderAppWaitingListController :Controller
     #endregion
 
     #region getAllSection
-    public IActionResult GetAllSection(){
+    public IActionResult GetAllSection()
+    {
         OrderAppWaitingListViewModel orderAppWaitingvm = new();
         orderAppWaitingvm.sectionList = _orderAppWaitingService.GetAllSection();
-        return PartialView("_SectionListWLPartial",orderAppWaitingvm.sectionList);
+        return PartialView("_SectionListWLPartial", orderAppWaitingvm.sectionList);
     }
     #endregion
 
     #region GetWaitingListBySection
-    public IActionResult GetWaitingListBySection(long sectionId){
+    public IActionResult GetWaitingListBySection(long sectionId)
+    {
         OrderAppWaitingListViewModel orderAppWaitingvm = new();
         orderAppWaitingvm.waitingList = _orderAppWaitingService.GetWaitingListBySection(sectionId);
-        return PartialView("_waitingListTableBySection",orderAppWaitingvm.waitingList);
+        return PartialView("_waitingListTableBySection", orderAppWaitingvm.waitingList);
     }
     #endregion
 
     #region AddWaitingToken
     [HttpPost]
-    public async Task<IActionResult> AddWaitingToken(OrderAppWaitingListViewModel waitingListvm){
-        bool IscustomerPresentInWaiting =await _orderAppTableService.IsCustomerPresentInWaiting(waitingListvm.waitingTokenDetailsViewModel.Email);
-        if(IscustomerPresentInWaiting){
-            return Json( new { success = false, text = "This Customer is Already present In waitingList"});
+    public async Task<IActionResult> AddWaitingToken(OrderAppWaitingListViewModel waitingListvm)
+    {
+        if (waitingListvm.waitingTokenDetailsViewModel.waitingId == 0)
+        {
+            bool IscustomerPresentInWaiting = await _orderAppTableService.IsCustomerPresentInWaiting(waitingListvm.waitingTokenDetailsViewModel.Email);
+            if (IscustomerPresentInWaiting)
+            {
+                return Json(new { success = false, text = "This Customer is Already present In waitingList" });
+            }
         }
+
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
 
         long customerIdIfPresent = _orderAppTableService.IsCustomerPresent(waitingListvm.waitingTokenDetailsViewModel.Email);
-        if(customerIdIfPresent == 0){
-            bool createCustomer =await _orderAppTableService.AddCustomer(waitingListvm.waitingTokenDetailsViewModel, userId);
-            if(!createCustomer){
-                return Json(new {success= false, text="Error While Adding Customer. Try Again!"});
+        if (customerIdIfPresent == 0)
+        {
+            bool createCustomer = await _orderAppTableService.AddCustomer(waitingListvm.waitingTokenDetailsViewModel, userId);
+            if (!createCustomer)
+            {
+                return Json(new { success = false, text = "Error While Adding Customer. Try Again!" });
             }
         }
-        bool customerAddEditToWaitingList =await _orderAppTableService.AddCustomerToWaitingList(waitingListvm.waitingTokenDetailsViewModel, userId);
-        if(customerAddEditToWaitingList){
-            if(waitingListvm.waitingTokenDetailsViewModel.waitingId == 0){
-                return Json(new {success= true, text="Customer Added In Waiting List"});
-            }else{
-                return Json(new {success= true, text="Customer Updated In Waiting List"});
-            }      
+        bool customerAddEditToWaitingList = await _orderAppTableService.AddEditCustomerToWaitingList(waitingListvm.waitingTokenDetailsViewModel, userId);
+        if (customerAddEditToWaitingList)
+        {
+            if (waitingListvm.waitingTokenDetailsViewModel.waitingId == 0)
+            {
+                return Json(new { success = true, text = "Customer Added In Waiting List" });
+            }
+            else
+            {
+                return Json(new { success = true, text = "Customer Updated In Waiting List" });
+            }
         }
-        return Json(new {success= false, text="Error While Adding/updating Customer to waiting List. Try Again!"});
+        return Json(new { success = false, text = "Error While Adding/updating Customer to waiting List. Try Again!" });
+    }
+    #endregion
+
+    #region GetDetailsByWaitingId
+    public IActionResult GetDetailsByWaitingId(long waitingId)
+    {
+
+        OrderAppWaitingListViewModel waitinglistvm = new();
+        waitinglistvm.waitingTokenDetailsViewModel = _orderAppWaitingService.GetWaitingTokenDetailsById(waitingId);
+        return Json(waitinglistvm.waitingTokenDetailsViewModel);
+
+    }
+    #endregion
+
+    #region DeleteWaitingToken
+    [HttpPost]
+    public async Task<IActionResult> DeleteWaitingToken(long waitingId){
+
+        bool waitingTokenDeleteStatus =await _orderAppWaitingService.DeleteWaitingToken(waitingId);
+        if(waitingTokenDeleteStatus){
+            return Json(new { success = true, text = "Waiting Token Deleted Successfully" });
+        }
+        return Json(new {success=false , text = "error While Deleting Waiting Token. Try Again!"});
+    }
+    #endregion
+
+
+    #region GetTableBySection
+    public IActionResult GetTableBySection(long sectionID){
+        List<TableViewModel> tableListBySection = _orderAppWaitingService.GetTableBySection(sectionID);
+        return Json(tableListBySection);
+    }
+    #endregion
+
+    #region AssignTable
+    [HttpPost]
+    public async Task<IActionResult> AssignTable(int[] tablesArr, long waitingId, long sectionId){
+        if(waitingId == 0 || sectionId ==0 || tablesArr==null){
+            return Json(new { success=false, text="Something Went Wrong.Try Again!"});
+        }
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        bool assignedStatus =await _orderAppWaitingService.AssignTable(tablesArr,waitingId,sectionId,userId);
+        if(assignedStatus){
+            return Json(new { success = true, text= "TableS assigned"});
+        }
+        return Json(new { success=false, text="Something Went Wrong.Try Again!"});
     }
     #endregion
 }

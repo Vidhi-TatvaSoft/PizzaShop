@@ -15,7 +15,7 @@ public interface IOrderAppTableService
 
         public long IsCustomerPresent(string Email);
 
-        Task<bool> AddCustomerToWaitingList(WaitingTokenDetailsViewModel waitingTokenvm, long userId);
+        Task<bool> AddEditCustomerToWaitingList(WaitingTokenDetailsViewModel waitingTokenvm, long userId);
         
         public List<OrderAppTableWaitingDetails> GetListOfCustomerWaiting(long sectionId);
         Task<bool> Assigntable(string Email, int[] TableIds, long userId);

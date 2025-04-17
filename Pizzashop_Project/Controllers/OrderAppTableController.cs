@@ -70,7 +70,7 @@ public class OrderAppTableController:Controller
                 return Json(new {success= false, text="Error While Adding Customer. Try Again!"});
             }
         }
-        bool customerAddToWaitingList =await _orderAppTableService.AddCustomerToWaitingList(orderappTablevm.waitingTokenDetailsViewModel, userId);
+        bool customerAddToWaitingList =await _orderAppTableService.AddEditCustomerToWaitingList(orderappTablevm.waitingTokenDetailsViewModel, userId);
         if(customerAddToWaitingList){
             return Json(new {success= true, text="Customer Added In Waiting List"});
         }

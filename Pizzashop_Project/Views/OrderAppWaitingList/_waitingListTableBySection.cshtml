@@ -1,5 +1,5 @@
 @using DAL.ViewModels;
-@model List<OrderAppWLListDetailsViewModel>
+@model List<WaitingTokenDetailsViewModel>
 
 @if(Model.Count == 0 ){
     <tr>
@@ -9,17 +9,17 @@
 @foreach (var item in Model)
 {
     <tr>
-        <td class="text-nowrap text-secondary">@item.WaitingId</td>
+        <td class="text-nowrap text-secondary">@item.waitingId</td>
         <td class="text-nowrap text-secondary">@item.CreatedAt</td>
         <td class="text-nowrap text-secondary">0hr 4min</td>
         <td class="text-nowrap text-secondary">@item.Name</td>
         <td class="text-nowrap text-secondary">@item.NoOfPerson</td>
-        <td class="text-nowrap text-secondary">@item.phoneno</td>
+        <td class="text-nowrap text-secondary">@item.Mobileno</td>
         <td class="text-nowrap text-secondary">@item.Email</td>
         <td class="text-center text-nowrap text-secondary">
-            <i class="fa-solid fa-pen  me-2 mt-2" data-bs-toggle="modal" data-bs-target="#EditWaitingTokenModal" onclick="UpdateWaitingListModal(@item.WaitingId)"></i>
-            <i class="fa-solid fa-trash-can  me-2"></i>
-            <i class="fa-solid fa-user-plus"></i>
+            <i class="fa-solid fa-pen  me-2 mt-2" data-bs-toggle="modal" data-bs-target="#AddWaitingTOkenModal" onclick="UpdateWaitingListModal(@item.waitingId)"></i>
+            <i class="fa-solid fa-trash-can  me-2" data-bs-toggle="modal" data-bs-target="#DeleteWaitingTokenModal"></i>
+            <i class="fa-solid fa-user-plus" data-bs-toggle="modal" data-bs-target="#AssignTableToWaitingModal" onclick="getSectionListAndTables(@item.SectionID,@item.waitingId)"></i>
         </td>
 
     </tr>
