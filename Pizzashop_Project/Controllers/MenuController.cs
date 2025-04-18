@@ -463,7 +463,6 @@ public class MenuController : Controller
     #endregion
 
     #region Delete Modifier post
-    [Authorize(Roles = "Admin")]
     [PermissionAuthorize("Menu.Delete")]
     [HttpPost]
     public async Task<IActionResult> DeleteModifier(long modID)

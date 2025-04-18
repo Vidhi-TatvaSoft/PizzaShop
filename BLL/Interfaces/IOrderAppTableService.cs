@@ -9,7 +9,7 @@ public interface IOrderAppTableService
 
         public List<TableViewModelForOrderAppTable> GetTableDetailsBySection(long SectionId);
 
-        Task<bool> AddCustomer(WaitingTokenDetailsViewModel waitingTokenvm, long userId);
+        Task<bool> AddEditCustomer(WaitingTokenDetailsViewModel waitingTokenvm, long userId);
 
         Task<bool> IsCustomerPresentInWaiting(string Email);
 

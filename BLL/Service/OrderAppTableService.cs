@@ -75,14 +75,27 @@ public class OrderAppTableService : IOrderAppTableService
     #endregion
 
     #region AddCustomer
-    public async Task<bool> AddCustomer(WaitingTokenDetailsViewModel waitingTokenvm, long userId)
+    public async Task<bool> AddEditCustomer(WaitingTokenDetailsViewModel waitingTokenvm, long userId)
     {
-        Customer customer = new();
-        customer.CustomerName = waitingTokenvm.Name;
-        customer.Email = waitingTokenvm.Email;
-        customer.Phoneno = waitingTokenvm.Mobileno;
-        customer.CreatedBy = userId;
-        await _context.AddAsync(customer);
+        Customer? presentcustomer =await _context.Customers.FirstOrDefaultAsync(x => x.Email == waitingTokenvm.Email && x.Isdelete==false);
+        if(presentcustomer != null){
+            presentcustomer.CustomerName = waitingTokenvm.Name;
+            presentcustomer.Email = waitingTokenvm.Email;
+            presentcustomer.Phoneno = waitingTokenvm.Mobileno;
+            presentcustomer.ModifiedAt=DateTime.Now;
+            presentcustomer.ModifiedBy=userId;
+            _context.Update(presentcustomer);
+
+        }
+        else{
+            Customer customer = new();
+            customer.CustomerName = waitingTokenvm.Name;
+            customer.Email = waitingTokenvm.Email;
+            customer.Phoneno = waitingTokenvm.Mobileno;
+            customer.CreatedBy = userId;
+            await _context.AddAsync(customer);
+        }
+        
         await _context.SaveChangesAsync();
         return true;
     }
@@ -135,7 +148,7 @@ public class OrderAppTableService : IOrderAppTableService
                         {
                             Email = w.Customer.Email,
                             Name = w.Customer.CustomerName,
-                            Mobileno = (int)w.Customer.Phoneno,
+                            Mobileno = (long)w.Customer.Phoneno,
                             NoOfPerson = w.NoOfPerson,
                             SectionID = w.SectionId,
                             SectionName = w.Section.SectionName

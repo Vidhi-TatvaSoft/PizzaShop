@@ -63,13 +63,13 @@ public class OrderAppTableController:Controller
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
 
-        long customerIdIfPresent = _orderAppTableService.IsCustomerPresent(orderappTablevm.waitingTokenDetailsViewModel.Email);
-        if(customerIdIfPresent == 0){
-            bool createCustomer =await _orderAppTableService.AddCustomer(orderappTablevm.waitingTokenDetailsViewModel, userId);
+        // long customerIdIfPresent = _orderAppTableService.IsCustomerPresent(orderappTablevm.waitingTokenDetailsViewModel.Email);
+        // if(customerIdIfPresent == 0){
+            bool createCustomer =await _orderAppTableService.AddEditCustomer(orderappTablevm.waitingTokenDetailsViewModel, userId);
             if(!createCustomer){
                 return Json(new {success= false, text="Error While Adding Customer. Try Again!"});
             }
-        }
+        // }
         bool customerAddToWaitingList =await _orderAppTableService.AddEditCustomerToWaitingList(orderappTablevm.waitingTokenDetailsViewModel, userId);
         if(customerAddToWaitingList){
             return Json(new {success= true, text="Customer Added In Waiting List"});

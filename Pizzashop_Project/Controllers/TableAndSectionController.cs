@@ -188,7 +188,7 @@ public class TableAndSectionController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteTable(long id){
         var table =await _tableSectionService.getTableByTableId(id);
-        if(table.Status == "Occupied"){
+        if(table.Status != "Available"){
             return Json(new { success = false, text = "Table is Occupied. Can't Delete this Table" });
         }
         bool deleteTableStatus = await _tableSectionService.DeleteTable(id);

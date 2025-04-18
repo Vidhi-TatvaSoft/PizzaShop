@@ -6,7 +6,7 @@ public class CustomerHistoryViewModel
 
     public string CustomerName { get; set; } = null!;
 
-    public int? Phoneno { get; set; }
+    public long? Phoneno { get; set; }
 
     public decimal MaxOrder {get;set;}
 

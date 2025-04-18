@@ -45,7 +45,7 @@ public class OrderAppWaitingService : IOrderAppWaitingService
                                     CreatedAt = (DateTime)w.CreatedAt,
                                     Name = w.Customer.CustomerName,
                                     NoOfPerson = w.NoOfPerson,
-                                    Mobileno = (int)w.Customer.Phoneno,
+                                    Mobileno = (long)w.Customer.Phoneno,
                                     Email = w.Customer.Email,
                                     SectionID = w.SectionId,
                                     SectionName = w.Section.SectionName
@@ -61,7 +61,7 @@ public class OrderAppWaitingService : IOrderAppWaitingService
                                     CreatedAt = (DateTime)w.CreatedAt,
                                     Name = w.Customer.CustomerName,
                                     NoOfPerson = w.NoOfPerson,
-                                    Mobileno = (int)w.Customer.Phoneno,
+                                    Mobileno = (long)w.Customer.Phoneno,
                                     Email = w.Customer.Email,
                                     SectionID = w.SectionId,
                                     SectionName = w.Section.SectionName
@@ -89,6 +89,8 @@ public class OrderAppWaitingService : IOrderAppWaitingService
         return tokendetails == null ? null : tokendetails;
     }
     #endregion
+
+
 
     #region DeleteWaitingToken
     public async Task<bool> DeleteWaitingToken(long waitingId)

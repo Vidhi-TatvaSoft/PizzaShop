@@ -87,7 +87,9 @@ public partial class PizzashopDbContext : DbContext
 
             entity.ToTable("assigntable");
 
-            entity.Property(e => e.AssignId).HasColumnName("assign_id");
+            entity.Property(e => e.AssignId)
+                .HasIdentityOptions(7L, null, null, null, null, null)
+                .HasColumnName("assign_id");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnType("timestamp without time zone")

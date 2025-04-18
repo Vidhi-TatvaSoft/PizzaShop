@@ -439,4 +439,11 @@ public class CustomerService : ICustomerService
     }
 
     #endregion
+
+    #region GetCustomer which contains email
+    public List<Customer> GetCustomerByEmail(string Email){
+        List<Customer> customer = _context.Customers.Where(x => x.Email.Contains(Email.Trim()) && x.Isdelete==false).ToList();
+        return customer ;
+    }
+    #endregion
 }

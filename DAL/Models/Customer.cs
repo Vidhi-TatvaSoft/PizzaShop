@@ -9,7 +9,7 @@ public partial class Customer
 
     public string CustomerName { get; set; } = null!;
 
-    public int? Phoneno { get; set; }
+    public long? Phoneno { get; set; }
 
     public string? Email { get; set; }
 

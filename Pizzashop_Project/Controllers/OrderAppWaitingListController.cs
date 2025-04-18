@@ -14,14 +14,17 @@ public class OrderAppWaitingListController : Controller
 
     private readonly IOrderAppTableService _orderAppTableService;
 
+    private readonly ICustomerService _customerService;
+
     private readonly IUserLoginService _userLoginSerivce;
 
     private readonly IUserService _userService;
 
-    public OrderAppWaitingListController(IOrderAppWaitingService orderAppWaitingService, IOrderAppTableService orderAppTableService, IUserLoginService userLoginService, IUserService userService)
+    public OrderAppWaitingListController(IOrderAppWaitingService orderAppWaitingService, IOrderAppTableService orderAppTableService,ICustomerService customerService, IUserLoginService userLoginService, IUserService userService)
     {
         _orderAppWaitingService = orderAppWaitingService;
         _orderAppTableService = orderAppTableService;
+        _customerService = customerService;
         _userLoginSerivce = userLoginService;
         _userService = userService;
     }
@@ -53,6 +56,13 @@ public class OrderAppWaitingListController : Controller
     }
     #endregion
 
+    #region get customer which contains the email
+    public IActionResult GetCustomerByEmail(string Email){
+        List<Customer> customers = _customerService.GetCustomerByEmail(Email);
+        return Json(customers);
+    }
+    #endregion
+
     #region AddWaitingToken
     [HttpPost]
     public async Task<IActionResult> AddWaitingToken(OrderAppWaitingListViewModel waitingListvm)
@@ -70,15 +80,14 @@ public class OrderAppWaitingListController : Controller
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
 
-        long customerIdIfPresent = _orderAppTableService.IsCustomerPresent(waitingListvm.waitingTokenDetailsViewModel.Email);
-        if (customerIdIfPresent == 0)
+        // long customerIdIfPresent = _orderAppTableService.IsCustomerPresent(waitingListvm.waitingTokenDetailsViewModel.Email);
+        
+        bool createCustomer = await _orderAppTableService.AddEditCustomer(waitingListvm.waitingTokenDetailsViewModel, userId);
+        if (!createCustomer)
         {
-            bool createCustomer = await _orderAppTableService.AddCustomer(waitingListvm.waitingTokenDetailsViewModel, userId);
-            if (!createCustomer)
-            {
-                return Json(new { success = false, text = "Error While Adding Customer. Try Again!" });
-            }
+            return Json(new { success = false, text = "Something went wrong. Try Again!" });
         }
+        
         bool customerAddEditToWaitingList = await _orderAppTableService.AddEditCustomerToWaitingList(waitingListvm.waitingTokenDetailsViewModel, userId);
         if (customerAddEditToWaitingList)
         {
@@ -91,7 +100,7 @@ public class OrderAppWaitingListController : Controller
                 return Json(new { success = true, text = "Customer Updated In Waiting List" });
             }
         }
-        return Json(new { success = false, text = "Error While Adding/updating Customer to waiting List. Try Again!" });
+        return Json(new { success = false, text = "Something went wrong. Try Again!" });
     }
     #endregion
 

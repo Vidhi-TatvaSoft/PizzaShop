@@ -7,7 +7,7 @@
 
 <div class="d-flex justify-content-between">
     <div class="fs-2 fw-bold text-primary"> Waiting List</div>
-    <button class="btn btn-outline-primary p-1 " data-bs-toggle="modal" data-bs-target="#AddWaitingTOkenModal">+ Waiting
+    <button class="btn btn-outline-primary p-1 " data-bs-toggle="modal" data-bs-target="#AddWaitingTOkenModal" onclick="EmptyDetailsofAddModal()">+ Waiting
         Token</button>
 
 </div>
@@ -50,8 +50,9 @@
             <form id="waitingTokenFormId">
                 <div class="modal-body row">
                     <div class="form-floating  col-12 mb-3">
-                        <input type="text" class="form-control" id="Email"
-                            asp-for="@Model.waitingTokenDetailsViewModel.Email" placeholder="Email*">
+                        <input type="text" class="form-control" id="Email" list="emailDatalist"
+                            asp-for="@Model.waitingTokenDetailsViewModel.Email" placeholder="Email*" onkeyup="GetSuggestionsusingEmail(this)" onchange="FillValuesBySuggestion(this)" autocomplete="off">
+                            <datalist id="emailDatalist"></datalist>
                         <span asp-validation-for="@Model.waitingTokenDetailsViewModel.Email"
                             class="text-danger RemoveValidations" id="RemoveValidations"></span>
                         <label for="Email"> &nbsp; Email*</label>
@@ -131,37 +132,36 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Assign Table</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="emptyAssignModal()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    onclick="emptyAssignModal()"></button>
             </div>
             <div class="modal-body row">
                 <div class="form-floating  col-md-6 col-12 mb-3">
                     <select class="form-control" id="sectionList" disabled>
-                        
+
                     </select>
                     <label for="sectionList"> &nbsp; Section*</label>
                 </div>
 
                 <div class="form-floating  col-md-6 col-12 mb-3">
-                   @* <div class="form-control" id="TableListBySection" onclick="GetTableDetailsToAssign()">
-                        <div class="" id="DisplayTables">
-                           
-
-                        </div>
-                   </div>
-                    *@
-                    <input type="hidden"  id="sectionSelected" >
-                   <input type="text" class="form-control" id="TableListBySection" onclick="GetTableDetailsToAssign()" placeholder="Table">
-                    <div class=" d-none mt-1" id="DisplayTables" style="background-color: rgb(226, 226, 226); height:100px; overflow:auto;">
                     
-                        </div>
-                    <label for="TableListBySection"> &nbsp; Table*</label>
+                    <input type="hidden" id="sectionSelected">
+                    <input type="text" class="form-control" id="TableListBySection" onclick="GetTableDetailsToAssign()"
+                        placeholder="Table">
+                    <div class=" d-none mt-1" id="DisplayTables"
+                        style="background-color: rgb(226, 226, 226); height:100px; overflow:auto;">
+
+                    </div>
+                    <label for="TableListBySection"> &nbsp; Table* <span class="text-danger">(Required)</span></label>
                 </div>
             </div>
 
             <input type="hidden" id="waitingTokenId" name="waitingId">
+            <input type="hidden" name="NoOfPerson" id="NoOfPersons">
             <div class="modal-footer d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary" onclick="AssignTableSubmitButton()">Assign</button>
-                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" onclick="emptyAssignModal()">No</button>
+                <button type="submit" class="btn btn-primary" onclick="AssignTableSubmitButton()" id="assignBtton" disabled>Assign</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
+                    onclick="emptyAssignModal()">No</button>
             </div>
         </div>
     </div>
@@ -221,6 +221,34 @@
                     }
                 }
             });
+        }
+
+        //GetSuggestionsusingEmail
+        function GetSuggestionsusingEmail(tag){
+            var datalist=  document.getElementById("emailDatalist");
+            $.ajax({
+                url:"GetCustomerByEmail",
+                type:"GET",
+                data:{Email:tag.value},
+                success:function(data){
+                    console.log(data);
+                   datalist.innerHTML = "";
+                    data.forEach((x) => {
+                        datalist.innerHTML += `<option value="${x.email}" data-name="${x.customerName}" data-number="${x.phoneno}">Name: ${x.customerName}, Mobile Number: ${x.phoneno}</option>`
+                    })
+                }
+            })
+        }
+
+        //FillValuesBySuggestion
+        function FillValuesBySuggestion(tag){
+            var datalist= $("#emailDatalist option[value='"+tag.value+"']");
+            if(datalist.length){
+                document.getElementById("Name").value= datalist.data("name");
+                document.getElementById("mobile").value= datalist.data("number");
+            }
+            document.getElementById("emailDatalist").innerHTML = "";
+
         }
 
 
@@ -300,7 +328,7 @@
 
 
         //Assign Table modal get
-        function getSectionListAndTables(sectionID,waitingId) {
+        function getSectionListAndTables(sectionID, waitingId,noOfPerson) {
             $.ajax({
                 url: "/TableAndSection/GetSectionList",
                 type: "GET",
@@ -308,56 +336,88 @@
                     console.log(data);
                     $("#sectionList").empty();
                     for (i = 0; i < data.length; i++) {
-                        if(data[i].sectionId == sectionID)
-                            $("#sectionList").append(`<option value="${data[i].sectionId}" selected>${data[i].sectionName}</option>`);
+                        if (data[i].sectionId == sectionID)
+                            $("#sectionList").append(`<option value="${data[i].sectionId}" selected>${data[i].sectionName} </option>`);
                         else
                             $("#sectionList").append(`<option value="${data[i].sectionId}">${data[i].sectionName}</option>`);
-                    } 
+                    }
                 }
-            }); 
-            document.getElementById("sectionSelected").value=sectionID;
-            document.getElementById("waitingTokenId").value=waitingId
+            });
+            document.getElementById("sectionSelected").value = sectionID;
+            document.getElementById("waitingTokenId").value = waitingId
+            document.getElementById("NoOfPersons").value = noOfPerson;
             getTablebySectionId(sectionID)
 
         }
 
-        function getTablebySectionId(sectionID){
+        function getTablebySectionId(sectionID) {
             console.log(sectionID);
             $.ajax({
-                url:"/OrderAppWaitingList/GetTableBySection",
-                type:"GET",
-                data:{sectionID},
-                success: function(data){
+                url: "/OrderAppWaitingList/GetTableBySection",
+                type: "GET",
+                data: { sectionID },
+                success: function (data) {
                     console.log("tables:")
                     console.log(data);
                     @* data.foreach *@
-                    for(i=0; i<data.length;i++){
-                        console.log(data[i])
-                    document.getElementById("DisplayTables").innerHTML += `<div><input type="checkbox" class="assignCheckbox me-2" id="tableId-${data[i].tableId}">${data[i].tableName}</div>`
+                        if (data.length == 0) {
+                        document.getElementById("DisplayTables").innerHTML += `<div>No Table Available In this Section</div>`
                     }
+                    else {
+                        for (i = 0; i < data.length; i++) {
+                            console.log(data[i])
+                            document.getElementById("DisplayTables").innerHTML += `<div><input type="checkbox" class="assignCheckbox me-2" data-capacity="${data[i].capacity}" id="tableId-${data[i].tableId}" onclick="EnableAssignButton(this)">${data[i].tableName} (${data[i].capacity})</div>`
+                        }
+                    }
+
                 }
             })
         }
 
-        //assign functionality
-        function AssignTableSubmitButton(){
-            var classes = document.getElementsByClassName("assignCheckbox");
-            for(i=0 ;i<classes.length;i++){
-                if(classes[i].checked){
-                    selectedTables.push(parseInt(classes[i].id.split("-")[1]))
-                    console.log("id",classes[i].id.split("-")[1])
+        //enable disable assign button
+        function EnableAssignButton(tag){
+            var flag =false;
+            var checkedclasses = document.getElementsByClassName("assignCheckbox");
+            for(i=0; i<checkedclasses.length; i++){
+                if(checkedclasses[i].checked){
+                    flag=true;
+                    document.getElementById("assignBtton").removeAttribute("disabled");
                 }
             }
-            console.log("ids",selectedTables)
+            if(!flag){
+                document.getElementById("assignBtton").setAttribute("disabled","disabled");
+            }
+        }
+
+        //assign functionality
+        function AssignTableSubmitButton() {
+            var flag=false;
+            var totalcapacity =0;
+            var classes = document.getElementsByClassName("assignCheckbox");
+            for (i = 0; i < classes.length; i++) {
+                if (classes[i].checked) {
+                    flag = true;
+                    totalcapacity += parseInt(classes[i].getAttribute("data-capacity"))
+                    selectedTables.push(parseInt(classes[i].id.split("-")[1]))
+                }
+            }
             var waitingId = document.getElementById("waitingTokenId").value;
-            var sectionId = document.getElementById("sectionSelected").value;    
-            console.log(waitingId);
-            console.log(sectionId); 
+            var sectionId = document.getElementById("sectionSelected").value;
+            var noOfPerson = document.getElementById("NoOfPersons").value;
+            if(!flag){
+                errorToaster("Select Table First");
+                return;
+            }
+            if(noOfPerson > totalcapacity){
+                errorToaster("Number of person is greater than Total capacity of selected Tables");
+                return;
+            }
+            
             $.ajax({
-                url:"/OrderAppWaitingList/AssignTable",
-                type:"POST",
-                data:{tablesArr:selectedTables, waitingId,sectionId},
-                success: function(res){
+                url: "/OrderAppWaitingList/AssignTable",
+                type: "POST",
+                data: { tablesArr: selectedTables, waitingId, sectionId },
+                success: function (res) {
                     if (res.success) {
                         successToaster(res.text);
                     } else {
@@ -369,22 +429,34 @@
                     $(".btn-close").click();
                     emptyAssignModal();
                 }
-            })   
+            })
         }
 
         //GetTableDetailsToAssign
-        function GetTableDetailsToAssign(){
+        function GetTableDetailsToAssign() {
             document.getElementById("DisplayTables").classList.toggle("d-none");
         }
 
         //closebutton of assign modal
-        function emptyAssignModal(){
+        function emptyAssignModal() {
             var classList = document.getElementById("DisplayTables").classList;
-           if(!classList.contains("d-none")){
+            if (!classList.contains("d-none")) {
                 classList.add("d-none")
-           }
-           document.getElementById("DisplayTables").innerHTML="";
-           selectedTables = []
+            }
+            document.getElementById("DisplayTables").innerHTML = "";
+            selectedTables = []
+
+        }
+
+        //EmptyDetailsofAddModal
+        function EmptyDetailsofAddModal(){
+            document.getElementById("emailDatalist").value= "";
+            document.getElementById("emailDatalist").innerHTML= "";
+            document.getElementById("Name").value = "";
+            document.getElementById("Email").value ="";
+            document.getElementById("mobile").value="";
+            document.getElementById("persons").value="";
+            getSectionList();
 
         }
 

@@ -34,7 +34,7 @@ public class TableAndSectionService : ITableAndSection
                 TableName = x.TableName,
                 SectionId = x.SectionId,
                 Capacity=x.Capacity,
-                Status=x.Status,
+                Status=x.Status == "Available"? "Available":"Occupied",
                 Isdelete = x.Isdelete
             })
             .AsQueryable();
@@ -110,7 +110,7 @@ public class TableAndSectionService : ITableAndSection
 
     #region ckeckOccupiedTable
     public bool ckeckOccupiedTable(long sectionId){
-        return _context.Tables.Any(x => x.Section.SectionId == sectionId && x.Isdelete == false && x.Status == "Occupied");
+        return _context.Tables.Any(x => x.Section.SectionId == sectionId && x.Isdelete == false && x.Status != "Available" );
     }
     #endregion
 
@@ -173,7 +173,7 @@ public class TableAndSectionService : ITableAndSection
         {return false;}
         tablepresent.TableName=table.TableName;
         tablepresent.Capacity=table.Capacity;
-        tablepresent.Status=table.Status;
+        tablepresent.Status=table.Status == "Available"? "Available":"Occupied";
         tablepresent.SectionId=table.SectionId;
         tablepresent.ModifiedBy=userId;
         tablepresent.ModifiedAt=DateTime.Now;
@@ -199,7 +199,6 @@ public class TableAndSectionService : ITableAndSection
         await _context.SaveChangesAsync();
         return true;
     }
-
     #endregion
 
 }

@@ -20,7 +20,7 @@ public class WaitingTokenDetailsViewModel
 
     [Required(ErrorMessage = "phone number is required.")]
     [Range(1000000000, 9999999999, ErrorMessage = "Phone number must be 10 digits long.")]
-    public int Mobileno{get;set;}
+    public long Mobileno{get;set;}
 
     [Required(ErrorMessage = "Number Of Person is required.")]
     [Range(0, 999, ErrorMessage = "NumberOf Person Can not be greate than 1000")]
