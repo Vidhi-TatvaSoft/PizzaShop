@@ -73,6 +73,7 @@ public class TableAndSectionController : Controller
         return PartialView("_TablesListPartial",  tablesectionvm.TableList);
     }
     #endregion
+    
 
     #region Add section
     [PermissionAuthorize("TableSection.EditAdd")]

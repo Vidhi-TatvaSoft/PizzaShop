@@ -1,14 +1,71 @@
+using System.Threading.Tasks;
+using BLL.Interfaces;
+using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
-    [PermissionAuthorize("AccountManagerRole")]
+[PermissionAuthorize("AccountManagerRole")]
 public class OrderAppMenuController :Controller
 {
+    private readonly IMenuService _menuService;
+
+    private readonly IOrderAppMenuService _orderAppMenuService ;
+
+
+    public OrderAppMenuController(IMenuService menuService, IOrderAppMenuService orderAppMenuService)
+    {
+        _menuService = menuService;
+        _orderAppMenuService = orderAppMenuService;
+    }
+
     public IActionResult OrderAppMenu()
-    {   
+    {  
+        OrderAppMenuViewModel menuvm= new();
+        menuvm.categoryList =  _menuService.GetAllCategories(); 
         ViewData["orderApp-Active"] = "Menu";
         ViewData["orderAppDDIcon"] = "fa-burger";
-        return View();
+        return View(menuvm);
     }
+
+
+    #region ItemsByCategorySelectedPartial
+    public IActionResult GetItemByCategory(long categoryId,string searchText =""){
+        OrderAppMenuViewModel menuvm = new();
+        menuvm.itemsListByCategory = _orderAppMenuService.GetItemByCategory(categoryId,searchText);
+        return PartialView("_ItemsByCategorySelectedPartial",menuvm.itemsListByCategory);
+    }
+    #endregion
+
+    // #region SearchItem
+    // public IActionResult SearchItem(string searchText,long categoryID){
+    //     OrderAppMenuViewModel menuvm = new();
+    //     menuvm.itemsListByCategory = _orderAppMenuService.GetItemByCategory(categoryID,searchText);
+    //     return PartialView("_ItemsByCategorySelectedPartial",menuvm.itemsListByCategory);
+    // }
+    // #endregion
+
+    #region FavouriteItemManage
+    public async Task<IActionResult> FavouriteItemManage(long itemId, bool IsFavourite){
+        bool status =await _orderAppMenuService.FavouriteItemManage(itemId,IsFavourite);
+        if(status ){
+            if(IsFavourite){
+            return Json( new{ success=true, text="Item Added to Favourite Items"});
+            }else{
+                return Json(new {success=true , text="Item Removed from Favourite Items"});
+            }
+        }else{
+            return Json( new{ success=false, text="Something Went Wrong! Try Again!"});
+        }
+    }
+    #endregion
+
+    #region GetModifiersByItemId
+    public IActionResult GetModifiersByItemId(long itemId){
+        OrderAppMenuViewModel menuvm = new();
+        menuvm.modifirsByItemList = _orderAppMenuService.GetModifiersByItemId(itemId);
+        return PartialView("_ModifiersByItemModalPartial",menuvm);
+
+    }
+    #endregion
 }

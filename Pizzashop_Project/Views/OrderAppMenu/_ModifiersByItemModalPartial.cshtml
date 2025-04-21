@@ -1,0 +1,67 @@
+@using DAL.ViewModels;
+@model OrderAppMenuViewModel;
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="itemName">item</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body row">
+        @if (Model.modifirsByItemList.Count == 0)
+        {
+            <div class="col-12 d-flex justify-content-center align-items-center mt-3">
+                <span class="fs-3 fw-bold text-secondary">No Modifiers Found</span>
+            </div>
+        }
+        else
+        {
+            @foreach (var modgrp in Model.modifirsByItemList)
+            {
+                <div class="mb-3">
+                    <div><span class="fs-5 fw-bold text-secondary">@modgrp.ModifierGrpName</span><span>&nbsp; You can choose Minumun -
+                            @modgrp.min & Maximun
+                            - @modgrp.max Options</span></div>
+                    <div class="d-flex flex-wrap gap-2">
+
+                        @foreach (var modifier in modgrp.modifierList)
+                        {
+                            <div class="col-auto d-flex mt-2 modifiers" onclick="ModifierSelected(this,@modgrp.max)">
+                                <div style="z-index:2; height: 65px; min-width: 150px; border-radius: 0.7rem !important;  border:1px solid black"
+                                    class="bg-white d-flex justify-content-between">
+                                    <div class="ms-2 py-1 d-flex flex-column justify-content-between">
+                                        <span class="text-nowrap">@modifier.ModifierName</span>
+                                        <span>₹@modifier.Rate</span>
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-between">
+                                        <span
+                                            style="clip-path: polygon(0% 0%, 100% 100%, 100% 0%); height: 30px; width: 30px; border-top-right-radius: 0.7rem; "
+                                            class="@(modgrp.TypeId == 1? "bg-success": modgrp.TypeId == 2 ? "bg-danger":"bg-warning")"></span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+
+        <div class="modal-footer d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary">Yes</button>
+            <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
+        </div>
+    </div>
+
+
+<script>
+    function ModifierSelected(tag,maxval){
+        var selectedClass  = document.getElementsByClassName("modifierSelected");
+        var count = selectedClass.length;
+        if(count >= maxval && !tag.children[0].classList.contains("modifierSelected")){
+            errorToaster("Maximum "+maxval+" Modifiers can be selected");
+            return;
+        }else{
+            tag.children[0].classList.toggle("modifierSelected");
+        }
+    }
+</script>

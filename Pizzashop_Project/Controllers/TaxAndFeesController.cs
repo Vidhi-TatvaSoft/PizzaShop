@@ -31,7 +31,6 @@ public class TaxAndFeesController: Controller
     }
     #endregion
 
-
     #region PaginatedData
     [PermissionAuthorize("TaxFees.View")]
     //    [Authorize(Roles = "Admin")]
@@ -78,7 +77,7 @@ public class TaxAndFeesController: Controller
     public async Task<IActionResult> EditTax(TaxANdFeesViewModel taxfeesvm){
         var taxNamePresent =await _taxAndFeeService.GetTaxByNameForEdit(taxfeesvm.taxViewModel);
         if(taxNamePresent!=null){
-            return Json(new { success = false, text = "Tax Already present. Try New TaxName" });
+            return Json(new { success = false, text = "Tax Already present." });
         }
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);

@@ -311,15 +311,15 @@
             $("#searchfordate").on("click", function () {
                 startDate = $("#startDate").val();
                 endDate = $("#endDate").val();
-                console.log(startDate);
-                console.log(endDate);
+                @* console.log(startDate);
+                console.log(endDate); *@
                 loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize, status, timePeriod, startDate, endDate);
             });
 
             // Items per page dropdown
             $("#itemsperpage").on("change", function () {
                 pageSize = $(this).val();
-                console.log(pageSize);
+                @* console.log(pageSize); *@
                 currentPage = 1;
                 loadTableForOrders(currentPage, searchText, sortColumn, sortDirection, pageSize, status, timePeriod, startDate, endDate);
             });
@@ -375,9 +375,6 @@
             $("#startDate").on("change",function(){
                 startDate = document.getElementById("startDate").value;
                 endDateInput= document.getElementById("endDate").value;
-                @* startDate.min = new Date();
-
-                endDateInput.min = startDate; *@
                 if(endDateInput=="")return
                 if(endDateInput.value < startDate){
                   errorToaster("To date should be greater than from date.Reset to date");  

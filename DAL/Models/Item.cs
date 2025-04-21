@@ -7,8 +7,7 @@ namespace DAL.Models;
 public partial class Item
 {
     public long ItemId { get; set; }
-    [RegularExpression(@"\S.*", ErrorMessage = "Only white space is not allowed")]
-
+ [RegularExpression(@"\S.*", ErrorMessage = "Only white space is not allowed")]
     public string ItemName { get; set; } = null!;
 
     public long CategoryId { get; set; }
@@ -42,6 +41,8 @@ public partial class Item
     public bool Isdelete { get; set; }
 
     public string ShortCode { get; set; } = null!;
+
+    public bool IsFavourite { get; set; }
 
     public virtual Category Category { get; set; } = null!;
 

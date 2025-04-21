@@ -456,6 +456,7 @@ public class UserController : Controller
         Response.Cookies.Delete("email");
         Response.Cookies.Delete("profileImage");
         Response.Cookies.Delete("username");
+        Response.Headers["Clear-Site-Data"] = "\"cache\", \"cookies\", \"storage\"";
         TempData["SuccessMessage"] = "Logout Successfully.";
         return RedirectToAction("VerifyPassword", "UserLogin");
     }

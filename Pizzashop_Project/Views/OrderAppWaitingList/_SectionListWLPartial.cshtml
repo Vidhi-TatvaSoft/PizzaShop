@@ -9,9 +9,9 @@
         </div>
 @foreach (var item in Model)
 {
-    <div class="allCategory ms-3 me-3 pb-1 fs-5  fw-bold text-secondary text-wrap-nowrap d-flex align-items-center "
+    <div class="allCategory ms-3 me-3 pb-1 fs-5  fw-bold text-secondary text-nowrap d-flex align-items-center "
         style="max-width-content=fit;" onclick="sectionSelected(this)" data-sectionid="@item.SectionId">@item.SectionName
-        <div class="bg-secondary text-white ms-1" style="border-radius: 50% !important; width:22px;">
+        <div class="bg-secondary text-white ms-1 text-nowrap" style="border-radius: 50% !important; width:22px;">
             <div class="d-flex justify-content-center align-items-center" style="font-size:15px;">@item.WaitingCount</div>
         </div>
     </div>

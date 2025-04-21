@@ -26,6 +26,8 @@ public class ItemsViewModel
 
     public bool? Isavailable { get; set; }
 
+    public bool IsFavourite { get; set; }
+
     public bool Isdelete { get; set; }
     
 

@@ -17,4 +17,6 @@ public class ModifierGroupForItem
 
     public List<Modifier> modifierList{get;set;}
 
+    public long TypeId{get;set;}
+
 }
