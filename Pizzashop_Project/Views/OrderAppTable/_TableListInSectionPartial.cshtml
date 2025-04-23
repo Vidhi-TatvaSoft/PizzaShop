@@ -13,7 +13,7 @@ else
             <div class="d-none">@table.TableId</div>
             <div class="d-none">@table.SectionId</div>
             <div class="card-body rounded-1  d-flex flex-column bg-light text-secondary @(table.Status == "Assigned" || table.Status == "Occupied" ? "tableassigned" : table.Status == "Running" ? "tableRunning" : "tableAvailable")"
-                @(table.Status == "Available" ? "onclick=SelectTable(this)" : "")>
+                @(table.Status == "Available" ? "onclick=SelectTable(this)" : "onclick=OpenMenuForOrder(this)")>
                 <div class="d-flex justify-content-between align-items-center mx-1">
                     <div
                         class="fs-4 fw-bold @(table.Status == "Assigned" || table.Status == "Occupied" ? "text-success" : table.Status == "Running" ? "text-primary" : "text-secondary")">
@@ -27,15 +27,18 @@ else
                 <div class="d-flex justify-content-between align-items-center mx-1">
                     <div class="d-flex flex-column align-items-center flex-column">
                         <div><i class="bi bi-people"></i></div>
-                        <div >@table.Capacity</div>
+                        <div>@table.Capacity</div>
                         <div>&nbsp;</div>
                     </div>
                     <div class="d-flex flex-column align-items-center ">
                         <div><i class="bi bi-stopwatch"></i></div>
-                        @if(table.Status == "Available"){
+                        @if (table.Status == "Available")
+                        {
                             <div>0</div>
-                        }else{
-                        <div>@table.Totaltime</div>
+                        }
+                        else
+                        {
+                            <div>@table.Totaltime</div>
                         }
                         <div>min</div>
                     </div>
@@ -46,13 +49,34 @@ else
 }
 
 
-@section scripts {
 
-    <script>
 
-    </script>
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+<script>
+
+    //functionto call menu after table assigned
+    function OpenMenuForOrder(tag) {
+        var customerId;
+        var tableId = tag.parentElement.children[0].innerHTML;
+        var sectionId = tag.children[1].innerHTML;
+        console.log(tableId);
+        $.ajax({
+            url: "/OrderAppTable/GetCustomerIdByTableId",
+            type: "GET",
+            data: { tableId },
+            success: function (data) {
+                customerId = data.custId;
+                console.log("cust", customerId);
+                var menubutton = document.getElementById("MenuButtonLayout")
+                console.log(menubutton);
+                menubutton.setAttribute("href", `/OrderAppMenu/OrderAppMenu?customerId=${customerId}`)
+                console.log(menubutton)
+                menubutton.click();
+            }
+        })
     }
-    <partial name="_Toaster" />
+
+</script>
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
 }
+<partial name="_Toaster" />

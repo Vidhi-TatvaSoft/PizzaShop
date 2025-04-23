@@ -2,6 +2,7 @@
 @model OrderAppMenuViewModel
 @{
     Layout = "~/Views/Shared/_OrderAppLayout.cshtml";
+    @* var custId = ; *@
 }
 <div class="d-flex m-0" id="maindivsidebar">
     <div class="overlay-category" onclick="toggleSidebarCategory()"></div>
@@ -87,7 +88,8 @@
         <div class="btn d-md-none" onclick="toggleSidebarCategory()"><i class="fa-solid fa-bars-staggered"></i></div>
 
         <div class="col  d-flex flex-xl-row flex-column p-2">
-            <div class="col-xl-7 col-12 p-2">
+
+            <div class=" col-12 p-2 @((long)ViewData["customerId"] != 0  ? "col-xl-7":"col-12")">
                 <div class="d-md-flex col-12 flex-xxl-row flex-column  justify-content-between mb-3">
                     <!-- search btn-->
                     <div class="search-button-orders col-12 col-sm-6 ">
@@ -119,15 +121,17 @@
                 </div>
                 <div class="ItemCards  d-flex flex-wrap justify-content-center justify-content-sm-start gap-3 "
                     id="ItemCards">
-
                     <!-- cards-->
                 </div>
-
             </div>
+            @if ((long)ViewData["customerId"] != 0)
+            {
+                <div class="d-none" id="customerId">@ViewData["customerId"]</div>
+                <div class="col-xl-5 col-12  bg-white  p-2 mt-3" id="OrderDetailsWithTablePartial">
+                    @* @await Html.PartialAsync("_MenuItemsWithOrderDetails",Model.orderdetails ) *@
+                </div>
+            }
 
-            <div class="col-xl-5 col-12  bg-white  p-2 mt-3" id="OrderDetailsWithTablePartial">
-                @await Html.PartialAsync("_MenuItemsWithOrderDetails")
-            </div>
         </div>
     </div>
 
@@ -203,6 +207,19 @@
             }
         }
 
+        function GetOrderDetailsBycustId(){
+            var custId = document.getElementById("customerId").innerHTML;
+            console.log(custId);
+            $.ajax({
+                url:"/OrderAppMenu/GetOrderDetailsBycustId",
+                type:"GET",
+                data:{customerId: custId},
+                success: function(data){
+                    $("#OrderDetailsWithTablePartial").html(data);
+                }
+            })
+        }
+
 
 
         $(document).ready(function (x) {
@@ -217,6 +234,7 @@
             maindivsidebar.parentElement.classList.add("p-0")
 
             categySelected(document.getElementsByClassName("category")[0], -1);
+            GetOrderDetailsBycustId();
 
         })
     </script>

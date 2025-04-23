@@ -16,13 +16,16 @@ public class OrderAppTableController:Controller
     private readonly IUserLoginService _userLoginSerivce;
 
     private readonly IUserService _userService;
+     
+     private readonly ICustomerService _customerService;
 
-    public  OrderAppTableController(ITableAndSection tableAndSection, IOrderAppTableService orderAppTableService, IUserLoginService userLoginService, IUserService userService)
+    public  OrderAppTableController(ITableAndSection tableAndSection, IOrderAppTableService orderAppTableService, IUserLoginService userLoginService, IUserService userService, ICustomerService customerService)
     {
         _tableSectionService = tableAndSection;
         _orderAppTableService = orderAppTableService;
         _userLoginSerivce = userLoginService;
         _userService = userService;
+        _customerService = customerService;
     }
 
     #region  OrderAppTable
@@ -93,10 +96,20 @@ public class OrderAppTableController:Controller
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         bool tableAssignStatus =await _orderAppTableService.Assigntable(Email, TableIds, userId);
+        long custId = await _customerService.GetCustomerIdByTableId(TableIds[0]);
         if(tableAssignStatus){
-            return Json(new{ success = true, text = "Table Assigned "});
+            return Json(new{ success = true, text = "Table Assigned ", custId = custId});
         }
         return Json(new { success=false, text="Something Went wrong, Try Again!"});
     }
+    #endregion
+
+    #region  GetCustomerIdByTableId
+    public async Task<IActionResult> GetCustomerIdByTableId(long tableId){
+        long customerId = await _customerService.GetCustomerIdByTableId(tableId);
+        return Json(new { custId = customerId });
+
+    }
+
     #endregion
 }

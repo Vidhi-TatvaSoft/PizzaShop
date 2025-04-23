@@ -10,4 +10,6 @@ public class OrderAppMenuViewModel
 
     public List<ModifierGroupForItem> modifirsByItemList{get;set;}
 
+    public OrderDetaIlsInvoiceViewModel orderdetails{get;set;}
+
 }

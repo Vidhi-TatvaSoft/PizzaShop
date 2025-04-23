@@ -114,6 +114,7 @@ else
     }
 
     function AssignTableToCustomer() {
+        var customerId;
         var selectedclass = document.getElementsByClassName("TableSelected");
         var waitingListRadio = document.getElementsByClassName("waitingListOffcanvasCheckbox");
         var flag = false;
@@ -137,12 +138,20 @@ else
                     data: { Email: document.getElementById("Email").value, TableIds: listOfTableID },
                     success: function (data) {
                         $(".btn-close").click();
-                         if (data.success) {
+                        if (data.success) {
                             successToaster(data.text);
+                            getSectionList();
+                            customerId = data.custId;
+                            console.log("cust", customerId);
+                            var menubutton = document.getElementById("MenuButtonLayout")
+                            console.log(menubutton);
+                            menubutton.setAttribute("href", `/OrderAppMenu/OrderAppMenu?customerId=${customerId}`)
+                            console.log(menubutton)
+                            menubutton.click();
                         } else {
                             errorToaster(data.text);
+                            getSectionList();
                         }
-                        getSectionList();
                     }
                 })
                 break;

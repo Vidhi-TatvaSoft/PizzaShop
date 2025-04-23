@@ -19,12 +19,18 @@ public class OrderAppMenuController :Controller
         _orderAppMenuService = orderAppMenuService;
     }
 
-    public IActionResult OrderAppMenu()
+    public IActionResult OrderAppMenu(long customerId = 0)
     {  
         OrderAppMenuViewModel menuvm= new();
         menuvm.categoryList =  _menuService.GetAllCategories(); 
         ViewData["orderApp-Active"] = "Menu";
         ViewData["orderAppDDIcon"] = "fa-burger";
+        
+        ViewData["customerId"]=customerId;
+        if(customerId != 0){
+        //    menuvm.orderdetails= GetOrderDetailsBycustId(customerId);
+        }
+        
         return View(menuvm);
     }
 
@@ -66,6 +72,13 @@ public class OrderAppMenuController :Controller
         menuvm.modifirsByItemList = _orderAppMenuService.GetModifiersByItemId(itemId);
         return PartialView("_ModifiersByItemModalPartial",menuvm);
 
+    }
+    #endregion
+
+    #region GetOrderDetailsBycustId
+    public IActionResult GetOrderDetailsBycustId(long customerId){
+        OrderDetaIlsInvoiceViewModel orderDetailvm =  _orderAppMenuService.GetOrderDetailsByCustomerId(customerId);
+        return PartialView("_MenuItemsWithOrderDetails",orderDetailvm);
     }
     #endregion
 }

@@ -1,327 +1,248 @@
-<div class="d-flex justify-content-between">
-    <div class="d-flex">
-        <img src="~/images/tables.png" width="40px" height="40px" alt="">
-        <span class="d-flex flex-column fs-6 ms-2"><span style="max-width: fit-content;">First floor</span><span
-                class="fw-bold" style="max-width: fit-content;">Table: T2,T6</span></span>
-    </div>
-    <div>
-        <div class="btn btn-outline-primary px-2"><i class="fa-solid fa-qrcode mt-1"></i></div>
-        <div class="btn btn-outline-primary px-2 ms-2"><i class="fa-solid fa-user mt-1"></i></div>
-        <div class="btn btn-outline-primary px-2 ms-2"><i class="fa-solid fa-message mt-1"></i></div>
-    </div>
-</div>
+@using DAL.ViewModels;
+@model OrderDetaIlsInvoiceViewModel
 
-<div class="table-responsive">
-    <table class="table" style="border-collapse: separate; border-spacing: 0px 10px;">
-    <thead>
-        <tr>
-            <td>Item</td>
-            <td>Quantity</td>
-            <td>Amount</td>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="border-secondary rounded ">
-            <td class="border-1 border-end-0">
-                <div class="accordion-item border-0 rounded-0 ">
-                    <div class="accordion">
-                        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between">
-                            <div class="d-flex align-items-center w-100 me-4 me-sm-0">
-                                <button class="accordion-button col-auto w-auto collapsed" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#TableMainBodyID-" aria-expanded="false"
-                                    aria-controls="TableMainBodyID-" style="margin: 0px !important">
-                                </button>
-                                <div class="d-flex justify-content-between align-items-center w-100 text-nowrap ps-2"
-                                    style="overflow: auto;">
-                                    <div class="">Demo</div>
+@if (Model != null)
+{
+
+    <div class="d-flex justify-content-between">
+        <div class="d-flex">
+            <img src="/images/tables.png" width="40px" height="40px" alt="">
+            <span class="d-flex flex-column fs-6 ms-2"><span style="max-width: fit-content;">@Model.SectionName </span><span
+                    class="fw-bold" style="max-width: fit-content;">Table:
+                    @for (int i = 0; i < Model.tableList.Count; i++)
+                    {
+                        <span> @Model.tableList[i].TableName</span>
+                        if (i < Model.tableList.Count - 1)
+                        {
+                            <span>,</span>
+                        }
+                    }
+                </span>
+            </span>
+        </div>
+        <div>
+            <div class="btn btn-outline-primary px-2" onclick="showQrCodeModal()" data-bs-toggle="modal"
+                data-bs-target="#QRCodeModal" ><i class="fa-solid fa-qrcode mt-1"></i></div>
+            <div class="btn btn-outline-primary px-2 ms-2" data-bs-toggle="modal" data-bs-target="#CustomerDetails"><i class="fa-solid fa-user mt-1"></i></div>
+            <div class="btn btn-outline-primary px-2 ms-2" data-bs-toggle="modal" data-bs-target="#orderComment"><i class="fa-solid fa-message mt-1"></i></div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table" style="border-collapse: separate; border-spacing: 0px 10px;">
+            <thead>
+                <tr>
+                    <td>Item</td>
+                    <td>Quantity</td>
+                    <td>Amount</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ItemsInOrderDetails)
+                {
+                    <tr class="border-secondary  ">
+                        <td class="border-1 border-end-0"
+                            style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
+                            <div class="accordion-item border-0 rounded-0 ">
+                                <div class="accordion">
+                                    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between">
+                                        <div class="d-flex align-items-center w-100 me-4 me-sm-0">
+                                            <button class="accordion-button col-auto w-auto collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#TableMainBodyID-@item.ItemId"
+                                                aria-expanded="false" aria-controls="TableMainBodyID-@item.ItemId"
+                                                style="margin: 0px !important">
+                                            </button>
+                                            <div class="d-flex justify-content-between align-items-center w-100 text-nowrap ps-2"
+                                                style="overflow: auto;">
+                                                <div class="">@item.ItemName</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="TableMainBodyID-" class="accordion-collapse collapse my-3" data-bs-parent="#ParentAccordionID">
-                    <li>Extra cheese</li>
-                </div>
-            </td>
-            <td class="border-1 border-end-0 border-start-0">
-                <div class="p-2 border rounded d-flex align-items-center" style="max-width: fit-content; height: 30px;">
-                    <div class="me-4" style="cursor: pointer;">-</div>
-                    <span>1</span>
-                    <div class="ms-4" style="cursor: pointer;">+</div>
-                </div>
-            </td>
-            <td class="border-1 border-start-0">
-                <div class="d-flex align-items-center" style="height: 30px;">
-                    <div>
-                        ₹120
-                    </div>
-                    <div class="text-end ps-5 me-3">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </div>
-                </div>
-                <div id="TableMainBodyID-" class="accordion-collapse collapse my-3" data-bs-parent="#ParentAccordionID">
-                    ₹20
-                </div>
-            </td>
-        </tr>
-
-    </tbody>
-    </table>
-</div>
-
-
-<div>Accordians</div>
-
-<div>
-    <div class="d-flex justify-content-between ">
-        <div class="fs-5">SubTotal</div>
-        <div class="fs-5">123.00</div>
-    </div>
-
-    <div class="d-flex justify-content-between ">
-        <div>CGST</div>
-        <div>123.00</div>
-    </div>
-
-    <div class="d-flex justify-content-between ">
-        <div>GST</div>
-        <div>123.00</div>
-    </div>
-
-    <div class="d-flex justify-content-between ">
-        <div>Other</div>
-        <div>123.00</div>
-    </div>
-
-    <div class="d-flex justify-content-between ">
-        <div><input type="checkbox" name="" id="">SGST</div>
-    </div>
-
-    <div class="d-flex justify-content-between ">
-        <div class="fs-5"> Total</div>
-        <div class="fs-5">123.00</div>
-    </div>
-
-    <div class="d-flex justify-content-between flex-column flex-sm-row">
-        <div class=""> Payment Method</div>
-        <div class="d-flex justify-content-between text-nowrap">
-            <input type="radio" name="payment" id="">&nbsp; Cash &nbsp;
-            <input type="radio" name="payment" id="">&nbsp; Card &nbsp;
-            <input type="radio" name="payment" id="">&nbsp; UPI &nbsp;
-        </div>
-    </div>
-
-    <div class="d-flex justify-content-sm-end align-items-end  mt-2 flex-column flex-sm-row">
-        <div class="btn btn-primary me-sm-3 mt-2 " style="width: 150px;">Save</div>
-        <div class="btn btn-outline-primary me-sm-3 mt-2" style="width: 150px;">Complete</div>
-        <div class="btn btn-outline-primary text-nowrap mt-2" style="width: 150px;">Generate Invoice</div>
-    </div>
-
-    <div class="d-flex justify-content-end mt-2">
-        <div class="btn btn-outline-primary " style="width: 150px;">Cancel</div>
-    </div>
-</div>
-
-
-@* <div class="col-xl-6 col-12 menu-item-container p-4">
-    <div class="bg-white rounded-2">
-        <div class="d-flex p-3 justify-content-between align-items-center">
-            <!-- Left side -->
-            <div class="d-flex gap-2">
-                <div class="mt-1 d-none d-sm-block">
-                    <img src="/images/icons/dinner-table.svg" width="40px" alt=""
-                        style="background-color: #cbe4f3 !important;" class="p-1 rounded-1">
-                </div>
-                <div>
-                    <div>secName</div>
-                    <div><span class="fw-bold">Table:
-                            <span class="fw-normal">t1s1</span>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <!-- Right side -->
-            <div>
-                <button class="btn border border-main text-heading" data-bs-target="#qr-show-modal"
-                    data-bs-toggle="modal">
-                    <i class="fa-solid fa-qrcode"></i>
-                </button>
-                <button class="btn border border-main customer-detail-btn text-heading" id="order-customer-details-btn"
-                    data-bs-target="#order-customer-details-modal" data-bs-toggle="modal"
-                    data-customer-id="@Model.CustomerId">
-                    <i class="bi bi-person-lines-fill"></i>
-                </button>
-                <button class="btn border border-main text-heading" data-bs-target="#order-comment-modal"
-                    data-bs-toggle="modal">
-                    <i class="bi bi-chat-left-text"></i>
-                </button>
-            </div>
-        </div>
-        <!-- Main content -->
-        <div class="p-3">
-            <div class="row">
-                <div class="table-responsive" style="max-height: 440px; overflow-y: scroll; scrollbar-width: none;">
-                    <table class="table table-borderless m-0">
-                        <thead>
-                            <tr class="border-bottom border-dark">
-                                <th scope="col">Items</th>
-                                <th scope="col" class="col-2 text-center">Quantity</th>
-                                <th scope="col" class="col-2 text-center">Amount</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody class="table-body">
-                            @if (Model.OrderSummary.OrderItems.Any())
-                            {
-                                foreach (var item in Model.OrderSummary.OrderItems)
+                            <div id="TableMainBodyID-@item.ItemId" class="accordion-collapse collapse my-3">
+                                @foreach (var modifier in item.ModifiersInItemInvoice)
                                 {
-                                    <tr class="border border-1 table-row" data-totalmodifierrate="totalmodifiersrate"
-                                        uniqueid="uniqueid" data-rate="@item.Cost">
-                                        <td scope="col" class="col-7 text-nowrap">
-                                            <div class="d-flex flex-wrap justify-content-between">
-                                                <div class="text-secondary">
-                                                    <div>
-                                                        <div class="d-flex gap-2">
-                                                            <button
-                                                                class="w-auto border-0 accordion-button accordion-btn-table collapsed"
-                                                                type="button" data-bs-toggle="collapse"
-                                                                data-bs-target="#collapse-uniqueid" aria-expanded="false"
-                                                                aria-controls="collapse-uniqueid">
-                                                            </button>
-                                                            <span class="fw-bold item-name">@item.Name</span>
-                                                        </div>
-                                                        <div class="accordion-item border-0 show">
-                                                            <div id="collapse-uniqueid"
-                                                                class="accordion-collapse collapse show">
-                                                                <div>
-                                                                    <ul class="m-0">
-                                                                        @foreach (var modifier in @item.ModifierItems)
-                                                                        {
-                                                                            <li>
-                                                                                <div
-                                                                                    class="w-100 gap-5 d-flex align-items-center justify-content-between">
-                                                                                    <div>@modifier.Name</div>
-                                                                                    <div data-rate="rate">₹@modifier.SubTotal</div>
-                                                                                </div>
-                                                                            </li>
-                                                                        }
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td scope="col" class="col-2">
-                                            <div
-                                                class="d-flex align-items-center justify-content-evenly border border-1 rounded-2">
-                                                <button class="btn fw-semibold p-1 decrease-btn">
-                                                    <span class="fs-5"><i class="bi bi-dash"></i></span>
-                                                </button>
-                                                <input type="number" class="quantity-input-uniqueid border-0 shadow-none"
-                                                    readonly style="width: 40px; text-align: center;" value="1" min="0"
-                                                    rate="@item.Cost" uniqueid="uniqueid">
-                                                <button class="btn fw-semibold increase-btn p-1">
-                                                    <span class="fs-5"><i class="bi bi-plus"></i></span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td scope="col" class="col-2 text-end">
-                                            <div class="d-flex flex-column justify-content-end align-items-center">
-                                                <div><span>₹</span><span rate="@item.Cost"
-                                                        class="item-rate-uniqueid updateItemRate"
-                                                        uniqueid='uniqueid'>@item.Cost</span></div>
-                                                @{
-                                                    if (item.ModifierItems.Count() != 0)
-                                                    {
-                                                        decimal? total = 0;
-                                                        foreach (var modifier in item.ModifierItems)
-                                                        {
-                                                            total += modifier.SubTotal;
-                                                        }
-                                                        <div>₹@total</div>
-                                                    }
-                                                }
-                                            </div>
-                                        </td>
-                                        <td scope="col" class="col-1 text-start">
-                                            <button class="border-0 bg-white" disabled=@(item.Status.ToLower() == "ready" ? true
-                                                                                                                      : false)>
-                                        <i class="bi bi-trash delete-icon" uniqueid="uniqueid"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                                                        }
-                            }
-                            else
+                                    <li>@modifier.ModifierName</li>
+                                }
+                            </div>
+                        </td>
+                        <td class="border-1 border-end-0 border-start-0">
+                            <div class="p-2 border rounded d-flex align-items-center"
+                                style="max-width: fit-content; height: 30px;">
+                                <div class="me-4" style="cursor: pointer;">-</div>
+                                <span>1</span>
+                                <div class="ms-4" style="cursor: pointer;">+</div>
+                            </div>
+                        </td>
+                        <td class="border-1 border-start-0 border-end-0">
+                            <div class="d-flex align-items-center mb-3" style="height: 30px;">
+                                <div>₹@item.TotalOfItemByQuantity</div>
+
+                            </div>
+                            @foreach (var modifier in item.ModifiersInItemInvoice)
                             {
-                                <tr>
-                                    <td colspan="6" class="text-center text-secondary fw-bold">No Items Found</td>
-                                </tr>
+                                <div id="TableMainBodyID-@item.ItemId" class="accordion-collapse collapse ">
+                                    ₹@modifier.TotalOfModifierByQuantity
+                                </div>
                             }
-                        </tbody>
-                    </table>
-                </div>
+                        </td>
+                        <td class="border-1 border-start-0 "
+                            style="border-top-right-radius: 10px; border-bottom-right-radius: 10px;">
+                            <div class=" ps-5">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    <div>Accordians</div>
+
+    <div>
+        <div class="d-flex justify-content-between ">
+            <div class="fs-5">SubTotal</div>
+            <div class="fs-5">₹@Model.SubTotalAmountOfOrder</div>
+        </div>
+
+        @foreach (var tax in Model.TaxesInOrderDetails)
+        {
+            <div class="d-flex justify-content-between ">
+                <div>@tax.TaxName</div>
+                <div>₹@tax.TaxValue</div>
+            </div>
+        }
+        <div class="d-flex justify-content-between ">
+            <div>GST</div>
+            <div>123.00</div>
+        </div>
+
+        <div class="d-flex justify-content-between ">
+            <div>Other</div>
+            <div>123.00</div>
+        </div>
+
+        <div class="d-flex justify-content-between ">
+            <div><input type="checkbox" name="" id="">SGST</div>
+        </div>
+
+        <div class="d-flex justify-content-between ">
+            <div class="fs-5"> Total</div>
+            <div class="fs-5">@Model.TotalAmountOfOrderMain</div>
+        </div>
+
+        <div class="d-flex justify-content-between flex-column flex-sm-row">
+            <div class=""> Payment Method</div>
+            <div class="d-flex justify-content-end text-nowrap">
+                <input type="radio" name="payment" class="" id="" checked>&nbsp; Cash &nbsp;
+                <input type="radio" name="payment" class="ms-2" id="">&nbsp; Card &nbsp;
+                <input type="radio" name="payment" class="ms-2" id="">&nbsp; UPI &nbsp;
             </div>
         </div>
-        <!-- Tax section -->
-        <div class="p-3 border-top">
-            <div class="fs-6 w-100 d-flex justify-content-between align-items-center">
-                <span class="">SubTotal</span>
-                <div>
-                    <span>₹</span>
-                    <span class="subtotal-div">@Model.OrderSummary.SubTotal</span>
-                </div>
+
+        <div class="d-flex justify-content-sm-end align-items-end  mt-2 flex-column flex-sm-row">
+            <div class="btn btn-primary me-sm-3 mt-2 " style="width: 150px;">Save</div>
+            <div class="btn btn-outline-primary me-sm-3 mt-2" style="width: 150px;">Complete</div>
+            <div class="btn btn-outline-primary text-nowrap mt-2" style="width: 150px;">Generate Invoice</div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-2">
+            <div class="btn btn-outline-primary " style="width: 150px;">Cancel</div>
+        </div>
+    </div>
+
+}
+
+<!-- modal-->
+<!--QR code modal -->
+<div id="QRCodeModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Menu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            @foreach (var tax in Model.OrderSummary.InvoiceDetails)
-            {
-                <div class="fs-6 w-100 d-flex justify-content-between align-items-center">
-                    <div>@tax.TaxName</div>
-                    <div class="taxes" data-taxvalue="@tax.TaxAmount" data-tax="@tax.TaxAmount">₹@tax.TaxAmount</div>
+            <div class="modal-body ">
+                <div class="text-center">
+                    <img src="/images/QR.png" alt="">
                 </div>
-            }
-            <div class="fs-6 w-100 d-flex justify-content-between align-items-center">
-                <span class="">Total</span>
-                <div>
-                    <span>₹</span>
-                    <span class="total-amount-div">
-                        @(Model.OrderSummary.TotalAmount == 0 ? (00.00) : Model.OrderSummary.TotalAmount)
-                    </span>
+                <div class="d-flex justify-content-center">
+                    <div class="btn btn-outline-primary  mt-3 ">Done</div>
                 </div>
-            </div>
-            <div class="fs-6 w-100 d-flex justify-content-between align-items-center">
-                <div>Payment Method</div>
-                <div class="d-flex gap-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radioDefault" checked>
-                        <label class="form-check-label" for="radioDefault1">
-                            @PaymentModes.Cash.ToString()
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radioDefault">
-                        <label class="form-check-label" for="radioDefault1">
-                            @PaymentModes.Card.ToString()
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radioDefault">
-                        <label class="form-check-label" for="radioDefault1">
-                            @PaymentModes.UPI.ToString()
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="my-2 d-flex flex-wrap justify-content-end gap-2">
-                <button class="btn bg-button text-white order-save-btn" style="width: 180px;" disabled>Save</button>
-                <button class="btn border border-main text-heading" style="width: 180px;" disabled>Complete</button>
-                <button class="btn border border-main text-heading" style="width: 180px;" disabled>Generate
-                    Invoice</button>
-            </div>
-            <div class="text-end">
-                <button class="btn border border-main text-heading" style="width: 180px;">Cancel</button>
             </div>
         </div>
     </div>
-</div> *@
+</div>
+
+<!-- customer details-->
+<div id="CustomerDetails" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Customer Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="form-floating  col-12 mb-3">
+                    <input type="text" class="form-control" id="Name" list="emailDatalist" placeholder="Name*">
+                    <span class="text-danger RemoveValidations" id="RemoveValidations"></span>
+                    <label for="Name"> &nbsp; Name*</label>
+                </div>
+                <div class="form-floating  col-6 mb-3">
+                    <input type="text" class="form-control" id="MobileNumber"  placeholder="MobileNumber*">
+                    <span class="text-danger RemoveValidations" id="RemoveValidations"></span>
+                    <label for="MobileNumber"> &nbsp; Mobile Number*</label>
+                </div>
+                <div class="form-floating  col-6 mb-3">
+                    <input type="text" class="form-control" id="NoofPersons"  placeholder="NoofPersons*">
+                    <span class="text-danger RemoveValidations" id="RemoveValidations"></span>
+                    <label for="NoofPersons"> &nbsp; No of Persons*</label>
+                </div>
+                <div class="form-floating  col-12 mb-3">
+                    <input type="text" class="form-control" id="Email"  placeholder="Email*">
+                    <span class="text-danger RemoveValidations" id="RemoveValidations"></span>
+                    <label for="Email"> &nbsp; Email*</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">save</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" >cancel</button>
+                </div>
+        </div>
+    </div>
+</div>
+
+<!--- comment--->
+<div id="orderComment" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order Wise Comment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="form-floating  col-12 mb-3">
+                    <textarea class="form-control" id="Comment"   cols="33"></textarea>
+                    <label for="Comment"> &nbsp; Comment*</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">save</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    function showQrCodeModal() {
+
+    }
+</script>

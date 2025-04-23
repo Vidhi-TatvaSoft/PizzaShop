@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
@@ -444,6 +445,13 @@ public class CustomerService : ICustomerService
     public List<Customer> GetCustomerByEmail(string Email){
         List<Customer> customer = _context.Customers.Where(x => x.Email.Contains(Email.Trim()) && x.Isdelete==false).ToList();
         return customer ;
+    }
+    #endregion
+
+    #region GetCustomerIdByTableId
+    public async Task<long> GetCustomerIdByTableId(long tableId){
+        Assigntable? customer =await _context.Assigntables.FirstOrDefaultAsync(x => x.TableId ==tableId && x.Isdelete == false);
+        return customer !=null? customer.CustomerId : 0;
     }
     #endregion
 }

@@ -10,5 +10,7 @@ public interface ICustomerService
 
     public Task<CustomerHistoryViewModel> GetCustomerHistoryById(long custid);
 
-        public List<Customer> GetCustomerByEmail(string Email);
+    public List<Customer> GetCustomerByEmail(string Email);
+    Task<long> GetCustomerIdByTableId(long tableId);
+
 }

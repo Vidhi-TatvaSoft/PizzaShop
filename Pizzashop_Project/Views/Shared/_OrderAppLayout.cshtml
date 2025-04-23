@@ -81,7 +81,7 @@
                                         <a asp-action="OrderAppTable" asp-controller="OrderAppTable"
                                             class="d-flex align-items-center justify-content-start text-dark fw-semibold p-2 ms-2 me-2 text-nowrap text-decoration-none  @((ViewData["orderApp-Active"] as string) == "Table" ? "orderApp-active-div" : "")"><i
                                                 class="fa-solid fa-table me-1"></i>Tables</a>
-                                        <a asp-action="OrderAppMenu" asp-controller="OrderAppMenu"
+                                        <a asp-action="OrderAppMenu" asp-controller="OrderAppMenu" id="MenuButtonLayout"
                                             class="d-flex align-items-center justify-content-start text-dark fw-semibold p-2 ms-2 me-2 text-nowrap text-decoration-none  @((ViewData["orderApp-Active"] as string) == "Menu" ? "orderApp-active-div" : "")"><i
                                                 class="fa-solid fa-burger me-1"></i>Menu</a>
                                     </div>

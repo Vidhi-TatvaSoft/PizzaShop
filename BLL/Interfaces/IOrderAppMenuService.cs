@@ -10,4 +10,6 @@ public interface IOrderAppMenuService
     Task<bool> FavouriteItemManage(long itemId, bool IsFavourite);
 
     public List<ModifierGroupForItem> GetModifiersByItemId(long itemId);
+
+    OrderDetaIlsInvoiceViewModel GetOrderDetailsByCustomerId(long customerId);
 }
