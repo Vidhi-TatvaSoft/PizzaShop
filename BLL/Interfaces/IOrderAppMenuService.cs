@@ -12,4 +12,8 @@ public interface IOrderAppMenuService
     public List<ModifierGroupForItem> GetModifiersByItemId(long itemId);
 
     OrderDetaIlsInvoiceViewModel GetOrderDetailsByCustomerId(long customerId);
+
+    Task<OrderDetaIlsInvoiceViewModel> UpdateOrderDetailPartialView( List<List<int>> itemList,OrderDetaIlsInvoiceViewModel orderDetailsvm);
+
+    Task<OrderDetaIlsInvoiceViewModel> RemoveItemfromOrderDetailPartialView(List<List<int>> itemList, int count, OrderDetaIlsInvoiceViewModel orderDetails);
 }

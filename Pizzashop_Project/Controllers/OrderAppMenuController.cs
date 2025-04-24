@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Pizzashop_Project.Authorization;
 
 namespace Pizzashop_Project.Controllers;
@@ -79,6 +80,26 @@ public class OrderAppMenuController :Controller
     public IActionResult GetOrderDetailsBycustId(long customerId){
         OrderDetaIlsInvoiceViewModel orderDetailvm =  _orderAppMenuService.GetOrderDetailsByCustomerId(customerId);
         return PartialView("_MenuItemsWithOrderDetails",orderDetailvm);
+    }
+    #endregion
+
+    #region UpdateOrderDetailPartialView
+    public async Task<IActionResult> UpdateOrderDetailPartialView(string ItemList, string orderDetails){
+        List<List<int>> itemList = JsonConvert.DeserializeObject<List<List<int>>>(ItemList);
+        OrderDetaIlsInvoiceViewModel orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
+        OrderDetaIlsInvoiceViewModel orderDetailsvm =await _orderAppMenuService.UpdateOrderDetailPartialView(itemList,orderDetailvm );
+
+        return PartialView("_MenuItemsWithOrderDetails",orderDetailsvm);
+    }
+    #endregion
+
+    #region RemoveItemfromOrderDetailPartialView
+    public async Task<IActionResult> RemoveItemfromOrderDetailPartialView(string ItemList, int count, string orderDetails){
+        List<List<int>> itemList = JsonConvert.DeserializeObject<List<List<int>>>(ItemList);
+        OrderDetaIlsInvoiceViewModel orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
+        OrderDetaIlsInvoiceViewModel orderDetailsvm =await _orderAppMenuService.RemoveItemfromOrderDetailPartialView(itemList, count ,orderDetailvm);
+
+        return PartialView("_MenuItemsWithOrderDetails",orderDetailsvm);
     }
     #endregion
 }

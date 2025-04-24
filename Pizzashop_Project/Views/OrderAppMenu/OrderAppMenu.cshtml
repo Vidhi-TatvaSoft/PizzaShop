@@ -141,12 +141,15 @@
 @section scripts {
     <script>
         var categoryID;
+        var AllItemsArray = []
+        var orderDetailsModel;
         function toggleSidebarCategory() {
             document.getElementsByClassName("overlay-category")[0].classList.toggle("overlay-category-active");
             document.getElementsByClassName("category-toggle")[0].classList.toggle("category-toggle-active")
             document.getElementsByClassName("category-toggle")[0].classList.toggle("category-toggle-position")
         }
 
+        //display items by category
         function categySelected(tag, categoryId) {
             categoryID = categoryId;
             var categoryclasses = document.getElementsByClassName("category");
@@ -161,11 +164,13 @@
                 type: "GET",
                 data: { categoryId },
                 success: function (data) {
+                   
                     $("#ItemCards").html(data);
                 }
             })
         }
 
+        //search items
         function searchItem(searchText) {
             console.log(searchText);
             $.ajax({
@@ -178,6 +183,7 @@
             })
         }
 
+        //favoriteItem manage
         function FavouriteItemManage(event, tag) {
             event.stopPropagation();
             var itemId = tag.getAttribute("data-itemId");
@@ -207,14 +213,77 @@
             }
         }
 
-        function GetOrderDetailsBycustId(){
+        //get orderdetails by customer id (rightside)
+        function GetOrderDetailsBycustId() {
             var custId = document.getElementById("customerId").innerHTML;
             console.log(custId);
             $.ajax({
-                url:"/OrderAppMenu/GetOrderDetailsBycustId",
+                url: "/OrderAppMenu/GetOrderDetailsBycustId",
+                type: "GET",
+                data: { customerId: custId },
+                success: function (data) {
+                    $("#OrderDetailsWithTablePartial").html(data);
+                }
+            })
+        }
+
+        //backend order items save in array
+        function FillAlreadySavedDataInArray(orderDetails) {
+            orderDetailsModel=orderDetails;
+            var AllItems = [];
+            AllItemsArray=[];
+            AllItems =orderDetails.itemsInOrderDetails;
+            @* console.log(AllItems.length) *@
+                for (i = 0; i < AllItems.length; i++) {
+                var item = [];
+                item.push(parseInt(AllItems[i].itemId));
+                item.push(parseInt(AllItems[i].quantity));
+
+                for (j = 0; j < AllItems[i].modifiersInItemInvoice.length; j++) {
+                    item.push(parseInt(AllItems[i].modifiersInItemInvoice[j].modifierId));
+                }
+                console.log(item);
+                AllItemsArray.push(item);
+            }
+            console.log("all", AllItemsArray)
+            @* var item = []; *@
+
+            }
+        
+        function AddItemModifierToList(){
+            var selectedModifiers = document.getElementsByClassName("modifierSelected");
+            console.log("yes")
+            console.log(selectedModifiers)
+            var itemId = document.getElementById("itemIdForOrderDetails").value;
+            console.log("itemid",itemId)
+            var item=[] 
+            item.push(parseInt(itemId))
+            item.push(1);
+            for(i=0; i<selectedModifiers.length; i++){
+                item.push(parseInt(selectedModifiers[i].getAttribute("data-modifierId")));
+            }
+            console.log(item)
+            AllItemsArray.push(item)
+            console.log("allitem",AllItemsArray)
+            $.ajax({
+                url:"/OrderAppMenu/UpdateOrderDetailPartialView",
                 type:"GET",
-                data:{customerId: custId},
-                success: function(data){
+                data:{ItemList: JSON.stringify(AllItemsArray),orderDetails: JSON.stringify(orderDetailsModel)},
+                success:function(data){
+                    $("#OrderDetailsWithTablePartial").html(data);
+                }
+            })
+            $(".btn-close").click();
+        }
+
+        function RemoveItemFromOrder(itemId,count){
+            AllItemsArray.splice(count,1);
+            console.log(AllItemsArray)
+            $.ajax({
+                url:"/OrderAppMenu/RemoveItemfromOrderDetailPartialView",
+                type:"GET",
+                data:{ItemList: JSON.stringify(AllItemsArray),count, orderDetails: JSON.stringify(orderDetailsModel)},
+                success:function(data){
                     $("#OrderDetailsWithTablePartial").html(data);
                 }
             })
@@ -236,7 +305,14 @@
             categySelected(document.getElementsByClassName("category")[0], -1);
             GetOrderDetailsBycustId();
 
-        })
+
+            @* if (@((long)ViewData["customerId"] != 0)){
+                var orderDetails = @Html.Raw(Json.Serialize(Model));
+                console.log(orderDetails);
+                FillAlreadySavedDataInArray(orderDetails);
+            } *@
+
+            })
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

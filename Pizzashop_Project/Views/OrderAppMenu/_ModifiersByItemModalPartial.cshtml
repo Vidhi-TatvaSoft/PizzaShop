@@ -25,9 +25,10 @@
 
                         @foreach (var modifier in modgrp.modifierList)
                         {
+                            <div class="d-none">@modifier.ModifierId</div>
                             <div class="col-auto d-flex mt-2 modifiers" onclick="ModifierSelected(this,@modgrp.max,@modgrp.ModifierGrpId)">
                                 <div style="z-index:2; height: 65px; min-width: 150px; border-radius: 0.7rem !important;  border:1px solid black"
-                                    class="bg-white d-flex justify-content-between">
+                                    class="bg-white d-flex justify-content-between" data-modifierId="@modifier.ModifierId">
                                     <div class="ms-2 py-1 d-flex flex-column justify-content-between">
                                         <span class="text-nowrap">@modifier.ModifierName</span>
                                         <span>₹@modifier.Rate</span>
@@ -47,7 +48,7 @@
         }
 
         <div class="modal-footer d-flex justify-content-center">
-            <button type="submit" class="btn btn-primary">Yes</button>
+            <button type="submit" class="btn btn-primary" onclick="AddItemModifierToList()">Yes</button>
             <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
         </div>
     </div>

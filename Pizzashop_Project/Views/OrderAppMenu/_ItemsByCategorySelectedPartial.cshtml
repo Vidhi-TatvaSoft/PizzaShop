@@ -5,7 +5,7 @@
 {
     @foreach (var item in Model)
     {
-        <div class="d-flex mt-2" onclick="ModifiersByItemSeleted(this)" data-itemId="@item.ItemId" style="height: 65px;">
+        <div class="d-flex mt-2" onclick="ModifiersByItemSeleted(this)"  data-itemId="@item.ItemId" style="height: 65px;">
             <div 
                 style="max-width: fit-content;  border-radius: 0.7rem !important; z-index: 3; ">
                 <div class="d-flex justify-content-center align-items-center" style="height: 65px; width: 65px; ">
@@ -45,6 +45,7 @@ else
 </div>
 
 <script>
+    //fetch modifiers by itemId
     function ModifiersByItemSeleted(tag) {
         var itemId = tag.getAttribute("data-itemId");
         console.log(tag.children[1].children[0].children[0].innerHTML);
@@ -53,10 +54,13 @@ else
             type: "GET",
             data: { itemId: itemId },
             success: function (data) {
+                data += `<input type="hidden" id="itemIdForOrderDetails" value=${itemId}>`
                 $("#ModifiersByItemId .modal-dialog").html(data);
                 document.getElementById("itemName").innerHTML = tag.children[1].children[0].children[0].innerHTML;
                 $("#ModifiersByItemId").modal("show");
             }
         });
     }
+
+    @* console.log(AllItems) *@
 </script>
