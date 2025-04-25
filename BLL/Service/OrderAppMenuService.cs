@@ -221,9 +221,14 @@ public class OrderAppMenuService : IOrderAppMenuService
     public async Task<OrderDetaIlsInvoiceViewModel> UpdateOrderDetailPartialView(List<List<int>> itemList, OrderDetaIlsInvoiceViewModel orderDetailsvm)
     {
         OrderDetaIlsInvoiceViewModel orderdetails = orderDetailsvm;
+        
+        if(orderdetails.ItemsInOrderDetails == null){
+            orderdetails.ItemsInOrderDetails = new();
+        }
         for (int k = orderdetails.ItemsInOrderDetails.Count; k < itemList.Count; k++)
         {
             long itemId = itemList[k][0];
+
             ItemForInvoiceOrderDetails? itemdata = _context.Items.Where(x => x.ItemId == itemId && x.Isdelete == false)
                                                     .Select(i => new ItemForInvoiceOrderDetails
                                                     {
@@ -233,7 +238,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                                                         status = "Pending",
                                                         Quantity = itemList[k][1] >= 1 ? itemList[k][1] : 1,
                                                         TotalOfItemByQuantity = Math.Round((i.Rate * i.Quantity), 2)
-                                                    }).ToList().FirstOrDefault();
+                                                    }).First();
             itemdata.ModifiersInItemInvoice = new();
             for (int j = 2; j < itemList[k].Count; j++)
             {
@@ -294,6 +299,12 @@ public class OrderAppMenuService : IOrderAppMenuService
         orderDetails.ItemsInOrderDetails.Remove(item);
         orderdetails.SubTotalAmountOfOrder = Math.Round((decimal)orderdetails.ItemsInOrderDetails
                                                    .Sum(x => x.TotalOfItemByQuantity + x.ModifiersInItemInvoice.Sum(x => x.TotalOfModifierByQuantity)), 2);
+        if(orderDetails.SubTotalAmountOfOrder ==0){
+            orderDetails.ItemsInOrderDetails = null;
+            orderDetails.TaxesInOrderDetails = null;
+            orderDetails.TotalAmountOfOrderMain =0;
+            return orderDetails;
+        }
         var taxedetails = _context.Taxes
         .Where(x => x.Isdelete == false).ToList();
 
