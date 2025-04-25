@@ -78,7 +78,8 @@ public class OrderAppMenuController :Controller
 
     #region GetOrderDetailsBycustId
     public IActionResult GetOrderDetailsBycustId(long customerId){
-        OrderDetaIlsInvoiceViewModel orderDetailvm =  _orderAppMenuService.GetOrderDetailsByCustomerId(customerId);
+        OrderDetaIlsInvoiceViewModel orderDetailvm =  new();
+        orderDetailvm = _orderAppMenuService.GetOrderDetailsByCustomerId(customerId);
         return PartialView("_MenuItemsWithOrderDetails",orderDetailvm);
     }
     #endregion
