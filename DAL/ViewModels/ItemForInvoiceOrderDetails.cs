@@ -14,6 +14,12 @@ public class ItemForInvoiceOrderDetails
 
     public decimal TotalOfItemByQuantity { get; set; }
 
+    public string SpecialInstruction {get;set;}
+
+    public long OrderDetailId{get;set;}
+
+    // public bool IsSaved{get;set;}
+
     public List<ModifiersForItemInInvoiceOrderDetails> ModifiersInItemInvoice { get; set; }
 
     

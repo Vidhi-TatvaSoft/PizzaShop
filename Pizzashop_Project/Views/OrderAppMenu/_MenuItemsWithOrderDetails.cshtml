@@ -48,10 +48,9 @@
                 }
                 else
                 {
-
                     @foreach (var item in Model.ItemsInOrderDetails)
                     {
-                        <tr class="border-secondary  ">
+                        <tr class="border-secondary  " >
                             <td class="border-1 border-end-0"
                                 style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
                                 <div class="accordion-item border-0 rounded-0 ">
@@ -65,7 +64,7 @@
                                                 </button>
                                                 <div class="d-flex justify-content-between align-items-center w-100 text-nowrap ps-2"
                                                     style="overflow: auto;">
-                                                    <div class="">@item.ItemName</div>
+                                                    <div class="" onclick="ItemWiseInstruction(this,@count)" data-bs-toggle="modal" data-bs-target="#ItemInstructionModal">@item.ItemName</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -81,18 +80,18 @@
                             <td class="border-1 border-end-0 border-start-0">
                                 <div class="p-2 border rounded d-flex align-items-center"
                                     style="max-width: fit-content; height: 30px;">
-                                    @if (item.status == "Pending")
-                                    {
-                                        <div class="me-4 minus" onclick="Minus(this)" style="cursor: pointer;">-</div>
+                                    @* @if (item.status == "Pending")
+                                    { *@
+                                        <div class="me-4 minus" onclick="Minus(this,@count)" style="cursor: pointer;">-</div>
                                         <span>@item.Quantity</span>
-                                        <div class="ms-4 plus" onclick="Plus(this)" style="cursor: pointer;">+</div>
-                                    }
+                                        <div class="ms-4 plus" onclick="Plus(this,@count)" style="cursor: pointer;">+</div>
+                                    @* }
                                     else
                                     {
                                         <div class="me-4" style="cursor: pointer;" onclick="PrintToaster()">-</div>
                                         <span>@item.Quantity</span>
                                         <div class="ms-4" style="cursor: pointer;" onclick="PrintToaster()">+</div>
-                                    }
+                                    } *@
 
                                 </div>
                             </td>
@@ -151,11 +150,6 @@
             }
         
 
-
-        <div class="d-flex justify-content-between ">
-            <div><input type="checkbox" name="" id="">SGST</div>
-        </div>
-
         <div class="d-flex justify-content-between ">
             <div class="fs-5"> Total</div>
             <div class="fs-5"> ₹@Model.TotalAmountOfOrderMain</div>
@@ -171,7 +165,7 @@
         </div>
 
         <div class="d-flex justify-content-sm-end align-items-end  mt-2 flex-column flex-sm-row">
-            <div class="btn btn-primary me-sm-3 mt-2 " style="width: 150px;">Save</div>
+            <div class="btn btn-primary me-sm-3 mt-2 " style="width: 150px;" onclick="SaveorderDetails()">Save</div>
             <div class="btn btn-outline-primary me-sm-3 mt-2" style="width: 150px;">Complete</div>
             <div class="btn btn-outline-primary text-nowrap mt-2" style="width: 150px;">Generate Invoice</div>
         </div>
@@ -264,6 +258,28 @@
     </div>
 </div>
 
+<!-- item wise instuction modal-->
+<div id="ItemInstructionModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm" id="ItemInsructionModal">
+       <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Special Instruction</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body row">
+        <input type="hidden"  id="itemInstructionCount">
+        <div class="form-floating  col-12 mb-3">
+            <textarea class="form-control" id="ItemInstruction" cols="33"></textarea>
+            <label for="ItemInstruction"> &nbsp; Item Instruction*</label>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" onclick="StoreItemInstruction()">save</button>
+        <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+    </div>
+</div> 
+    </div>
+</div>
 
 
 
@@ -273,37 +289,11 @@
 
         }
 
-    @* function FillAlreadySavedDataInArray(orderDetails){
-        var AllItems = orderDetails.itemsInOrderDetails;
-        for(i=0; i<AllItems.length; i++){
-            var item = [];
-            item.push(parseInt(AllItems[i].itemId));
-            item.push(parseInt(AllItems[i].quantity));
-
-            for(j=0; j<AllItems[i].modifiersInItemInvoice.length; j++){
-                item.push(parseInt(AllItems[i].modifiersInItemInvoice[j].modifierId));
-            }
-            console.log(item);
-            AllItemsArray.push(item);
-        }
-        console.log("all",AllItemsArray)
-    }*@
-
         function PrintToaster() {
             errorToaster("You can't change the order Because its almost Ready");
         }
 
-    function Minus(tag) {
-        console.log(tag.nextElementSibling.innerHTML, "askjdhakshgash");
-        tag.nextElementSibling.innerHTML = parseInt(tag.nextElementSibling.innerHTML) - 1;
-        if (parseInt(tag.nextElementSibling.innerHTML) < 0) {
-            tag.nextElementSibling.innerHTML = 0;
-        }
-    }
 
-    function Plus(tag) {
-        tag.previousElementSibling.innerHTML = parseInt(tag.previousElementSibling.innerHTML) + 1;
-    }
 
 
     $(document).ready(function () {

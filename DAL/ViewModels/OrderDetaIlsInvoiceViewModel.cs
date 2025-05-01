@@ -17,6 +17,8 @@ public class OrderDetaIlsInvoiceViewModel
 
     public string OrderStatus { get; set; } = null!;
 
+    public string OtherInstruction{get;set;}
+
 
 
     //customer details

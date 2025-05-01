@@ -16,4 +16,6 @@ public interface IOrderAppMenuService
     Task<OrderDetaIlsInvoiceViewModel> UpdateOrderDetailPartialView( List<List<int>> itemList,OrderDetaIlsInvoiceViewModel orderDetailsvm);
 
     Task<OrderDetaIlsInvoiceViewModel> RemoveItemfromOrderDetailPartialView(List<List<int>> itemList, int count, OrderDetaIlsInvoiceViewModel orderDetails);
+
+    Task<OrderDetaIlsInvoiceViewModel> SaveOrderDetails(List<int> orderDetailId, OrderDetaIlsInvoiceViewModel orderDetails);
 }
