@@ -146,6 +146,9 @@
         var orderDetailIds = [];
         var orderDetailsModel;
         var itemQuantityUpdateflag = true;
+        var IsOrderCompleted = false;
+        var isAllItemSaved = false;
+        var paymentmethodId = 1;
 
 
         function toggleSidebarCategory() {
@@ -228,6 +231,7 @@
                 data: { customerId: custId },
                 success: function (data) {
                     $("#OrderDetailsWithTablePartial").html(data);
+                    isAllItemSaved = true;
                 }
             })
         }
@@ -252,7 +256,7 @@
 
                     AllItemsArray.push(item);
                     @* ItemQuantityArr.push(parseInt(AllItems[i].quantity)) *@
-                    }
+                                                }
             }
             if (itemQuantityUpdateflag) {
                 fillItemQuantity();
@@ -263,6 +267,7 @@
         //fuction to fill itemQuantityarr when page loads
         function fillItemQuantity() {
             ItemQuantityArr = [];
+            orderDetailIds = [];
             console.log("quantity", orderDetailsModel)
             if (orderDetailsModel.itemsInOrderDetails != null) {
                 for (i = 0; i < orderDetailsModel.itemsInOrderDetails.length; i++) {
@@ -275,79 +280,93 @@
 
         //Add item by menu without save button click
         function AddItemModifierToList() {
-            var selectedModifiers = document.getElementsByClassName("modifierSelected");
-            var itemId = document.getElementById("itemIdForOrderDetails").value;
-            var item = [];
+            if (!IsOrderCompleted) {
+                isAllItemSaved = false;
+                var selectedModifiers = document.getElementsByClassName("modifierSelected");
+                var itemId = document.getElementById("itemIdForOrderDetails").value;
+                var item = [];
 
-            for (i = 0; i < selectedModifiers.length; i++) {
-                item.push(parseInt(selectedModifiers[i].getAttribute("data-modifierId")));
+                for (i = 0; i < selectedModifiers.length; i++) {
+                    item.push(parseInt(selectedModifiers[i].getAttribute("data-modifierId")));
+                }
+                item.sort();
+                item.unshift(1);
+                item.unshift(parseInt(itemId))
+                @* console.log(item) *@
+                                                    var ItemCheckFlag = true
+                AllItemsArray.forEach((x) => {
+                    if (x.toString().substr(0, x[0].toString().length + 1) + x.toString().substr(4) == item.toString().substr(0, item[0].toString().length + 1) + item.toString().substr(4) && x[1] < 10) {
+                        x[1]++
+                        console.log("x", x[1])
+                        ItemCheckFlag = false
+                    }
+                    else if (x[1] == 10) {
+                        ItemCheckFlag = false
+                        errorToaster("Maximum quantity already added")
+                    }
+                })
+                if (ItemCheckFlag) AllItemsArray.push(item);
+                console.log("allitemarr", AllItemsArray)
+                $.ajax({
+                    url: "/OrderAppMenu/UpdateOrderDetailPartialView",
+                    type: "GET",
+                    data: { ItemList: JSON.stringify(AllItemsArray), orderDetails: JSON.stringify(orderDetailsModel) },
+                    success: function (data) {
+                        $("#OrderDetailsWithTablePartial").html(data);
+                    }
+                })
+                $(".btn-close").click();
+            }else{
+                errorToaster("Order is already completed")
             }
-            item.sort();
-            item.unshift(1);
-            item.unshift(parseInt(itemId))
-            @* console.log(item) *@
-                        var ItemCheckFlag = true
-            AllItemsArray.forEach((x) => {
-                if (x.toString().substr(0, x[0].toString().length + 1) + x.toString().substr(4) == item.toString().substr(0, item[0].toString().length + 1) + item.toString().substr(4) && x[1] < 10) {
-                    x[1]++
-                    console.log("x", x[1])
-                    ItemCheckFlag = false
-                }
-                else if (x[1] == 10) {
-                    ItemCheckFlag = false
-                    errorToaster("Maximum quantity already added")
-                }
-            })
-            if (ItemCheckFlag) AllItemsArray.push(item);
-            console.log("allitemarr", AllItemsArray)
-            $.ajax({
-                url: "/OrderAppMenu/UpdateOrderDetailPartialView",
-                type: "GET",
-                data: { ItemList: JSON.stringify(AllItemsArray), orderDetails: JSON.stringify(orderDetailsModel) },
-                success: function (data) {
-                    $("#OrderDetailsWithTablePartial").html(data);
-                }
-            })
-            $(".btn-close").click();
         }
 
         function Minus(tag, count) {
-            if (parseInt(tag.nextElementSibling.innerHTML) < 0) {
-                tag.nextElementSibling.innerHTML = 0;
-            }
-            if(parseInt(tag.nextElementSibling.innerHTML) <= ItemQuantityArr[count]){
-                errorToaster("You can not change Order Because it is almost ready");
-                return;
-            }
-            AllItemsArray[count][1] = parseInt(tag.nextElementSibling.innerHTML) - 1;
-            console.log("allitemarr", AllItemsArray)
-            $.ajax({
-                url: "/OrderAppMenu/UpdateOrderDetailPartialView",
-                type: "GET",
-                data: { ItemList: JSON.stringify(AllItemsArray), orderDetails: JSON.stringify(orderDetailsModel) },
-                success: function (data) {
-                    $("#OrderDetailsWithTablePartial").html(data);
+            if (!IsOrderCompleted) {
+                if (parseInt(tag.nextElementSibling.innerHTML) < 0) {
+                    tag.nextElementSibling.innerHTML = 0;
                 }
-            })
+                if (parseInt(tag.nextElementSibling.innerHTML) <= ItemQuantityArr[count]) {
+                    errorToaster("You can not change Order Because it is almost ready");
+                    return;
+                }
+                isAllItemSaved = false;
+                AllItemsArray[count][1] = parseInt(tag.nextElementSibling.innerHTML) - 1;
+                console.log("allitemarr", AllItemsArray)
+                $.ajax({
+                    url: "/OrderAppMenu/UpdateOrderDetailPartialView",
+                    type: "GET",
+                    data: { ItemList: JSON.stringify(AllItemsArray), orderDetails: JSON.stringify(orderDetailsModel) },
+                    success: function (data) {
+                        $("#OrderDetailsWithTablePartial").html(data);
+                    }
+                })
+            }else{
+                errorToaster("Order is already completed")
+            }
         }
 
         function Plus(tag, count) {
-            if (parseInt(tag.previousElementSibling.innerHTML) >= 10) {
-                errorToaster("Can not aorder more than 10 items");
-                return;
-            }
-            AllItemsArray[count][1] = parseInt(tag.previousElementSibling.innerHTML) + 1;
-            console.log("allitemarr", AllItemsArray)
-            $.ajax({
-                url: "/OrderAppMenu/UpdateOrderDetailPartialView",
-                type: "GET",
-                data: { ItemList: JSON.stringify(AllItemsArray), orderDetails: JSON.stringify(orderDetailsModel) },
-                success: function (data) {
-                    $("#OrderDetailsWithTablePartial").html(data);
+            if (!IsOrderCompleted) {
+                isAllItemSaved = false;
+                if (parseInt(tag.previousElementSibling.innerHTML) >= 10) {
+                    errorToaster("Can not aorder more than 10 items");
+                    return;
                 }
-            })
-            @* tag.previousElementSibling.innerHTML = parseInt(tag.previousElementSibling.innerHTML) + 1; *@
+                AllItemsArray[count][1] = parseInt(tag.previousElementSibling.innerHTML) + 1;
+                console.log("allitemarr", AllItemsArray)
+                $.ajax({
+                    url: "/OrderAppMenu/UpdateOrderDetailPartialView",
+                    type: "GET",
+                    data: { ItemList: JSON.stringify(AllItemsArray), orderDetails: JSON.stringify(orderDetailsModel) },
+                    success: function (data) {
+                        $("#OrderDetailsWithTablePartial").html(data);
                     }
+                })
+            }else{
+                errorToaster("Order is already completed")
+            }
+        }
 
         //show item instruction modal
         function ItemWiseInstruction(tag, count) {
@@ -358,35 +377,162 @@
 
         //store item instruction inmViewmodel
         function StoreItemInstruction() {
-            var count = document.getElementById("itemInstructionCount").value;
-            orderDetailsModel.itemsInOrderDetails[count].specialInstruction = document.getElementById("ItemInstruction").value;
-            $(".btn-close").click();
+            if (!IsOrderCompleted) {
+                isAllItemSaved = false;
+                var count = document.getElementById("itemInstructionCount").value;
+                orderDetailsModel.itemsInOrderDetails[count].specialInstruction = document.getElementById("ItemInstruction").value;
+                $(".btn-close").click();
+            }else{
+                errorToaster("Order is already completed")
+            }
         }
 
         //remove item if not saved
         function RemoveItemFromOrder(itemId, count) {
-            AllItemsArray.splice(count, 1);
-            console.log(AllItemsArray)
-            $.ajax({
-                url: "/OrderAppMenu/RemoveItemfromOrderDetailPartialView",
-                type: "GET",
-                data: { ItemList: JSON.stringify(AllItemsArray), count, orderDetails: JSON.stringify(orderDetailsModel) },
-                success: function (data) {
-                    $("#OrderDetailsWithTablePartial").html(data);
-                }
-            })
+            if (!IsOrderCompleted) {
+                isAllItemSaved = false;
+                AllItemsArray.splice(count, 1);
+                console.log(AllItemsArray)
+                $.ajax({
+                    url: "/OrderAppMenu/RemoveItemfromOrderDetailPartialView",
+                    type: "GET",
+                    data: { ItemList: JSON.stringify(AllItemsArray), count, orderDetails: JSON.stringify(orderDetailsModel) },
+                    success: function (data) {
+                        $("#OrderDetailsWithTablePartial").html(data);
+                    }
+                })
+            }else{
+                errorToaster("Order is already completed")
+            }
         }
 
         //save order details in db
         function SaveorderDetails() {
+            if (!IsOrderCompleted) {
+                $.ajax({
+                    url: "/OrderAppMenu/SaveOrderDetails",
+                    type: "POST",
+                    data: { orderDetailIds: JSON.stringify(orderDetailIds), orderDetails: JSON.stringify(orderDetailsModel) },
+                    success: function (data) {
+                        $("#OrderDetailsWithTablePartial").html(data);
+                        itemQuantityUpdateflag = true;
+                        isAllItemSaved = true;
+                    }
+                })
+            }else{
+                errorToaster("Order is already completed")
+            }
+
+        }
+
+        //complete ordervalidationsCheck
+        function CompleteOrderValidation() {
+            if (orderDetailsModel.itemsInOrderDetails == null) {
+                errorToaster("Please Order Something First");
+                return;
+            }
+            for (i = 0; i < orderDetailsModel.itemsInOrderDetails.count; i++) {
+                if (orderDetailsModel.itemsInOrderDetails[i].status == "Pending") {
+                    errorToaster("Please Save Orders First");
+                    return;
+                }
+            } if (!isAllItemSaved) {
+                errorToaster("Please Save Orders First")
+                return;
+            }
             $.ajax({
-                url: "/OrderAppMenu/SaveOrderDetails",
+                url: "/OrderAppMenu/CompleteOrderValidation",
                 type: "POST",
-                data: { orderDetailIds:JSON.stringify(orderDetailIds) , orderDetails: JSON.stringify(orderDetailsModel) },
+                data: { orderDetailIds: JSON.stringify(orderDetailIds), orderDetails: JSON.stringify(orderDetailsModel) },
                 success: function (data) {
-                    $("#OrderDetailsWithTablePartial").html(data);
+                    if (data.success) {
+                        $("#CustomerReviewModal").modal("show");
+                    } else {
+                        errorToaster("All items are not ready");
+                    }
                 }
             })
+        }
+
+        //complete order details 
+        function CompleteOrder() {
+            var foodreview = document.getElementsByClassName("food-review-active").length;
+            var serviceReview = document.getElementsByClassName("service-review-active").length;
+            var ambienceReview = document.getElementsByClassName("ambience-review-active").length;
+            var reviewtext = document.getElementById("ReviewText").value;
+            console.log(foodreview)
+
+            var paymentmethod = document.getElementsByClassName("paymentmethod");
+            console.log(paymentmethod)
+            for (i = 0; i < paymentmethod.length; i++) {
+                if (paymentmethod[i].checked) {
+                    paymentmethodId = paymentmethod[i].value;
+                }
+            }
+            $.ajax({
+                url: "/OrderAppMenu/SaveRatings",
+                type: "POST",
+                data: { customerId: orderDetailsModel.customerId, foodreview, serviceReview, ambienceReview, reviewtext, },
+                success: function (data) {
+                    orderDetailsModel.RatingId = data;
+                    $.ajax({
+                        url: "/OrderAppMenu/CompleteOrder",
+                        type: "POST",
+                        data: { orderDetails: JSON.stringify(orderDetailsModel), paymentmethodId },
+                        success: function (data) {
+                            $("#OrderDetailsWithTablePartial").html(data);
+                            itemQuantityUpdateflag = true;
+                            $(".btn-close").click();
+                            IsOrderCompleted = true;
+                            document.getElementById("SaveButtonId").setAttribute("disabled","disabled")
+                            document.getElementById("CompleteButtonId").setAttribute("disabled","disabled")
+                            document.getElementById("CancelButtonId").setAttribute("disabled","disabled")
+
+                        }
+                    })
+                }
+            })
+
+        }
+
+
+        function ChangeReview(type, number) {
+            if (!IsOrderCompleted) {
+                var StarTags = document.getElementsByClassName(`${type}-review-class`)
+                var CheckStarFlag = true
+                for (i = 1; i < StarTags.length; i++) {
+                    if (StarTags[i].classList.contains(`${type}-review-active`)) {
+                        CheckStarFlag = false
+                        StarTags[i].classList.add("fa-regular")
+                        StarTags[i].classList.remove("fa-solid")
+                        StarTags[i].classList.remove(`${type}-review-active`)
+                    }
+                }
+                if (number == 1) {
+                    var FirstStarTag = document.getElementById(`${type}-review-1`)
+                    if (FirstStarTag.classList.contains(`${type}-review-active`) && CheckStarFlag) {
+                        FirstStarTag.classList.add("fa-regular")
+                        FirstStarTag.classList.remove("fa-solid")
+                        FirstStarTag.classList.remove(`${type}-review-active`)
+                    }
+                    else {
+                        FirstStarTag.classList.remove("fa-regular")
+                        FirstStarTag.classList.add("fa-solid")
+                        FirstStarTag.classList.add(`${type}-review-active`)
+                    }
+                }
+                else {
+                    for (i = 1; i <= number; i++) {
+                        var StartTag = document.getElementById(`${type}-review-${i}`)
+                        StartTag.classList.remove("fa-regular")
+                        StartTag.classList.add("fa-solid")
+                        StartTag.classList.add(`${type}-review-active`)
+                    }
+                }
+            }
+            else {
+                errorToaster("Order is already completed")
+            }
         }
 
 
@@ -412,7 +558,7 @@
                 FillAlreadySavedDataInArray(orderDetails);
             } *@
 
-                                })
+                                                            })
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

@@ -162,7 +162,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                             TotalOfItemByQuantity = Math.Round(i.Quantity * i.Item.Rate, 0),
                             OrderDetailId = i.OrderdetailId,
                             ModifiersInItemInvoice = _context.Modifierorders.Include(m => m.Modifier).Include(m => m.Orderdetail).ThenInclude(m => m.Item)
-                                .Where(m => m.Orderdetail.ItemId == i.ItemId)
+                                .Where(m => m.Orderdetail.OrderdetailId == i.OrderdetailId)
                                 .Select(m => new ModifiersForItemInInvoiceOrderDetails
                                 {
                                     ModifierId = m.ModifierId,
@@ -246,6 +246,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                                                         status = k >= _context.Orderdetails.Where(x => x.OrderId == orderdetails.OrderId && x.Isdelete == false).Count() ? "Pending" : "In Progress",
                                                         Quantity = itemList[k][1] >= 1 ? itemList[k][1] : 1,
                                                         SpecialInstruction = itemForInvoiceOrderDetails != null ? (k >= itemForInvoiceOrderDetails.Count() ? null : itemForInvoiceOrderDetails[k].SpecialInstruction) : null,
+                                                        OrderDetailId = k>= itemForInvoiceOrderDetails.Count()? 0 :  itemForInvoiceOrderDetails[k].OrderDetailId,
                                                         TotalOfItemByQuantity = Math.Round(i.Rate * (itemList[k][1] >= 1 ? itemList[k][1] : 1), 0)
                                                     }).First();
             itemdata.ModifiersInItemInvoice = new();
@@ -376,10 +377,10 @@ public class OrderAppMenuService : IOrderAppMenuService
         else
         {
             Order? order = await _context.Orders.FirstOrDefaultAsync(x => x.OrderId == orderDetailsvm.OrderId && !x.Isdelete);
-            order.TotalAmount = orderDetailsvm.TotalAmountOfOrderMain;
+             order.TotalAmount = orderDetailsvm.TotalAmountOfOrderMain;
             order.OtherInstruction = orderDetailsvm.OtherInstruction;
             _context.Update(order);
-            // await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         //update orderdetails
@@ -408,6 +409,7 @@ public class OrderAppMenuService : IOrderAppMenuService
             orderdetail.Status = orderDetailsvm.ItemsInOrderDetails[i].status;
            await _context.AddAsync(orderdetail);
            await _context.SaveChangesAsync();
+           orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId = orderdetail.OrderdetailId;
            for(int j=0; j<orderDetailsvm.ItemsInOrderDetails[i].ModifiersInItemInvoice.Count; j++){
                 Modifierorder modorder = new();
                 modorder.OrderdetailId = orderdetail.OrderdetailId;
@@ -440,50 +442,98 @@ public class OrderAppMenuService : IOrderAppMenuService
             kot.OrderId = orderDetailsvm.OrderId;
             await _context.AddAsync(kot);
         }
-        
 
-        
-
-
+        for(int i=0; i<orderDetailsvm.ItemsInOrderDetails.Count; i++){
+            orderDetailsvm.ItemsInOrderDetails[i].status="In Progress";
+        }
         await _context.SaveChangesAsync();
 
-        // List<ItemForInvoiceOrderDetails> saveditems = orderDetailsvm.ItemsInOrderDetails.Where(x => x.status == "In Progress").ToList();
-        // for (int k = saveditems.Count(); k < itemList.Count(); k++)
-        // {
+        return orderDetailsvm;
+         }catch(Exception e){
+          return null;                                                                          
+         }
+    }
+    #endregion
 
-        //     List<Orderdetail>? orderdetail = _context.Orderdetails.Where(od => od.ItemId == orderDetailsvm.ItemsInOrderDetails[k].ItemId && od.OrderId == orderDetailsvm.OrderId && !od.Isdelete).ToList();
-        //     for (int j = 0; j < orderdetail.Count(); j++)
-        //     {
-        //         bool flag = true;
-        //         List<Modifierorder> modorder = _context.Modifierorders.Where(mo => !mo.Isdelete && mo.OrderdetailId == orderdetail[j].OrderdetailId).OrderBy(mo => mo.ModifierId).ToList();
-        //         if (modorder.Count == orderDetailsvm.ItemsInOrderDetails[k].ModifiersInItemInvoice.Count)
-        //         {
-        //             for (int x = 0; x < orderDetailsvm.ItemsInOrderDetails[k].ModifiersInItemInvoice.Count; x++)
-        //             {
-        //                 if (orderDetailsvm.ItemsInOrderDetails[k].ModifiersInItemInvoice[x].ModifierId != modorder[x].ModifierId)
-        //                 {
-        //                     flag = false;
-        //                     break;
-        //                 }
-        //             }
-        //         }
-        //         else { flag = false; }
-        //         if (flag)
-        //         {
-        //             orderdetail[j].Quantity++;
-        //             _context.Update(orderdetail);
-        //         }
-        //         else
-        //         {
-        //         }
-        //     }
-        // }
+    #region SaveRatings
+    public async Task<long> SaveRatings(long customerId,int foodreview, int serviceReview,int ambienceReview, string reviewtext ){
+        Rating? ratings =await _context.Ratings.FirstOrDefaultAsync(r => r.Food == foodreview && r.Ambience == ambienceReview && r.Service == serviceReview && r.Review == reviewtext && r.Isdelete == false);
+        long ratingId;
+        if(ratings == null ){
+            Rating rating = new();
+            rating.Food = foodreview;
+            rating.CustomerId = customerId;
+            rating.Ambience = ambienceReview;
+            rating.Service = serviceReview;
+            rating.Review = reviewtext;
+            await _context.Ratings.AddAsync(rating);
+            await _context.SaveChangesAsync();
+            ratingId=rating.RatingId;
+            return ratingId;
+        }
+        return (long)ratings.RatingId;
 
+    }
+    #endregion
+
+    #region CompleteOrder
+    public async Task<OrderDetaIlsInvoiceViewModel> CompleteOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm, long paymentmethodId){
+        try{
+
+       
+        //update order table
+        Order? order =await _context.Orders.FirstOrDefaultAsync(x=> x.OrderId == orderDetailsvm.OrderId && !x.Isdelete);
+        order.TotalAmount = orderDetailsvm.TotalAmountOfOrderMain;
+        order.OtherInstruction = orderDetailsvm.OtherInstruction;
+        order.RatingId = orderDetailsvm.RatingId;
+        order.PaymentmethodId = paymentmethodId;
+        order.Status="Completed";
+        order.PaymentstatusId=2;
+        _context.Update(order);
+        await _context.SaveChangesAsync();
+
+        //update orderDetail table
+        for(int i=0; i<orderDetailsvm.ItemsInOrderDetails.Count; i++){
+            Orderdetail? orderdetail =await _context.Orderdetails.FirstOrDefaultAsync(x => x.OrderdetailId == orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId && !x.Isdelete);
+            orderdetail.Status = "Completed";
+            _context.Update(orderdetail);
+           
+        }
+
+        //assignatble isdelete =true
+        List<Assigntable> assigntable = _context.Assigntables.Where(x => x.OrderId == orderDetailsvm.OrderId && x.CustomerId == orderDetailsvm.CustomerId && !x.Isdelete).ToList();
+        for(int i=0; i<assigntable.Count; i++){
+            assigntable[i].Isdelete=true;
+            _context.Update(assigntable[i]);
+        }
+
+        //table status = available
+        for(int i=0; i<orderDetailsvm.tableList.Count; i++){
+            DAL.Models.Table? table =await _context.Tables.FirstOrDefaultAsync(t => t.TableId == orderDetailsvm.tableList[i].TableId && !t.Isdelete);
+            table.Status = "Available";
+            _context.Update(table);
+        }
+         await _context.SaveChangesAsync();
         return orderDetailsvm;
          }catch(Exception e){
             return null;
          }
+
     }
     #endregion
+
+    #region IsAllItemReady
+    public async Task<bool> IsAllItemReady(List<int> orderDetailId,OrderDetaIlsInvoiceViewModel orderDetailsvm){
+    foreach(int od in orderDetailId){
+         Orderdetail? orderdetail =await _context.Orderdetails.FirstOrDefaultAsync(x => x.OrderdetailId == od);
+        if(orderdetail.Quantity != orderdetail.ReadyQuantity){
+            return false;
+        }
+    }
+    return true;
+    }
+    #endregion
+
+
 
 }

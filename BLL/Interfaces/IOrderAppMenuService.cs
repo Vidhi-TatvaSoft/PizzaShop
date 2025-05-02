@@ -18,4 +18,10 @@ public interface IOrderAppMenuService
     Task<OrderDetaIlsInvoiceViewModel> RemoveItemfromOrderDetailPartialView(List<List<int>> itemList, int count, OrderDetaIlsInvoiceViewModel orderDetails);
 
     Task<OrderDetaIlsInvoiceViewModel> SaveOrderDetails(List<int> orderDetailId, OrderDetaIlsInvoiceViewModel orderDetails);
+
+    Task<long> SaveRatings(long customerId,int foodreview, int serviceReview,int ambienceReview, string reviewtext );
+
+    Task<bool> IsAllItemReady(List<int> orderDetailId,OrderDetaIlsInvoiceViewModel orderDetailsvm);
+
+    Task<OrderDetaIlsInvoiceViewModel> CompleteOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm, long paymentmethodId);
 }

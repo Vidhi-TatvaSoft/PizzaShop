@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.ViewModels;
+using iText.Layout.Element;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Pizzashop_Project.Authorization;
@@ -86,8 +87,8 @@ public class OrderAppMenuController :Controller
 
     #region UpdateOrderDetailPartialView
     public async Task<IActionResult> UpdateOrderDetailPartialView(string ItemList, string orderDetails){
-        List<List<int>> itemList = JsonConvert.DeserializeObject<List<List<int>>>(ItemList);
-        OrderDetaIlsInvoiceViewModel orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
+        List<List<int>>? itemList = JsonConvert.DeserializeObject<List<List<int>>>(ItemList);
+        OrderDetaIlsInvoiceViewModel? orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
         OrderDetaIlsInvoiceViewModel orderDetailsvm =await _orderAppMenuService.UpdateOrderDetailPartialView(itemList,orderDetailvm );
 
         return PartialView("_MenuItemsWithOrderDetails",orderDetailsvm);
@@ -96,8 +97,8 @@ public class OrderAppMenuController :Controller
 
     #region RemoveItemfromOrderDetailPartialView
     public async Task<IActionResult> RemoveItemfromOrderDetailPartialView(string ItemList, int count, string orderDetails){
-        List<List<int>> itemList = JsonConvert.DeserializeObject<List<List<int>>>(ItemList);
-        OrderDetaIlsInvoiceViewModel orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
+        List<List<int>>? itemList = JsonConvert.DeserializeObject<List<List<int>>>(ItemList);
+        OrderDetaIlsInvoiceViewModel? orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
         OrderDetaIlsInvoiceViewModel orderDetailsvm =await _orderAppMenuService.RemoveItemfromOrderDetailPartialView(itemList, count ,orderDetailvm);
 
         return PartialView("_MenuItemsWithOrderDetails",orderDetailsvm);
@@ -106,11 +107,39 @@ public class OrderAppMenuController :Controller
 
     #region SaveOrderDetails
     public async Task<IActionResult> SaveOrderDetails(string orderDetailIds, string orderDetails){
-        List<int> orderDetailId = JsonConvert.DeserializeObject<List<int>>(orderDetailIds);
-        OrderDetaIlsInvoiceViewModel orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
+        List<int>? orderDetailId = JsonConvert.DeserializeObject<List<int>>(orderDetailIds);
+        OrderDetaIlsInvoiceViewModel? orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
         OrderDetaIlsInvoiceViewModel orderDetailsvm =await _orderAppMenuService.SaveOrderDetails(orderDetailId,orderDetailvm);
 
         return PartialView("_MenuItemsWithOrderDetails",orderDetailsvm);
+    }
+    #endregion
+
+    #region SaveRatings
+    public async Task<IActionResult> SaveRatings(long customerId, int foodreview, int serviceReview,int ambienceReview, string reviewtext ){
+        long ratingId =await _orderAppMenuService.SaveRatings(customerId,foodreview,serviceReview,ambienceReview,reviewtext );
+        return Json(ratingId);
+    }
+    #endregion
+
+    #region CompleteOrder
+    public async Task<IActionResult> CompleteOrder(string orderDetails, long paymentmethodId){
+        OrderDetaIlsInvoiceViewModel? orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
+        OrderDetaIlsInvoiceViewModel orderDetailsvm =await _orderAppMenuService.CompleteOrder(orderDetailvm,paymentmethodId);
+        return PartialView("_MenuItemsWithOrderDetails",orderDetailsvm);
+    }
+    #endregion
+
+    #region CompleteOrderValidation
+    public async Task<IActionResult> CompleteOrderValidation(string orderDetailIds,string orderDetails){
+        List<int>? orderDetailId = JsonConvert.DeserializeObject<List<int>>(orderDetailIds);
+        OrderDetaIlsInvoiceViewModel? orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
+        bool IsAllItemReady=await _orderAppMenuService.IsAllItemReady(orderDetailId,orderDetailvm);
+        if(IsAllItemReady){
+            return Json(new {success=true});
+        }else{
+            return Json( new{success=false});
+        }
     }
     #endregion
 }

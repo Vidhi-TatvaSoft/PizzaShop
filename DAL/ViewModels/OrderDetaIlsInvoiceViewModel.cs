@@ -13,6 +13,8 @@ public class OrderDetaIlsInvoiceViewModel
 
     public long OrderId { get; set; }
 
+    public long RatingId{get;set;}
+
     public DateTime OrderDate { get; set; }
 
     public string OrderStatus { get; set; } = null!;
