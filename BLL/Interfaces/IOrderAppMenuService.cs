@@ -11,6 +11,8 @@ public interface IOrderAppMenuService
 
     public List<ModifierGroupForItem> GetModifiersByItemId(long itemId);
 
+    Task<bool> SaveCustomerDetails(long customerId, string name, long mobileNo, int NoofPersons, long userId);
+
     OrderDetaIlsInvoiceViewModel GetOrderDetailsByCustomerId(long customerId);
 
     Task<OrderDetaIlsInvoiceViewModel> UpdateOrderDetailPartialView( List<List<int>> itemList,OrderDetaIlsInvoiceViewModel orderDetailsvm);
@@ -24,4 +26,5 @@ public interface IOrderAppMenuService
     Task<bool> IsAllItemReady(List<int> orderDetailId,OrderDetaIlsInvoiceViewModel orderDetailsvm);
 
     Task<OrderDetaIlsInvoiceViewModel> CompleteOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm, long paymentmethodId);
+    bool IsItemReady(long orderDetailId);
 }

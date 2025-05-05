@@ -224,7 +224,7 @@
         //get orderdetails by customer id (rightside)
         function GetOrderDetailsBycustId() {
             var custId = document.getElementById("customerId").innerHTML;
-            console.log(custId);
+            console.log("customer id", custId);
             $.ajax({
                 url: "/OrderAppMenu/GetOrderDetailsBycustId",
                 type: "GET",
@@ -234,6 +234,60 @@
                     isAllItemSaved = true;
                 }
             })
+            console.log("ajax")
+
+        }
+
+        //get customer details
+        function GetCustomerDetails() {
+            document.getElementById("Name").value = orderDetailsModel.customerName;
+            document.getElementById("MobileNumber").value = orderDetailsModel.phoneno;
+            document.getElementById("NoofPersons").value = orderDetailsModel.numberOfPerson;
+            document.getElementById("Email").value = orderDetailsModel.email;
+        }
+
+        //save customer details to db
+        function SaveCustomerDetails() {
+            var NoofPersons = document.getElementById("NoofPersons").value;
+            var name = document.getElementById("Name").value;
+            var mobileNo = document.getElementById("MobileNumber").value;
+            var totalCapacity = 0;
+            for (i = 0; i < orderDetailsModel.tableList.length; i++) {
+                totalCapacity += orderDetailsModel.tableList[i].capacity
+            }
+            if (NoofPersons > totalCapacity) {
+                errorToaster(`Total capacity of tables is ${totalCapacity}.`);
+                return;
+            }
+            $.ajax({
+                url: "/OrderAppMenu/SaveCustomerDetails",
+                type: "POST",
+                data: { customerId: orderDetailsModel.customerId, name, mobileNo, NoofPersons },
+                success: function (data) {
+                    if (data) {
+                        successToaster("Customer Details Updated.");
+                        orderDetailsModel.customerName = name;
+                        orderDetailsModel.phoneno = mobileNo;
+                        orderDetailsModel.numberOfPerson = NoofPersons
+                    } else {
+                        errorToaster("Something Went Wrong. Try Again!");
+                    }
+                    isAllItemSaved = false;
+                    $(".btn-close").click();
+                }
+            })
+        }
+
+        //get orderinstruction
+        function getOrderInstruction() {
+            document.getElementById("Comment").value = orderDetailsModel.otherInstruction == null ? "" : orderDetailsModel.otherInstruction
+        }
+
+        function saveOrderInstruction() {
+            orderDetailsModel.otherInstruction = document.getElementById("Comment").value;
+            successToaster("orderInstruction Saved");
+            $(".btn-close").click();
+            isAllItemSaved = false;
         }
 
         //backend order items save in array
@@ -243,6 +297,7 @@
             var AllItems = [];
             AllItemsArray = [];
             AllItems = orderDetails.itemsInOrderDetails;
+            IsOrderCompleted = orderDetailsModel.orderStatus == "Completed" ? true : false;
 
             if (orderDetails.itemsInOrderDetails != null) {
                 for (i = 0; i < AllItems.length; i++) {
@@ -256,11 +311,26 @@
 
                     AllItemsArray.push(item);
                     @* ItemQuantityArr.push(parseInt(AllItems[i].quantity)) *@
-                                                }
+                                                                    }
             }
             if (itemQuantityUpdateflag) {
                 fillItemQuantity();
                 itemQuantityUpdateflag = false;
+            }
+            @* if (IsOrderCompleted) {
+                console.log("order completed")
+                document.getElementById("SaveButtonId").setAttribute("disabled", "disabled")
+                document.getElementById("CompleteButtonId").setAttribute("disabled", "disabled")
+                document.getElementById("cancelButtonId").setAttribute("disabled", "disabled");
+            } *@
+                    if (isAllItemSaved) {
+                document.getElementById("SaveButtonId").setAttribute("disabled", "disabled");
+                document.getElementById("CompleteButtonId").removeAttribute("disabled");
+                document.getElementById("generateInvoiceButton").removeAttribute("disabled")
+            } else {
+                document.getElementById("SaveButtonId").removeAttribute("disabled");
+                document.getElementById("CompleteButtonId").setAttribute("disabled", "disabled")
+                document.getElementById("generateInvoiceButton").setAttribute("disabled", "disabled");
             }
         }
 
@@ -292,8 +362,7 @@
                 item.sort();
                 item.unshift(1);
                 item.unshift(parseInt(itemId))
-                @* console.log(item) *@
-                                                    var ItemCheckFlag = true
+                var ItemCheckFlag = true
                 AllItemsArray.forEach((x) => {
                     if (x.toString().substr(0, x[0].toString().length + 1) + x.toString().substr(4) == item.toString().substr(0, item[0].toString().length + 1) + item.toString().substr(4) && x[1] < 10) {
                         x[1]++
@@ -316,7 +385,7 @@
                     }
                 })
                 $(".btn-close").click();
-            }else{
+            } else {
                 errorToaster("Order is already completed")
             }
         }
@@ -341,7 +410,7 @@
                         $("#OrderDetailsWithTablePartial").html(data);
                     }
                 })
-            }else{
+            } else {
                 errorToaster("Order is already completed")
             }
         }
@@ -363,7 +432,7 @@
                         $("#OrderDetailsWithTablePartial").html(data);
                     }
                 })
-            }else{
+            } else {
                 errorToaster("Order is already completed")
             }
         }
@@ -382,7 +451,7 @@
                 var count = document.getElementById("itemInstructionCount").value;
                 orderDetailsModel.itemsInOrderDetails[count].specialInstruction = document.getElementById("ItemInstruction").value;
                 $(".btn-close").click();
-            }else{
+            } else {
                 errorToaster("Order is already completed")
             }
         }
@@ -401,7 +470,7 @@
                         $("#OrderDetailsWithTablePartial").html(data);
                     }
                 })
-            }else{
+            } else {
                 errorToaster("Order is already completed")
             }
         }
@@ -417,9 +486,10 @@
                         $("#OrderDetailsWithTablePartial").html(data);
                         itemQuantityUpdateflag = true;
                         isAllItemSaved = true;
+                        successToaster("Order Saved.")
                     }
                 })
-            }else{
+            } else {
                 errorToaster("Order is already completed")
             }
 
@@ -484,15 +554,79 @@
                             itemQuantityUpdateflag = true;
                             $(".btn-close").click();
                             IsOrderCompleted = true;
-                            document.getElementById("SaveButtonId").setAttribute("disabled","disabled")
-                            document.getElementById("CompleteButtonId").setAttribute("disabled","disabled")
-                            document.getElementById("CancelButtonId").setAttribute("disabled","disabled")
-
+                            successToaster("Order Completed.")
+                            window.location.href = "/OrderAppTable/OrderAppTable"
                         }
                     })
+                    $(".btn-close").click();
                 }
             })
 
+        }
+
+        //generate invoice
+        @* function GeneratePdfInvoice() {
+            console.log("generateinvoice")
+            $.ajax({
+                url: "/OrderAppMenu/GeneratePdfInvoice",
+                type: "GET",
+                data: { customerId: orderDetailsModel.customerId },
+                success: function () {
+                    console.log("invoice generated");
+                }
+            })
+        } *@
+
+            function GeneratePdfInvoice() {
+                $.ajax({
+                    url: `/OrderAppMenu/GeneratePdfInvoice`,
+                    type: "GET",
+                    data: { customerId: orderDetailsModel.customerId },
+                    xhrFields: {
+                        responseType: 'blob' //binary large object -- to handle binary response
+                    },
+                    success: function (data, status, xhr) {
+                        let filename = "OrderInvoice.pdf";
+
+                        let disposition = xhr.getResponseHeader('Content-Disposition');
+                        @* console.log("disp", disposition); *@
+                                if (disposition && disposition.indexOf('attachment') !== -1) {
+                            let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
+                            if (matches && matches[1]) {
+                                filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
+                            }
+                        }
+
+                        let blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
+                        let link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob); //timePeriod url points to blob obj
+                        link.download = filename; //Download file name
+                        document.body.appendChild(link); //appendChild so that it Cancelled be cliked
+                        link.click();
+                        document.body.removeChild(link);
+
+                        console.log("Export Successfully");
+                    }
+                });
+            }
+
+        //cancel order
+        function cancelOrder() {
+            $.ajax({
+                url: "/OrderAppMenu/cancelOrder",
+                type: "POST",
+                data: { orderDetailvm: orderDetailsModel },
+                success: function (data) {
+                    if (!data.success) {
+                        itemQuantityUpdateflag = true;
+                        $("#OrderDetailsWithTablePartial").html(data);
+                        errorToaster("The order item is ready, cannot cancel the order")
+                    } else {
+                        successToaster("Order Cancelled.")
+                        window.location.href = "/OrderAppTable/OrderAppTable"
+                    }
+                }
+            })
         }
 
 
@@ -558,7 +692,7 @@
                 FillAlreadySavedDataInArray(orderDetails);
             } *@
 
-                                                            })
+                                                                                })
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

@@ -335,13 +335,13 @@ public partial class PizzashopDbContext : DbContext
             entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
             entity.Property(e => e.Rate)
-                .HasPrecision(5, 2)
+                .HasPrecision(10, 2)
                 .HasColumnName("rate");
             entity.Property(e => e.ShortCode)
                 .HasMaxLength(20)
                 .HasColumnName("short_code");
             entity.Property(e => e.TaxValue)
-                .HasPrecision(5, 2)
+                .HasPrecision(10, 2)
                 .HasColumnName("tax_value");
             entity.Property(e => e.Unit)
                 .HasMaxLength(10)
@@ -477,7 +477,7 @@ public partial class PizzashopDbContext : DbContext
                 .HasColumnName("modifier_name");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
             entity.Property(e => e.Rate)
-                .HasPrecision(5, 2)
+                .HasPrecision(10, 2)
                 .HasColumnName("rate");
             entity.Property(e => e.Unit)
                 .HasMaxLength(10)
@@ -599,7 +599,7 @@ public partial class PizzashopDbContext : DbContext
                 .HasColumnName("status");
             entity.Property(e => e.TableId).HasColumnName("table_id");
             entity.Property(e => e.TotalAmount)
-                .HasPrecision(5, 2)
+                .HasPrecision(10, 2)
                 .HasColumnName("total_amount");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.OrderCreatedByNavigations)
@@ -949,7 +949,9 @@ public partial class PizzashopDbContext : DbContext
 
             entity.Property(e => e.TaxinvoicemappingId).HasColumnName("taxinvoicemapping_id");
             entity.Property(e => e.InvoiceId).HasColumnName("invoice_id");
+            entity.Property(e => e.TaxAmount).HasPrecision(10, 2);
             entity.Property(e => e.TaxId).HasColumnName("tax_id");
+            entity.Property(e => e.TaxName).HasMaxLength(20);
 
             entity.HasOne(d => d.Invoice).WithMany(p => p.Taxinvoicemappings)
                 .HasForeignKey(d => d.InvoiceId)

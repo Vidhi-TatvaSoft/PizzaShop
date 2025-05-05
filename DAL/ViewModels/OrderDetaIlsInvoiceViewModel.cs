@@ -17,7 +17,7 @@ public class OrderDetaIlsInvoiceViewModel
 
     public DateTime OrderDate { get; set; }
 
-    public string OrderStatus { get; set; } = null!;
+    public string OrderStatus { get; set; } 
 
     public string OtherInstruction{get;set;}
 
@@ -43,6 +43,7 @@ public class OrderDetaIlsInvoiceViewModel
     public List<ItemForInvoiceOrderDetails> ItemsInOrderDetails { get; set; }
 
     public List<TaxForOrderDetailsInvoice> TaxesInOrderDetails { get; set; }
+    
 
     public decimal SubTotalAmountOfOrder { get; set; }
 

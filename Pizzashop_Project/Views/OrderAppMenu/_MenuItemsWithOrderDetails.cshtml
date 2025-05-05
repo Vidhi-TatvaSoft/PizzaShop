@@ -22,9 +22,9 @@
         <div>
             <div class="btn btn-outline-primary px-2" onclick="showQrCodeModal()" data-bs-toggle="modal"
                 data-bs-target="#QRCodeModal"><i class="fa-solid fa-qrcode mt-1"></i></div>
-            <div class="btn btn-outline-primary px-2 ms-2" data-bs-toggle="modal" data-bs-target="#CustomerDetails"><i
+            <div class="btn btn-outline-primary px-2 ms-2" data-bs-toggle="modal" data-bs-target="#CustomerDetails" onclick="GetCustomerDetails()"><i
                     class="fa-solid fa-user mt-1"></i></div>
-            <div class="btn btn-outline-primary px-2 ms-2" data-bs-toggle="modal" data-bs-target="#orderComment"><i
+            <div class="btn btn-outline-primary px-2 ms-2" data-bs-toggle="modal" data-bs-target="#orderComment" onclick="getOrderInstruction()"><i
                     class="fa-solid fa-message mt-1"></i></div>
         </div>
     </div>
@@ -164,13 +164,13 @@
         </div>
 
         <div class="d-flex justify-content-sm-end align-items-end  mt-2 flex-column flex-sm-row">
-            <div class="btn btn-primary me-sm-3 mt-2 " style="width: 150px;" onclick="SaveorderDetails()" id="SaveButtonId">Save</div>
-            <div class="btn btn-outline-primary me-sm-3 mt-2" style="width: 150px;" onclick="CompleteOrderValidation()" id="CompleteButtonId">Complete</div>
-            <div class="btn btn-outline-primary text-nowrap mt-2" style="width: 150px;">Generate Invoice</div>
+            <button class="btn btn-primary me-sm-3 mt-2 " style="width: 150px;" onclick="SaveorderDetails()" id="SaveButtonId">Save</button>
+            <button class="btn btn-outline-primary me-sm-3 mt-2" style="width: 150px;" onclick="CompleteOrderValidation()" id="CompleteButtonId">Complete</button>
+            <button class="btn btn-outline-primary text-nowrap mt-2" style="width: 150px;" onclick="GeneratePdfInvoice()" id="generateInvoiceButton">Generate Invoice</button>
         </div>
 
         <div class="d-flex justify-content-end mt-2">
-            <div class="btn btn-outline-primary " style="width: 150px;" id="cancelButtonId">Cancel</div>
+            <button class="btn btn-outline-primary " style="width: 150px;" id="cancelButtonId" onclick="cancelOrder()">Cancel</button>
         </div>
     </div>
 }
@@ -222,13 +222,13 @@
                     <label for="NoofPersons"> &nbsp; No of Persons*</label>
                 </div>
                 <div class="form-floating  col-12 mb-3">
-                    <input type="text" class="form-control" id="Email" placeholder="Email*">
+                    <input type="text" class="form-control" id="Email" placeholder="Email*" disabled>
                     <span class="text-danger RemoveValidations" id="RemoveValidations"></span>
                     <label for="Email"> &nbsp; Email*</label>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">save</button>
+                <button type="submit" class="btn btn-primary" onclick="SaveCustomerDetails()">save</button>
                 <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
             </div>
         </div>
@@ -250,7 +250,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">save</button>
+                <button type="submit" class="btn btn-primary" onclick="saveOrderInstruction()">save</button>
                 <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
             </div>
         </div>
