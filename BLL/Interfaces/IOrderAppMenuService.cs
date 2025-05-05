@@ -27,4 +27,6 @@ public interface IOrderAppMenuService
 
     Task<OrderDetaIlsInvoiceViewModel> CompleteOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm, long paymentmethodId);
     bool IsItemReady(long orderDetailId);
+    bool IsAnyItemReady(OrderDetaIlsInvoiceViewModel orderDetailsvm);
+    Task<bool> CancelOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm);
 }

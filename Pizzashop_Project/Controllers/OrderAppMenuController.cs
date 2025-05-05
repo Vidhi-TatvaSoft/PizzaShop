@@ -4,6 +4,7 @@ using DAL.ViewModels;
 using iText.Layout.Element;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Crypto.Engines;
 using Pizzashop_Project.Authorization;
 using Rotativa.AspNetCore;
 
@@ -181,10 +182,10 @@ public class OrderAppMenuController : Controller
     }
     #endregion
 
-     public IActionResult GeneratePdfInvoice(long customerId)
+    public IActionResult GeneratePdfInvoice(long customerId)
     {
         OrderDetaIlsInvoiceViewModel orderDetails = _orderAppMenuService.GetOrderDetailsByCustomerId(customerId);
-        
+
         //   return PartialView("DownloadInvoicePdf", orderDetails);
         var generatedpdf = new ViewAsPdf("GenerateInvoicePDF", orderDetails)
         {
@@ -192,4 +193,19 @@ public class OrderAppMenuController : Controller
         };
         return generatedpdf;
     }
+
+    #region cancelOrder
+    public IActionResult CanCancelOrder(string orderDetails)
+    {
+        OrderDetaIlsInvoiceViewModel? orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
+        return Json( _orderAppMenuService.IsAnyItemReady( orderDetailvm));
+    }
+    #endregion
+
+    #region CancelOrder
+    public async Task<IActionResult> CancelOrder(string orderDetails){
+         OrderDetaIlsInvoiceViewModel? orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
+        return  Json(await _orderAppMenuService.CancelOrder(orderDetailvm));
+    }
+    #endregion
 }

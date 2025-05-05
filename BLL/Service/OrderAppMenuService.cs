@@ -193,15 +193,15 @@ public class OrderAppMenuService : IOrderAppMenuService
                                 .Where(x => x.OrderId == orderId && x.Isdelete == false).ToList();
                 orderDetailsvm.OtherInstruction = _context.Orders.FirstOrDefault(o => o.OrderId == orderId && !o.Isdelete).OtherInstruction;
                 orderDetailsvm.OrderStatus = _context.Orders.FirstOrDefault(o => o.OrderId == orderId && !o.Isdelete).Status;
-                orderDetailsvm.InvoiceId = _context.Invoices.FirstOrDefault(i => i.OrderId == orderId && i.CustomerId == customerId) == null?
-                                             0: _context.Invoices.FirstOrDefault(i => i.OrderId == orderId && i.CustomerId == customerId).InvoiceId;
+                orderDetailsvm.InvoiceId = _context.Invoices.FirstOrDefault(i => i.OrderId == orderId && i.CustomerId == customerId) == null ?
+                                             0 : _context.Invoices.FirstOrDefault(i => i.OrderId == orderId && i.CustomerId == customerId).InvoiceId;
                 orderDetailsvm.ItemsInOrderDetails = orderDetails
                             .Select(i => new ItemForInvoiceOrderDetails
                             {
                                 ItemId = i.ItemId,
                                 ItemName = i.Item.ItemName,
                                 Rate = i.Item.Rate,
-                                status = "In Progress" ,
+                                status = "In Progress",
                                 Quantity = i.Quantity,
                                 SpecialInstruction = i.ExtraInstruction == null ? "" : i.ExtraInstruction,
                                 TotalOfItemByQuantity = Math.Round(i.Quantity * i.Item.Rate, 0),
@@ -663,14 +663,101 @@ public class OrderAppMenuService : IOrderAppMenuService
     }
     #endregion
 
-    #region isItemRedy
-    public bool IsItemReady(long orderDetailId){
-         Orderdetail? orderdetail =  _context.Orderdetails.FirstOrDefault(x => x.OrderdetailId == orderDetailId);
-            if (orderdetail.Quantity != orderdetail.ReadyQuantity)
+    #region IsAnyItemReady
+    public bool IsAnyItemReady(OrderDetaIlsInvoiceViewModel orderDetailsvm)
+    {
+        for (int i = 0; i < orderDetailsvm.ItemsInOrderDetails.Count; i++)
+        {
+            if (orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId != 0)
             {
-                return false;
+                Orderdetail? orderdetail = _context.Orderdetails.FirstOrDefault(x => x.OrderdetailId == orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId);
+                if (orderdetail.ReadyQuantity > 0)
+                {
+                    return true;
+                }
             }
+        }
+        return false;
+    }
+    #endregion
+
+    #region isItemRedy
+    public bool IsItemReady(long orderDetailId)
+    {
+        Orderdetail? orderdetail = _context.Orderdetails.FirstOrDefault(x => x.OrderdetailId == orderDetailId);
+        if (orderdetail.Quantity != orderdetail.ReadyQuantity)
+        {
+            return false;
+        }
+        return true;
+    }
+    #endregion
+
+    #region CancelOrder
+    public async Task<bool> CancelOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm)
+    {
+        try
+        {
+            if (orderDetailsvm.InvoiceId != 0)
+            {
+                Invoice? invoice = await _context.Invoices.FirstOrDefaultAsync(i => i.InvoiceId == orderDetailsvm.InvoiceId && !i.Isdelete);
+                invoice.Isdelete = true;
+                _context.Update(invoice);
+
+            }
+            if (orderDetailsvm.OrderId != 0)
+            {
+                Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderDetailsvm.OrderId && !o.Isdelete);
+                order.Status = "Cancelled";
+                order.TotalAmount = 0;
+                order.OtherInstruction = null;
+                _context.Update(order);
+
+                List<Kot> kotList = _context.Kots.Where(kot => kot.OrderId == orderDetailsvm.OrderId && !kot.Isdelete).ToList();
+                foreach (var kot in kotList)
+                {
+                    kot.Isdelete = true;
+                    _context.Update(kot);
+                }
+            }
+
+            for (int i = 0; i < orderDetailsvm.ItemsInOrderDetails.Count; i++)
+            {
+                if (orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId != 0)
+                {
+                    Orderdetail? orderdetail = await _context.Orderdetails.FirstOrDefaultAsync(od => od.OrderdetailId == orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId && !od.Isdelete);
+                    orderdetail.Isdelete = true;
+                    orderdetail.Status = "Cancelled";
+                    _context.Update(orderdetail);
+
+                    List<Modifierorder> modifierorderList = _context.Modifierorders.Where(mo => mo.OrderdetailId == orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId && !mo.Isdelete).ToList();
+                    foreach (var modiferorder in modifierorderList)
+                    {
+                        modiferorder.Isdelete = true;
+                        _context.Update(modiferorder);
+                    }
+                }
+            }
+
+            List<Assigntable> assigntableList = _context.Assigntables.Where(at => at.CustomerId == orderDetailsvm.CustomerId && !at.Isdelete).ToList();
+            foreach (var table in assigntableList)
+            {
+                table.Isdelete = true;
+                _context.Update(table);
+
+                DAL.Models.Table? table1 = await _context.Tables.FirstOrDefaultAsync(t => t.TableId == table.TableId && !t.Isdelete);
+                table1.Status = "Available";
+                _context.Update(table1);
+
+            }
+
+            await _context.SaveChangesAsync();
             return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
     #endregion
 

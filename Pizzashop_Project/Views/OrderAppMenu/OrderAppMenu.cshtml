@@ -311,7 +311,7 @@
 
                     AllItemsArray.push(item);
                     @* ItemQuantityArr.push(parseInt(AllItems[i].quantity)) *@
-                                                                    }
+                                                                        }
             }
             if (itemQuantityUpdateflag) {
                 fillItemQuantity();
@@ -323,7 +323,7 @@
                 document.getElementById("CompleteButtonId").setAttribute("disabled", "disabled")
                 document.getElementById("cancelButtonId").setAttribute("disabled", "disabled");
             } *@
-                    if (isAllItemSaved) {
+                        if (isAllItemSaved) {
                 document.getElementById("SaveButtonId").setAttribute("disabled", "disabled");
                 document.getElementById("CompleteButtonId").removeAttribute("disabled");
                 document.getElementById("generateInvoiceButton").removeAttribute("disabled")
@@ -590,7 +590,7 @@
 
                         let disposition = xhr.getResponseHeader('Content-Disposition');
                         @* console.log("disp", disposition); *@
-                                if (disposition && disposition.indexOf('attachment') !== -1) {
+                                    if (disposition && disposition.indexOf('attachment') !== -1) {
                             let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
                             if (matches && matches[1]) {
                                 filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
@@ -612,18 +612,27 @@
 
         //cancel order
         function cancelOrder() {
+            console.log("ajaxstart", orderDetailsModel)
             $.ajax({
-                url: "/OrderAppMenu/cancelOrder",
+                url: "/OrderAppMenu/CanCancelOrder",
                 type: "POST",
-                data: { orderDetailvm: orderDetailsModel },
+                data: { orderDetails: JSON.stringify(orderDetailsModel) },
                 success: function (data) {
-                    if (!data.success) {
+                    if (data) {
+                        console.log(data)
                         itemQuantityUpdateflag = true;
-                        $("#OrderDetailsWithTablePartial").html(data);
                         errorToaster("The order item is ready, cannot cancel the order")
                     } else {
-                        successToaster("Order Cancelled.")
-                        window.location.href = "/OrderAppTable/OrderAppTable"
+                        $.ajax({
+                            url: "/OrderAppMenu/CancelOrder",
+                            type: "POST",
+                            data: { orderDetails: JSON.stringify(orderDetailsModel) },
+                            success: function (data) {
+                                successToaster("Order Cancelled.")
+                                window.location.href = "/OrderAppTable/OrderAppTable";
+                            }
+                        })
+
                     }
                 }
             })
@@ -692,7 +701,7 @@
                 FillAlreadySavedDataInArray(orderDetails);
             } *@
 
-                                                                                })
+                                                                                    })
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

@@ -47,7 +47,7 @@
 
 @section scripts {
     <script>
-
+        var selectedclasses
       
         function getSectionList(){
             $.ajax({
@@ -62,7 +62,17 @@
 
         function ViewTableDetailsBySection(tag) {
             isexpand = tag.getAttribute("aria-expanded");
+            selectedclasses = document.getElementsByClassName("TableSelected");
+            console.log("before",selectedclasses)
+            for(i=0; i<selectedclasses.length; i++){
+                console.log("mid",selectedclasses[i].innerHTML)
+                selectedclasses[i].classList.remove("TableSelected");
 
+            @* console.log("selected clasdsdsdss",selectedclasses[i].classList) *@
+
+            }
+            selectedclasses = document.getElementsByClassName("TableSelected");
+            console.log("selected class",selectedclasses)
             console.log(isexpand);
             var seciddiv = tag.getAttribute("aria-controls");
             var SectionId = parseInt(seciddiv.split("-")[1])
