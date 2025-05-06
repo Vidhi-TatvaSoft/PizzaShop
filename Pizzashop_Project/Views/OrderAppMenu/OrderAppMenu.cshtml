@@ -232,6 +232,10 @@
                 success: function (data) {
                     $("#OrderDetailsWithTablePartial").html(data);
                     isAllItemSaved = true;
+                },
+                error: function () {
+                    var tablebutton = document.getElementById("TableButtonLayout");
+                    tablebutton.click();
                 }
             })
             console.log("ajax")
@@ -311,7 +315,7 @@
 
                     AllItemsArray.push(item);
                     @* ItemQuantityArr.push(parseInt(AllItems[i].quantity)) *@
-                                                                        }
+                                                                            }
             }
             if (itemQuantityUpdateflag) {
                 fillItemQuantity();
@@ -323,7 +327,7 @@
                 document.getElementById("CompleteButtonId").setAttribute("disabled", "disabled")
                 document.getElementById("cancelButtonId").setAttribute("disabled", "disabled");
             } *@
-                        if (isAllItemSaved) {
+                            if (isAllItemSaved) {
                 document.getElementById("SaveButtonId").setAttribute("disabled", "disabled");
                 document.getElementById("CompleteButtonId").removeAttribute("disabled");
                 document.getElementById("generateInvoiceButton").removeAttribute("disabled")
@@ -590,7 +594,7 @@
 
                         let disposition = xhr.getResponseHeader('Content-Disposition');
                         @* console.log("disp", disposition); *@
-                                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                                        if (disposition && disposition.indexOf('attachment') !== -1) {
                             let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
                             if (matches && matches[1]) {
                                 filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
@@ -701,7 +705,7 @@
                 FillAlreadySavedDataInArray(orderDetails);
             } *@
 
-                                                                                    })
+                                                                                        })
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

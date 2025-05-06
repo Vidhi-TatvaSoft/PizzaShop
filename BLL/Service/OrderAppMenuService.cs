@@ -270,8 +270,10 @@ public class OrderAppMenuService : IOrderAppMenuService
     #region UpdateOrderDetailPartialView
     public async Task<OrderDetaIlsInvoiceViewModel> UpdateOrderDetailPartialView(List<List<int>> itemList, OrderDetaIlsInvoiceViewModel orderDetailsvm)
     {
+        try{
+
         List<ItemForInvoiceOrderDetails> itemForInvoiceOrderDetails = new();
-        itemForInvoiceOrderDetails = orderDetailsvm.ItemsInOrderDetails;
+        itemForInvoiceOrderDetails = orderDetailsvm.ItemsInOrderDetails ==null? new():orderDetailsvm.ItemsInOrderDetails;
         OrderDetaIlsInvoiceViewModel orderdetails = orderDetailsvm;
 
         // if(orderdetails.ItemsInOrderDetails == null){
@@ -313,13 +315,13 @@ public class OrderAppMenuService : IOrderAppMenuService
 
         var taxedetails = _context.Taxes.Where(x => !x.Isdelete && (bool)x.Isenable).ToList();
 
-        orderDetailsvm.TaxesInOrderDetails = new List<TaxForOrderDetailsInvoice>();
+        orderdetails.TaxesInOrderDetails = new List<TaxForOrderDetailsInvoice>();
         foreach (var tax in taxedetails)
         {
 
             if (tax.TaxType == "Fix Amount")
             {
-                orderDetailsvm.TaxesInOrderDetails.Add(
+                orderdetails.TaxesInOrderDetails.Add(
                     new TaxForOrderDetailsInvoice
                     {
                         TaxId = tax.TaxId,
@@ -331,19 +333,23 @@ public class OrderAppMenuService : IOrderAppMenuService
             }
             else
             {
-                orderDetailsvm.TaxesInOrderDetails.Add(
+                orderdetails.TaxesInOrderDetails.Add(
                     new TaxForOrderDetailsInvoice
                     {
                         TaxId = tax.TaxId,
                         TaxName = tax.TaxName,
                         TaxType = tax.TaxType,
-                        TaxValue = Math.Round(tax.TaxValue / 100 * orderDetailsvm.SubTotalAmountOfOrder, 0)
+                        TaxValue = Math.Round(tax.TaxValue / 100 * orderdetails.SubTotalAmountOfOrder, 0)
                     }
                 );
             }
         }
         orderdetails.TotalAmountOfOrderMain = orderdetails.SubTotalAmountOfOrder + orderdetails.TaxesInOrderDetails.Sum(x => x.TaxValue);
         return orderdetails;
+        
+        }catch(Exception e){
+            return orderDetailsvm;
+        }
     }
     #endregion
 
@@ -632,8 +638,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                 taxinvoicemapping.TaxId = orderDetailsvm.TaxesInOrderDetails[i].TaxId;
                 taxinvoicemapping.InvoiceId = orderDetailsvm.InvoiceId;
                 taxinvoicemapping.TaxName = orderDetailsvm.TaxesInOrderDetails[i].TaxName;
-                taxinvoicemapping.TaxAmount = orderDetailsvm.TaxesInOrderDetails[i].TaxType == "Fix Amount" ? orderDetailsvm.TaxesInOrderDetails[i].TaxValue :
-                                            Math.Round(orderDetailsvm.TaxesInOrderDetails[i].TaxValue / 100 * orderDetailsvm.SubTotalAmountOfOrder, 0);
+                taxinvoicemapping.TaxAmount = orderDetailsvm.TaxesInOrderDetails[i].TaxValue;
                 await _context.AddAsync(taxinvoicemapping);
             }
 
@@ -698,19 +703,19 @@ public class OrderAppMenuService : IOrderAppMenuService
     {
         try
         {
-            if (orderDetailsvm.InvoiceId != 0)
-            {
-                Invoice? invoice = await _context.Invoices.FirstOrDefaultAsync(i => i.InvoiceId == orderDetailsvm.InvoiceId && !i.Isdelete);
-                invoice.Isdelete = true;
-                _context.Update(invoice);
+            // if (orderDetailsvm.InvoiceId != 0)
+            // {
+            //     Invoice? invoice = await _context.Invoices.FirstOrDefaultAsync(i => i.InvoiceId == orderDetailsvm.InvoiceId && !i.Isdelete);
+            //     invoice.Isdelete = true;
+            //     _context.Update(invoice);
 
-            }
+            // }
             if (orderDetailsvm.OrderId != 0)
             {
                 Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderDetailsvm.OrderId && !o.Isdelete);
                 order.Status = "Cancelled";
                 order.TotalAmount = 0;
-                order.OtherInstruction = null;
+                // order.OtherInstruction = null;
                 _context.Update(order);
 
                 List<Kot> kotList = _context.Kots.Where(kot => kot.OrderId == orderDetailsvm.OrderId && !kot.Isdelete).ToList();
@@ -726,16 +731,16 @@ public class OrderAppMenuService : IOrderAppMenuService
                 if (orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId != 0)
                 {
                     Orderdetail? orderdetail = await _context.Orderdetails.FirstOrDefaultAsync(od => od.OrderdetailId == orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId && !od.Isdelete);
-                    orderdetail.Isdelete = true;
+                    // orderdetail.Isdelete = true;
                     orderdetail.Status = "Cancelled";
                     _context.Update(orderdetail);
 
-                    List<Modifierorder> modifierorderList = _context.Modifierorders.Where(mo => mo.OrderdetailId == orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId && !mo.Isdelete).ToList();
-                    foreach (var modiferorder in modifierorderList)
-                    {
-                        modiferorder.Isdelete = true;
-                        _context.Update(modiferorder);
-                    }
+                    // List<Modifierorder> modifierorderList = _context.Modifierorders.Where(mo => mo.OrderdetailId == orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId && !mo.Isdelete).ToList();
+                    // foreach (var modiferorder in modifierorderList)
+                    // {
+                    //     modiferorder.Isdelete = true;
+                    //     _context.Update(modiferorder);
+                    // }
                 }
             }
 

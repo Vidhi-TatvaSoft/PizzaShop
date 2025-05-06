@@ -24,6 +24,8 @@ public class OrderService : IOrderService
     #region Get al orders for pagination
     public PaginationViewModel<OrderViewModel> GetAllOrders(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5, string status = "", string timePeriod = "", string startDate = "", string endDate = "")
     {
+        try{
+       
         var query = _context.Orders
               .Include(x => x.Customer)
               .Include(x => x.Paymentmethod)
@@ -35,8 +37,8 @@ public class OrderService : IOrderService
                   CustomerName = x.Customer.CustomerName,
                   OrderDate = DateOnly.FromDateTime(x.OrderDate),
                   Status = x.Status,
-                  RatingId = x.RatingId,
-                  Rating = (int)Math.Ceiling(((double)x.Rating.Food + (double)x.Rating.Service + (double)x.Rating.Ambience) / 3),
+                  RatingId = x.RatingId == null ? 0: x.RatingId,
+                  Rating = x.RatingId == null ? 0: (int)Math.Ceiling(((double)x.Rating.Food + (double)x.Rating.Service + (double)x.Rating.Ambience) / 3),
                   TotalAmount = x.TotalAmount,
                   PaymentmethodId = x.PaymentmethodId,
                   PaymentmethodName = x.Paymentmethod.Paymenttype
@@ -115,10 +117,16 @@ public class OrderService : IOrderService
         // Get total records count (before pagination)
         int totalCount = query.Count();
 
+        // List<OrderViewModel> demoList = query.ToList();
+
         // Apply pagination
         var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
         return new PaginationViewModel<OrderViewModel>(items, totalCount, pageNumber, pageSize);
+             
+        }catch(Exception e){
+            return new PaginationViewModel<OrderViewModel>(null, 0,pageNumber,pageSize);
+        }
     }
     #endregion
 
@@ -480,7 +488,7 @@ public class OrderService : IOrderService
                 Rate = x.Item.Rate,
                 TotalOfItemByQuantity = Math.Round(x.Quantity * x.Item.Rate, 2),
                 ModifiersInItemInvoice = _context.Modifierorders.Include(m => m.Modifier).Include(m => m.Orderdetail).ThenInclude(m => m.Item)
-                .Where(m => m.Orderdetail.ItemId == x.ItemId)
+                .Where(m => m.Orderdetail.ItemId == x.ItemId && !m.Isdelete )
                 .Select(m => new ModifiersForItemInInvoiceOrderDetails
                 {
                     ModifierId = m.ModifierId,

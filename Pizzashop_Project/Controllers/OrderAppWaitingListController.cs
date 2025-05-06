@@ -144,9 +144,12 @@ public class OrderAppWaitingListController : Controller
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        var customerId = _orderAppWaitingService.GetCustmerIdByEmail(waitingId);
         bool assignedStatus =await _orderAppWaitingService.AssignTable(tablesArr,waitingId,sectionId,userId);
+
         if(assignedStatus){
-            return Json(new { success = true, text= "TableS assigned"});
+            
+            return Json(new { success = true, text= "TableS assigned" ,customerId});
         }
         return Json(new { success=false, text="Something Went Wrong.Try Again!"});
     }

@@ -24,17 +24,25 @@ public class UserController : Controller
     private readonly IUserLoginService _userLoginService;
     private readonly IJWTTokenService _jwttokenService;
 
-    public UserController(IUserService userService, IJWTTokenService jwttokenService, IUserLoginService userLoginService)
+    private readonly IDashboardService _dashboardService;
+
+    public UserController(IUserService userService, IJWTTokenService jwttokenService, IUserLoginService userLoginService, IDashboardService dashboardService)
     {
         _userService = userService;
         _jwttokenService = jwttokenService;
         _userLoginService = userLoginService;
+        _dashboardService=dashboardService;
     }
     [PermissionAuthorize("AdminManager")]
     public IActionResult Dashboard()
     {
         ViewData["sidebar-active"] = "Dashboard";
         return View();
+    }
+
+    public IActionResult GetDashboardDetailsPartial(){
+        DashboardViewModel dashboardvm= _dashboardService.GetDashboardDetails();
+        return PartialView("_DashboardStatesPartial",dashboardvm);
     }
 
     #region Userlist

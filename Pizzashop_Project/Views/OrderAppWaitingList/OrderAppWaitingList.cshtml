@@ -7,7 +7,8 @@
 
 <div class="d-flex justify-content-between">
     <div class="fs-2 fw-bold text-primary"> Waiting List</div>
-    <button class="btn btn-outline-primary p-1 " data-bs-toggle="modal" data-bs-target="#AddWaitingTOkenModal" onclick="EmptyDetailsofAddModal()">+ Waiting
+    <button class="btn btn-outline-primary p-1 " data-bs-toggle="modal" data-bs-target="#AddWaitingTOkenModal"
+        onclick="EmptyDetailsofAddModal()">+ Waiting
         Token</button>
 
 </div>
@@ -51,8 +52,10 @@
                 <div class="modal-body row">
                     <div class="form-floating  col-12 mb-3">
                         <input type="text" class="form-control" id="Email" list="emailDatalist"
-                            asp-for="@Model.waitingTokenDetailsViewModel.Email" placeholder="Email*" onkeyup="GetSuggestionsusingEmail(this)" onchange="FillValuesBySuggestion(this)" autocomplete="off">
-                            <datalist id="emailDatalist"></datalist>
+                            asp-for="@Model.waitingTokenDetailsViewModel.Email" placeholder="Email*"
+                            onkeyup="GetSuggestionsusingEmail(this)" onchange="FillValuesBySuggestion(this)"
+                            autocomplete="off">
+                        <datalist id="emailDatalist"></datalist>
                         <span asp-validation-for="@Model.waitingTokenDetailsViewModel.Email"
                             class="text-danger RemoveValidations" id="RemoveValidations"></span>
                         <label for="Email"> &nbsp; Email*</label>
@@ -144,7 +147,7 @@
                 </div>
 
                 <div class="form-floating  col-md-6 col-12 mb-3">
-                    
+
                     <input type="hidden" id="sectionSelected">
                     <input type="text" class="form-control" id="TableListBySection" onclick="GetTableDetailsToAssign()"
                         placeholder="Table">
@@ -159,7 +162,8 @@
             <input type="hidden" id="waitingTokenId" name="waitingId">
             <input type="hidden" name="NoOfPerson" id="NoOfPersons">
             <div class="modal-footer d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary" onclick="AssignTableSubmitButton()" id="assignBtton" disabled>Assign</button>
+                <button type="submit" class="btn btn-primary" onclick="AssignTableSubmitButton()" id="assignBtton"
+                    disabled>Assign</button>
                 <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
                     onclick="emptyAssignModal()">No</button>
             </div>
@@ -224,15 +228,15 @@
         }
 
         //GetSuggestionsusingEmail
-        function GetSuggestionsusingEmail(tag){
-            var datalist=  document.getElementById("emailDatalist");
+        function GetSuggestionsusingEmail(tag) {
+            var datalist = document.getElementById("emailDatalist");
             $.ajax({
-                url:"GetCustomerByEmail",
-                type:"GET",
-                data:{Email:tag.value},
-                success:function(data){
+                url: "GetCustomerByEmail",
+                type: "GET",
+                data: { Email: tag.value },
+                success: function (data) {
                     console.log(data);
-                   datalist.innerHTML = "";
+                    datalist.innerHTML = "";
                     data.forEach((x) => {
                         datalist.innerHTML += `<option value="${x.email}" data-name="${x.customerName}" data-number="${x.phoneno}">Name: ${x.customerName}, Mobile Number: ${x.phoneno}</option>`
                     })
@@ -241,11 +245,11 @@
         }
 
         //FillValuesBySuggestion
-        function FillValuesBySuggestion(tag){
-            var datalist= $("#emailDatalist option[value='"+tag.value+"']");
-            if(datalist.length){
-                document.getElementById("Name").value= datalist.data("name");
-                document.getElementById("mobile").value= datalist.data("number");
+        function FillValuesBySuggestion(tag) {
+            var datalist = $("#emailDatalist option[value='" + tag.value + "']");
+            if (datalist.length) {
+                document.getElementById("Name").value = datalist.data("name");
+                document.getElementById("mobile").value = datalist.data("number");
             }
             document.getElementById("emailDatalist").innerHTML = "";
 
@@ -328,7 +332,7 @@
 
 
         //Assign Table modal get
-        function getSectionListAndTables(sectionID, waitingId,noOfPerson) {
+        function getSectionListAndTables(sectionID, waitingId, noOfPerson) {
             $.ajax({
                 url: "/TableAndSection/GetSectionList",
                 type: "GET",
@@ -360,7 +364,7 @@
                     console.log("tables:")
                     console.log(data);
                     @* data.foreach *@
-                        if (data.length == 0) {
+                            if (data.length == 0) {
                         document.getElementById("DisplayTables").innerHTML += `<div>No Table Available In this Section</div>`
                     }
                     else {
@@ -375,24 +379,24 @@
         }
 
         //enable disable assign button
-        function EnableAssignButton(tag){
-            var flag =false;
+        function EnableAssignButton(tag) {
+            var flag = false;
             var checkedclasses = document.getElementsByClassName("assignCheckbox");
-            for(i=0; i<checkedclasses.length; i++){
-                if(checkedclasses[i].checked){
-                    flag=true;
+            for (i = 0; i < checkedclasses.length; i++) {
+                if (checkedclasses[i].checked) {
+                    flag = true;
                     document.getElementById("assignBtton").removeAttribute("disabled");
                 }
             }
-            if(!flag){
-                document.getElementById("assignBtton").setAttribute("disabled","disabled");
+            if (!flag) {
+                document.getElementById("assignBtton").setAttribute("disabled", "disabled");
             }
         }
 
         //assign functionality
         function AssignTableSubmitButton() {
-            var flag=false;
-            var totalcapacity =0;
+            var flag = false;
+            var totalcapacity = 0;
             var classes = document.getElementsByClassName("assignCheckbox");
             for (i = 0; i < classes.length; i++) {
                 if (classes[i].checked) {
@@ -404,15 +408,15 @@
             var waitingId = document.getElementById("waitingTokenId").value;
             var sectionId = document.getElementById("sectionSelected").value;
             var noOfPerson = document.getElementById("NoOfPersons").value;
-            if(!flag){
+            if (!flag) {
                 errorToaster("Select Table First");
                 return;
             }
-            if(noOfPerson > totalcapacity){
+            if (noOfPerson > totalcapacity) {
                 errorToaster("Number of person is greater than Total capacity of selected Tables");
                 return;
             }
-            
+
             $.ajax({
                 url: "/OrderAppWaitingList/AssignTable",
                 type: "POST",
@@ -425,7 +429,13 @@
                     }
                     getAllSection();
                     getWaitingListBySection(0);
-
+                    var customerId = res.customerId;
+                    console.log("cust", customerId);
+                    var menubutton = document.getElementById("MenuButtonLayout")
+                    console.log(menubutton);
+                    menubutton.setAttribute("href", `/OrderAppMenu/OrderAppMenu?customerId=${customerId}`)
+                    console.log(menubutton)
+                    menubutton.click();
                     $(".btn-close").click();
                     emptyAssignModal();
                 }
@@ -449,13 +459,13 @@
         }
 
         //EmptyDetailsofAddModal
-        function EmptyDetailsofAddModal(){
-            document.getElementById("emailDatalist").value= "";
-            document.getElementById("emailDatalist").innerHTML= "";
+        function EmptyDetailsofAddModal() {
+            document.getElementById("emailDatalist").value = "";
+            document.getElementById("emailDatalist").innerHTML = "";
             document.getElementById("Name").value = "";
-            document.getElementById("Email").value ="";
-            document.getElementById("mobile").value="";
-            document.getElementById("persons").value="";
+            document.getElementById("Email").value = "";
+            document.getElementById("mobile").value = "";
+            document.getElementById("persons").value = "";
             getSectionList();
 
         }

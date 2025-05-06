@@ -18,10 +18,9 @@ else
                     <div
                         class="fs-4 fw-bold @(table.Status == "Assigned" || table.Status == "Occupied" ? "text-success" : table.Status == "Running" ? "text-primary" : "text-secondary")">
                         @table.TableName</div>
-                    @if (table.TotalSpend > 0)
-                    {
+                   
                         <div>₹@table.TotalSpend</div>
-                    }
+                    
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center mx-1">
@@ -35,12 +34,17 @@ else
                         @if (table.Status == "Available")
                         {
                             <div>0</div>
+                            <div>min</div>
+
                         }
                         else
                         {
-                            <div>@table.Totaltime</div>
+                            <div>
+                                <span class="d-none">@table.Totaltime</span>
+                                <span class="runningTimeSpanTag"></span>
+                            </div>
                         }
-                        <div>min</div>
+                        @* <div>min</div> *@
                     </div>
                 </div>
             </div>
@@ -72,8 +76,39 @@ else
                 console.log(menubutton)
                 menubutton.click();
             }
+            
         })
     }
+
+    function orderTimeDisplay() {
+        var orderdateclass = document.getElementsByClassName("runningTimeSpanTag");
+        for (i = 0; i < orderdateclass.length; i++) {
+            var curdate = Date.now();
+            var orderDate = orderdateclass[i].previousElementSibling.innerHTML;
+            var Dateonly = orderDate.split(" ");
+            var orderday = Dateonly[0].split("-")[0];
+            var ordermonth = Dateonly[0].split("-")[1];
+            var orderyear = Dateonly[0].split("-")[2];
+            var orderDateformated = orderyear + "-" + ordermonth + "-" + orderday + "T" + Dateonly[1];
+            var orderDateToCal = new Date(orderDateformated);
+            var timeDiff = curdate - orderDateToCal;
+
+            const timeDiffday = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
+            const daysms = timeDiff % (24 * 60 * 60 * 1000);
+            const timeDiffHours = Math.floor(daysms / (60 * 60 * 1000));
+            const hoursms = timeDiff % (60 * 60 * 1000);
+            const timeDiffMins = Math.floor(hoursms / (60 * 1000));
+            const minutesms = timeDiff % (60 * 1000);
+            const timeDiffSecs = Math.floor(minutesms / 1000);
+            orderdateclass[i].innerHTML = timeDiffday + " days " + timeDiffHours + " hours <br>" + timeDiffMins + " min " + timeDiffSecs + " sec"
+        }
+    }
+
+    var displaytime = window.setInterval(function () {
+        orderTimeDisplay()
+    }, -1000);
+
+    
 
 </script>
 @{

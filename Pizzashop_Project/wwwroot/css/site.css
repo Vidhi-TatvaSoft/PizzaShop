@@ -435,3 +435,24 @@ form i{
   background-color: #b2daec !important;
   border: 1px solid #0084C3;
 }
+
+/* dashboard */
+/* .dashboard-average-waiting-time:hover{
+  background-color: #f7e2dc;
+}
+
+.dashboard-average-order-value:hover{
+  background-color: rgb(216, 216, 248);
+}
+
+.dashboard-total-orders:hover{
+  background-color: rgb(248, 226, 248);
+}
+
+.dashboard-total-sales:hover{
+  background-color: rgb(222, 247, 222);
+}*/
+
+.dashboard-average-waiting-time, .dashboard-average-order-value, .dashboard-total-orders, .dashboard-total-sales{
+  background-color: white;
+} 

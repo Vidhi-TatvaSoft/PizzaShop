@@ -1,26 +1,87 @@
 @using DAL.ViewModels;
 @model List<WaitingTokenDetailsViewModel>
 
-@if(Model.Count == 0 ){
+@if (Model.Count == 0)
+{
     <tr>
-    <td colspan="8"><div class="fs-4 fw-semibold text-danger text-center">Waiting list is empty</div></td>
+        <td colspan="8">
+            <div class="fs-4 fw-semibold text-danger text-center">Waiting list is empty</div>
+        </td>
     </tr>
 }
 @foreach (var item in Model)
 {
     <tr>
         <td class="text-nowrap text-secondary">@item.waitingId</td>
-        <td class="text-nowrap text-secondary">@item.CreatedAt</td>
+        <td class="text-nowrap text-secondary ">
+            <span class="FormatedCreatedAt"></span>
+            <span class="d-none WLCreatedAt">@item.CreatedAt </span>
+        </td>
         <td class="text-nowrap text-secondary">0hr 4min</td>
         <td class="text-nowrap text-secondary">@item.Name</td>
         <td class="text-nowrap text-secondary">@item.NoOfPerson</td>
         <td class="text-nowrap text-secondary">@item.Mobileno</td>
         <td class="text-nowrap text-secondary">@item.Email</td>
         <td class="text-center text-nowrap text-secondary">
-            <i class="fa-solid fa-pen  me-2 mt-2" data-bs-toggle="modal" data-bs-target="#AddWaitingTOkenModal" onclick="UpdateWaitingListModal(@item.waitingId)"></i>
+            <i class="fa-solid fa-pen  me-2 mt-2" data-bs-toggle="modal" data-bs-target="#AddWaitingTOkenModal"
+                onclick="UpdateWaitingListModal(@item.waitingId)"></i>
             <i class="fa-solid fa-trash-can  me-2" data-bs-toggle="modal" data-bs-target="#DeleteWaitingTokenModal"></i>
-            <i class="fa-solid fa-user-plus" data-bs-toggle="modal" data-bs-target="#AssignTableToWaitingModal" onclick="getSectionListAndTables(@item.SectionID,@item.waitingId,@item.NoOfPerson)"></i>
+            <i class="fa-solid fa-user-plus" data-bs-toggle="modal" data-bs-target="#AssignTableToWaitingModal"
+                onclick="getSectionListAndTables(@item.SectionID,@item.waitingId,@item.NoOfPerson)"></i>
         </td>
 
     </tr>
 }
+
+
+<script>
+    function dhm(milliseconds) {
+        const date = new Date(milliseconds);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = date.toLocaleString('en-US', { month: 'short' });
+        const year = date.getFullYear();
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        return `${day} ${month}, ${year} ${hours}:${minutes} ${ampm}`;
+    }
+
+    function dhm2(ms) {
+        const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+        const daysms = ms % (24 * 60 * 60 * 1000);
+        const hours = Math.floor(daysms / (60 * 60 * 1000));
+        const hoursms = ms % (60 * 60 * 1000);
+        const minutes = Math.floor(hoursms / (60 * 1000));
+        const minutesms = ms % (60 * 1000);
+        const sec = Math.floor(minutesms / 1000);
+        return hours + " hours " + minutes + " min ";
+    }
+
+    function DisplayTimeInWaitingList() {
+        var WaitingList = document.getElementsByClassName("WLCreatedAt");
+            for (i = 0; i < WaitingList.length; i++) {
+            CurrentDate = new Date()
+            DateString = WaitingList[i].innerHTML.split(" ")
+            DateStringDate = DateString[0].split("-")[0]
+            DateStringMonth = DateString[0].split("-")[1]
+            DateString = DateStringMonth + "-" + DateStringDate + "-" + DateString[0].split("-")[2] + " " + DateString[1]
+            CardDate = Date.parse(DateString)
+            CurrentDate = CurrentDate.getTime()
+            DifferenceInMS = CurrentDate - CardDate
+            WaitingList[i].previousElementSibling.innerText = dhm(CardDate)
+            WaitingList[i].parentElement.nextElementSibling.innerText = dhm2(DifferenceInMS)
+        }
+    }
+
+    // Interval of 1 min
+    var intervalId = window.setInterval(function () {
+        DisplayTimeInWaitingList()
+    }, 60000);
+
+
+    $(document).ready(function(){
+        DisplayTimeInWaitingList();
+    })
+</script>

@@ -48,8 +48,8 @@ public class OrderAppTableService : IOrderAppTableService
                             TableName = t.TableName,
                             Capacity = t.Capacity,
                             Status = t.Status,
-                            Totaltime = (DateTime)t.CreatedAt,
-                            TotalSpend = 0
+                            Totaltime = t.Status == "Running" || t.Status == "Assigned"?  (t.Assigntables.FirstOrDefault(x=> !x.Isdelete)  != null? (DateTime)t.Assigntables.FirstOrDefault(x=> !x.Isdelete).CreatedAt : DateTime.Now):DateTime.Now,
+                            TotalSpend = t.Status == "Running"? (t.Assigntables.FirstOrDefault(x => !x.Isdelete) != null ? (t.Assigntables.FirstOrDefault(x => !x.Isdelete).Order != null? t.Assigntables.FirstOrDefault(x => !x.Isdelete).Order.TotalAmount : 0) :0):0
                         }).ToList();
         if (tableListBySection != null)
         {

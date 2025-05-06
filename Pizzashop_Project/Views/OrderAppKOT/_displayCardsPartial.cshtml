@@ -8,8 +8,8 @@
     {
         if (card.ItemsInOneCard.Sum(x => x.Quantity) != 0)
         {
-            <div class="KOTCardClass rounded mt-3 me-3 border-1 col-auto" onclick="getDetailsOfCardForOrder(this)" data-id="@card.OrderId"
-                style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
+            <div class="KOTCardClass rounded mt-3 me-3 border-1 col-auto" onclick="getDetailsOfCardForOrder(this)"
+                data-id="@card.OrderId" style="min-width: fit-content;  border-style: dashed ; border-color: rgb(196, 199, 198);">
                 <div class="d-flex" style="background-color: rgb(221, 218, 218);">
                     <div class="text-primary fw-bold"># @card.OrderId</div>
                     <div class="text-secondary ms-5"><i class="fa-solid fa-clock"></i>
@@ -22,7 +22,10 @@
                         {
                             <span> @card.tableList[i].TableName</span>
                             if (i < card.tableList.Count - 1)
-                            {<span>,</span>}
+                            {
+
+                                <span>,</span>
+                            }
                         }
                     </li>
                 </div>
@@ -101,7 +104,7 @@
 <script>
     var catid;
     var status;
-    var pageNumber=parseInt(document.getElementById("PageNumberset").value);
+    var pageNumber = parseInt(document.getElementById("PageNumberset").value);
     var pageSize = 5;
     var orderdetailIdarr = [];
     var itemquantityarr = [];
@@ -117,9 +120,6 @@
             var orderyear = Dateonly[0].split("-")[2];
             var orderDateformated = orderyear + "-" + ordermonth + "-" + orderday + "T" + Dateonly[1];
             var orderDateToCal = new Date(orderDateformated);
-            @* console.log(curdate);
-            console.log(orderDateToCal);
-            console.log(curdate - orderDateToCal); *@
             var timeDiff = curdate - orderDateToCal;
 
             const timeDiffday = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
@@ -154,7 +154,7 @@
             $.ajax({
                 url: "/OrderAppKOT/GetDetailsOfCardForSelectedOrder",
                 type: "GET",
-                data: { orderid, catid, status ,pageNumber,pageSize},
+                data: { orderid, catid, status, pageNumber, pageSize },
                 success: function (data) {
                     $("#modalTableDetails").html(data);
                 }
@@ -177,7 +177,7 @@
         if (tag.nextElementSibling.innerHTML < 0) {
             tag.nextElementSibling.innerHTML = 0;
         }
-        if(tag.nextElementSibling.innerHTML == 0){
+        if (tag.nextElementSibling.innerHTML == 0) {
             tag.parentElement.parentElement.parentElement.previousElementSibling.children[0].checked = false;
         }
     }
@@ -187,7 +187,7 @@
         if (tag.previousElementSibling.innerHTML > itemquantity) {
             tag.previousElementSibling.innerHTML = itemquantity;
         }
-        if(tag.previousElementSibling.innerHTML > 0){
+        if (tag.previousElementSibling.innerHTML > 0) {
             tag.parentElement.parentElement.parentElement.previousElementSibling.children[0].checked = true;
         }
 
@@ -216,9 +216,9 @@
                     errorToaster(res.text);
                 }
                 $(".btn-close").click();
-                if(status == "InProgress"){
+                if (status == "InProgress") {
                     $("#inProgressDiv").click();
-                }else{
+                } else {
                     $("#readyDiv").click();
                 }
             }

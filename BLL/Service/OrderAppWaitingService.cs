@@ -74,6 +74,8 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     #region GetWaitingTokenDetailsById
     public WaitingTokenDetailsViewModel GetWaitingTokenDetailsById(long waitingId)
     {
+        try{
+       
         WaitingTokenDetailsViewModel? tokendetails = _context.Waitinglists.Include(x => x.Customer).Include(x => x.Section)
                                                     .Where(x => x.WaitingId == waitingId && x.Isassign == false && x.Isdelete == false)
                                                     .Select(w => new WaitingTokenDetailsViewModel
@@ -81,12 +83,16 @@ public class OrderAppWaitingService : IOrderAppWaitingService
                                                         waitingId = waitingId,
                                                         Email = w.Customer.Email,
                                                         Name = w.Customer.CustomerName,
-                                                        Mobileno = (int)w.Customer.Phoneno,
+                                                        Mobileno = (long)w.Customer.Phoneno,
                                                         NoOfPerson = w.NoOfPerson,
                                                         SectionID = w.SectionId,
                                                         SectionName = w.Section.SectionName
                                                     }).ToList().FirstOrDefault();
         return tokendetails == null ? null : tokendetails;
+             
+        }catch(Exception e){
+            return null;
+        }
     }
     #endregion
 
@@ -120,6 +126,12 @@ public class OrderAppWaitingService : IOrderAppWaitingService
                     SectionId = t.SectionId,
                     Capacity = t.Capacity,
                 }).ToList();
+    }
+    #endregion
+
+    #region GetCustmerIdByEmail
+    public long GetCustmerIdByEmail(long waitingId){
+        return  _context.Waitinglists.FirstOrDefault(x => x.WaitingId == waitingId && !x.Isassign && !x.Isdelete).CustomerId;
     }
     #endregion
 
