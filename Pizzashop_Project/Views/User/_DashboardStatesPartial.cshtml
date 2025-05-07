@@ -2,7 +2,7 @@
 @model DashboardViewModel
 
 <div class="row gx-4 col-12">
-    <div class="col-12 mt-2 col-sm-6 col-lg-3">
+    <div class="col-12 mt-2 col-md-6 col-xl-3">
         <div class="shadow rounded p-2 h-100 dashboard-total-sales">
             <div class="d-flex justify-content-end ">
                 <div class="p-2 d-flex justify-content-center align-items-center dashboard-icon-outer rounded-circle"
@@ -20,10 +20,10 @@
                 <span>Total Sales</span>
             </div>
         </div>
- 
+
     </div>
- 
-    <div class="col-12 mt-2 col-sm-6 col-lg-3">
+
+    <div class="col-12 mt-2 col-md-6 col-xl-3">
         <div class="shadow rounded p-2 h-100 dashboard-total-orders">
             <div class="d-flex justify-content-end">
                 <div class="p-2 d-flex justify-content-center align-items-center dashboard-icon-outer rounded-circle"
@@ -42,8 +42,8 @@
             </div>
         </div>
     </div>
- 
-    <div class="col-12 mt-2 col-sm-6 col-lg-3 ">
+
+    <div class="col-12 mt-2 col-md-6 col-xl-3 ">
         <div class="shadow rounded p-2 h-100 dashboard-average-order-value">
             <div class="d-flex justify-content-end">
                 <div class="p-2 d-flex justify-content-center align-items-center dashboard-icon-outer rounded-circle"
@@ -55,15 +55,15 @@
                 </div>
             </div>
             <div class="d-flex justify-content-start">
-                <h2 class="text-left"> &#x20b9; @Model.AverageOrderAmount</h2>
+                <h2 class="text-left"> &#x20b9; @Model.AvgOrderAmount</h2>
             </div>
             <div class="d-flex justify-content-start">
                 <span>Avg Order Value</span>
             </div>
         </div>
     </div>
- 
-    <div class="col-12 mt-2 col-sm-6 col-lg-3">
+
+    <div class="col-12 mt-2 col-md-6 col-xl-3">
         <div class="shadow rounded p-2 h-100 dashboard-average-waiting-time">
             <div class="d-flex justify-content-end">
                 <div class="p-2 d-flex justify-content-center align-items-center dashboard-icon-outer rounded-circle"
@@ -75,28 +75,29 @@
                 </div>
             </div>
             <div class="d-flex justify-content-start">
-                <h2 class="text-left" id="AverageWaitingTime">00</h2>
+                <h2 class="text-left" id="AverageWaitingTime">@Model.AvgWaitingTime</h2>
             </div>
             <div class="d-flex justify-content-start">
                 <span>Avg Waiting Time</span>
             </div>
         </div>
- 
+
     </div>
 </div>
- 
+
 <div class="row gx-4 mt-4 col-12">
     <div class="col-xl-6 col-lg-12 mt-2">
         <div class="d-flex flex-column bg-white shadow rounded p-2 h-100">
             <div class="d-flex justify-content-between">
                 <h4>Revenue</h4>
-                <button class="btn"
+                @* <button class="btn"
                     style="background-color: rgba(75, 192, 192, 0.2); border-color: rgba(75, 192, 192, 1);"
                     onclick="ChangerGraphType(`Revenue`)" data-bs-toggle="tooltip" data-bs-placement="left"
-                    title="Change graph type"><i class="fa-solid fa-arrows-rotate" style="color: rgba(75, 192, 192, 1);"></i></button>
+                    title="Change graph type"><i class="fa-solid fa-arrows-rotate"
+                        style="color: rgba(75, 192, 192, 1);"></i></button> *@
             </div>
             <div class="chart" style="height: 100%;">
-                <canvas id="myChart"></canvas>
+                <canvas id="ChartId"></canvas>
             </div>
         </div>
     </div>
@@ -104,80 +105,109 @@
         <div class="d-flex flex-column bg-white shadow rounded p-2 h-100">
             <div class="d-flex justify-content-between">
                 <h4>Customer Growth</h4>
-                <button class="btn"
+                @* <button class="btn"
                     style="background-color: rgba(54, 162, 235, 0.2); border-color: rgba(54, 162, 235, 1);"
                     onclick="ChangerGraphType(`Customer`)" data-bs-toggle="tooltip" data-bs-placement="left"
-                    title="Change graph type"><i class="fa-solid fa-arrows-rotate" style="color: rgba(54, 162, 235, 1);"></i></button>
+                    title="Change graph type"><i class="fa-solid fa-arrows-rotate"
+                        style="color: rgba(54, 162, 235, 1);"></i></button> *@
             </div>
             <div class="chart" style="height: 100%;">
-                <canvas id="customerGrowthChart"></canvas>
+                <canvas id="customerChart"></canvas>
             </div>
         </div>
     </div>
 </div>
- 
+
 <div class="row d-flex mt-4 col-12">
-    <div class="col-12 mt-2 col-sm-6 col-lg-4">
-        <div class="d-flex flex-column bg-white shadow rounded p-2 h-100">
+    <div class="col-12 mt-2 col-md-6 col-xl-3" >
+        <div class="d-flex flex-column bg-white shadow rounded p-2 h-100" style="min-height: 157px;">
             <h4>Top Selling Items</h4>
-            <div class="d-flex justify-content-start align-items-center">
-                <span>#1</span>
-                &nbsp;&nbsp;
-                <img src="~/@Model.DashboardItemList![0].ItemImage" alt="" height="30" width="30">
-                &nbsp;&nbsp;
-                <div class="d-flex flex-column">
-                    <span>@Model.DashboardItemList[0].ItemName</span>
-                    <div class="d-flex">
-                        @Model.DashboardItemList[0].NumberOfOrders Order(s)
+            @if (Model.DashboardItemList[0] != null)
+            {
+                <div class="d-flex justify-content-start align-items-center">
+                    <span>#1</span>
+                    &nbsp;&nbsp;
+                    <img src="@Model.DashboardItemList![0].ItemImage" alt="" height="30" width="30">
+                    &nbsp;&nbsp;
+                    <div class="d-flex flex-column">
+                        <span>@Model.DashboardItemList[0].ItemName</span>
+                        <div class="d-flex">
+                            @Model.DashboardItemList[0].NumberOfOrders Order(s)
+                        </div>
                     </div>
                 </div>
-            </div>
-            <hr>
-            <div class="d-flex justify-content-start align-items-center">
-                <span>#2</span>
-                &nbsp;&nbsp;
-                <img src="~/@Model.DashboardItemList[1].ItemImage" alt="" height="30" width="30">
-                &nbsp;&nbsp;
-                <div class="d-flex flex-column">
-                    <span>@Model.DashboardItemList[1].ItemName</span>
-                    <div class="d-flex">
-                        @Model.DashboardItemList[1].NumberOfOrders Order(s)
+                <hr>
+                if (Model.DashboardItemList[1] != null)
+                {
+                    <div class="d-flex justify-content-start align-items-center">
+                        <span>#2</span>
+                        &nbsp;&nbsp;
+                        <img src="@Model.DashboardItemList[1].ItemImage" alt="" height="30" width="30">
+                        &nbsp;&nbsp;
+                        <div class="d-flex flex-column">
+                            <span>@Model.DashboardItemList[1].ItemName</span>
+                            <div class="d-flex">
+                                @Model.DashboardItemList[1].NumberOfOrders Order(s)
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                }
+                else
+                {
+                    <div>No Items in Order Found</div>
+                }
+            }
+            else
+            {
+                <div>No Items in Order Found</div>
+            }
+
         </div>
     </div>
-    <div class="col-12 mt-2 col-sm-6 col-lg-4">
-        <div class="d-flex flex-column bg-white shadow rounded p-2">
+    <div class="col-12 mt-2 col-md-6 col-xl-3" >
+        <div class="d-flex flex-column bg-white shadow rounded p-2" style="min-height: 157px;">
             <h4>Least Selling Items</h4>
-            <div class="d-flex justify-content-start align-items-center">
-                <span>#1</span>
-                &nbsp;&nbsp;
-                <img src="~/@Model.DashboardItemList[2].ItemImage" alt="" height="30" width="30">
-                &nbsp;&nbsp;
-                <div class="d-flex flex-column">
-                    <span>@Model.DashboardItemList[2].ItemName</span>
-                    <div class="d-flex">
-                        @Model.DashboardItemList[2].NumberOfOrders Order(s)
+            @if (Model.DashboardItemList[2] != null)
+            {
+                <div class="d-flex justify-content-start align-items-center">
+                    <span>#1</span>
+                    &nbsp;&nbsp;
+                    <img src="@Model.DashboardItemList[2].ItemImage" alt="" height="30" width="30">
+                    &nbsp;&nbsp;
+                    <div class="d-flex flex-column">
+                        <span>@Model.DashboardItemList[2].ItemName</span>
+                        <div class="d-flex">
+                            @Model.DashboardItemList[2].NumberOfOrders Order(s)
+                        </div>
                     </div>
                 </div>
-            </div>
-            <hr>
-            <div class="d-flex justify-content-start align-items-center">
-                <span>#2</span>
-                &nbsp;&nbsp;
-                <img src="~/@Model.DashboardItemList![3].ItemImage" alt="" height="30" width="30">
-                &nbsp;&nbsp;
-                <div class="d-flex flex-column">
-                    <span>@Model.DashboardItemList[3].ItemName</span>
-                    <div class="d-flex">
-                        @Model.DashboardItemList[3].NumberOfOrders Order(s)
+                <hr>
+                if (Model.DashboardItemList[3] != null)
+                {
+                    <div class="d-flex justify-content-start align-items-center">
+                        <span>#2</span>
+                        &nbsp;&nbsp;
+                        <img src="@Model.DashboardItemList![3].ItemImage" alt="" height="30" width="30">
+                        &nbsp;&nbsp;
+                        <div class="d-flex flex-column">
+                            <span>@Model.DashboardItemList[3].ItemName</span>
+                            <div class="d-flex">
+                                @Model.DashboardItemList[3].NumberOfOrders Order(s)
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                }else{
+                    <div>No Items in Order Found</div>
+                }
+            }
+            else
+            {
+                <div>No Items in Order Found</div>
+            }
+
         </div>
     </div>
-    <div class="col-12 mt-2 col-sm-6 col-lg-4">
+    <div class="col-12 mt-2 col-md-6 col-xl-3">
         <div class="bg-white shadow rounded p-2  h-100 d-flex flex-column justify-content-between">
             <div class="d-flex justify-content-end">
                 <div class="p-2 d-flex justify-content-center align-items-center dashboard-icon-outer rounded-circle"
@@ -190,13 +220,35 @@
             </div>
             <div>
                 <div class="d-flex justify-content-start">
-                    <h2 class="text-left">00</h2>
+                    <h2 class="text-left">@Model.WaitingListCount</h2>
                 </div>
                 <div class="d-flex justify-content-start">
                     <span>Waiting List Count</span>
                 </div>
             </div>
- 
+
+        </div>
+    </div>
+    <div class="col-12 mt-2 col-md-6 col-xl-3">
+        <div class="bg-white shadow rounded p-2  h-100 d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-end">
+                <div class="p-2 d-flex justify-content-center align-items-center dashboard-icon-outer rounded-circle"
+                    style="border: 1px solid orange;">
+                    <div class="dashboard-icon d-flex justify-content-center align-items-center"
+                        style="background-color: orange;">
+                        <img src="~/images/icons/waiting-list.svg" height="20" width="20" alt="">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="d-flex justify-content-start">
+                    <h2 class="text-left">@Model.NewCustomerCount</h2>
+                </div>
+                <div class="d-flex justify-content-start">
+                    <span>New Customer Count</span>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

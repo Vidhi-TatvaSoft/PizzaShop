@@ -13,7 +13,7 @@ public partial class Customer
 
     public string? Email { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public long? CreatedBy { get; set; }
 

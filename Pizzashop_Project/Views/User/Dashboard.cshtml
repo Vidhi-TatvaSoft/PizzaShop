@@ -8,11 +8,13 @@
     <div class="d-flex justify-content-between align-items-center">
         <h3 class="custom-blue fw-bold m-2 col-auto">Dashboard</h3>
         <div class="col-3" style="padding-right: 12px;">
-            <select class="m-2 mt-3 mx-0 pe-0 p-2 w-100" onchange="ApplyStatsFilter(this)"
-                style="padding-top: 11px !important;">
-                <option value="All" selected>All time</option>
-                <option value="month">Current month</option>
-                <option value="custom">Custom date</option>
+            <select class="m-2 mt-3 mx-0 pe-0 p-2 w-100" id="TimePeriod" style="padding-top: 11px !important;" >
+                <option value="Today" selected>Today</option>
+                <option value="last7">Last 7 days</option>
+                <option value="last30">Last 30 days</option>
+                <option value="curentMonth">Current month</option>
+                <option value="custom" data-bs-toggle="modal" data-bs-target="#CustomDatedashboardModal">Custom Date</option>
+
             </select>
         </div>
     </div>
@@ -23,14 +25,49 @@
 
 </div>
 
+<!---------------------------modal---------------------------->
+<div id="CustomDatedashboardModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Customer date</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="customDatesFormId">
+                <div class="modal-body row">
+                    <div class="form-floating  col-6 ">
+                        <input type="date" id="startDate" class="form-control m-2 me-3 p-2 w-100 pe-0">
+                        <label class="ms-3 mt-1">From Date</label>
+
+                    </div>
+                    <div class="form-floating  col-6">
+                        <input type="date" id="endDate" class="form-control m-2 me-3 p-2 w-100 pe-0">
+                        <label class="ms-3 mt-1">To Date</label>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">save</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         var Labels = Array.from({ length: 31 }, (_, i) => i + 1)
-        var RevenueGrowthData = Array.from({ length: 31 }, (_, i) => i + 1)
-        var CustomerCountData = Array.from({ length: 31 }, (_, i) => i + 1)
+        var RevenueGrowthData 
+        var CustomerCountData
+        var timePeriod = $("#TimePeriod").val();
+        var startDate;
+        var endDate;
+
         $(document).ready(function () {
             var successMessage = '@TempData["SuccessMessage"]';
             var errorMessage = '@TempData["ErrorMessage"]';
@@ -47,10 +84,59 @@
                 toastr.error(errorMessage);
             }
             fillDashboardDetails()
+
+            $("#TimePeriod").on("change", function () {
+                timePeriod = $(this).val();
+                console.log(timePeriod)
+                if (timePeriod == "custom") {
+                    $("#CustomDatedashboardModal").modal("toggle");
+                }
+                else {
+                    EnptyDateFormFiels();
+                    startDate = "";
+                    endDate = "";
+                    fillDashboardDetails(timePeriod,startDate,endDate);
+                }
+            });
+
+            $("#customDatesFormId").on("submit", function (e) {
+                e.preventDefault();
+                startDate = $("#startDate").val();
+                endDate = $("#endDate").val();
+                fillDashboardDetails(timePeriod,startDate,endDate);
+                $('.btn-close').click();
+            });
+
+            $("#startDate").on("change", function () {
+                startDate = document.getElementById("startDate").value;
+                endDateInput = document.getElementById("endDate").value;
+
+                if (endDateInput == "") return
+                if (endDateInput.value < startDate) {
+                    errorToaster("To date should be greater than from date.Reset to date");
+                    document.getElementById("endDate").value = "";
+                }
+            })
+
+            $("#endDate").on("change", function () {
+                startDate = document.getElementById("startDate").value;
+                endDate = document.getElementById("endDate").value;
+
+                if (endDate < startDate) {
+                    errorToaster("To date should be greater than from date.Reset to date");
+                    document.getElementById("endDate").value = "";
+                }
+            })
         });
 
+        function EnptyDateFormFiels() {
+            $("#startDate").val("");
+            $("#endDate").val("");
+        }
+
+        //show graph
         function ShowGraphs() {
-            var ctx = document.getElementById("myChart").getContext("2d");
+            var ctx = document.getElementById("ChartId").getContext("2d");
 
             // Revenue chart
             RevenueChart = new Chart(ctx, {
@@ -86,7 +172,7 @@
                 }
             });
 
-            var ctx2 = document.getElementById("customerGrowthChart").getContext("2d");
+            var ctx2 = document.getElementById("customerChart").getContext("2d");
 
             // Customer chart
             CustomerChart = new Chart(ctx2, {
@@ -125,20 +211,81 @@
 
         }
 
-        function fillDashboardDetails(){
+        //ajax call to fill dashboard details
+        function fillDashboardDetails(timePeriod = "", startDate = "", endDate = "") {
+            timePeriod = $("#TimePeriod").val();
             console.log("hello")
+             if (timePeriod == "curentMonth") {
+                Labels = Array.from({ length: 31 }, (_, i) => i + 1)
+            }
+            else if(timePeriod == "last7" ){
+                Labels = []
+                for(i=6;i>=0;i--){
+                    Labels.push(new Date(new Date().getTime() - i * 24 * 60 * 60 * 1000).getDate())
+                }
+            }else if(timePeriod == "last30"){
+                Labels = []
+                for(i=29;i>=0;i--){
+                    Labels.push(new Date(new Date().getTime() - i * 24 * 60 * 60 * 1000).getDate())
+                }
+            }
+            else if(timePeriod == "Today"){
+                Labels = []
+                for(i=0;i<=23;i++){
+                    Labels.push(`${i}:00`)
+                }
+            }
+            else {
+                Labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            }
+ 
             $.ajax({
-                url:"/User/GetDashboardDetailsPartial",
-                type:"GET",
-                data:{},
-                success:function(data){
-                    console.log(data);
+                url: "/User/GetDashboardDetailsPartial",
+                type: "GET",
+                data: { timePeriod, startDate,endDate },
+                success: function (data) {
+                    @* console.log(data); *@
                     $("#DashboardPartialView").html(data);
-                    ShowGraphs()
+                    ChangeGraphData(timePeriod,startDate,endDate);
+                    setTimeout((X)=>{
+                    ShowGraphs();
+                    },300)
                 }
             })
-        } 
+        }
 
+        //change graph data according to time period selected
+        function ChangeGraphData(timePeriod, startDate, endDate) {
+            if (timePeriod == "custom") {
+                if (startDate == "" || endDate == "") {
+                    Labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                }
+                else {
+                    var StartDateList = startDate.split("-")
+                    var EndDateList = endDate.split("-")
+                    if (StartDateList[1] == EndDateList[1]) {
+                        Labels = Array.from({ length: 31 }, (_, i) => i + 1)
+                    }
+                    else {
+                        var DemoLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                        Labels = []
+                        for (i = parseInt(StartDateList[1]) - 1; i <= parseInt(EndDateList[1]) - 1; i++) {
+                            Labels.push(DemoLabels[i])
+                        }
+                    }
+                }
+            }
+            $.ajax({
+                url: "/User/GetRevenueAndCustomer",
+                type: "GET",
+                data: { timePeriod: timePeriod, startDate: startDate, endDate: endDate },
+                success: function (response) {
+                    RevenueGrowthData = response.revenueList
+                    CustomerCountData = response.customerList
+                }
+            })
+        }
+ 
     </script>
 
 }

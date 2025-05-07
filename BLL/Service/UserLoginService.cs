@@ -53,6 +53,7 @@ namespace BLL.Services
 
         public string VerifyUserPassword(UserLoginViewModel userlogin)
         {
+            try{
             var user = _context.Userlogins.Include(x => x.Users).FirstOrDefault(e => e.Email == userlogin.Email);
 
             if (user != null)
@@ -66,6 +67,9 @@ namespace BLL.Services
                 return null;
             }
             return null;
+            }catch(Exception e){
+                return null;
+            }
         }
 
         public bool CheckEmailExist(string email)

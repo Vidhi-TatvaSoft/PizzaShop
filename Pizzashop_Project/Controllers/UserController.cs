@@ -40,9 +40,14 @@ public class UserController : Controller
         return View();
     }
 
-    public IActionResult GetDashboardDetailsPartial(){
-        DashboardViewModel dashboardvm= _dashboardService.GetDashboardDetails();
+    public IActionResult GetDashboardDetailsPartial(string timePeriod = "Today", string startDate = "", string endDate=""){
+        DashboardViewModel dashboardvm= _dashboardService.GetDashboardDetails(timePeriod,startDate,endDate);
         return PartialView("_DashboardStatesPartial",dashboardvm);
+    }
+
+    public IActionResult GetRevenueAndCustomer(string timePeriod = "Today", string startDate = "", string endDate=""){
+        var (RevenueList, CustomerList) = _dashboardService.GetRevenueAndustomer(timePeriod,startDate, endDate);
+        return Json(new { RevenueList, CustomerList });
     }
 
     #region Userlist
