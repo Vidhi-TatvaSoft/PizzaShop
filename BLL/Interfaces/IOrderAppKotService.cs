@@ -10,5 +10,5 @@ public interface IOrderAppKotService
 
    Task<KotCardDetailsViewModel> GetDetailsOfCardForSelectedOrder(long orderid,long catid,string status,int pageNumber = 1, int pageSize = 5);
 
-   Task<bool> ChangeItemQuantitiesAndStatus(int[] orderdetailIdarr , int [] itemquantityarr, string status);
+   Task<bool> ChangeItemQuantitiesAndStatus(int[] orderdetailIdarr , int [] itemquantityarr, string status, long userId);
 }

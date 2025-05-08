@@ -479,7 +479,7 @@ public class OrderService : IOrderService
             orderdetailsvm.SectionName = orderdetails.Order.Section.SectionName;
 
             //items
-            orderdetailsvm.ItemsInOrderDetails = _context.Orderdetails.Include(x => x.Item).Where(x => x.OrderId == orderId)
+            orderdetailsvm.ItemsInOrderDetails = _context.Orderdetails.Include(x => x.Item).Where(x => x.OrderId == orderId && !x.Isdelete)
             .Select(x => new ItemForInvoiceOrderDetails
             {
                 ItemId = x.ItemId,
@@ -488,14 +488,14 @@ public class OrderService : IOrderService
                 Rate = x.Item.Rate,
                 TotalOfItemByQuantity = Math.Round(x.Quantity * x.Item.Rate, 2),
                 ModifiersInItemInvoice = _context.Modifierorders.Include(m => m.Modifier).Include(m => m.Orderdetail).ThenInclude(m => m.Item)
-                .Where(m => m.Orderdetail.ItemId == x.ItemId && !m.Isdelete )
+                .Where(m => m.Orderdetail.OrderdetailId == x.OrderdetailId && !m.Isdelete )
                 .Select(m => new ModifiersForItemInInvoiceOrderDetails
                 {
                     ModifierId = m.ModifierId,
                     ModifierName = m.Modifier.ModifierName,
                     Rate = m.Modifier.Rate,
-                    Quantity = m.ModifierQuantity,
-                    TotalOfModifierByQuantity = Math.Round(m.ModifierQuantity * (decimal)m.Modifier.Rate, 2),
+                    Quantity = x.Quantity,
+                    TotalOfModifierByQuantity = Math.Round(x.Quantity * (decimal)m.Modifier.Rate, 2),
                 }).ToList()
             }).ToList();
             orderdetailsvm.SubTotalAmountOfOrder = Math.Round((decimal)orderdetailsvm.ItemsInOrderDetails
@@ -509,31 +509,39 @@ public class OrderService : IOrderService
             orderdetailsvm.TaxesInOrderDetails = new List<TaxForOrderDetailsInvoice>();
             foreach (var tax in taxedetails)
             {
-
-                if (tax.Tax.TaxType == "Fix Amount")
-                {
-                    orderdetailsvm.TaxesInOrderDetails.Add(
+                orderdetailsvm.TaxesInOrderDetails.Add(
                         new TaxForOrderDetailsInvoice
                         {
-                            TaxId = tax.Tax.TaxId,
-                            TaxName = tax.Tax.TaxName,
-                            TaxType = tax.Tax.TaxType,
-                            TaxValue = tax.Tax.TaxValue
+                            // TaxId = tax.Tax.TaxId,
+                            TaxName = tax.TaxName,
+                            // TaxType = tax.Tax.TaxType,
+                            TaxValue = tax.TaxAmount
                         }
                     );
-                }
-                else
-                {
-                    orderdetailsvm.TaxesInOrderDetails.Add(
-                        new TaxForOrderDetailsInvoice
-                        {
-                            TaxId = tax.Tax.TaxId,
-                            TaxName = tax.Tax.TaxName,
-                            TaxType = tax.Tax.TaxType,
-                            TaxValue = Math.Round(tax.Tax.TaxValue / 100 * orderdetailsvm.SubTotalAmountOfOrder, 2)
-                        }
-                    );
-                }
+                // if (tax.Tax.TaxType == "Fix Amount")
+                // {
+                //     orderdetailsvm.TaxesInOrderDetails.Add(
+                //         new TaxForOrderDetailsInvoice
+                //         {
+                //             TaxId = tax.Tax.TaxId,
+                //             TaxName = tax.TaxName,
+                //             TaxType = tax.Tax.TaxType,
+                //             TaxValue = tax.Tax.TaxValue
+                //         }
+                //     );
+                // }
+                // else
+                // {
+                //     orderdetailsvm.TaxesInOrderDetails.Add(
+                //         new TaxForOrderDetailsInvoice
+                //         {
+                //             TaxId = tax.Tax.TaxId,
+                //             TaxName = tax.Tax.TaxName,
+                //             TaxType = tax.Tax.TaxType,
+                //             TaxValue = Math.Round(tax.Tax.TaxValue / 100 * orderdetailsvm.SubTotalAmountOfOrder, 2)
+                //         }
+                //     );
+                // }
             }
 
             orderdetailsvm.TotalAmountOfOrderMain = orderdetailsvm.SubTotalAmountOfOrder + orderdetailsvm.TaxesInOrderDetails.Sum(x => x.TaxValue);

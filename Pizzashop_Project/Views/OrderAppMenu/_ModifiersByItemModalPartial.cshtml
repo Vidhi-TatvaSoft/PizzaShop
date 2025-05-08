@@ -21,7 +21,7 @@
                     <div><span class="fs-5 fw-bold text-secondary">@modgrp.ModifierGrpName</span><span>&nbsp; You can choose Minumun -
                             @modgrp.min & Maximun
                             - @modgrp.max Options</span></div>
-                    <div class="d-flex flex-wrap gap-2">
+                    <div class="d-flex flex-wrap gap-2 ModifierGroup" data-modgrpid="@modgrp.ModifierGrpId" data-minid="@modgrp.min">
 
                         @foreach (var modifier in modgrp.modifierList)
                         {

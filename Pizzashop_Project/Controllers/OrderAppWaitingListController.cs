@@ -74,6 +74,12 @@ public class OrderAppWaitingListController : Controller
             {
                 return Json(new { success = false, text = "This Customer is Already present In waitingList" });
             }
+        }else{
+            bool IsCustomerPresentInWaitingUpdate = await _orderAppTableService.IsCustomerPresentInWaitingUpdate(waitingListvm.waitingTokenDetailsViewModel.Email,waitingListvm.waitingTokenDetailsViewModel.waitingId);
+            if (IsCustomerPresentInWaitingUpdate)
+            {
+                return Json(new { success = false, text = "This Customer is Already present In waitingList" });
+            }
         }
 
         string token = Request.Cookies["AuthToken"];
@@ -118,8 +124,10 @@ public class OrderAppWaitingListController : Controller
     #region DeleteWaitingToken
     [HttpPost]
     public async Task<IActionResult> DeleteWaitingToken(long waitingId){
-
-        bool waitingTokenDeleteStatus =await _orderAppWaitingService.DeleteWaitingToken(waitingId);
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        bool waitingTokenDeleteStatus =await _orderAppWaitingService.DeleteWaitingToken(waitingId,userId);
         if(waitingTokenDeleteStatus){
             return Json(new { success = true, text = "Waiting Token Deleted Successfully" });
         }

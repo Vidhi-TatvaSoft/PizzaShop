@@ -99,12 +99,14 @@ public class OrderAppWaitingService : IOrderAppWaitingService
 
 
     #region DeleteWaitingToken
-    public async Task<bool> DeleteWaitingToken(long waitingId)
+    public async Task<bool> DeleteWaitingToken(long waitingId, long userId)
     {
         Waitinglist? waitingList = await _context.Waitinglists.FirstOrDefaultAsync(x => x.WaitingId == waitingId && x.Isassign == false && x.Isdelete == false);
         if (waitingList != null)
         {
             waitingList.Isdelete = true;
+            waitingList.ModifiedAt = DateTime.Now;
+            waitingList.ModifiedBy=userId;
             _context.Update(waitingList);
             await _context.SaveChangesAsync();
             return true;
@@ -153,6 +155,7 @@ public class OrderAppWaitingService : IOrderAppWaitingService
                 assigntable.CustomerId = waitinglist.CustomerId;
                 assigntable.TableId = TableIds[i];
                 assigntable.NoOfPerson = waitinglist.NoOfPerson;
+                assigntable.CreatedBy=userId;
                 await _context.AddAsync(assigntable);
 
                 Table table = await _context.Tables.FirstOrDefaultAsync(x => x.TableId == TableIds[i] && x.Isdelete == false);

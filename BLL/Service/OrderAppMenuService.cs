@@ -61,12 +61,14 @@ public class OrderAppMenuService : IOrderAppMenuService
     #endregion
 
     #region FavouriteItemManage
-    public async Task<bool> FavouriteItemManage(long itemId, bool IsFavourite)
+    public async Task<bool> FavouriteItemManage(long itemId, bool IsFavourite, long userId)
     {
         Item? item = await _context.Items.FirstOrDefaultAsync(x => x.ItemId == itemId && x.Isdelete == false);
         if (item != null)
         {
             item.IsFavourite = IsFavourite;
+            item.ModifiedAt=DateTime.Now;
+            item.ModifiedBy = userId;
             _context.Items.Update(item);
             await _context.SaveChangesAsync();
             return true;
@@ -154,7 +156,7 @@ public class OrderAppMenuService : IOrderAppMenuService
         {
             var data = _context.Customers.Include(x => x.Assigntables).ThenInclude(x => x.Table).ThenInclude(x => x.Section)
                         .Include(x => x.Assigntables).ThenInclude(x => x.Order).ThenInclude(x => x.Orderdetails)
-                        .Where(x => x.CustomerId == customerId && x.Isdelete == false).ToList();
+                        .Where(x => x.CustomerId == customerId && x.Isdelete == false ).ToList();
 
             // var orderid = data != null ? data.Select(x => x).FirstOrDefault() : 0;
             var orderId = _context.Assigntables.FirstOrDefault(x => x.CustomerId == customerId && !x.Isdelete)?.OrderId ?? 0;
@@ -405,7 +407,7 @@ public class OrderAppMenuService : IOrderAppMenuService
     #endregion
 
     #region SaveOrderDetails
-    public async Task<OrderDetaIlsInvoiceViewModel> SaveOrderDetails(List<int> orderDetailId, OrderDetaIlsInvoiceViewModel orderDetailsvm)
+    public async Task<OrderDetaIlsInvoiceViewModel> SaveOrderDetails(List<int> orderDetailId, OrderDetaIlsInvoiceViewModel orderDetailsvm, long userId)
     {
         try
         {
@@ -422,6 +424,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                 order.SectionId = orderDetailsvm.SectionId;
                 order.TableId = orderDetailsvm.tableList[0].TableId;
                 order.OtherInstruction = orderDetailsvm.OtherInstruction;
+                order.CreatedBy=userId;
                 await _context.AddAsync(order);
                 await _context.SaveChangesAsync();
 
@@ -432,6 +435,8 @@ public class OrderAppMenuService : IOrderAppMenuService
                 Order? order = await _context.Orders.FirstOrDefaultAsync(x => x.OrderId == orderDetailsvm.OrderId && !x.Isdelete);
                 order.TotalAmount = orderDetailsvm.TotalAmountOfOrderMain;
                 order.OtherInstruction = orderDetailsvm.OtherInstruction;
+                order.ModifiedAt=DateTime.Now;
+                order.ModifiedBy=userId;
                 _context.Update(order);
                 await _context.SaveChangesAsync();
             }
@@ -444,6 +449,8 @@ public class OrderAppMenuService : IOrderAppMenuService
                 {
                     orderdetail.Quantity = orderDetailsvm.ItemsInOrderDetails[i].Quantity;
                     orderdetail.ExtraInstruction = orderDetailsvm.ItemsInOrderDetails[i].SpecialInstruction;
+                    orderdetail.ModifiedAt=DateTime.Now;
+                    orderdetail.ModifiedBy=userId;
                     _context.Update(orderdetail);
                     // await _context.SaveChangesAsync();
 
@@ -451,6 +458,8 @@ public class OrderAppMenuService : IOrderAppMenuService
                     modorder.ForEach((mo) =>
                     {
                         mo.ModifierQuantity = orderDetailsvm.ItemsInOrderDetails[i].Quantity;
+                        mo.ModifiedAt=DateTime.Now;
+                        mo.ModifiedBy=userId;
                         _context.Update(mo);
                     });
                     // await _context.SaveChangesAsync();
@@ -464,6 +473,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                 orderdetail.Quantity = orderDetailsvm.ItemsInOrderDetails[i].Quantity;
                 orderdetail.ExtraInstruction = orderDetailsvm.ItemsInOrderDetails[i].SpecialInstruction;
                 orderdetail.Status = orderDetailsvm.ItemsInOrderDetails[i].status;
+                orderdetail.CreatedBy=userId;
                 await _context.AddAsync(orderdetail);
                 await _context.SaveChangesAsync();
                 orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId = orderdetail.OrderdetailId;
@@ -473,6 +483,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                     modorder.OrderdetailId = orderdetail.OrderdetailId;
                     modorder.ModifierId = orderDetailsvm.ItemsInOrderDetails[i].ModifiersInItemInvoice[j].ModifierId;
                     modorder.ModifierQuantity = orderDetailsvm.ItemsInOrderDetails[i].Quantity;
+                    modorder.CreatedBy=userId;
                     await _context.AddAsync(modorder);
                 }
             }
@@ -485,12 +496,16 @@ public class OrderAppMenuService : IOrderAppMenuService
                 if (assigntable != null)
                 {
                     assigntable.OrderId = orderDetailsvm.OrderId;
+                    assigntable.ModifiedAt=DateTime.Now;
+                    assigntable.ModifiedBy=userId;
                     _context.Update(assigntable);
                 }
                 DAL.Models.Table? table = await _context.Tables.FirstOrDefaultAsync(t => t.TableId == orderDetailsvm.tableList[i].TableId && !t.Isdelete);
                 if (table != null)
                 {
                     table.Status = "Running";
+                    table.ModifiedAt=DateTime.Now;
+                    table.ModifiedBy = userId;
                     _context.Update(table);
                 }
             }
@@ -502,6 +517,7 @@ public class OrderAppMenuService : IOrderAppMenuService
             {
                 Kot kot = new();
                 kot.OrderId = orderDetailsvm.OrderId;
+                kot.CreatedBy=userId;
                 await _context.AddAsync(kot);
             }
 
@@ -550,6 +566,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                 invoice.InvoiceNo = "#DOM" + DateTime.Now.ToString("yyyyMMddHHmmss");
                 invoice.OrderId = orderDetailsvm.OrderId;
                 invoice.CustomerId = orderDetailsvm.CustomerId;
+                invoice.CreatedBy=userId;
                 await _context.AddAsync(invoice);
                 await _context.SaveChangesAsync();
                 orderDetailsvm.InvoiceId = invoice.InvoiceId;
@@ -565,7 +582,7 @@ public class OrderAppMenuService : IOrderAppMenuService
     #endregion
 
     #region SaveRatings
-    public async Task<long> SaveRatings(long customerId, int foodreview, int serviceReview, int ambienceReview, string reviewtext)
+    public async Task<long> SaveRatings(long customerId, int foodreview, int serviceReview, int ambienceReview, string reviewtext, long userId)
     {
         Rating? ratings = await _context.Ratings.FirstOrDefaultAsync(r => r.Food == foodreview && r.Ambience == ambienceReview && r.Service == serviceReview && r.Review == reviewtext && r.Isdelete == false);
         long ratingId;
@@ -577,6 +594,7 @@ public class OrderAppMenuService : IOrderAppMenuService
             rating.Ambience = ambienceReview;
             rating.Service = serviceReview;
             rating.Review = reviewtext;
+            rating.CreatedBy = userId;
             await _context.Ratings.AddAsync(rating);
             await _context.SaveChangesAsync();
             ratingId = rating.RatingId;
@@ -588,7 +606,7 @@ public class OrderAppMenuService : IOrderAppMenuService
     #endregion
 
     #region CompleteOrder
-    public async Task<OrderDetaIlsInvoiceViewModel> CompleteOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm, long paymentmethodId)
+    public async Task<OrderDetaIlsInvoiceViewModel> CompleteOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm, long paymentmethodId, long userId)
     {
         try
         {
@@ -600,6 +618,8 @@ public class OrderAppMenuService : IOrderAppMenuService
             order.PaymentmethodId = paymentmethodId;
             order.Status = "Completed";
             order.PaymentstatusId = 2;
+            order.ModifiedAt = DateTime.Now;
+            order.ModifiedBy=userId;
             _context.Update(order);
             await _context.SaveChangesAsync();
 
@@ -608,6 +628,8 @@ public class OrderAppMenuService : IOrderAppMenuService
             {
                 Orderdetail? orderdetail = await _context.Orderdetails.FirstOrDefaultAsync(x => x.OrderdetailId == orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId && !x.Isdelete);
                 orderdetail.Status = "Completed";
+                orderdetail.ModifiedAt=DateTime.Now;
+                orderdetail.ModifiedBy=userId;
                 _context.Update(orderdetail);
 
             }
@@ -617,6 +639,8 @@ public class OrderAppMenuService : IOrderAppMenuService
             for (int i = 0; i < assigntable.Count; i++)
             {
                 assigntable[i].Isdelete = true;
+                assigntable[i].ModifiedAt=DateTime.Now;
+                assigntable[i].ModifiedBy=userId;
                 _context.Update(assigntable[i]);
             }
 
@@ -625,6 +649,8 @@ public class OrderAppMenuService : IOrderAppMenuService
             {
                 DAL.Models.Table? table = await _context.Tables.FirstOrDefaultAsync(t => t.TableId == orderDetailsvm.tableList[i].TableId && !t.Isdelete);
                 table.Status = "Available";
+                table.ModifiedAt = DateTime.Now;
+                table.ModifiedBy=userId;
                 _context.Update(table);
             }
 
@@ -671,6 +697,7 @@ public class OrderAppMenuService : IOrderAppMenuService
     #region IsAnyItemReady
     public bool IsAnyItemReady(OrderDetaIlsInvoiceViewModel orderDetailsvm)
     {
+        if(orderDetailsvm.OrderId ==0){return false;}
         for (int i = 0; i < orderDetailsvm.ItemsInOrderDetails.Count; i++)
         {
             if (orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId != 0)
@@ -699,7 +726,7 @@ public class OrderAppMenuService : IOrderAppMenuService
     #endregion
 
     #region CancelOrder
-    public async Task<bool> CancelOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm)
+    public async Task<bool> CancelOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm, long userId)
     {
         try
         {
@@ -715,6 +742,8 @@ public class OrderAppMenuService : IOrderAppMenuService
                 Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderDetailsvm.OrderId && !o.Isdelete);
                 order.Status = "Cancelled";
                 order.TotalAmount = 0;
+                order.ModifiedAt=DateTime.Now;
+                order.ModifiedBy=userId;
                 // order.OtherInstruction = null;
                 _context.Update(order);
 
@@ -722,17 +751,21 @@ public class OrderAppMenuService : IOrderAppMenuService
                 foreach (var kot in kotList)
                 {
                     kot.Isdelete = true;
+                    kot.ModifiedAt=DateTime.Now;
+                    kot.ModifiedBy=userId;
                     _context.Update(kot);
                 }
             }
 
-            for (int i = 0; i < orderDetailsvm.ItemsInOrderDetails.Count; i++)
+            for (int i = 0; i < (orderDetailsvm.ItemsInOrderDetails == null ? 0 : orderDetailsvm.ItemsInOrderDetails.Count); i++)
             {
                 if (orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId != 0)
                 {
                     Orderdetail? orderdetail = await _context.Orderdetails.FirstOrDefaultAsync(od => od.OrderdetailId == orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId && !od.Isdelete);
                     // orderdetail.Isdelete = true;
                     orderdetail.Status = "Cancelled";
+                    orderdetail.ModifiedAt = DateTime.Now;
+                    orderdetail.ModifiedBy=userId;
                     _context.Update(orderdetail);
 
                     // List<Modifierorder> modifierorderList = _context.Modifierorders.Where(mo => mo.OrderdetailId == orderDetailsvm.ItemsInOrderDetails[i].OrderDetailId && !mo.Isdelete).ToList();
@@ -748,10 +781,14 @@ public class OrderAppMenuService : IOrderAppMenuService
             foreach (var table in assigntableList)
             {
                 table.Isdelete = true;
+                table.ModifiedAt=DateTime.Now;
+                table.ModifiedBy=userId;
                 _context.Update(table);
 
                 DAL.Models.Table? table1 = await _context.Tables.FirstOrDefaultAsync(t => t.TableId == table.TableId && !t.Isdelete);
                 table1.Status = "Available";
+                table1.ModifiedAt=DateTime.Now;
+                table1.ModifiedBy=userId;
                 _context.Update(table1);
 
             }

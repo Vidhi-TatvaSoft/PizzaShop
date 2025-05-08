@@ -149,6 +149,7 @@
         var IsOrderCompleted = false;
         var isAllItemSaved = false;
         var paymentmethodId = 1;
+        var isOrderdAnything = false;
 
 
         function toggleSidebarCategory() {
@@ -297,7 +298,7 @@
         //backend order items save in array
         function FillAlreadySavedDataInArray(orderDetails) {
             orderDetailsModel = orderDetails;
-
+            isOrderdAnything = orderDetailsModel.orderId == 0 ? false : true;
             var AllItems = [];
             AllItemsArray = [];
             AllItems = orderDetails.itemsInOrderDetails;
@@ -314,28 +315,36 @@
                     item.unshift(parseInt(AllItems[i].itemId));
 
                     AllItemsArray.push(item);
-                    @* ItemQuantityArr.push(parseInt(AllItems[i].quantity)) *@
-                                                                            }
+                }
             }
             if (itemQuantityUpdateflag) {
                 fillItemQuantity();
                 itemQuantityUpdateflag = false;
             }
-            @* if (IsOrderCompleted) {
-                console.log("order completed")
-                document.getElementById("SaveButtonId").setAttribute("disabled", "disabled")
-                document.getElementById("CompleteButtonId").setAttribute("disabled", "disabled")
-                document.getElementById("cancelButtonId").setAttribute("disabled", "disabled");
-            } *@
-                            if (isAllItemSaved) {
-                document.getElementById("SaveButtonId").setAttribute("disabled", "disabled");
+            if (isOrderdAnything) {
+                document.getElementById("cancelButtonId").removeAttribute("disabled");
                 document.getElementById("CompleteButtonId").removeAttribute("disabled");
                 document.getElementById("generateInvoiceButton").removeAttribute("disabled")
+                if (isAllItemSaved) {
+                    document.getElementById("SaveButtonId").setAttribute("disabled", "disabled");
+                    document.getElementById("CompleteButtonId").removeAttribute("disabled");
+                    document.getElementById("generateInvoiceButton").removeAttribute("disabled")
+                } else {
+                    document.getElementById("SaveButtonId").removeAttribute("disabled");
+                    document.getElementById("CompleteButtonId").setAttribute("disabled", "disabled")
+                    document.getElementById("generateInvoiceButton").setAttribute("disabled", "disabled");
+                }
             } else {
-                document.getElementById("SaveButtonId").removeAttribute("disabled");
+                document.getElementById("cancelButtonId").setAttribute("disabled", "disabled");
                 document.getElementById("CompleteButtonId").setAttribute("disabled", "disabled")
                 document.getElementById("generateInvoiceButton").setAttribute("disabled", "disabled");
+                if(orderDetails.itemsInOrderDetails == null){
+                    document.getElementById("SaveButtonId").setAttribute("disabled", "disabled");
+                }
             }
+
+
+
         }
 
         //fuction to fill itemQuantityarr when page loads
@@ -354,9 +363,30 @@
 
         //Add item by menu without save button click
         function AddItemModifierToList() {
+            var AllValid = true;
             if (!IsOrderCompleted) {
+                $(".ModifierGroup").each(function () {
+                    var modGrpId = $(this).data("modgrpid");
+                    var MinModifier = $(this).data("minid");
+                    console.log(modGrpId, "modgr");
+                    console.log(MinModifier, "min")
+
+                    var selectedClass = document.getElementsByClassName(`modifierSelected-${modGrpId}`);
+                    console.log(selectedClass, "selectedClass");
+                    var count = selectedClass.length;
+                    console.log(count, "count")
+                    if (count < MinModifier) {
+                        errorToaster(`You have to select Minimun ${MinModifier} Modifiers`)
+                        AllValid = false;
+                    }
+                });
+
+                if (!AllValid) {
+                    return;
+                }
                 isAllItemSaved = false;
                 var selectedModifiers = document.getElementsByClassName("modifierSelected");
+
                 var itemId = document.getElementById("itemIdForOrderDetails").value;
                 var item = [];
 
@@ -490,6 +520,7 @@
                         $("#OrderDetailsWithTablePartial").html(data);
                         itemQuantityUpdateflag = true;
                         isAllItemSaved = true;
+                        isOrderdAnything = true;
                         successToaster("Order Saved.")
                     }
                 })
@@ -594,7 +625,7 @@
 
                         let disposition = xhr.getResponseHeader('Content-Disposition');
                         @* console.log("disp", disposition); *@
-                                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                                                if (disposition && disposition.indexOf('attachment') !== -1) {
                             let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
                             if (matches && matches[1]) {
                                 filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
@@ -697,15 +728,9 @@
 
             categySelected(document.getElementsByClassName("category")[0], -1);
             GetOrderDetailsBycustId();
-            @* itemQuantityUpdateflag=true; *@
 
-                @* if (@((long)ViewData["customerId"] != 0)){
-                var orderDetails = @Html.Raw(Json.Serialize(Model));
-                console.log(orderDetails);
-                FillAlreadySavedDataInArray(orderDetails);
-            } *@
 
-                                                                                        })
+        })
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

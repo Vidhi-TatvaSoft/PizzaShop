@@ -23,12 +23,10 @@ public class WaitingTokenDetailsViewModel
     public long Mobileno{get;set;}
 
     [Required(ErrorMessage = "Number Of Person is required.")]
-    [Range(0, 999, ErrorMessage = "NumberOf Person Can not be greate than 1000")]
+    [Range(0, 999, ErrorMessage = "Number Of Person Can not be negative and can not be greate than 1000")]
     public int NoOfPerson{get;set;}
 
     public long SectionID{get; set;}
 
     public string SectionName{get;set;}
-
-
 }

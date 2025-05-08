@@ -8,7 +8,7 @@ public interface IOrderAppWaitingService
         public List<WaitingTokenDetailsViewModel> GetWaitingListBySection(long sectionId);
 
         public WaitingTokenDetailsViewModel GetWaitingTokenDetailsById(long waitingId);
-        Task<bool> DeleteWaitingToken(long waitingId);
+        Task<bool> DeleteWaitingToken(long waitingId,long userId);
 
         public List<TableViewModel> GetTableBySection(long sectionID);
 

@@ -7,7 +7,7 @@ public interface IOrderAppMenuService
     
     public List<ItemsViewModel> GetItemByCategory(long categoryId, string searchText = "");
 
-    Task<bool> FavouriteItemManage(long itemId, bool IsFavourite);
+    Task<bool> FavouriteItemManage(long itemId, bool IsFavourite, long userId);
 
     public List<ModifierGroupForItem> GetModifiersByItemId(long itemId);
 
@@ -19,14 +19,14 @@ public interface IOrderAppMenuService
 
     Task<OrderDetaIlsInvoiceViewModel> RemoveItemfromOrderDetailPartialView(List<List<int>> itemList, int count, OrderDetaIlsInvoiceViewModel orderDetails);
 
-    Task<OrderDetaIlsInvoiceViewModel> SaveOrderDetails(List<int> orderDetailId, OrderDetaIlsInvoiceViewModel orderDetails);
+    Task<OrderDetaIlsInvoiceViewModel> SaveOrderDetails(List<int> orderDetailId, OrderDetaIlsInvoiceViewModel orderDetails,long userId);
 
-    Task<long> SaveRatings(long customerId,int foodreview, int serviceReview,int ambienceReview, string reviewtext );
+    Task<long> SaveRatings(long customerId,int foodreview, int serviceReview,int ambienceReview, string reviewtext, long userId );
 
     Task<bool> IsAllItemReady(List<int> orderDetailId,OrderDetaIlsInvoiceViewModel orderDetailsvm);
 
-    Task<OrderDetaIlsInvoiceViewModel> CompleteOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm, long paymentmethodId);
+    Task<OrderDetaIlsInvoiceViewModel> CompleteOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm, long paymentmethodId, long userId);
     bool IsItemReady(long orderDetailId);
     bool IsAnyItemReady(OrderDetaIlsInvoiceViewModel orderDetailsvm);
-    Task<bool> CancelOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm);
+    Task<bool> CancelOrder(OrderDetaIlsInvoiceViewModel orderDetailsvm, long userId);
 }

@@ -65,7 +65,10 @@ public class OrderAppMenuController : Controller
     #region FavouriteItemManage
     public async Task<IActionResult> FavouriteItemManage(long itemId, bool IsFavourite)
     {
-        bool status = await _orderAppMenuService.FavouriteItemManage(itemId, IsFavourite);
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        bool status = await _orderAppMenuService.FavouriteItemManage(itemId, IsFavourite,userId);
         if (status)
         {
             if (IsFavourite)
@@ -140,9 +143,12 @@ public class OrderAppMenuController : Controller
     #region SaveOrderDetails
     public async Task<IActionResult> SaveOrderDetails(string orderDetailIds, string orderDetails)
     {
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         List<int>? orderDetailId = JsonConvert.DeserializeObject<List<int>>(orderDetailIds);
         OrderDetaIlsInvoiceViewModel? orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
-        OrderDetaIlsInvoiceViewModel orderDetailsvm = await _orderAppMenuService.SaveOrderDetails(orderDetailId, orderDetailvm);
+        OrderDetaIlsInvoiceViewModel orderDetailsvm = await _orderAppMenuService.SaveOrderDetails(orderDetailId, orderDetailvm,userId);
 
         return PartialView("_MenuItemsWithOrderDetails", orderDetailsvm);
     }
@@ -151,7 +157,10 @@ public class OrderAppMenuController : Controller
     #region SaveRatings
     public async Task<IActionResult> SaveRatings(long customerId, int foodreview, int serviceReview, int ambienceReview, string reviewtext)
     {
-        long ratingId = await _orderAppMenuService.SaveRatings(customerId, foodreview, serviceReview, ambienceReview, reviewtext);
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
+        long ratingId = await _orderAppMenuService.SaveRatings(customerId, foodreview, serviceReview, ambienceReview, reviewtext,userId);
         return Json(ratingId);
     }
     #endregion
@@ -159,8 +168,11 @@ public class OrderAppMenuController : Controller
     #region CompleteOrder
     public async Task<IActionResult> CompleteOrder(string orderDetails, long paymentmethodId)
     {
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         OrderDetaIlsInvoiceViewModel? orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
-        OrderDetaIlsInvoiceViewModel orderDetailsvm = await _orderAppMenuService.CompleteOrder(orderDetailvm, paymentmethodId);
+        OrderDetaIlsInvoiceViewModel orderDetailsvm = await _orderAppMenuService.CompleteOrder(orderDetailvm, paymentmethodId, userId);
         return PartialView("_MenuItemsWithOrderDetails", orderDetailsvm);
     }
     #endregion
@@ -204,8 +216,11 @@ public class OrderAppMenuController : Controller
 
     #region CancelOrder
     public async Task<IActionResult> CancelOrder(string orderDetails){
+        string token = Request.Cookies["AuthToken"];
+        var userData = _userService.getUserFromEmail(token);
+        long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
          OrderDetaIlsInvoiceViewModel? orderDetailvm = JsonConvert.DeserializeObject<OrderDetaIlsInvoiceViewModel>(orderDetails);
-        return  Json(await _orderAppMenuService.CancelOrder(orderDetailvm));
+        return  Json(await _orderAppMenuService.CancelOrder(orderDetailvm, userId));
     }
     #endregion
 }

@@ -76,7 +76,7 @@
                     data += `<input type="hidden" value="${status}" id="statusSet">`;
                     data += `<input type="hidden" value="${pageNumber}" id="PageNumberset">`;
                     $("#allCardsMainDiv").html(data);
-                    totalRecords = document.getElementById("totalcount").value;
+                    totalRecords = document.getElementById("totalcount") == null? 0 :document.getElementById("totalcount").value;
                     @* console.log(totalRecords); *@
                         $("#left-arrow").prop("disabled", pageNumber === 1);
                     $("#right-arrow").prop("disabled", pageNumber * pageSize >= totalRecords);

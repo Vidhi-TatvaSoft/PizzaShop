@@ -65,6 +65,12 @@ public class OrderAppTableService : IOrderAppTableService
     }
     #endregion
 
+    #region  IsCustomerPresentInWaiting
+    public async Task<bool> IsCustomerPresentInWaitingUpdate(string Email, long waitingId){
+        return await _context.Waitinglists.AnyAsync(x => x.Isassign == false && x.Isdelete == false && x.Customer.Email == Email && x.WaitingId != waitingId);
+    }
+    #endregion
+
     #region IsCustomerPresent
     public long IsCustomerPresent(string Email)
     {
@@ -112,6 +118,7 @@ public class OrderAppTableService : IOrderAppTableService
                 waitinglist.CustomerId = customerId;
                 waitinglist.NoOfPerson = waitingTokenvm.NoOfPerson;
                 waitinglist.SectionId = waitingTokenvm.SectionID;
+                waitinglist.CreatedBy = userId;
                 await _context.AddAsync(waitinglist);
                 await _context.SaveChangesAsync();
                 return true;
@@ -177,6 +184,7 @@ public class OrderAppTableService : IOrderAppTableService
                 assigntable.CustomerId = waitinglist.CustomerId;
                 assigntable.TableId = TableIds[i];
                 assigntable.NoOfPerson = waitinglist.NoOfPerson;
+                assigntable.CreatedBy=userId;
                 await _context.AddAsync(assigntable);
 
                 Table table = await _context.Tables.FirstOrDefaultAsync(x => x.TableId == TableIds[i] && x.Isdelete == false);
