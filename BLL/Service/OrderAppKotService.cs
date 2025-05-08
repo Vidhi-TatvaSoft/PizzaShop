@@ -216,31 +216,38 @@ public class OrderAppKotService : IOrderAppKotService
 
     public async Task<bool> ChangeItemQuantitiesAndStatus(int[] orderdetailIdarr, int[] itemquantityarr, string status, long userId)
     {
-        if (orderdetailIdarr.Length != itemquantityarr.Length) return false;
-
-        for (int i = 0; i < orderdetailIdarr.Length; i++)
+        try
         {
-            var orderDetail = _context.Orderdetails.FirstOrDefault(x => x.OrderdetailId == orderdetailIdarr[i] && x.Isdelete == false);
-            if (orderDetail != null)
+            if (orderdetailIdarr.Length != itemquantityarr.Length) return false;
+
+            for (int i = 0; i < orderdetailIdarr.Length; i++)
             {
-                if (status == "InProgress")
+                var orderDetail = _context.Orderdetails.FirstOrDefault(x => x.OrderdetailId == orderdetailIdarr[i] && x.Isdelete == false);
+                if (orderDetail != null)
                 {
-                    orderDetail.ReadyQuantity += itemquantityarr[i];
-                    orderDetail.ModifiedAt = DateTime.Now;
-                    orderDetail.ModifiedBy = userId;
-                    _context.Update(orderDetail);
-                }
-                else
-                {
-                    orderDetail.ReadyQuantity -= itemquantityarr[i];
-                    orderDetail.ModifiedAt = DateTime.Now;
-                    orderDetail.ModifiedBy = userId;
-                    _context.Update(orderDetail);
+                    if (status == "InProgress")
+                    {
+                        orderDetail.ReadyQuantity += itemquantityarr[i];
+                        orderDetail.ModifiedAt = DateTime.Now;
+                        orderDetail.ModifiedBy = userId;
+                        _context.Update(orderDetail);
+                    }
+                    else
+                    {
+                        orderDetail.ReadyQuantity -= itemquantityarr[i];
+                        orderDetail.ModifiedAt = DateTime.Now;
+                        orderDetail.ModifiedBy = userId;
+                        _context.Update(orderDetail);
+                    }
                 }
             }
+            await _context.SaveChangesAsync();
+            return true;
         }
-        await _context.SaveChangesAsync();
-        return true;
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
 }

@@ -113,11 +113,9 @@ public class OrderAppWaitingListController : Controller
     #region GetDetailsByWaitingId
     public IActionResult GetDetailsByWaitingId(long waitingId)
     {
-
         OrderAppWaitingListViewModel waitinglistvm = new();
         waitinglistvm.waitingTokenDetailsViewModel = _orderAppWaitingService.GetWaitingTokenDetailsById(waitingId);
         return Json(waitinglistvm.waitingTokenDetailsViewModel);
-
     }
     #endregion
 
@@ -155,7 +153,7 @@ public class OrderAppWaitingListController : Controller
         var customerId = _orderAppWaitingService.GetCustmerIdByEmail(waitingId);
         bool assignedStatus =await _orderAppWaitingService.AssignTable(tablesArr,waitingId,sectionId,userId);
 
-        if(assignedStatus){
+        if(assignedStatus && customerId!=0){
             
             return Json(new { success = true, text= "TableS assigned" ,customerId});
         }
