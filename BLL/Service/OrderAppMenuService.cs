@@ -166,7 +166,6 @@ public class OrderAppMenuService : IOrderAppMenuService
             OrderDetaIlsInvoiceViewModel orderDetailsvm = data
               .Select(o => new OrderDetaIlsInvoiceViewModel
               {
-                  //   OrderId = ((long)orderId == null) ? 0 : (long)orderId,
                   OrderId = orderId,
                   //table details
                   SectionId = AssignTable[0].Table.SectionId,
@@ -184,7 +183,8 @@ public class OrderAppMenuService : IOrderAppMenuService
                   CustomerName = o.CustomerName,
                   Phoneno = o.Phoneno,
                   Email = o.Email,
-                  NumberOfPerson = o.Assigntables.Sum(x => x.NoOfPerson)
+                  NumberOfPerson =AssignTable.Sum(x => x.NoOfPerson),
+                  
 
               }).ToList()[0];
             // //orderDetails
@@ -193,10 +193,14 @@ public class OrderAppMenuService : IOrderAppMenuService
                 var orderDetails = _context.Orderdetails.Include(x => x.Item)
                                 .Include(x => x.Modifierorders).ThenInclude(x => x.Modifier)
                                 .Where(x => x.OrderId == orderId && x.Isdelete == false).ToList();
-                orderDetailsvm.OtherInstruction = _context.Orders.FirstOrDefault(o => o.OrderId == orderId && !o.Isdelete).OtherInstruction;
-                orderDetailsvm.OrderStatus = _context.Orders.FirstOrDefault(o => o.OrderId == orderId && !o.Isdelete).Status;
+                orderDetailsvm.OtherInstruction = _context.Orders.FirstOrDefault(o => o.OrderId == orderId && !o.Isdelete)!.OtherInstruction!;
+                orderDetailsvm.OrderStatus = _context.Orders.FirstOrDefault(o => o.OrderId == orderId && !o.Isdelete)!.Status;
                 orderDetailsvm.InvoiceId = _context.Invoices.FirstOrDefault(i => i.OrderId == orderId && i.CustomerId == customerId) == null ?
-                                             0 : _context.Invoices.FirstOrDefault(i => i.OrderId == orderId && i.CustomerId == customerId).InvoiceId;
+                                             0 : _context.Invoices.FirstOrDefault(i => i.OrderId == orderId && i.CustomerId == customerId)!.InvoiceId;
+                orderDetailsvm.OrderDate = _context.Assigntables.FirstOrDefault(x => x.CustomerId == customerId && !x.Isdelete)!.Order!.OrderDate;
+                orderDetailsvm.ModifiedOn =  _context.Assigntables.FirstOrDefault(x => x.CustomerId == customerId && !x.Isdelete)!.Order!.ModifiedAt == null ? 
+                                                _context.Assigntables.FirstOrDefault(x => x.CustomerId == customerId && !x.Isdelete)!.Order!.OrderDate :
+                                                 (DateTime)_context.Assigntables.FirstOrDefault(x => x.CustomerId == customerId && !x.Isdelete)!.Order!.ModifiedAt!;
                 orderDetailsvm.ItemsInOrderDetails = orderDetails
                             .Select(i => new ItemForInvoiceOrderDetails
                             {
@@ -216,7 +220,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                                         ModifierName = m.Modifier.ModifierName,
                                         Rate = m.Modifier.Rate,
                                         Quantity = i.Quantity,
-                                        TotalOfModifierByQuantity = Math.Round(i.Quantity * (decimal)m.Modifier.Rate, 0),
+                                        TotalOfModifierByQuantity = Math.Round(i.Quantity * (decimal)m.Modifier.Rate!, 0),
                                     }).OrderBy(x => x.ModifierId).ToList()
 
                             }).ToList();

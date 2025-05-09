@@ -175,7 +175,7 @@ public class DashboardService : IDashboardService
                 }
                 break;
             case "last7":
-                for (int i = -1 * 7; i <= 0; i++)
+                for (int i = -1 * 6; i <= 0; i++)
                 {
                     CustomerList.Add(customers.Where(x => x.CreatedAt.Date == DateTime.Now.AddDays(i).Date).ToList().Count);
                     RevenueList.Add(orders.Where(x => x.CreatedAt.Date == DateTime.Now.AddDays(i).Date).Sum(x => x.TotalAmount));
@@ -183,7 +183,7 @@ public class DashboardService : IDashboardService
 
                 break;
             case "last30":
-                for (int i = -1 * 30; i <= 0; i++)
+                for (int i = -1 * 29; i <= 0; i++)
                 {
                     CustomerList.Add(customers.Where(x => x.CreatedAt.Date == DateTime.Now.AddDays(i).Date).ToList().Count);
                     RevenueList.Add(orders.Where(x => x.CreatedAt.Date == DateTime.Now.AddDays(i).Date).Sum(x => x.TotalAmount));

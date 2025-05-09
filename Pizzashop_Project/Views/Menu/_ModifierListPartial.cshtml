@@ -6,45 +6,51 @@
 @model PaginationViewModel<ModifierViewModel>
 
 @* @{bool ismassdelete = false;} *@
-@if (Model.Items.Count == 0)
+@if (Model != null)
 {
-    <tr>
-        <td colspan="6" class="text-center text-danger fw-bold">No Data Found</td>
-    </tr>
-}
-else
-{
-    @foreach (var modifier in Model.Items)
+    @if (Model.Items.Count == 0)
     {
         <tr>
-            <td><input type="checkbox" class="massDeleteClassModifier" data-checkid="@modifier.ModifierId"
-                    onclick="checkboxTickManageModifier()"> &nbsp; @modifier.ModifierName</td>
-            <td>@modifier.Unit</td>
-            <td class="">
-                @modifier.Rate
-            </td>
-            <td>
-                @modifier.Quantity
-            </td>
-            <td>
-                @if ((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded)
-                {
-                    <i class="fa-solid fa-pen w-25" data-bs-toggle="modal" data-bs-target="#exampleModal-updatemodifier"
-                        data-id="@modifier.ModifierId"></i>
-                    <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteModifier"
-                        data-id="@modifier.ModifierId" onclick="getIdForDeleteModifier(this)"></i>
-                } else if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
-                    <i class="fa-solid fa-pen w-25" data-bs-toggle="modal" data-bs-target="#exampleModal-updatemodifier"
-                        data-id="@modifier.ModifierId"></i>
-                    <i class="fa-solid fa-trash-can text-black-50"></i>
-                }else
-                {
-                    <i class="fa-solid fa-pen text-black-50 me-3 mt-2"></i>
-                    <i class="fa-solid fa-trash-can text-black-50"></i>
-                }
-            </td>
+            <td colspan="6" class="text-center text-danger fw-bold">No Data Found</td>
         </tr>
-
     }
+    else
+    {
+        @foreach (var modifier in Model.Items)
+        {
+            <tr>
+                <td><input type="checkbox" class="massDeleteClassModifier" data-checkid="@modifier.ModifierId"
+                        onclick="checkboxTickManageModifier()"> &nbsp; @modifier.ModifierName</td>
+                <td>@modifier.Unit</td>
+                <td class="">
+                    @modifier.Rate
+                </td>
+                <td>
+                    @modifier.Quantity
+                </td>
+                <td>
+                    @if ((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded)
+                    {
+                        <i class="fa-solid fa-pen w-25" data-bs-toggle="modal" data-bs-target="#exampleModal-updatemodifier"
+                            data-id="@modifier.ModifierId"></i>
+                        <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#exampleModal-deleteModifier"
+                            data-id="@modifier.ModifierId" onclick="getIdForDeleteModifier(this)"></i>
+                    }
+                    else if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded)
+                    {
+                        <i class="fa-solid fa-pen w-25" data-bs-toggle="modal" data-bs-target="#exampleModal-updatemodifier"
+                            data-id="@modifier.ModifierId"></i>
+                        <i class="fa-solid fa-trash-can text-black-50"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-pen text-black-50 me-3 mt-2"></i>
+                        <i class="fa-solid fa-trash-can text-black-50"></i>
+                    }
+                </td>
+            </tr>
+
+        }
+    }
+    <input type="hidden" value="@Model.TotalCount" id="totalCount-mod">
 }
-<input type="hidden" value="@Model.TotalCount" id="totalCount-mod">

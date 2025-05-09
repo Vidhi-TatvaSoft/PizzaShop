@@ -1,15 +1,15 @@
 @model DAL.ViewModels.OrderDetaIlsInvoiceViewModel
 
 @{
-    Layout=null;
+    Layout = null;
 }
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Summary</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
     <style>
         body {
             font-family: sans-serif;
@@ -17,45 +17,36 @@
             padding: 20px;
         }
 
-        .container{
+        .container {
             max-width: 900px;
             width: 100%;
             min-width: 320px;
             margin: 0 auto;
         }
 
-        .orderStatus{
-            background-color: #87f0e7;
-            color:#003b28
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        .details-div{
-            width: 100%;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        .cust-details-box{
-            width: 50%;
-            float: left;
-             box-sizing: border-box;
-            padding-right: 20px;
-            @* border: 1px solid #d1d9e6; 
-            border-radius: 5px; *@
+        .logo {
+            width: 70px;
+            display: inline-block;
+            vertical-align: middle;
         }
 
-        .table-details-box{
-            width: 50%;
-            float: right;
-             box-sizing: border-box;
-            padding-left: 20px;
-            @* border: 1px solid #d1d9e6;  *@
-            @* border-radius: 5px;" *@
+        .logo-text {
+            color: #0084C3;
+            font-size: 25px;
+            font-weight: 600;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
         }
 
         .details {
             width: 100%;
             margin-top: 20px;
-            margin-bottom: 30px;
         }
 
         .details-container {
@@ -69,7 +60,6 @@
             box-sizing: border-box;
             padding-right: 20px;
         }
-
         .order-details-box{
             width: 50%;
             float: right;
@@ -137,8 +127,6 @@
 
         .totals-container {
             width: 100%;
-            @* margin-right: 0px; *@
-            @* margin-left: 400px; *@
             margin-top: 20px;
         }
 
@@ -165,7 +153,7 @@
         .total-amount {
             font-size: 16px;
             font-weight: 600;
-            color: #0084C3;
+            color: #106db9;
         }
 
         .payment-info {
@@ -176,40 +164,44 @@
             margin: 5px 0;
         }
 
+        .thank-you {
+            color: #0084C3;
+            font-size: 18px;
+            font-weight: 600;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
     </style>
 </head>
-<body style="font-family: Arial, sans-serif; margin: 20px; padding: 0; ">
-    <div class="container">
-    <!-- Header Section -->
-    <div >
-         <h2 class="fs-5 fw-bold mb-3">Order Summary <span class="orderStatus">@Model.OrderStatus</span></h2>
-        <p style=""><strong>Invoice No.:</strong> #DOM1234567890</p>
-        <div >
-            <p><strong>Paid on:</strong> 00:00:00</p>
-            <p><strong>Placed on:</strong> @Model.OrderDate</p>
-            <p><strong>Modified on:</strong> 22-01-2025 11:47</p>
-            <p><strong>Order Duration:</strong> -</p>
-        </div>
-    </div>
 
-            <div class="details">
+<body>
+    <div class="container">
+        <!-- Start heading logo -->
+        <div class="logo-container">
+            <img src="@Url.Content("~/images/logos/pizzashop_logo.png")" alt="PIZZASHOP" class="logo" />
+            <p class="logo-text">PIZZASHOP</p>
+        </div>
+        <!-- End heading logo -->
+
+        <div class="details">
             <div class="details-container">
                 <!-- Customer details -->
                 <div class="cust-details-box">
                     <p class="details-title">Customer Details</p>
                     <div class="details-content">
                         <span style="font-size: 17px;"> <strong> Name: </strong>@Model.CustomerName</span>
-                        <span style="font-size: 17px;"><strong>Phone: </strong> @Model.Phoneno</span>
-                        <span style="font-size: 17px;"><strong>No. of Persons: </strong> @Model.NumberOfPerson</span>
-                        <span style="font-size: 17px;"><strong>Email: </strong> @Model.Email</span>
-
+                        <span style="font-size: 17px;"><strong>Phone:</strong> @Model.Phoneno</span>
                     </div>
                 </div>
 
-                <!-- Table details -->
+                <!-- Order details -->
                 <div class="order-details-box">
-                    <p class="details-title">Table Details</p>
+                    <p class="details-title">Order Details</p>
                     <div class="details-content">
+                        <span style="font-size: 17px;"><strong>Invoice Number:</strong> @Model.InvoiceNo</span>
+                        <span style="font-size: 17px;"><strong>Date:</strong> @Model.OrderDate</span>
+                        <span style="font-size: 17px;"><strong>Section:</strong> @Model.SectionName</span>
                         <span style="font-size: 17px;"><strong>Table:</strong> 
                         @for (int i = 0; i < Model.tableList.Count; i++){
                             <span  class="tableListDisplay" style="font-size: 17px;">@Model.tableList[i].TableName</span>
@@ -219,7 +211,6 @@
                             }
                         }
                         </span>
-                        <span style="font-size: 17px;"><strong>Section:</strong> @Model.SectionName</span>
                     </div>
                 </div>
             </div>
@@ -283,6 +274,7 @@
                 
                 </tbody>
             </table>
+            <!-- End ordered items table -->
 
             <br>
 
@@ -308,85 +300,20 @@
                 <span style="font-size: 20px;" class="total-amount">Total Amount Due:</span>
                 <span style="font-size: 20px;" class="total-amount">@Model.TotalAmountOfOrderMain</span>
             </div>
-      
+            <!-- End total amount -->
 
-
+            <!-- Payment Information -->
+            <div class="payment-info">
+                <p style="font-size: 20px;" class="details-title">Payment Information:</p>
+                <p style="font-size: 20px;">Payment Method: Pending</p>
+            </div>
+            <!-- End Payment Information -->
         </div>
 
-
-    @* <!-- Customer and Table Details Section -->
-    <div class="details-div" >
-        <!-- Customer Details -->
-        <div class="cust-details-box" >
-            <h3 style="margin-bottom: 30px;" >Customer Details</h3>
-            <p ><strong>Name:</strong> vidhi</p>
-            <p ><strong>Phone:</strong> 1234567890</p>
-            <p ><strong>No of Person:</strong> 8</p>
-            <p ><strong>Email:</strong> mailto:vidhi@gmail.com</p>
+        <div class="logo-container">
+            <p style="font-size: 20px;" class="thank-you">THANK YOU!</p>
         </div>
-
-        <!-- Table Details -->
-        <div class="table-details-box" >
-            <h3 style="margin-bottom: 30px;" >Table Details</h3>
-            <p ><strong>Table:</strong> t1 s1</p>
-            <p ><strong>Section:</strong> section 1</p>
-        </div>
-    </div>
-
-    <!-- Order Items Section -->
-    <div style="margin-top: 20px;">
-        <h3 style="margin: 0 0 10px 0; color: #333;">Order Items</h3>
-        <table style="width: 100%; border-collapse: collapse; background-color: #e6f0fa; border: 1px solid #d1d9e6;">
-            <thead>
-                <tr style="background-color: #d1d9e6;">
-                    <th style="padding: 10px; text-align: left; border: 1px solid #d1d9e6;">Sr.No</th>
-                    <th style="padding: 10px; text-align: left; border: 1px solid #d1d9e6;">Item</th>
-                    <th style="padding: 10px; text-align: left; border: 1px solid #d1d9e6;">Quantity</th>
-                    <th style="padding: 10px; text-align: left; border: 1px solid #d1d9e6;">Price</th>
-                    <th style="padding: 10px; text-align: left; border: 1px solid #d1d9e6;">Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="padding: 10px; border: 1px solid #d1d9e6;">1</td>
-                    <td style="padding: 10px; border: 1px solid #d1d9e6;">
-                        pizza<br>
-                        <ul style="margin: 5px 0 0 20px; padding: 0;">
-                            <li>capsicum</li>
-                            <li>onion</li>
-                        </ul>
-                    </td>
-                    <td style="padding: 10px; border: 1px solid #d1d9e6;">
-                        2<br>
-                        1
-                    </td>
-                    <td style="padding: 10px; border: 1px solid #d1d9e6;">
-                        200.00<br>
-                        20.00
-                    </td>
-                    <td style="padding: 10px; border: 1px solid #d1d9e6;">
-                        400.00<br>
-                        60.00
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 10px; border: 1px solid #d1d9e6;">2</td>
-                    <td style="padding: 10px; border: 1px solid #d1d9e6;">pasta</td>
-                    <td style="padding: 10px; border: 1px solid #d1d9e6;">1</td>
-                    <td style="padding: 10px; border: 1px solid #d1d9e6;">100.00</td>
-                    <td style="padding: 10px; border: 1px solid #d1d9e6;">100.00</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Total Section -->
-        <div style="text-align: right; margin-top: 10px;">
-            <p style="margin: 5px 0; color: #333;"><strong>Subtotal:</strong> 610.00</p>
-            <p style="margin: 5px 0; color: #333;"><strong>tax 1:</strong> ₹ 100</p>
-            <p style="margin: 5px 0; color: #333;"><strong>tax 2:</strong> ₹ 6.10</p>
-            <p style="margin: 5px 0; color: #333;"><strong>TOTAL:</strong> ₹ 716.10</p>
-        </div>
-    </div> *@
     </div>
 </body>
+
 </html>

@@ -8,32 +8,41 @@
 
 @{
     var flag2 = true;
-    @foreach (var sections in Model.sectionList)
+    @if (Model.sectionList.Count != 0)
     {
-        <div class="Sections-div d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag2 ? "active-category" : "")"
-            data-id="@sections.SectionId">
+        @foreach (var sections in Model.sectionList)
+        {
+            <div class="Sections-div d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag2 ? "active-category" : "")"
+                data-id="@sections.SectionId">
 
-            <div class="d-flex ">
-                <i class="fa-solid fa-receipt mt-1 "></i>
-                <p class="text-size-set mt-0  m-0 ms-3 ">@sections.SectionName</p>
+                <div class="d-flex " style="max-width: 150px;">
+                    <i class="fa-solid fa-receipt mt-1 "></i>
+                    <p class="text-size-set mt-0  m-0 ms-3 text-truncate" title="@sections.SectionName">@sections.SectionName</p>
+
+                </div>
+                <div>
+                    <input type="hidden" value="@sections.Description">
+                    @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.Delete")).Succeeded)
+                    {
+                        <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="UpdatesectionDetails(this);RemoveValidatoOnCancel()"
+                            data-id="@sections.SectionId" data-bs-toggle="modal" data-bs-target="#EditSectionModal"></i>
+                        <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
+                            onclick="DeleteSectionDetails(this)" data-bs-target="#DeleteSectionModal" data-id="@sections.SectionId"></i>
+                    }
+                    else if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.EditAdd")).Succeeded)
+                    {
+                        <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="UpdatesectionDetails(this);RemoveValidatoOnCancel()"
+                            data-id="@sections.SectionId" data-bs-toggle="modal" data-bs-target="#EditSectionModal"></i>
+                    }
+
+                </div>
 
             </div>
-            <div>
-                <input type="hidden" value="@sections.Description">
-                @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.Delete")).Succeeded)
-                {
-                    <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="UpdatesectionDetails(this);RemoveValidatoOnCancel()"
-                        data-id="@sections.SectionId" data-bs-toggle="modal" data-bs-target="#EditSectionModal"></i>
-                    <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
-                        onclick="DeleteSectionDetails(this)" data-bs-target="#DeleteSectionModal" data-id="@sections.SectionId"></i>
-                }else if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.EditAdd")).Succeeded){
-                     <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="UpdatesectionDetails(this);RemoveValidatoOnCancel()"
-                        data-id="@sections.SectionId" data-bs-toggle="modal" data-bs-target="#EditSectionModal"></i>
-                }
-
-            </div>
-
-        </div>
-        flag2 = false;
+            flag2 = false;
+        }
+    }
+    else
+    {
+        <div>No Section Found</div>  
     }
 }

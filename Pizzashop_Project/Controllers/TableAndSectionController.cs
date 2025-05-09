@@ -32,7 +32,7 @@ public class TableAndSectionController : Controller
 
         // categories----------------------
         tablesectionvm.sectionList = _tableSectionService.GetAllSections();
-        if (SectionID == null)
+        if (SectionID == null && tablesectionvm.sectionList.Count !=0)
         {
             ViewBag.selectedSection = tablesectionvm.sectionList[0].SectionId;
             tablesectionvm.TableList = _tableSectionService.GetTableBySection(tablesectionvm.sectionList[0].SectionId, search, pageNumber, pageSize);

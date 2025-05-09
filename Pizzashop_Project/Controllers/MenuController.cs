@@ -43,14 +43,14 @@ public class MenuController : Controller
 
         // categories----------------------
         menudata.categories = _menuService.GetAllCategories();
-        if (catID == null)
+        if (catID == null && menudata.categories.Count != 0)
         {
             menudata.Pagination = _menuService.GetItemsByCategory(menudata.categories[0].CategoryId, search, pageNumber, pageSize);
         }
 
         // modifiers---------------------------
         menudata.modifiergroupList = _menuService.GetAllModifierGroups();
-        if (modifierGrpID == null)
+        if (modifierGrpID == null && menudata.modifiergroupList.Count != 0)
         {
             menudata.Paginationmodifiers = _menuService.GetModifiersByModifierGrp(menudata.modifiergroupList[0].ModifierGrpId, search, pageNumber, pageSize);
         }

@@ -17,8 +17,8 @@ public class TableAndSectionService : ITableAndSection
 
     #region  Get All Section List
     public List<Section> GetAllSections(){
-        List<Section> allsections = _context.Sections.Where(x=>x.Isdelete==false).OrderBy(x=>x.SectionId).ToList();
-        return allsections;
+        List<Section> allsections = _context.Sections.Where(x=>x.Isdelete==false).OrderBy(x=>x.SectionId).ToList() ;
+        return allsections ;
     }
     #endregion
 

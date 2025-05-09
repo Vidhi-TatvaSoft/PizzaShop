@@ -252,6 +252,7 @@
         }
 
         //save customer details to db
+        $("#CustomerDetailUpdateFormID").on("submit")
         function SaveCustomerDetails() {
             var NoofPersons = document.getElementById("NoofPersons").value;
             var name = document.getElementById("Name").value;
@@ -288,6 +289,7 @@
             document.getElementById("Comment").value = orderDetailsModel.otherInstruction == null ? "" : orderDetailsModel.otherInstruction
         }
 
+        //save order instruction 
         function saveOrderInstruction() {
             orderDetailsModel.otherInstruction = document.getElementById("Comment").value;
             successToaster("orderInstruction Saved");
@@ -534,15 +536,18 @@
         function CompleteOrderValidation() {
             if (orderDetailsModel.itemsInOrderDetails == null) {
                 errorToaster("Please Order Something First");
+                $(".btn-close").click();
                 return;
             }
             for (i = 0; i < orderDetailsModel.itemsInOrderDetails.count; i++) {
                 if (orderDetailsModel.itemsInOrderDetails[i].status == "Pending") {
                     errorToaster("Please Save Orders First");
+                    $(".btn-close").click();
                     return;
                 }
             } if (!isAllItemSaved) {
                 errorToaster("Please Save Orders First")
+                $(".btn-close").click();
                 return;
             }
             $.ajax({
@@ -555,6 +560,7 @@
                     } else {
                         errorToaster("All items are not ready");
                     }
+                    $(".btn-close").click();
                 }
             })
         }
@@ -657,18 +663,20 @@
                         console.log(data)
                         itemQuantityUpdateflag = true;
                         errorToaster("The order item is ready, cannot cancel the order")
+
                     } else {
                         $.ajax({
                             url: "/OrderAppMenu/CancelOrder",
                             type: "POST",
                             data: { orderDetails: JSON.stringify(orderDetailsModel) },
                             success: function (data) {
-                                successToaster("Order Cancelled.")
                                 window.location.href = "/OrderAppTable/OrderAppTable";
+                                successToaster("Order Cancelled.")
                             }
                         })
 
                     }
+                    $(".btn-close").click();
                 }
             })
         }

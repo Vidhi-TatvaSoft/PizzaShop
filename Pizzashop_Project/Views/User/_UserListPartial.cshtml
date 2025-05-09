@@ -44,18 +44,37 @@ else
                 {
                     if ((await AuthorizationService.AuthorizeAsync(User, "User.Delete")).Succeeded)
                     {
-                        <a asp-action="EditUser" asp-route-Email="@item.Userlogin.Email" class="text-dark me-3 text-decoration-none ">
-                            <i class="fa-solid fa-pen mt-2"></i>
-                        </a>
-                        <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#delete-user"
-                            data-email="@item.Userlogin.Email"></i>
+
+                        if (User.IsInRole("Account Manager") && (item.Userlogin.Role.RoleName == "Account Manager"
+                        || item.Userlogin.Role.RoleName == "Admin"))
+                        {
+                            <i class="fa-solid fa-pen text-black-50 me-3 mt-2"></i>
+                            <i class="fa-solid fa-trash-can text-black-50"></i>
+                        }
+                        else
+                        {
+                            <a asp-action="EditUser" asp-route-Email="@item.Userlogin.Email" class="text-dark me-3 text-decoration-none ">
+                                <i class="fa-solid fa-pen mt-2"></i>
+                            </a>
+                            <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#delete-user"
+                                data-email="@item.Userlogin.Email"></i>
+                        }
                     }
                     else if ((await AuthorizationService.AuthorizeAsync(User, "User.EditAdd")).Succeeded)
                     {
-                        <a asp-action="EditUser" asp-route-Email="@item.Userlogin.Email" class="text-dark me-3 text-decoration-none ">
-                            <i class="fa-solid fa-pen mt-2"></i>
-                        </a>
-                        <i class="fa-solid fa-trash-can text-black-50"></i>
+                        if (User.IsInRole("Account Manager") && (item.Userlogin.Role.RoleName == "Account Manager"
+                        || item.Userlogin.Role.RoleName == "Admin"))
+                        {
+                            <i class="fa-solid fa-pen text-black-50 me-3 mt-2"></i>
+                            <i class="fa-solid fa-trash-can text-black-50"></i>
+                        }
+                        else
+                        {
+                            <a asp-action="EditUser" asp-route-Email="@item.Userlogin.Email" class="text-dark me-3 text-decoration-none ">
+                                <i class="fa-solid fa-pen mt-2"></i>
+                            </a>
+                            <i class="fa-solid fa-trash-can text-black-50"></i>
+                        }
                     }
                     else
                     {

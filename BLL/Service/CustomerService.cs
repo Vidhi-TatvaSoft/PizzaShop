@@ -454,4 +454,5 @@ public class CustomerService : ICustomerService
         return customer !=null? customer.CustomerId : 0;
     }
     #endregion
+
 }

@@ -24,108 +24,111 @@ public class OrderService : IOrderService
     #region Get al orders for pagination
     public PaginationViewModel<OrderViewModel> GetAllOrders(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5, string status = "", string timePeriod = "", string startDate = "", string endDate = "")
     {
-        try{
-       
-        var query = _context.Orders
-              .Include(x => x.Customer)
-              .Include(x => x.Paymentmethod)
-              .Where(x => x.Isdelete == false)
-              .Select(x => new OrderViewModel
-              {
-                  OrderId = x.OrderId,
-                  CustomerId = x.CustomerId,
-                  CustomerName = x.Customer.CustomerName,
-                  OrderDate = DateOnly.FromDateTime(x.OrderDate),
-                  Status = x.Status,
-                  RatingId = x.RatingId == null ? 0: x.RatingId,
-                  Rating = x.RatingId == null ? 0: (int)Math.Ceiling(((double)x.Rating.Food + (double)x.Rating.Service + (double)x.Rating.Ambience) / 3),
-                  TotalAmount = x.TotalAmount,
-                  PaymentmethodId = x.PaymentmethodId,
-                  PaymentmethodName = x.Paymentmethod.Paymenttype
-              }).AsQueryable();
-
-        //search
-        if (!string.IsNullOrEmpty(search))
+        try
         {
-            string lowerSearchTerm = search.ToLower();
-            query = query.Where(u => u.CustomerName.ToLower().Contains(lowerSearchTerm) ||
-            u.OrderId.ToString().Contains(lowerSearchTerm)
-            );
+
+            var query = _context.Orders
+                  .Include(x => x.Customer)
+                  .Include(x => x.Paymentmethod)
+                  .Where(x => x.Isdelete == false)
+                  .Select(x => new OrderViewModel
+                  {
+                      OrderId = x.OrderId,
+                      CustomerId = x.CustomerId,
+                      CustomerName = x.Customer.CustomerName,
+                      OrderDate = DateOnly.FromDateTime(x.OrderDate),
+                      Status = x.Status,
+                      RatingId = x.RatingId == null ? 0 : x.RatingId,
+                      Rating = x.RatingId == null ? 0 : (int)Math.Ceiling(((double)x.Rating.Food + (double)x.Rating.Service + (double)x.Rating.Ambience) / 3),
+                      TotalAmount = x.TotalAmount,
+                      PaymentmethodId = x.PaymentmethodId,
+                      PaymentmethodName = x.Paymentmethod.Paymenttype
+                  }).AsQueryable();
+
+            //search
+            if (!string.IsNullOrEmpty(search))
+            {
+                string lowerSearchTerm = search.ToLower();
+                query = query.Where(u => u.CustomerName.ToLower().Contains(lowerSearchTerm) ||
+                u.OrderId.ToString().Contains(lowerSearchTerm)
+                );
+            }
+            //sorting
+            switch (sortColumn)
+            {
+                case "OrderId":
+                    query = sortDirection == "asc" ? query.OrderBy(u => u.OrderId) : query.OrderByDescending(u => u.OrderId);
+                    break;
+
+                case "Date":
+                    query = sortDirection == "asc" ? query.OrderBy(u => u.OrderDate) : query.OrderByDescending(u => u.OrderDate);
+                    break;
+
+                case "Customer":
+                    query = sortDirection == "asc" ? query.OrderBy(u => u.CustomerName) : query.OrderByDescending(u => u.CustomerName);
+                    break;
+
+                case "Amount":
+                    query = sortDirection == "asc" ? query.OrderBy(u => u.TotalAmount) : query.OrderByDescending(u => u.TotalAmount);
+                    break;
+            }
+
+
+
+            //filter by status
+            if (!string.IsNullOrEmpty(status) && status != "All Status")
+            {
+                query = query.Where(x => x.Status == status);
+            }
+
+            //filter by time period
+            switch (timePeriod)
+            {
+                case "All Time":
+                    query = query;
+                    break;
+                case "7":
+                    query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-7)));
+                    break;
+                case "30":
+                    query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-30)));
+                    break;
+                case "Current Month":
+                    query = query.Where(x => x.OrderDate.Month == DateTime.Now.Month);
+                    break;
+            }
+
+            //filter by date
+            if (!string.IsNullOrEmpty(startDate) && string.IsNullOrEmpty(endDate))
+            {
+                query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.OrderDate <= DateOnly.FromDateTime(DateTime.Now));
+            }
+            if (string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+            {
+                query = query.Where(x => x.OrderDate <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
+            }
+            if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+            {
+                query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.OrderDate <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
+            }
+
+
+
+
+            // Get total records count (before pagination)
+            int totalCount = query.Count();
+
+            // List<OrderViewModel> demoList = query.ToList();
+
+            // Apply pagination
+            var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PaginationViewModel<OrderViewModel>(items, totalCount, pageNumber, pageSize);
+
         }
-        //sorting
-        switch (sortColumn)
+        catch (Exception e)
         {
-            case "OrderId":
-                query = sortDirection == "asc" ? query.OrderBy(u => u.OrderId) : query.OrderByDescending(u => u.OrderId);
-                break;
-
-            case "Date":
-                query = sortDirection == "asc" ? query.OrderBy(u => u.OrderDate) : query.OrderByDescending(u => u.OrderDate);
-                break;
-
-            case "Customer":
-                query = sortDirection == "asc" ? query.OrderBy(u => u.CustomerName) : query.OrderByDescending(u => u.CustomerName);
-                break;
-
-            case "Amount":
-                query = sortDirection == "asc" ? query.OrderBy(u => u.TotalAmount) : query.OrderByDescending(u => u.TotalAmount);
-                break;
-        }
-
-
-
-        //filter by status
-        if (!string.IsNullOrEmpty(status) && status != "All Status")
-        {
-            query = query.Where(x => x.Status == status);
-        }
-
-        //filter by time period
-        switch (timePeriod)
-        {
-            case "All Time":
-                query = query;
-                break;
-            case "7":
-                query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-7)));
-                break;
-            case "30":
-                query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Now.AddDays(-30)));
-                break;
-            case "Current Month":
-                query = query.Where(x => x.OrderDate.Month == DateTime.Now.Month);
-                break;
-        }
-
-        //filter by date
-        if (!string.IsNullOrEmpty(startDate) && string.IsNullOrEmpty(endDate))
-        {
-            query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.OrderDate <= DateOnly.FromDateTime(DateTime.Now));
-        }
-        if (string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
-        {
-            query = query.Where(x => x.OrderDate <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
-        }
-        if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
-        {
-            query = query.Where(x => x.OrderDate >= DateOnly.FromDateTime(DateTime.Parse(startDate)) && x.OrderDate <= DateOnly.FromDateTime(DateTime.Parse(endDate)));
-        }
-
-
-
-
-        // Get total records count (before pagination)
-        int totalCount = query.Count();
-
-        // List<OrderViewModel> demoList = query.ToList();
-
-        // Apply pagination
-        var items = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-
-        return new PaginationViewModel<OrderViewModel>(items, totalCount, pageNumber, pageSize);
-             
-        }catch(Exception e){
-            return new PaginationViewModel<OrderViewModel>(null, 0,pageNumber,pageSize);
+            return new PaginationViewModel<OrderViewModel>(null, 0, pageNumber, pageSize);
         }
     }
     #endregion
@@ -467,7 +470,7 @@ public class OrderService : IOrderService
 
             //table
 
-            orderdetailsvm.tableList = _context.Assigntables.Include(x =>x.Table)
+            orderdetailsvm.tableList = _context.Assigntables.Include(x => x.Table)
             .Where(x => x.CustomerId == orderdetails.Order.CustomerId && x.OrderId == orderId)
             .Select(x => new Table
             {
@@ -488,7 +491,7 @@ public class OrderService : IOrderService
                 Rate = x.Item.Rate,
                 TotalOfItemByQuantity = Math.Round(x.Quantity * x.Item.Rate, 2),
                 ModifiersInItemInvoice = _context.Modifierorders.Include(m => m.Modifier).Include(m => m.Orderdetail).ThenInclude(m => m.Item)
-                .Where(m => m.Orderdetail.OrderdetailId == x.OrderdetailId && !m.Isdelete )
+                .Where(m => m.Orderdetail.OrderdetailId == x.OrderdetailId && !m.Isdelete)
                 .Select(m => new ModifiersForItemInInvoiceOrderDetails
                 {
                     ModifierId = m.ModifierId,
@@ -498,9 +501,16 @@ public class OrderService : IOrderService
                     TotalOfModifierByQuantity = Math.Round(x.Quantity * (decimal)m.Modifier.Rate, 2),
                 }).ToList()
             }).ToList();
-            orderdetailsvm.SubTotalAmountOfOrder = Math.Round((decimal)orderdetailsvm.ItemsInOrderDetails
-            .Sum(x => x.TotalOfItemByQuantity + x.ModifiersInItemInvoice.Sum(x => x.TotalOfModifierByQuantity)), 2);
-
+            if (orderdetails.Order.Status == "Cancelled")
+            {
+                orderdetailsvm.SubTotalAmountOfOrder = Math.Round((decimal)0,2);
+                orderdetailsvm.TotalAmountOfOrderMain =  Math.Round((decimal)0,2);
+            }
+            else
+            {
+                orderdetailsvm.SubTotalAmountOfOrder = Math.Round((decimal)orderdetailsvm.ItemsInOrderDetails
+                .Sum(x => x.TotalOfItemByQuantity + x.ModifiersInItemInvoice.Sum(x => x.TotalOfModifierByQuantity)), 2);
+            }
 
             //taxes
             var taxedetails = _context.Taxinvoicemappings.Include(x => x.Invoice).Include(x => x.Tax)
@@ -543,8 +553,10 @@ public class OrderService : IOrderService
                 //     );
                 // }
             }
-
-            orderdetailsvm.TotalAmountOfOrderMain = orderdetailsvm.SubTotalAmountOfOrder + orderdetailsvm.TaxesInOrderDetails.Sum(x => x.TaxValue);
+            if (orderdetails.Order.Status != "Cancelled")
+            {
+                orderdetailsvm.TotalAmountOfOrderMain = orderdetailsvm.SubTotalAmountOfOrder + orderdetailsvm.TaxesInOrderDetails.Sum(x => x.TaxValue);
+            }
 
             return orderdetailsvm;
         }

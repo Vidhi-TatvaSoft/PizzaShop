@@ -69,26 +69,26 @@
 
                         <!-- dashboard -->
                         <a class=" d-flex ps-3 @((ViewData["sidebar-active"] as string) == "Dashboard" ? "active-div" : "")"
-                            style="text-decoration: none;" asp-action="Dashboard" asp-controller="User">
+                            style="text-decoration: none;" asp-action="Dashboard" asp-controller="User" style="max-width: 210px;">
                             <img src="~/images/dashboard-default.svg" width="20px" class=" " alt>
-                            <p class="dashboard-text-active text-size-set mt-3 ms-3 fs-6 ">Dashboard</p>
+                            <p class="dashboard-text-active text-size-set mt-3 ms-3 fs-6 text-truncate" title="Dashboard">Dashboard</p>
                         </a>
 
                         <!-- users -->
                         @if ((await AuthorizationService.AuthorizeAsync(User, "User.View")).Succeeded){
                         <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "UserList" ? "active-div" : "")"
-                            style="text-decoration: none;" asp-action="UsersList" asp-controller="User">
+                            style="text-decoration: none;" asp-action="UsersList" asp-controller="User" style="max-width: 210px;">
                             <i class="fa-solid fa-users "></i>
-                            <p class="users-text-inactive text-size-set  m-0 ms-3 fs-6">Users</p>
+                            <p class="users-text-inactive text-size-set  m-0 ms-3 fs-6 text-truncate" title="Users">Users</p>
                         </a>
                         }
 
                         <!--Role and Permission  -->
                         @if ((await AuthorizationService.AuthorizeAsync(User, "Role.View")).Succeeded){
                             <a class=" d-flex align-items-center p-3 @((ViewData["sidebar-active"] as string) == "Roles" ? "active-div" : "")"
-                            style="text-decoration: none;" asp-action="Roles" asp-controller="RolesPermission">
+                            style="text-decoration: none;" asp-action="Roles" asp-controller="RolesPermission" style="max-width: 210px;">
                             <i class="fa-solid fa-user-clock "></i>
-                            <p class="role-text-inactive  text-size-set   m-0 ms-3 fs-6">Role and Permission</p>
+                            <p class="role-text-inactive  text-size-set m-0 ms-3 fs-6 text-truncate" title="Role and Permission">Role and Permission</p>
                         </a>
                         }
                         
@@ -105,18 +105,18 @@
                         <!-- Table and Section -->
                         @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.View")).Succeeded){
                         <a class="d-flex align-items-center  p-3 @((ViewData["sidebar-active"] as string) == "TableAndSection" ? "active-div" : "")"
-                            style="text-decoration: none;" asp-action="TableAndSection" asp-controller="TableAndSection">
+                            style="text-decoration: none;" asp-action="TableAndSection" asp-controller="TableAndSection" style="max-width: 210px;">
                             <i class="fa-solid fa-table-cells-large "></i>
-                            <p class="table-text-inactive text-size-set  m-0 ms-3 fs-6">Table and Section</p>
+                            <p class="table-text-inactive text-size-set  m-0 ms-3 fs-6 text-truncate" title="Table and Section">Table and Section</p>
                         </a>
                         }
 
                         <!-- taxes and fees -->
                         @if ((await AuthorizationService.AuthorizeAsync(User, "TaxFees.View")).Succeeded){
                         <a class="inactive-div d-flex p-3 @((ViewData["sidebar-active"] as string) == "TaxAndFees" ? "active-div" : "")"
-                            style="text-decoration: none;" asp-action="TaxAndFees" asp-controller="TaxAndFees">
+                            style="text-decoration: none;" asp-action="TaxAndFees" asp-controller="TaxAndFees" style="max-width: 210px;">
                             <i class="fa-solid fa-money-check-dollar mt-1"></i>
-                            <p class="taxes-text-inactive text-size-set m-0 ms-3 fs-6">Taxes And Fees</p>
+                            <p class="taxes-text-inactive text-size-set m-0 ms-3 fs-6 text-truncate" title="Taxes And Fees">Taxes And Fees</p>
                         </a>
                         }
 

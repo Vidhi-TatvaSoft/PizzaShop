@@ -118,9 +118,9 @@
     </div>
 </div>
 
-<div class="row d-flex mt-4 col-12">
-    <div class="col-12 mt-2 col-md-6 @(User.IsInRole("Admin") ? "col-xl-3" : "col-xl-4")">
-        <div class="d-flex flex-column bg-white shadow rounded p-2 h-100" style="min-height: 157px;">
+<div class="row d-flex mt-4 col-12 mb-2">
+    <div class="col-12 mt-2  @(User.IsInRole("Admin") ? "col-xl-3 col-md-6" : "col-xl-4 col-md-12")">
+        <div class="d-flex flex-column bg-white shadow rounded p-2 h-100" style="min-height: 190px;">
             <h4>Top Selling Items</h4>
             @if (Model.DashboardItemList[0] != null)
             {
@@ -152,10 +152,6 @@
                         </div>
                     </div>
                 }
-                else
-                {
-                    <div>No Items in Order Found</div>
-                }
             }
             else
             {
@@ -164,8 +160,8 @@
 
         </div>
     </div>
-    <div class="col-12 mt-2 col-md-6 @(User.IsInRole("Admin") ? "col-xl-3" : "col-xl-4")">
-        <div class="d-flex flex-column bg-white shadow rounded p-2" style="min-height: 157px;">
+    <div class="col-12 mt-2  @(User.IsInRole("Admin") ? "col-xl-3 col-md-6" : "col-xl-4 col-md-12")">
+        <div class="d-flex flex-column bg-white shadow rounded p-2" style="min-height: 190px;">
             <h4>Least Selling Items</h4>
             @if (Model.DashboardItemList[2] != null)
             {
@@ -197,10 +193,6 @@
                         </div>
                     </div>
                 }
-                else
-                {
-                    <div>No Items in Order Found</div>
-                }
             }
             else
             {
@@ -209,7 +201,7 @@
 
         </div>
     </div>
-    <div class="col-12 mt-2 col-md-6 @(User.IsInRole("Admin") ? "col-xl-3" : "col-xl-4")">
+    <div class="col-12 mt-2 col-md-6 @(User.IsInRole("Admin") ? "col-xl-3 col-md-6" : "col-xl-4 col-md-12")">
         <div class="bg-white shadow rounded p-2  h-100 d-flex flex-column justify-content-between">
             <div class="d-flex justify-content-end">
                 <div class="p-2 d-flex justify-content-center align-items-center dashboard-icon-outer rounded-circle"

@@ -456,3 +456,7 @@ form i{
 .dashboard-average-waiting-time, .dashboard-average-order-value, .dashboard-total-orders, .dashboard-total-sales{
   background-color: white;
 } 
+
+.itemWiseinstruction {
+  cursor: pointer;
+}

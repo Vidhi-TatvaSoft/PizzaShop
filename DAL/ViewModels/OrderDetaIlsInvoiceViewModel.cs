@@ -17,6 +17,8 @@ public class OrderDetaIlsInvoiceViewModel
 
     public DateTime OrderDate { get; set; }
 
+    public DateTime ModifiedOn {get;set;}
+
     public string OrderStatus { get; set; } 
 
     public string OtherInstruction{get;set;}

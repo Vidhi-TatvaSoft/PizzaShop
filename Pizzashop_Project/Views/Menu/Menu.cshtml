@@ -465,11 +465,13 @@
             <form  id="AddExistModifierFormID">
                 <div class="modal-body">
                     <div class="search-button ">
-                        @if (Model.Paginationmodifiers.Items.Count != 0)
-                        {
-                            <input type="hidden" id="modifiergrp-id-items" value="@Model.Paginationmodifiers.Items[0].ModifierGrpId">
-                            <input type="text" id="searchbtn-existingMod" placeholder="Search" class="p-1 border ">
-                            <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                        @if(Model.Paginationmodifiers != null){
+                            @if (Model.Paginationmodifiers.Items.Count != 0)
+                            {
+                                <input type="hidden" id="modifiergrp-id-items" value="@Model.Paginationmodifiers.Items[0].ModifierGrpId">
+                                <input type="text" id="searchbtn-existingMod" placeholder="Search" class="p-1 border ">
+                                <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                            }
                         }
                     </div>
                     <div class="table-main-div table-responsive mt-3 bg-white mx-auto w-100 ">
@@ -490,20 +492,21 @@
                         </table>
                         @*  Pagination div *@
                         <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
+                            @if(Model.Paginationmodifiers != null){
+                                @if (Model.Paginationmodifiers.Items.Count != 0)
+                                {
+                                    <span class="mt-2">Items Per page:</span>
 
-                            @if (Model.Paginationmodifiers.Items.Count != 0)
-                            {
-                                <span class="mt-2">Items Per page:</span>
+                                    <select id="itemsperpage-modExist">
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                    </select>
 
-                                <select id="itemsperpage-modExist">
-                                    <option value="5">5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
-                                </select>
-
-                                <span class=" mt-2 ms-1" id="pagination-text-modExist"></span>
-                                <a id="left-arrow-modExist" class="btn border border-dark bg-light ms-2">&lt;</a>
-                                <a id="right-arrow-modExist" class="btn border border-dark bg-light ms-2">&gt;</a>
+                                    <span class=" mt-2 ms-1" id="pagination-text-modExist"></span>
+                                    <a id="left-arrow-modExist" class="btn border border-dark bg-light ms-2">&lt;</a>
+                                    <a id="right-arrow-modExist" class="btn border border-dark bg-light ms-2">&gt;</a>
+                                }
                             }
                         </div>
                     </div>
@@ -566,11 +569,13 @@
             <form  id="editExistModifierFormID">
                 <div class="modal-body">
                     <div class="search-button ">
-                        @if (Model.Paginationmodifiers.Items.Count != 0)
-                        {
-                            <input type="hidden" id="modifiergrp-id-items" value="@Model.Paginationmodifiers.Items[0].ModifierGrpId">
-                            <input type="text" id="searchbtn-existingModForEdit" placeholder="Search" class="p-1 border ">
-                            <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                        @if(Model.Paginationmodifiers != null){
+                            @if (Model.Paginationmodifiers.Items.Count != 0)
+                            {
+                                <input type="hidden" id="modifiergrp-id-items" value="@Model.Paginationmodifiers.Items[0].ModifierGrpId">
+                                <input type="text" id="searchbtn-existingModForEdit" placeholder="Search" class="p-1 border ">
+                                <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                            }
                         }
                     </div>
                     <div class="table-main-div table-responsive mt-3 bg-white mx-auto w-100 ">
@@ -591,20 +596,21 @@
                         </table>
                         @*  Pagination div *@
                         <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
+                            @if(Model.Paginationmodifiers != null){
+                                @if (Model.Paginationmodifiers.Items.Count != 0)
+                                {
+                                    <span class="mt-2">Items Per page:</span>
 
-                            @if (Model.Paginationmodifiers.Items.Count != 0)
-                            {
-                                <span class="mt-2">Items Per page:</span>
+                                    <select id="itemsperpage-modExistForEdit">
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                    </select>
 
-                                <select id="itemsperpage-modExistForEdit">
-                                    <option value="5">5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
-                                </select>
-
-                                <span class=" mt-2 ms-1" id="pagination-text-modExistForEdit"></span>
-                                <a id="left-arrow-modExistForEdit" class="btn border border-dark bg-light ms-2">&lt;</a>
-                                <a id="right-arrow-modExistForEdit" class="btn border border-dark bg-light ms-2">&gt;</a>
+                                    <span class=" mt-2 ms-1" id="pagination-text-modExistForEdit"></span>
+                                    <a id="left-arrow-modExistForEdit" class="btn border border-dark bg-light ms-2">&lt;</a>
+                                    <a id="right-arrow-modExistForEdit" class="btn border border-dark bg-light ms-2">&gt;</a>
+                                }
                             }
                         </div>
                     </div>
@@ -821,36 +827,39 @@
 
                                 <!-- Sandwich -->
                                @{var flag =true;
+                                    @if(Model.categories.Count != 0){
+                                        @foreach (var cat in Model.categories)
+                                        {
+                                            <div class="categories-div d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag?"active-category":"")"  data-id="@cat.CategoryId" >
+                                                
+                                                <div  class="d-flex "  >
+                                                        <i class="fa-solid fa-receipt mt-1 "></i>
+                                                        <p class="text-size-set mt-0  m-0 ms-3 ">@cat.CategoryName</p>
+        
+                                                </div>
+                                                <div>
+                                                    <input type="hidden" value="@cat.Description">
+                                                    @if((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded){
+                                                    <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdate(this)"
+                                                        data-id="@cat.CategoryId" data-bs-toggle="modal"
+                                                        data-bs-target="#exampleModal-editcategory"></i>
+                                                    <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
+                                                        data-bs-target="#exampleModal-deleteCategory" data-id="@cat.CategoryId"
+                                                        onclick="GetIdForDelete(this)"></i>
+                                                        }
+                                                    else if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
+                                                        <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdate(this)"
+                                                        data-id="@cat.CategoryId" data-bs-toggle="modal"
+                                                        data-bs-target="#exampleModal-editcategory"></i>
+                                                    }
+                                                </div>
 
-                                @foreach (var cat in Model.categories)
-                                {
-                                    <div class="categories-div d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag?"active-category":"")"  data-id="@cat.CategoryId" >
-                                        
-                                        <div  class="d-flex "  >
-                                                <i class="fa-solid fa-receipt mt-1 "></i>
-                                                <p class="text-size-set mt-0  m-0 ms-3 ">@cat.CategoryName</p>
-   
-                                        </div>
-                                        <div>
-                                            <input type="hidden" value="@cat.Description">
-                                             @if((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded){
-                                            <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdate(this)"
-                                                data-id="@cat.CategoryId" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal-editcategory"></i>
-                                            <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal-deleteCategory" data-id="@cat.CategoryId"
-                                                onclick="GetIdForDelete(this)"></i>
-                                                }
-                                            else if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
-                                                <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdate(this)"
-                                                data-id="@cat.CategoryId" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal-editcategory"></i>
-                                            }
-                                        </div>
-
-                                    </div>
-                                    flag=false;
-                                }
+                                            </div>
+                                            flag=false;
+                                        }
+                                    }else{
+                                        <div>No Categories Found</div>
+                                    }
                                 }
 
                             </div>
@@ -867,10 +876,12 @@
                                 <!-- search add itemr -->
                                 <div class="search-item-div d-flex  align-items-center justify-content-between mt-2">
                                     <div class="search-button ">
-                                         @if(Model.Pagination.Items.Count != 0 ){
-                                        <input type="hidden" id="category-id-items" value="@Model.Pagination.Items[0].CategoryId">
-                                        <input type="text" id="searchbtn" placeholder="Search" class="p-1 border ">
-                                        <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                                        @if(Model.categories.Count != 0){
+                                            @if(Model.Pagination.Items.Count != 0 ){
+                                            <input type="hidden" id="category-id-items" value="@Model.Pagination.Items[0].CategoryId">
+                                            <input type="text" id="searchbtn" placeholder="Search" class="p-1 border ">
+                                            <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                                            }
                                         }
                                     </div>
                                      @if((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded){
@@ -915,19 +926,20 @@
                                 @* } *@
                                 @*  Pagination div *@
                                 <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
+                                    @if(Model.Pagination != null){
+                                        @if(Model.Pagination.Items.Count != 0){
+                                            <span class="mt-2">Items Per page:</span>
 
-                                   @if(Model.Pagination.Items.Count != 0){
-                                     <span class="mt-2">Items Per page:</span>
+                                            <select id="itemsperpage">
+                                                <option value="5">5</option>
+                                                <option value="10">10</option>
+                                                <option value="15">15</option>
+                                            </select>
 
-                                    <select id="itemsperpage">
-                                        <option value="5">5</option>
-                                        <option value="10">10</option>
-                                        <option value="15">15</option>
-                                    </select>
-
-                                    <span class=" mt-2 ms-1" id="pagination-text"></span>
-                                    <a id="left-arrow" class="btn border border-dark bg-light ms-2">&lt;</a>
-                                    <a id="right-arrow" class="btn border border-dark bg-light ms-2">&gt;</a>
+                                            <span class=" mt-2 ms-1" id="pagination-text"></span>
+                                            <a id="left-arrow" class="btn border border-dark bg-light ms-2">&lt;</a>
+                                            <a id="right-arrow" class="btn border border-dark bg-light ms-2">&gt;</a>
+                                        }
                                    }
                                 </div>
                             </div>
@@ -977,10 +989,12 @@
                                 <!-- search add itemr -->
                                 <div class="search-item-div d-flex  align-items-center justify-content-between mt-2">
                                     <div class="search-button ">
-                                        @if(Model.Paginationmodifiers.Items.Count != 0 ){
-                                        <input type="hidden" id="modifier-group-id" value="@Model.Paginationmodifiers.Items[0].ModifierGrpId">
-                                        <input type="text" id="searchbtn-mod" placeholder="Search" class="p-1 border ">
-                                        <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                                        @if(Model.Paginationmodifiers != null){
+                                            @if(Model.Paginationmodifiers.Items.Count != 0 ){
+                                            <input type="hidden" id="modifier-group-id" value="@Model.Paginationmodifiers.Items[0].ModifierGrpId">
+                                            <input type="text" id="searchbtn-mod" placeholder="Search" class="p-1 border ">
+                                            <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
+                                            }
                                         }
                                     </div>
                                     @if ((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded){
@@ -1018,19 +1032,20 @@
                                 </table>
                                  @*  Pagination div *@
                                 <div class="pagination-main-div d-flex justify-content-end gap-2 p-3 pt-0 bg-white ">
+                                    @if(Model.Paginationmodifiers != null){
+                                        @if(Model.Paginationmodifiers.Items.Count != 0){
+                                            <span class="mt-2">Items Per page:</span>
 
-                                   @if(Model.Paginationmodifiers.Items.Count != 0){
-                                     <span class="mt-2">Items Per page:</span>
+                                            <select id="itemsperpage-mod">
+                                                <option value="5">5</option>
+                                                <option value="10">10</option>
+                                                <option value="15">15</option>
+                                            </select>
 
-                                    <select id="itemsperpage-mod">
-                                        <option value="5">5</option>
-                                        <option value="10">10</option>
-                                        <option value="15">15</option>
-                                    </select>
-
-                                    <span class=" mt-2 ms-1" id="pagination-text-mod"></span>
-                                    <a id="left-arrow-mod" class="btn border border-dark bg-light ms-2">&lt;</a>
-                                    <a id="right-arrow-mod" class="btn border border-dark bg-light ms-2">&gt;</a>
+                                            <span class=" mt-2 ms-1" id="pagination-text-mod"></span>
+                                            <a id="left-arrow-mod" class="btn border border-dark bg-light ms-2">&lt;</a>
+                                            <a id="right-arrow-mod" class="btn border border-dark bg-light ms-2">&gt;</a>
+                                        }
                                    }
                                 </div>
                             </div>

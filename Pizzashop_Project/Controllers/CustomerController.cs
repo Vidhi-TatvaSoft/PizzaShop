@@ -36,6 +36,7 @@ public class CustomerController :Controller
     public async Task<IActionResult> ExportCustomerDataToExcel(string search = "", string timePeriod = "", string startDate="", string endDate="")
     {
         var FileData = await _customerService.ExportCustomerData(search, timePeriod,startDate,endDate);
+        
         var result = new FileContentResult(FileData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         {
             FileDownloadName = "Customers.xlsx"

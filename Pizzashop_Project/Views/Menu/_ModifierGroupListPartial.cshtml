@@ -7,38 +7,49 @@
 
 @{
     var flag2 = true;
-
-    @foreach (var modifierGrp in Model.modifiergroupList)
+    @if (Model.modifiergroupList != null)
     {
-        <div class="modifiers-div-main d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag2 ? "active-category" : "")"
-            data-id="@modifierGrp.ModifierGrpId">
+        @foreach (var modifierGrp in Model.modifiergroupList)
+        {
+            <div class="modifiers-div-main d-flex justify-content-between text-dark col-md-12 col-6  p-1 @(flag2 ? "active-category" : "")"
+                data-id="@modifierGrp.ModifierGrpId">
 
-            <div class="d-flex ">
-                <i class="fa-solid fa-receipt mt-1 "></i>
-                <p class="text-size-set mt-0  m-0 ms-3 ">@modifierGrp.ModifierGrpName</p>
+                <div class="d-flex ">
+                    <i class="fa-solid fa-receipt mt-1 "></i>
+                    <p class="text-size-set mt-0  m-0 ms-3 ">@modifierGrp.ModifierGrpName</p>
+
+                </div>
+                <div>
+                    <input type="hidden" value="@modifierGrp.Desciption">
+                    @if ((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded)
+                    {
+                        <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdateModGrp(this)"
+                            data-id="@modifierGrp.ModifierGrpId" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal-editmodifiergroup"></i>
+                        <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal-deleteModifierGroup" data-id="@modifierGrp.ModifierGrpId"
+                            onclick="getIdFroDeleteModGrp(this)"></i>
+                    }
+                    else if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded)
+                    {
+                        <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdateModGrp(this)"
+                            data-id="@modifierGrp.ModifierGrpId" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal-editmodifiergroup"></i>
+                    }
+
+                </div>
 
             </div>
-            <div>
-                <input type="hidden" value="@modifierGrp.Desciption">
-                 @if((await AuthorizationService.AuthorizeAsync(User, "Menu.Delete")).Succeeded){
-                    <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdateModGrp(this)"
-                    data-id="@modifierGrp.ModifierGrpId" data-bs-toggle="modal" data-bs-target="#exampleModal-editmodifiergroup"></i>
-                    <i class="fa-solid fa-trash-can iconeditdelete fs-6  ms-1" data-bs-toggle="modal"
-                    data-bs-target="#exampleModal-deleteModifierGroup" data-id="@modifierGrp.ModifierGrpId"
-                    onclick="getIdFroDeleteModGrp(this)"></i>
-                }else if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
-                    <i class="fa-solid fa-pen fs-6 iconeditdelete" onclick="GetdetailsForUpdateModGrp(this)"
-                    data-id="@modifierGrp.ModifierGrpId" data-bs-toggle="modal" data-bs-target="#exampleModal-editmodifiergroup"></i>
-                }
-                
-            </div>
-
-        </div>
-        flag2 = false;
+            flag2 = false;
+        }
+    }
+    else
+    {
+        <div>No Modifier group Found</div>
     }
 }
 
 <script>
-    
+
 
 </script>
