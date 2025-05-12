@@ -243,6 +243,8 @@ public class MenuController : Controller
     [HttpPost]
     public async Task<IActionResult> AddItem(MenuViewModel MenuViewModel)
     {
+        
+        
         if(_menuService.IsItemNameExist(MenuViewModel.additem)){
             return Json(new { success = false, text = "ItemName Already Present. Try Another Name" });
         }
@@ -292,6 +294,7 @@ public class MenuController : Controller
     #region  edit item Get
     public IActionResult EditItem(long itemID)
     {
+        // throw new ApplicationException();
         return Json(_menuService.GetItemByItemID(itemID));
     }
     #endregion
@@ -503,6 +506,7 @@ public class MenuController : Controller
     #region Edit Modifier Group get
     public IActionResult EditModGrp(long ModGrpId)
     {
+        //  throw new ApplicationException();
         var modifiers = _menuService.GetModifiersByModifierGrpId(ModGrpId);
         var modifierGroup = _menuService.GetModifiergroupByGrpID(ModGrpId);
 

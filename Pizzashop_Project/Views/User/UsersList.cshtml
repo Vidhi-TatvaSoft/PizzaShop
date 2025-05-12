@@ -6,7 +6,9 @@
 @model PaginationViewModel<User>
 
 @* <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css"> *@
-
+@{
+    ViewData["Title"] = "Users";
+}
 
 <!-- user list -->
 <div class="user-list-main-div  d-flex justify-content-between mt-2">
@@ -21,11 +23,12 @@
             <input type="text" id="searchbtn" placeholder="Search" class="p-1 border ">
             <i class="fa-solid fa-magnifying-glass search-icon-style "></i>
         </div>
-        @if ((await AuthorizationService.AuthorizeAsync(User, "User.EditAdd")).Succeeded){
-        <div class="adduser-button">
-            <a asp-action="AddUser" asp-controller="User" class="btn btn-primary text-light p-2 ms-3 border text">+ Add
-                User</a>
-        </div>
+        @if ((await AuthorizationService.AuthorizeAsync(User, "User.EditAdd")).Succeeded)
+        {
+            <div class="adduser-button">
+                <a asp-action="AddUser" asp-controller="User" class="btn btn-primary text-light p-2 ms-3 border text">+ Add
+                    User</a>
+            </div>
         }
 
     </div>
@@ -37,17 +40,19 @@
         <table id="example" class="table display">
             <thead>
                 <tr>
-                    <th scope="col">Name <i class="bi bi-arrow-down-up" id="sort-name" data-column="Name" data-direction="asc"></i></th>
+                    <th scope="col">Name <i class="bi bi-arrow-down-up" id="sort-name" data-column="Name"
+                            data-direction="asc"></i></th>
                     <th scope="col">Email</th>
                     <th scope="col">Phone</th>
-                    <th scope="col">Role<i class="bi bi-arrow-down-up ms-1" id="sort-role"  data-column="Name" data-direction="asc"></i></th>
+                    <th scope="col">Role<i class="bi bi-arrow-down-up ms-1" id="sort-role" data-column="Name"
+                            data-direction="asc"></i></th>
                     <th scope="col">Status</th>
                     <th scope="col">Action </th>
                 </tr>
             </thead>
             <tbody id="TableBody">
                 @await Html.PartialAsync("_UserListPartial", Model)
-                
+
             </tbody>
         </table>
 
@@ -110,7 +115,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             var deleteModal = document.getElementById('delete-user');
             deleteModal.addEventListener('show.bs.modal', function (event) {
-                
+
                 var deletebtn = event.relatedTarget;
                 var email = deletebtn.getAttribute('data-email');
                 var deleteEmailInput = document.getElementById('deleteEmail');
@@ -124,7 +129,7 @@
             var successMessage = '@TempData["SuccessMessage"]';
             var errorMessage = '@TempData["ErrorMessage"]';
             console.log("successMessage", successMessage);
-             toastr.options = {
+            toastr.options = {
                 "closeButton": true,
                 "progressBar": true,
                 "timeOut": "2000"
@@ -140,6 +145,7 @@
 
 
     <script>
+   
         $(document).ready(function () {
             let currentPage = 1;
             let pageSize = $("#itemsperpage").val();
@@ -153,6 +159,7 @@
                     type: "GET",
                     data: { search, sortColumn, sortDirection, pageNumber: page, pageSize },
                     success: function (data) {
+                        @* IsHtmlDoc(data); *@
                         $("#TableBody").html(data);
                         currentPage = page;
 
@@ -171,8 +178,8 @@
             // Search on keyup
             $("#searchbtn").on("keyup", function () {
                 searchText = $(this).val().trim();
-                currentPage =1;
-                loadTable(currentPage, searchText, sortColumn, sortDirection,pageSize);
+                currentPage = 1;
+                loadTable(currentPage, searchText, sortColumn, sortDirection, pageSize);
             });
 
             // Sorting functionality
@@ -181,7 +188,7 @@
                 console.log(sortColumn);
                 sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
                 $(this).attr("data-direction", sortDirection);
-                loadTable(currentPage,searchText, sortColumn, sortDirection, pageSize);
+                loadTable(currentPage, searchText, sortColumn, sortDirection, pageSize);
             });
 
             $("#sort-role").on("click", function () {
@@ -189,7 +196,7 @@
                 console.log(sortColumn);
                 sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
                 $(this).attr("data-direction", sortDirection);
-                loadTable(currentPage,searchText, sortColumn, sortDirection, pageSize);
+                loadTable(currentPage, searchText, sortColumn, sortDirection, pageSize);
             });
 
             // Pagination buttons
@@ -197,8 +204,8 @@
                 let rightarrow = !$(this).prop("disabled");
                 console.log(rightarrow);
                 if (rightarrow) {
-                    currentPage ++;
-                    loadTable(currentPage,searchText, sortColumn, sortDirection, pageSize);
+                    currentPage++;
+                    loadTable(currentPage, searchText, sortColumn, sortDirection, pageSize);
                 }
             });
 
@@ -206,8 +213,8 @@
                 let leftarrow = !$(this).prop("disabled");
                 console.log(leftarrow);
                 if (leftarrow) {
-                    currentPage --;
-                    loadTable(currentPage,searchText, sortColumn, sortDirection, pageSize);
+                    currentPage--;
+                    loadTable(currentPage, searchText, sortColumn, sortDirection, pageSize);
                 }
             });
 
@@ -215,8 +222,8 @@
             $("#itemsperpage").on("change", function () {
                 pageSize = $(this).val();
                 console.log(pageSize);
-                currentPage=1;
-                loadTable(currentPage,searchText, sortColumn, sortDirection, pageSize);
+                currentPage = 1;
+                loadTable(currentPage, searchText, sortColumn, sortDirection, pageSize);
             });
 
             // Initial table load

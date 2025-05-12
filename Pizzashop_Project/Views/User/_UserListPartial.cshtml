@@ -45,8 +45,7 @@ else
                     if ((await AuthorizationService.AuthorizeAsync(User, "User.Delete")).Succeeded)
                     {
 
-                        if (User.IsInRole("Account Manager") && (item.Userlogin.Role.RoleName == "Account Manager"
-                        || item.Userlogin.Role.RoleName == "Admin"))
+                        if (User.IsInRole("Account Manager") && (item.Userlogin.Role.RoleName == "Admin"))
                         {
                             <i class="fa-solid fa-pen text-black-50 me-3 mt-2"></i>
                             <i class="fa-solid fa-trash-can text-black-50"></i>
@@ -62,8 +61,7 @@ else
                     }
                     else if ((await AuthorizationService.AuthorizeAsync(User, "User.EditAdd")).Succeeded)
                     {
-                        if (User.IsInRole("Account Manager") && (item.Userlogin.Role.RoleName == "Account Manager"
-                        || item.Userlogin.Role.RoleName == "Admin"))
+                        if (User.IsInRole("Account Manager") && (item.Userlogin.Role.RoleName == "Admin"))
                         {
                             <i class="fa-solid fa-pen text-black-50 me-3 mt-2"></i>
                             <i class="fa-solid fa-trash-can text-black-50"></i>

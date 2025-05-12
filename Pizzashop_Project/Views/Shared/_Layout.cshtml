@@ -282,8 +282,66 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        function AjaxResponseHandle(response) {
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(response, 'text/html');
+            var title = doc.title;
+            console.log(title)
+            if (title === "Login - PizzaSshop_Project") {
+                window.location.href = '@Url.Action("VerifyPassword", "UserLogin")';
+            } else if (title === "Dashboard - PizzaSshop_Project") {
+                window.location.href = '@Url.Action("Dashboard", "User")';
+            }
+            else if (title === "InternalServerError" || title === "Forbidden" || title === "Unauthorize" || title === "pageNotFoundError") {
+                var url = `/ErrorPage/${title}`;
+                window.location.href = url;
+            }
+            else if (title === "InternalServerError - PizzaSshop_Project" || title === "Forbidden - PizzaSshop_Project" || title === "Unauthorize - PizzaSshop_Project" || title === "pageNotFoundError - PizzaSshop_Project") {
+                var url = `/ErrorPage/${title.split(" ")[0].toString().trim()}`;
+                window.location.href = url;
+            }
+            else {
+                errorToaster('Unexpected response format.');
+            }
+        }
+
+        function IsHtmlDoc(response) {
+            if(response.statusCode){
+                return ;
+            }
+            if ((response.trim().indexOf('<!DOCTYPE html>') === 0) || (response.trim().indexOf('<html>') === 0)) {
+                console.log("in")
+                AjaxResponseHandle(response);
+            }
+        }
+        
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // 1. Show toaster if TempData contains error (normal request)
+
+            // 2. Global AJAX error catcher
+            $(document).ajaxComplete(function (event, xhr, settings) {
+                if (xhr.getResponseHeader("X-Error") === "true") {
+                    const response = xhr.responseJSON;
+                    if (response && response.error) {
+                        errorToaster(response.error);
+                    } else {
+                        errorToaster('An unexpected error occurred.');
+                    }
+                }
+            });
+
+        });
+    </script>
+
+        <partial name="_Toaster"/>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    
 </body>
 
 </html>

@@ -6,6 +6,7 @@
 @model DAL.ViewModels.MenuViewModel;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] ="Menu";
 }
 
 <!-- add category modal -->
@@ -820,7 +821,7 @@
                                     @if ((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
                                     <div class="logo-image ">
                                         <i class="fa-regular fa-square-plus fs-4 text-primary mt-3"
-                                            data-bs-toggle="modal" data-bs-target="#exampleModal-addcategory"></i>
+                                            data-bs-toggle="modal" data-bs-target="#exampleModal-addcategory" onclick="removeValidationOnCancel()"></i>
                                     </div>
                                     }
                                 </div>
@@ -893,7 +894,7 @@
                                      @if((await AuthorizationService.AuthorizeAsync(User, "Menu.EditAdd")).Succeeded){
                                     <div class="additem-button">
                                         <button class="btn btn-primary text-light p-2 ms-3 border text"
-                                            data-bs-toggle="modal" data-bs-target="#addItemModal" onclick="GetModGrpListAdd()">+ Add Item</button>
+                                            data-bs-toggle="modal" data-bs-target="#addItemModal" onclick="GetModGrpListAdd();removeValidationOnCancel();EmptyPartialViewOfModGrp()">+ Add Item</button>
                                        
                                         </div>
                                     }

@@ -318,6 +318,7 @@ public class UserController : Controller
     [PermissionAuthorize("User.EditAdd")]
     public IActionResult EditUser(string Email)
     {
+            //    throw new ApplicationException();
         // var token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmailWithoutToken(Email);
         UserViewModel userViewModel = new UserViewModel()
@@ -470,7 +471,6 @@ public class UserController : Controller
         Response.Cookies.Delete("profileImage");
         Response.Cookies.Delete("username");
         Response.Headers["Clear-Site-Data"] = "\"cache\", \"cookies\", \"storage\"";
-        TempData["SuccessMessage"] = "Logout Successfully.";
         return RedirectToAction("VerifyPassword", "UserLogin");
     }
     #endregion

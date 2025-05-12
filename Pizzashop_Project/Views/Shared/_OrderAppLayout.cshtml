@@ -28,7 +28,7 @@
             <div class="right-side-main-div ">
                 <div class="row">
                     <!-- navbar -->
-                    <div class="header-line bg-primary d-flex justify-content-between"  style="z-index: 6;">
+                    <div class="header-line bg-primary d-flex justify-content-between" style="z-index: 6;">
                         <div class="left-elements d-flex">
                             <!-- logo text-->
                             <div class="logo-main-div d-flex  mt-2 mb-2 ">
@@ -88,13 +88,14 @@
 
                                 </div>
                             }
-                             @if ((await AuthorizationService.AuthorizeAsync(User, "ChefRole")).Succeeded){
+                            @if ((await AuthorizationService.AuthorizeAsync(User, "ChefRole")).Succeeded)
+                            {
                                 <div class="orderAppMenu align-items-center justify-content-between me-3 mt-1">
                                     <a asp-action="OrderAppKOT" asp-controller="OrderAppKOT"
                                         class="btn btn-primary text-white border  rounded-pill p-1 px-3 me-2 @((ViewData["orderApp-Active"] as string) == "KOT" ? "orderApp-active-div" : "")"><i
                                             class="fa-solid fa-clipboard me-1"></i>KOT</a>
                                 </div>
-                             }
+                            }
 
 
                             <!-- profile-->
@@ -117,9 +118,11 @@
                                             asp-controller="OrderApp">Change Password</a></li>
                                     <li><a class="dropdown-item" data-bs-toggle="modal"
                                             data-bs-target="#logout">Logout</a></li>
-                                    @if ((await AuthorizationService.AuthorizeAsync(User, "AccountManagerRole")).Succeeded){
+                                    @if ((await AuthorizationService.AuthorizeAsync(User,
+                                                                        "AccountManagerRole")).Succeeded)
+                                    {
                                         <li><a class="dropdown-item" asp-action="Dashboard" asp-controller="User">Exit
-                                            OrderApp</a></li>
+                                                OrderApp</a></li>
                                     }
                                 </ul>
                             </div>
@@ -185,6 +188,57 @@
         if (errorMessage) {
             toastr.error(errorMessage);
         }
+    });
+
+    function AjaxResponseHandle(response) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(response, 'text/html');
+        var title = doc.title;
+        console.log(title)
+        if (title === "Login - PizzaSshop_Project") {
+            window.location.href = '@Url.Action("VerifyPassword", "UserLogin")';
+        } else if (title === "Dashboard - PizzaSshop_Project") {
+            window.location.href = '@Url.Action("Dashboard", "User")';
+        }
+        else if (title === "InternalServerError" || title === "Forbidden" || title === "Unauthorize" || title === "pageNotFoundError") {
+            var url = `/ErrorPage/${title}`;
+            window.location.href = url;
+        }
+        else if (title === "InternalServerError - PizzaSshop_Project" || title === "Forbidden - PizzaSshop_Project" || title === "Unauthorize - PizzaSshop_Project" || title === "pageNotFoundError - PizzaSshop_Project") {
+            var url = `/ErrorPage/${title.split(" ")[0].toString().trim()}`;
+            window.location.href = url;
+        }
+        else {
+            errorToaster('Unexpected response format.');
+        }
+    }
+
+    function IsHtmlDoc(response) {
+        if (response.statusCode) {
+            return;
+        }
+        if ((response.trim().indexOf('<!DOCTYPE html>') === 0) || (response.trim().indexOf('<html>') === 0)) {
+            AjaxResponseHandle(response);
+            console.log("in")
+        }
+    }
+
+    $(document).ready(function () {
+        // 1. Show toaster if TempData contains error (normal request)
+
+        // 2. Global AJAX error catcher
+        $(document).ajaxComplete(function (event, xhr, settings) {
+            console.log("hiiefszvsdvsd", xhr.getResponseHeader("X-Error"))
+            if (xhr.getResponseHeader("X-Error") == "true") {
+                const response = xhr.responseJSON;
+                if (response && response.error) {
+                    toastr.error(response.error);
+                } else {
+                    toastr.error('An unexpected error occurred.');
+                }
+            }
+        });
+
     });
 </script>
 

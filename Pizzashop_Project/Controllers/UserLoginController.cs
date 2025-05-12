@@ -78,7 +78,6 @@ namespace Pizzashop_Project.Controllers
 
                     Response.Cookies.Append("email", userlogin.Email, options);
                     ViewBag.ProfileImage = _userLoginService.GetProfileImage(userlogin.Email);
-                    TempData["SuccessMessage"] = "Login Successfully";
                     ViewData["sidebar-active"] = "Dashboard";
                     var Role = _jwtTokenService.GetClaimValue(verifictiontoken, "role");
                     if(Role == "Chef"){
@@ -93,7 +92,6 @@ namespace Pizzashop_Project.Controllers
                     if(Role == "Chef"){
                         return RedirectToAction("OrderAppKOT","OrderAppKOT");
                     }
-                    TempData["SuccessMessage"] = "Login Successfully";
                     ViewData["sidebar-active"] = "Dashboard";
                     return RedirectToAction("Dashboard", "User");
                 }

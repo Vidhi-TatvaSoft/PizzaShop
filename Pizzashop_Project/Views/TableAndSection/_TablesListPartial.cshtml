@@ -43,11 +43,19 @@ else
             <td class="text-center">
                 @if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.Delete")).Succeeded)
                 {
-                    <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" id="EditTableBtnId" data-id="@item.TableId"
-                        onclick="updateTableDetails(this);RemoveValidatoOnCancel()" data-bs-toggle="modal"
-                        data-bs-target="#EditTableModal"></i>
-                    <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#DeleteTableModal"
-                        data-id="@item.TableId" onclick="DeleteTableDetails(this)"></i>
+                    @if (item.Status == "Available")
+                    {
+                        <i class="fa-solid fa-pen w-25 me-sm-2 me-xs-2 me-lg-0" id="EditTableBtnId" data-id="@item.TableId"
+                            onclick="updateTableDetails(this);RemoveValidatoOnCancel()" data-bs-toggle="modal"
+                            data-bs-target="#EditTableModal"></i>
+                        <i class="fa-solid fa-trash-can" data-bs-toggle="modal" data-bs-target="#DeleteTableModal"
+                            data-id="@item.TableId" onclick="DeleteTableDetails(this)"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-pen text-black-50 w-25 me-sm-2 me-xs-2 me-lg-0 mt-2"></i>
+                        <i class="fa-solid fa-trash-can text-black-50"></i>
+                    }
                 }
                 else if ((await AuthorizationService.AuthorizeAsync(User, "TableSection.EditAdd")).Succeeded)
                 {
@@ -58,7 +66,7 @@ else
                 }
                 else
                 {
-                    <i class="fa-solid fa-pen text-black-50 me-3 mt-2"></i>
+                    <i class="fa-solid fa-pen text-black-50 w-25 me-sm-2 me-xs-2 me-lg-0 mt-2"></i>
                     <i class="fa-solid fa-trash-can text-black-50"></i>
                 }
             </td>

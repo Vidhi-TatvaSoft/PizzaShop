@@ -10,11 +10,13 @@
     }
 
     function errorToaster(text) {
+        console.log("errrr");
         toastr.options = {
             "closeButton": true,
             "progressBar": true,
             "timeOut": "2000"
         };
+
         toastr.error(text);
     }
 

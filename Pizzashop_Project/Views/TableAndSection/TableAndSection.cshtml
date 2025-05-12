@@ -5,6 +5,7 @@
 @model DAL.ViewModels.TableSectionViewModel;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Table And Section";
 }
 
 <div class="categories-main-div container-fluid ">
@@ -292,7 +293,8 @@
                     </div>
                     <div class="col-6 mx-auto mt-4">
                         <div class="form-floating">
-                            <select asp-for="@Model.table.Status" class="form-control" id="tableStatus">
+                            <input type="hidden" id="tableStatusHidden" asp-for="@Model.table.Status" value="Available">
+                            <select class="form-control" id="tableStatus" disabled>
                                 <option value="Available">Available</option>
                                 <option value="Occupied">Occupied</option>
                             </select>
@@ -358,12 +360,13 @@
                     </div>
                     <div class="col-6 mx-auto mt-4">
                         <div class="form-floating">
-                            <select asp-for="@Model.table.Status" class="form-control" id="tableStatusForEdit">
+                            <input type="hidden" id="tableStatusForEditHidden" asp-for="@Model.table.Status">
+                            <select class="form-control" id="tableStatusForEdit" disabled>
                                 <option value="Available">Available</option>
                                 <option value="Occupied">Occupied</option>
                             </select>
                             <label for="tableStatusForEdit">Status</label>
-                            <span class="text-danger" asp-validation-for="@Model.table.Status"></span>
+                            @* <span class="text-danger" asp-validation-for="@Model.table.Status"></span> *@
                         </div>
                     </div>
                 </div>
@@ -440,11 +443,8 @@
                     url: "/TableAndSection/SectionList",
                     type: "GET",
                     success: function (data) {
-                        @* console.log(data); *@    
-                            console.log("section ajax call");
                         $("#SectionPartialViewId").html(data);
-                        @* loadSectionTable(SectionIDforbhai, searchText, currentPage, pageSize); *@
-                                                }
+                    }
                 });
         }
 
@@ -456,7 +456,7 @@
                 type: "GET",
                 data: { SectionID, search, pageNumber: page, pageSize },
                 success: function (data) {
-                    console.log("ajax call");
+                    IsHtmlDoc(data);
                     $("#TableListBody").html(data);
                     currentPage = page;
                     pageSize = parseInt(pageSize);
@@ -468,8 +468,7 @@
                     $("#left-arrow").prop("disabled", currentPage === 1);
                     $("#right-arrow").prop("disabled", currentPage * pageSize >= totalRecords);
                     $("#checkboxForSelectAllSection").prop("checked", false);
-                    @* document.getElementById("AddTableModaldropDown").value = SectionID.toString(); *@
-                        },
+                            },
                 error: function (data) {
                     console.log("error");
                     console.log(data);
@@ -497,9 +496,8 @@
             document.getElementById("EditTableModaldropDown").value = SectionID.toString();
             document.getElementById("TableCapacityForEdit").value = tag.parentElement.parentElement.children[1].innerHTML;
             document.getElementById("tableStatusForEdit").value = tag.parentElement.parentElement.children[2].children[0].children[0].innerHTML.trim();
+            document.getElementById("tableStatusForEditHidden").value = tag.parentElement.parentElement.children[2].children[0].children[0].innerHTML.trim()
         }
-
-
 
         function SelectAllSection() {
             var classess = document.getElementsByClassName("massDeleteClassforSection");
@@ -518,6 +516,7 @@
             }
 
         }
+
         function checkboxTickManage() {
             var classess = document.getElementsByClassName("massDeleteClassforSection");
             var deleteAllItemCkeckbboxId = document.getElementById("checkboxForSelectAllSection");
@@ -612,7 +611,7 @@
                 var classess = document.getElementsByClassName("massDeleteClassforSection");
                 @* console.log("delete all") *@
                     @* let toasterflag = true; *@
-                    for (i = 0; i < classess.length; i++) {
+                        for (i = 0; i < classess.length; i++) {
                     if (classess[i].checked) {
 
                         let tableID = classess[i].getAttribute("data-checkid");
@@ -629,8 +628,8 @@
                                     errorToaster(data.text);
                                     toasterflag = false;
                                 }
-                                location.reload();
-                                currentPage = 1;
+                                @* location.reload(); *@
+                                    currentPage = 1;
                                 loadSectionTable(SectionID, searchText, currentPage, pageSize);
                             }
                         })
@@ -763,7 +762,7 @@
                 e.preventDefault();
                 let form = $("#AddTableFormId");
                 @* let SectionID = $("#AddTableModaldropDown").val(); *@
-                                                if (form.valid()) {
+                                                    if (form.valid()) {
                     let formData = new FormData(this);
                     $.ajax({
                         url: "/TableAndSection/AddTable",
@@ -790,7 +789,7 @@
                 e.preventDefault();
                 let form = $("#EditTableFormId");
                 @* let SectionID = $("#EditTableModaldropDown").val(); *@
-                                                if (form.valid()) {
+                                                    if (form.valid()) {
                     let formData = new FormData(this);
                     $.ajax({
                         url: "/TableAndSection/EditTable",
@@ -839,7 +838,6 @@
 
 
         });
-
 
     </Script>
 

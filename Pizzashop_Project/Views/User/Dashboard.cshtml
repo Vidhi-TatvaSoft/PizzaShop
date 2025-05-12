@@ -2,6 +2,7 @@
 @model DAL.Models.User
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] ="Dashboard";
 }
 
 <div class="body_content">
@@ -244,6 +245,7 @@
                 type: "GET",
                 data: { timePeriod, startDate,endDate },
                 success: function (data) {
+                    @* IsHtmlDoc(data); *@
                     @* console.log(data); *@
                     $("#DashboardPartialView").html(data);
                     ChangeGraphData(timePeriod,startDate,endDate);

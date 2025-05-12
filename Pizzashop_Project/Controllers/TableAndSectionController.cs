@@ -61,6 +61,7 @@ public class TableAndSectionController : Controller
     [PermissionAuthorize("TableSection.View")]
      public IActionResult TablePagination(long? SectionID, string search = "", int pageNumber = 1, int pageSize = 5)
     {
+        //  throw new ApplicationException();
          TableSectionViewModel tablesectionvm = new();
 
         tablesectionvm.sectionList = _tableSectionService.GetAllSections();

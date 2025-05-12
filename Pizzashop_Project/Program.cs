@@ -12,6 +12,9 @@ using BLL.Service;
 using Pizzashop_Project.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Rotativa.AspNetCore;
+using Serilog;
+using Pizzashop_Project.ExceptionMiddleware;
+// using Common.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -37,6 +40,26 @@ builder.Services.AddScoped<IOrderAppWaitingService,OrderAppWaitingService>();
 builder.Services.AddScoped<IOrderAppMenuService,OrderAppMenuService>();
 builder.Services.AddScoped<IDashboardService,DashboardService>();
 builder.Services.AddControllersWithViews();
+
+string logFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Exception_Logs", "PizzaShop-log.txt");
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Error()
+    .Enrich.FromLogContext()
+    .WriteTo.File(
+        path: logFilePath,
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 7,
+        fileSizeLimitBytes: 10_000_000,
+        rollOnFileSizeLimit: true,
+        shared: true,
+        outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}{NewLine}{NewLine}"
+    )
+    .CreateLogger();
+
+// Replace built-in logger with Serilog
+builder.Logging.AddSerilog(Log.Logger);
 
 
 builder.Services.AddAuthentication(x=>{
@@ -135,6 +158,7 @@ builder.Services.AddSingleton<IHttpContextAccessor,HttpContextAccessor>();
 
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -143,15 +167,20 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 
-app.UseStatusCodePagesWithReExecute("/ErrorPage/{0}");
+
 
 app.UseStaticFiles();
 
 app.UseRotativa();
 
+app.UseMiddleware<ExceptionMiddleWare>();
+
 app.UseRouting();
+
+app.UseStatusCodePagesWithReExecute("/ErrorPage/HandleError/{0}");
 
 app.UseAuthorization();
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Pizzashop_Project.Controllers;
@@ -29,9 +30,7 @@ public class ErrorPageController :Controller
         return View();
     }
 
-  
-
-    [Route("ErrorPage/{statusCode}")]
+    [Route("ErrorPage/HandleError/{statusCode}")]
     public IActionResult HandleError(int statusCode)
     {
         switch (statusCode)
@@ -49,5 +48,21 @@ public class ErrorPageController :Controller
             default:
                 return View("GenericError");
         }
+    }
+
+    [AllowAnonymous]
+    public IActionResult HandleErrorWithToaster(string message)
+    {
+        TempData["ErrorMessage"] = message;
+
+        string referer = Request.Headers["Referer"].ToString();
+        // string referer = Url.Action("GenericError","Error");
+
+        if (string.IsNullOrEmpty(referer))
+        {
+            referer = Url.Action("VerifyPassword", "UserLogin") ?? "/"; // or any safe fallback page
+        }
+
+        return Redirect(referer);
     }
 }
