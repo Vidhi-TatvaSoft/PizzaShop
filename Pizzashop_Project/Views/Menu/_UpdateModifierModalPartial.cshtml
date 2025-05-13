@@ -17,33 +17,36 @@
                     </select>
                     <label for="selectGrpIdDropDown">Modifier Group</label>
                 </div>
+
                 <div class="form-floating col-6 mb-2 p-1">
                     <input type="text" class="form-control" asp-for="@Model.addModifier.ModifierName" id="floatingInput"
-                        placeholder="name" required>
+                        placeholder="name" >
                     <label for="floatingInput">Name</label>
                     <span asp-validation-for="@Model.addModifier.ModifierName" class="text-danger removeValidationOnCancel"></span>
                 </div>
 
                 <div class="form-floating col-4 p-1">
-                    <input type="text" class="form-control" id="floatingInput" asp-for="@Model.addModifier.Rate"
-                        placeholder="0" required>
-                    <label for="floatingInput">Rate</label>
+                    <input type="text" class="form-control" id="updatemodRate" asp-for="@Model.addModifier.Rate"
+                        placeholder="0">
+                    <label for="updatemodRate">Rate</label>
                     <span asp-validation-for="@Model.addModifier.Rate" class="text-danger removeValidationOnCancel"></span>
-
                 </div>
+
                 <div class="form-floating col-4 p-1">
                     <input type="text" class="form-control" id="floatingInput" asp-for="@Model.addModifier.Quantity"
-                        placeholder="0" required>
+                        placeholder="0" >
                     <label for="floatingInput">Quantity</label>
                     <span asp-validation-for="@Model.addModifier.Quantity" class="text-danger removeValidationOnCancel"></span>
                 </div>
+
                 <div class="form-floating col-4 mb-2">
                     <select class="form-select" asp-for="@Model.addModifier.Unit" id="floatingSelect" aria-label="Floating label select example">
                         <option value="pcs">Pieces</option>
                         <option value="cm">Centimeter</option>
                     </select>
-                    <label for="floatingSelect">Unit</label>
+                    <label for="floatingSelect">&nbsp; Unit</label>
                 </div>
+                
                 <div class="form-floating col-12 p-1">
                     <textarea class="form-control" asp-for="@Model.addModifier.Description"
                         placeholder="Leave a comment here" id="floatingTextarea"></textarea>
@@ -58,4 +61,165 @@
     </form>
 </div>
 
+
+<partial name="_Toaster"/>
 <partial name="_ValidationScriptsPartial" />
+
+
+@* @using DAL.ViewModels;
+@model MenuViewModel
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Edit Modifier</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            onclick="removeValidationOnCancel()"></button>
+    </div>
+
+    <form id="EditModifierModalId" asp-action="EditModifier" asp-controller="Modifier" method="post">
+        <div class="modal-body">
+            <div class="row">
+                <input type="hidden" asp-for="@Model.addModifier.ModifierId">
+                <div class="form-floating col-6 p-1">
+                    <select class="form-select" asp-for="@Model.addModifier.ModifierGrpId" id="selectGrpIdDropDown"
+                        asp-items="ViewBag.modifierGroupList">
+                        <option value="">Select a group</option>
+                    </select>
+                    <label for="selectGrpIdDropDown">Modifier Group</label>
+                    <span asp-validation-for="@Model.addModifier.ModifierGrpId"
+                        class="text-danger removeValidationOnCancel"></span>
+                    <span class="text-danger custom-validation" id="selectGrpIdDropDown-error"></span>
+                </div>
+
+                <div class="form-floating col-6 p-1">
+                    <input type="text" class="form-control" asp-for="@Model.addModifier.ModifierName"
+                        id="modifierNameInput" placeholder="name">
+                    <label for="modifierNameInput">Name</label>
+                    <span asp-validation-for="@Model.addModifier.ModifierName"
+                        class="text-danger removeValidationOnCancel"></span>
+                    <span class="text-danger custom-validation" id="modifierNameInput-error"></span>
+                </div>
+
+                <div class="form-floating col-4 p-1">
+                    <input type="number" step="0.01" min="0" class="form-control" id="updatemodRate"
+                        asp-for="@Model.addModifier.Rate" placeholder="0">
+                    <label for="updatemodRate">Rate</label>
+                    <span asp-validation-for="@Model.addModifier.Rate"
+                        class="text-danger removeValidationOnCancel"></span>
+                    <span class="text-danger custom-validation" id="updatemodRate-error"></span>
+                </div>
+
+                <div class="form-floating col-4 p-1">
+                    <input type="number" min="0" class="form-control" id="quantityInput"
+                        asp-for="@Model.addModifier.Quantity" placeholder="0">
+                    <label for="quantityInput">Quantity</label>
+                    <span asp-validation-for="@Model.addModifier.Quantity"
+                        class="text-danger removeValidationOnCancel"></span>
+                    <span class="text-danger custom-validation" id="quantityInput-error"></span>
+                </div>
+
+                <div class="form-floating col-4 p-1">
+                    <select class="form-select" asp-for="@Model.addModifier.Unit" id="floatingSelect">
+                        <option value="">Select a unit</option>
+                        <option value="pcs">Pieces</option>
+                        <option value="cm">Centimeter</option>
+                    </select>
+                    <label for="floatingSelect">Unit</label>
+                    <span asp-validation-for="@Model.addModifier.Unit"
+                        class="text-danger removeValidationOnCancel"></span>
+                    <span class="text-danger custom-validation" id="floatingSelect-error"></span>
+                </div>
+
+                <div class="form-floating col-12 p-1">
+                    <textarea class="form-control" asp-for="@Model.addModifier.Description"
+                        placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+                    <label for="floatingTextarea">Description</label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">save</button>
+            <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal"
+                onclick="removeValidationOnCancel()">cancel</button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    // Form validation
+    document.getElementById('EditModifierModalId').addEventListener('submit', function (event) {
+        let isValid = true;
+        clearCustomValidations();
+
+        // Modifier Group validation
+        const modifierGrpId = document.getElementById('selectGrpIdDropDown').value;
+        if (!modifierGrpId) {
+            displayError('selectGrpIdDropDown-error', 'Please select a modifier group.');
+            isValid = false;
+        }
+
+        // Modifier Name validation
+        const modifierName = document.getElementById('modifierNameInput').value.trim();
+        if (!modifierName) {
+            displayError('modifierNameInput-error', 'Modifier name is required.');
+            isValid = false;
+        } else if (modifierName.length < 2) {
+            displayError('modifierNameInput-error', 'Modifier name must be at least 2 characters long.');
+            isValid = false;
+        }
+
+        // Rate validation
+        const rate = document.getElementById('updatemodRate').value;
+        if (rate === '' || isNaN(rate) || parseFloat(rate) < 0) {
+            displayError('updatemodRate-error', 'Please enter a valid rate (0 or greater).');
+            isValid = false;
+        }
+
+        // Quantity validation
+        const quantity = document.getElementById('quantityInput').value;
+        if (quantity === '' || isNaN(quantity) || parseInt(quantity) < 0) {
+            displayError('quantityInput-error', 'Please enter a valid quantity (0 or greater).');
+            isValid = false;
+        }
+
+        // Unit validation
+        const unit = document.getElementById('floatingSelect').value;
+        if (!unit) {
+            displayError('floatingSelect-error', 'Please select a unit.');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Prevent form submission
+        }
+    });
+
+    // Display error message
+    function displayError(elementId, message) {
+        const errorElement = document.getElementById(elementId);
+        errorElement.textContent = message;
+    }
+
+    // Clear custom validation errors
+    function clearCustomValidations() {
+        const errorElements = document.querySelectorAll('.custom-validation');
+        errorElements.forEach(element => {
+            element.textContent = '';
+        });
+    }
+
+    // Clear all validations on cancel
+    function removeValidationOnCancel() {
+        clearCustomValidations();
+        // Clear ASP.NET Core validation errors
+        const aspValidationErrors = document.querySelectorAll('.removeValidationOnCancel');
+        aspValidationErrors.forEach(element => {
+            element.textContent = '';
+        });
+        // Remove invalid styling
+        document.querySelectorAll('.form-control.is-invalid, .form-select.is-invalid').forEach(element => {
+            element.classList.remove('is-invalid');
+        });
+    }
+</script> *@

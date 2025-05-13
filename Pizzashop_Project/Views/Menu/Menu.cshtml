@@ -699,6 +699,12 @@
     </div>
 </div>
 
+<!-- Update modifier modal -->
+<div id="exampleModal-updatemodifier" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" id="updateModifier-MainDiv">
+
+    </div>
+</div>
 
 <!-- add new modifier modal -->
 <div id="exampleModal-addmodifier" class="modal" tabindex="-1">
@@ -708,12 +714,6 @@
 </div>
 
 
-<!-- Update modifier modal -->
-<div id="exampleModal-updatemodifier" class="modal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered" id="updateModifier-MainDiv">
-
-    </div>
-</div>
 
 
 <!-- delete modifier -->
@@ -1060,9 +1060,6 @@
             </div>
 
         </div>
-
-
-
 
     </div>
 </div>
@@ -1869,7 +1866,6 @@
     
             //add modifier get ajax
             $("#exampleModal-addmodifier").on('show.bs.modal',function(event){
-                console.log("hiii")
                 $.ajax({
                     url:"/Menu/AddModifierModal",
                     type:"GET",
@@ -1920,7 +1916,7 @@
 
             //Edit modifier get -- to show data
             $("#exampleModal-updatemodifier").on('show.bs.modal', function (event) {
-                console.log("edit modifier div display");
+              
                 var button = $(event.relatedTarget);
                 var modID = button.data("id");
                 console.log(modID);
@@ -1938,15 +1934,15 @@
                     });
                 }
             });
-
+            
              //edit modifier post
-            $(document).on("submit","#EditModifierModalId", function (e) {
+             $(document).on("submit","#EditModifierModalId", function (e) {
                 e.preventDefault();
-                console.log("Edit mod post")
-                let form = $("#EditModifierModalId");
-                if (form.valid()) {
-                    let formData = new FormData(this);
-                    console.log(formData)
+                var formss = $("#EditModifierModalId");
+                console.log(formss)
+                if (formss.valid()) {
+                    var formData= new FormData(this);
+                    console.log(...formData)
                     $.ajax({
                         url: "/Menu/EditModifier",
                         type: "POST",
@@ -1962,7 +1958,6 @@
                             } 
                             $(".btn-close").click();
                            loadTablemodifier(modifierGrpID, searchTextMod, currentPageMod, pageSizeMod);
-                            @* loadModifierGroup(); *@
                             SelectAllModifiers();
                         }
                     });
@@ -2465,5 +2460,7 @@
    @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <partial name="_Toaster"/>
+    
 }
+<partial name="_Toaster"/>
+<partial name="_ValidationScriptsPartial" />

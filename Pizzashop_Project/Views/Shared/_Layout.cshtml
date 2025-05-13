@@ -233,6 +233,15 @@
                                     <p class="customer-text-inactive text-size-set m-0 ms-3 fs-6">Customer</p>
                                 </a>
                                 }
+
+                                <!-- events-->
+                                @if (User.IsInRole("Account Manager")){
+                                <a class=" d-flex p-3  @((ViewData["sidebar-active"] as string) == "TaxAndFees" ? "active-div" : "")"
+                                    style="text-decoration: none;" asp-action="TaxAndFees" asp-controller="TaxAndFees">
+                                    <i class="fa-solid fa-money-check-dollar mt-1"></i>
+                                    <p class="taxes-text-inactive text-size-set m-0 ms-3 fs-6">Event Booking</p>
+                                </a>
+                                }
                             </div>
                             </div>
                         </div>
@@ -333,7 +342,6 @@
                     }
                 }
             });
-
         });
     </script>
 

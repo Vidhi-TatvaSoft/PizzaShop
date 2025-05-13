@@ -105,7 +105,7 @@ public class OrderAppKotService : IOrderAppKotService
             List<Kot> data = await _context.Kots.Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Item).ThenInclude(x => x.Category)
                                         .Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Modifierorders).ThenInclude(x => x.Modifier)
                                         .Include(x => x.Order).ThenInclude(x => x.Assigntables).ThenInclude(x => x.Table).ThenInclude(x => x.Section)
-                                        .Where(x => x.Isdelete == false).ToListAsync();
+                                        .Where(x => x.Isdelete == false ).ToListAsync();
 
             if (categoryId == 0)
             {

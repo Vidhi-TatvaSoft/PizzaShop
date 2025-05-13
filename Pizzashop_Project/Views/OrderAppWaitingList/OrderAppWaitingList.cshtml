@@ -54,7 +54,7 @@
                     <div class="form-floating  col-12 mb-3">
                         <input type="text" class="form-control" id="Email" list="emailDatalist"
                             asp-for="@Model.waitingTokenDetailsViewModel.Email" placeholder="Email*"
-                            onkeyup="GetSuggestionsusingEmail(this)" onchange="FillValuesBySuggestion(this)"
+                            onkeyup="GetSuggestionsusingEmail(this)" onchange="FillValuesBySuggestion(this)" 
                             autocomplete="off">
                         <datalist id="emailDatalist"></datalist>
                         <span asp-validation-for="@Model.waitingTokenDetailsViewModel.Email"
@@ -257,13 +257,14 @@
         }
 
 
-        //Add waiting token
+        //Add edit waiting token
         $(document).on("submit", "#waitingTokenFormId", function (e) {
             e.preventDefault();
+            document.getElementById("Email").removeAttribute("disabled")
             let form = $("#waitingTokenFormId");
             let formData = new FormData(this);
             $.ajax({
-                url: "/OrderAppWaitingList/AddWaitingToken",
+                url: "/OrderAppWaitingList/AddEditWaitingToken",
                 type: "Post",
                 contentType: false,
                 processData: false,
@@ -296,7 +297,7 @@
                     document.getElementById("persons").value = data.noOfPerson;
                     document.getElementById("EditTableModaldropDown").value = data.sectionID;
                     document.getElementById("mobile").value = data.mobileno;
-
+                    document.getElementById("Email").setAttribute("disabled","disabled")
 
                 }
             })
@@ -480,6 +481,7 @@
             for (i = 0; i < removevalidations.length; i++) {
                 removevalidations[i].innerHTML = ""
             }
+            document.getElementById("Email").removeAttribute("disabled")
         }
 
 

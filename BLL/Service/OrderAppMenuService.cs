@@ -575,7 +575,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                 await _context.SaveChangesAsync();
                 orderDetailsvm.InvoiceId = invoice.InvoiceId;
             }
-
+            await _context.SaveChangesAsync();
             return orderDetailsvm;
         }
         catch (Exception e)
@@ -657,6 +657,15 @@ public class OrderAppMenuService : IOrderAppMenuService
                 table.ModifiedBy=userId;
                 _context.Update(table);
             }
+
+            List<Kot> kotList = _context.Kots.Where(kot => kot.OrderId == orderDetailsvm.OrderId && !kot.Isdelete).ToList();
+                foreach (var kot in kotList)
+                {
+                    kot.Isdelete = true;
+                    kot.ModifiedAt=DateTime.Now;
+                    kot.ModifiedBy=userId;
+                    _context.Update(kot);
+                }
 
 
             await _context.SaveChangesAsync();

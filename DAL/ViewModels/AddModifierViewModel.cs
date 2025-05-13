@@ -16,7 +16,8 @@ public class AddModifierViewModel
     public string? Unit { get; set; }
 
     [Range(0, 999, ErrorMessage = "Rate should be Positive and cannot exceed 3 digit")]
-    public decimal? Rate { get; set; }
+    public decimal Rate { get; set; }
+
 
     [Range(0, 99, ErrorMessage = "Quantity should be Positive and cannot exceed 2 digit")]
     public int Quantity { get; set; }

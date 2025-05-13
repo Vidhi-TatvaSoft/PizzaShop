@@ -413,7 +413,7 @@ public class MenuService : IMenuService
             addModifiervm.ModifierName = modifier.ModifierName;
             addModifiervm.Description = modifier.Description;
             addModifiervm.Quantity = (int)modifier.Quantity;
-            addModifiervm.Rate = modifier.Rate;
+            addModifiervm.Rate = (decimal)modifier.Rate;
             addModifiervm.Unit = modifier.Unit;
         }
         return addModifiervm;

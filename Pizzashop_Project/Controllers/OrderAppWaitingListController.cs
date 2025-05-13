@@ -63,9 +63,9 @@ public class OrderAppWaitingListController : Controller
     }
     #endregion
 
-    #region AddWaitingToken
+    #region AddEditWaitingToken
     [HttpPost]
-    public async Task<IActionResult> AddWaitingToken(OrderAppWaitingListViewModel waitingListvm)
+    public async Task<IActionResult> AddEditWaitingToken(OrderAppWaitingListViewModel waitingListvm)
     {
         if (waitingListvm.waitingTokenDetailsViewModel.waitingId == 0)
         {
