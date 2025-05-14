@@ -53,21 +53,24 @@ namespace BLL.Services
 
         public string VerifyUserPassword(UserLoginViewModel userlogin)
         {
-            try{
-            var user = _context.Userlogins.Include(x => x.Users).FirstOrDefault(e => e.Email == userlogin.Email);
-
-            if (user != null)
+            try
             {
-                if (user.Password == EncryptPassword(userlogin.Password) && user.IsDelete == false && user.Users.ToList()[0].Status == true)
+                var user = _context.Userlogins.Include(x => x.Users).FirstOrDefault(e => e.Email == userlogin.Email);
+
+                if (user != null)
                 {
-                    var RoleObject = _context.Roles.Where(e => e.RoleId == user.RoleId).FirstOrDefault();
-                    var token = _jwttokenService.GenerateToken(userlogin.Email, RoleObject.RoleName);
-                    return token;
+                    if (user.Password == EncryptPassword(userlogin.Password) && user.IsDelete == false && user.Users.ToList()[0].Status == true)
+                    {
+                        var RoleObject = _context.Roles.Where(e => e.RoleId == user.RoleId).FirstOrDefault();
+                        var token = _jwttokenService.GenerateToken(userlogin.Email, RoleObject.RoleName);
+                        return token;
+                    }
+                    return null;
                 }
                 return null;
             }
-            return null;
-            }catch(Exception e){
+            catch (Exception e)
+            {
                 return null;
             }
         }

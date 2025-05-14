@@ -1,65 +1,70 @@
-.login_details_main_div{
+.login_details_main_div {
   background-color: rgb(173, 217, 223);
 }
 
-.login_details_main_div{
+.login_details_main_div {
   background-color: rgb(208, 232, 243);
 }
-.text-primary{
-  color:#0084C3 !important;
-}
-.bg-primary{
-  background-color: #0084C3 !important;
-} 
 
-.btn-primary{
+.text-primary {
+  color: #0084C3 !important;
+}
+
+.bg-primary {
+  background-color: #0084C3 !important;
+}
+
+.btn-primary {
   background-color: #0084C3 !important;
   color: #ffffff !important;
 }
 
-.btn-outline-primary{
+.btn-outline-primary {
   color: #0084C3 !important;
   background-color: #ffffff !important;
-  border:  1px solid #0084C3 !important;
+  border: 1px solid #0084C3 !important;
 }
 
 
-.logo-text{
+.logo-text {
   font-weight: 700;
-} 
-.image_main_div img{
+}
+
+.image_main_div img {
   object-fit: cover;
 }
 
 @media (max-width:767px) {
   .login_details_main_div {
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-image: linear-gradient(rgba(255, 255, 255, 0.743), rgba(255, 253, 253, 0.911)), url("/images/dominos_background.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.743), rgba(255, 253, 253, 0.911)), url("/images/dominos_background.jpg");
   }
 }
 
 
 
-@media (max-width:768px){
-  .two-cols{
-      flex-direction: column;
-   
+@media (max-width:768px) {
+  .two-cols {
+    flex-direction: column;
+
   }
-  .three-cols-div{
-      flex-direction: column;
-   
+
+  .three-cols-div {
+    flex-direction: column;
+
   }
-  .four-cols{
-      flex-direction: column;
+
+  .four-cols {
+    flex-direction: column;
 
   }
 }
 
 
 
-form i{
+form i {
   margin-left: -35px;
   /* cursor: pointer; */
 }
@@ -70,96 +75,101 @@ form i{
     }
   } */
 
-  @media (min-width:360px) and (max-width:700px){
-    .user-list-main-div{
-      /* width: 40px; */
-      flex-direction: column;
-    }
-    .user-text{
-      /* margin-left: 30px; */
-    }
+@media (min-width:360px) and (max-width:700px) {
+  .user-list-main-div {
+    /* width: 40px; */
+    flex-direction: column;
   }
 
-  @media (max-width:576px){
-    .profile-details-div{
-      margin-top: 25px;
-    }
+  .user-text {
+    /* margin-left: 30px; */
   }
-  
- 
-  .offcanvas-class {
-    margin-top: 55px;
-  }
-  
-  
-  .sidebar-options-menu {
-    list-style-type: none;
-  }
-
-  a{
-    color:black;
-  }
-  
-  .active-div {
-    /* / margin-top: 10px; / */
-    background-color: #bad3e9;
-    color: black;
-    /* / margin-right: 30px; / */
-  }
-  
-  .opt {
-    color:#3e3e3e;
-  }
-  
-  .dashboard-text {
-    font-weight: 600;
-  }
-  
-  .nav-link.active{
-    color: #0084C3 !important;
 }
 
-.nav-link{
-    color: black !important;
+@media (max-width:576px) {
+  .profile-details-div {
+    margin-top: 25px;
+  }
 }
-  
-  .right-side-main-div {
-    background-color: #dfe9f3;
-    min-height: 100vh;
-  }
-  
-  .text-size-set{
-    font-size: small;
-  }
 
- .user-div, .back-button{
+
+.offcanvas-class {
+  margin-top: 55px;
+}
+
+
+.sidebar-options-menu {
+  list-style-type: none;
+}
+
+a {
+  color: black;
+}
+
+.active-div {
+  /* / margin-top: 10px; / */
+  background-color: #bad3e9;
+  color: black;
+  /* / margin-right: 30px; / */
+}
+
+.opt {
+  color: #3e3e3e;
+}
+
+.dashboard-text {
+  font-weight: 600;
+}
+
+.nav-link.active {
+  color: #0084C3 !important;
+}
+
+.nav-link {
+  color: black !important;
+}
+
+.right-side-main-div {
+  background-color: #dfe9f3;
+  min-height: 100vh;
+}
+
+.text-size-set {
+  font-size: small;
+}
+
+.user-div,
+.back-button {
   position: relative;
- }
-  .password-div{
+}
+
+.password-div {
   position: relative;
 
- }
- .search-icon-style{
+}
+
+.search-icon-style {
   position: absolute;
   margin-left: -23px;
   margin-top: 7px;
- }
- .search-icon-style-orders{
+}
+
+.search-icon-style-orders {
   position: absolute;
   margin-left: 178px;
   margin-top: -28px;
- }
+}
 
- .table-main-div{
+.table-main-div {
   /* overflow: auto; */
   /* overflow: scroll; */
- }
+}
 
- .left-icon-tag{
+.left-icon-tag {
   position: absolute;
   margin-top: 10px;
   margin-left: 15px;
- }
+}
 
 
 /* 
@@ -167,61 +177,62 @@ form i{
   margin-left: 100px !important;
  } */
 
- .password-icon{
+.password-icon {
   position: absolute;
   top: 15px;
   right: 20px;
- }
+}
 
 
- .password-icon-changepass{
+.password-icon-changepass {
   position: absolute;
   top: 5px;
   right: 15px;
- }
+}
 
- .password-icon-login{
+.password-icon-login {
 
   position: absolute;
   top: 3px;
   right: 10px;
   z-index: 1 !important;
- }
+}
 
- .inputText-login{
+.inputText-login {
   z-index: 0 !important;
- } 
- .browse-file-div{
+}
+
+.browse-file-div {
   border-style: dashed;
   border-width: 2px;
   border-color: lightgrey;
- }
+}
 
- .category-active-div{
+.category-active-div {
   color: 0084C3 !important;
- }
+}
 
- .div-for-tab-color{
-  background-color: #dfe9f3 ;
+.div-for-tab-color {
+  background-color: #dfe9f3;
   height: 10px;
- }
+}
 
 
- .left-sidebar-category-main-div{
+.left-sidebar-category-main-div {
   /* height: 350px; */
   overflow: auto;
- }
+}
 
- /* .categories-main-div{
+/* .categories-main-div{
   height: 350px;
  } */
 
- .gradient-color{
-  background: linear-gradient(90deg, #3033e9 0%,#1138b8 25%,#090cb1 50%,  #0c021f 100%);
- }
+.gradient-color {
+  background: linear-gradient(90deg, #3033e9 0%, #1138b8 25%, #090cb1 50%, #0c021f 100%);
+}
 
- 
-.camera-image{
+
+.camera-image {
   height: 25px;
   width: 25px;
   border-radius: 50%;
@@ -229,103 +240,104 @@ form i{
   left: 75px !important;
 }
 
-.user-profile{
+.user-profile {
   height: 90px;
   width: 90px;
   border-radius: 50%;
   top: -40px;
 }
 
-.checkbox-headimg-tag{
+.checkbox-headimg-tag {
   position: relative;
-  left:35px;
+  left: 35px;
 }
 
 
 
-.categories-div i.iconeditdelete{
+.categories-div i.iconeditdelete {
   opacity: 0;
 }
 
-.categories-div:hover i.iconeditdelete{
+.categories-div:hover i.iconeditdelete {
   opacity: 1;
   color: grey;
 }
 
-.modifiers-div-main i.iconeditdelete{
+.modifiers-div-main i.iconeditdelete {
   opacity: 0;
 }
 
-.modifiers-div-main:hover i.iconeditdelete{
+.modifiers-div-main:hover i.iconeditdelete {
   opacity: 1;
   color: grey;
 }
 
-.Sections-div i.iconeditdelete{
+.Sections-div i.iconeditdelete {
   opacity: 0;
 }
 
-.Sections-div:hover i.iconeditdelete{
+.Sections-div:hover i.iconeditdelete {
   opacity: 1;
   color: grey;
 }
 
-.active-category{
-  color:#0084C3 !important;
+.active-category {
+  color: #0084C3 !important;
   font-weight: bold;
 }
 
-.scrollableclass{
+.scrollableclass {
   overflow: auto;
   min-height: 350px;
 }
 
 
-@media (min-width : 1200px){
-  #AddItemModalRightBar{
-      height: 408px !important;
+@media (min-width : 1200px) {
+  #AddItemModalRightBar {
+    height: 408px !important;
   }
 }
 
 
-@media (max-width : 1199px){
-  #AddItemModalRightBar{
-      height: 508px !important;
+@media (max-width : 1199px) {
+  #AddItemModalRightBar {
+    height: 508px !important;
   }
 }
 
-.order-items-main-div{
+.order-items-main-div {
   height: 420px;
   overflow: auto;
 }
 
-.list-item{
+.list-item {
   font-size: 12px;
 }
 
-.orderStatus{
+.orderStatus {
   background-color: #87f0e7;
-  color:#003b28
+  color: #003b28
 }
 
 @media (max-width: 992px) {
-  .customerHistoryDetailsFields{
-    width: 100%  !important;
-  }
-}
-@media (min-width: 992px) {
-  .customerHistoryDetailsFields{
-    width: 50%  !important;
+  .customerHistoryDetailsFields {
+    width: 100% !important;
   }
 }
 
-.customerHistoryTable{
+@media (min-width: 992px) {
+  .customerHistoryDetailsFields {
+    width: 50% !important;
+  }
+}
+
+.customerHistoryTable {
   box-shadow: 5px 5px 10px rgb(192, 192, 192);
 }
 
 
 /* ------------------------order app css------------- */
-.orderApp-active-div{
+.orderApp-active-div {
   background-color: #71c5ec !important;
   color: white !important;
 }
@@ -335,7 +347,7 @@ form i{
   color: white !important;
 } */
 
-.KOTCategorySelect{
+.KOTCategorySelect {
   color: #0084C3 !important;
   border-bottom: 3px solid #0084C3 !important;
 }
@@ -355,6 +367,7 @@ form i{
   border-radius: 50% !important;
   transform: rotate(-90deg) !important;
 }
+
 .accordion-button:focus {
   z-index: 3;
   border-color: #fff !important;
@@ -363,6 +376,7 @@ form i{
   outline: 0;
   box-shadow: none !important;
 }
+
 .accordion-button:not(.collapsed) {
   color: #fff !important;
   background-color: #e7f1ff;
@@ -376,62 +390,63 @@ form i{
   background-color: #d8e6cb !important;
 }
 
-.tableRunning{
+.tableRunning {
   border: 1px solid #77b4e0 !important;
   background-color: #d2e9fa !important;
 }
 
-.tableAvailable{
+.tableAvailable {
   border: 1px solid rgb(54, 52, 52) !important;
   background-color: rgb(250, 247, 247) !important;
 }
 
-.TableSelected{
+.TableSelected {
   border: 2px solid #80ec14 !important;
 }
+
 /*  change accordian  */
 
 
 
 /* menu */
-@media (max-width:767px){
-  .category-toggle-active{
+@media (max-width:767px) {
+  .category-toggle-active {
     transform: translateX(-100%);
     position: absolute !important;
   }
 }
 
-.category-toggle{
+.category-toggle {
   transition: transform 0.4s ease-out;
   z-index: 6;
 }
 
-.overlay-category{
+.overlay-category {
   height: 100%;
   width: 100%;
   position: absolute;
-  top:0;
+  top: 0;
   left: 0;
   background-color: rgb(0 0 0 / 39%);
   z-index: 4;
   display: none;
 }
 
-.overlay-category-active{
+.overlay-category-active {
   display: initial;
 }
 
-.category-toggle-position{
+.category-toggle-position {
   position: absolute;
 }
 
-.orderAppActive{
-  background-color: #0084C3 ;
+.orderAppActive {
+  background-color: #0084C3;
   color: white;
   border-radius: 0px 50px 50px 0px;
 }
 
-.modifierSelected{
+.modifierSelected {
   background-color: #b2daec !important;
   border: 1px solid #0084C3;
 }
@@ -453,9 +468,12 @@ form i{
   background-color: rgb(222, 247, 222);
 }*/
 
-.dashboard-average-waiting-time, .dashboard-average-order-value, .dashboard-total-orders, .dashboard-total-sales{
+.dashboard-average-waiting-time,
+.dashboard-average-order-value,
+.dashboard-total-orders,
+.dashboard-total-sales {
   background-color: white;
-} 
+}
 
 .itemWiseinstruction {
   cursor: pointer;

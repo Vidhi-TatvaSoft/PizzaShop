@@ -28,15 +28,16 @@ public class OrderAppMenuController : Controller
         _userLoginSerivce = userLoginService;
     }
 
-    public IActionResult OrderAppMenu(long customerId = 0)
+    public IActionResult OrderAppMenu(string customerId = "0")
     {
+        long custId = Convert.ToInt64(_userLoginSerivce.Base64Decode(customerId));
         OrderAppMenuViewModel menuvm = new();
         menuvm.categoryList = _menuService.GetAllCategories();
         ViewData["orderApp-Active"] = "Menu";
         ViewData["orderAppDDIcon"] = "fa-burger";
 
-        ViewData["customerId"] = customerId;
-        if (customerId != 0)
+        ViewData["customerId"] = custId;
+        if (custId != 0)
         {
             //    menuvm.orderdetails= GetOrderDetailsBycustId(customerId);
         }

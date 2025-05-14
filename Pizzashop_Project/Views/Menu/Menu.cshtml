@@ -1113,6 +1113,7 @@
         }
         var editItemDatastatic;
         var editItemData;
+
         //details of edit items
         function getDetailsForEditItem(tag){
 
@@ -1218,7 +1219,6 @@
         }
 
         
-
         //add mod grp---to EmptyFieldsAddModGrp the field of add modgrp
         function EmptyFieldsAddModGrp(){
             modTempID =[];
@@ -1232,6 +1232,7 @@
             document.getElementById("ExistingModifiers").innerHTML="";
 
         }
+        
         //edit mod grp---to EmptyFieldsAddModGrp field of edit modgrp
         function EmptyFieldsAddModGrpForEdit(){
             modTempID =[];
@@ -1401,6 +1402,7 @@
                 remoeclassList[i].innerText="";
             }
         }
+        
         //load all modifiers for edit existing modifier width pagination
             function LoadAllModifiersForEdit(search="",page=1,pageSize=5){
                 pageSize = parseInt(pageSizeModExistForEdit)
@@ -1436,18 +1438,7 @@
                     }
                 });
             }
-        
-        @* function saveModifiersToModifierGroup(){
-            console.log(modTempID);
-            $.ajax({
-                url:"Menu/AddModifierGroup",
-                type:"post",
-                data:{modTempID},
-                success:function(data){
-                    console.log("modifiergrp added");
-                }
-            })
-        } *@
+    
     
             let currentPage = 1;
             let pageSize = $("#itemsperpage").val();
@@ -1556,6 +1547,7 @@
                     ${modTempName[i]} <i class="fa-solid fa-xmark" style="margin-left: 0px;" onclick="RemoveFromListAddModifierGroup(\`${modTempID[i]}\`,\`${modTempName[i]}\`)" ></i></div> `
                 }
             }
+            
             //Edit #-----method to show selected existing modifier in edit modgrp
             function DisplayNamesOfExistingModForEdit(){
                 modTempIdForCancel=[];
@@ -1664,6 +1656,7 @@
                 loadTable(catID, searchText, currentPage, pageSize);
                 SelectAllItem(); 
             });
+            
             $("#searchbtn-mod").on("keyup", function () {
                 searchTextMod = $(this).val().trim();
                 console.log(searchTextMod);
@@ -1679,6 +1672,7 @@
                 currentPageModExist =1;
                 LoadAllModifiers(searchTextModExist,currentPageModExist,pageSizeModExist);
             });
+            
             $("#searchbtn-existingModForEdit").on("keyup", function () {
                 searchTextModExistForEdit = $(this).val().trim();
                 console.log(searchTextModExistForEdit);
@@ -1713,6 +1707,7 @@
                     SelectAllItem(); 
                 }
             });
+            
             $("#right-arrow-mod").on("click", function () {
                 let rightarrowMod = !$(this).prop("disabled");
                 console.log(rightarrowMod);
@@ -1732,6 +1727,7 @@
                     //SelectAllModifiersExist(); 
                 }
             });
+            
             $("#right-arrow-modExistForEdit").on("click", function () {
                 let rightarrowModExist = !$(this).prop("disabled");
                 console.log(rightarrowModExist);
@@ -1751,6 +1747,7 @@
                     SelectAllItem(); 
                 }
             });
+            
             $("#left-arrow-mod").on("click", function () {
                 let leftarrowMod = !$(this).prop("disabled");
                 console.log(leftarrowMod);
@@ -1770,6 +1767,7 @@
                     //SelectAllModifiersExist(); 
                 }
             });
+            
             $("#left-arrow-modExistForEdit").on("click", function () {
                 let leftarrowModExistForEdit = !$(this).prop("disabled");
                 console.log(leftarrowModExistForEdit);
@@ -1804,6 +1802,7 @@
                 LoadAllModifiers(searchTextModExist,currentPageModExist,pageSizeModExist);
                 //SelectAllModifiersExist(); 
             });
+            
             $("#itemsperpage-modExistForEdit").on("change", function () {
                 pageSizeModExistForEdit = $(this).val();
                 currentPageModExistForEdit=1;
@@ -1811,7 +1810,6 @@
                 LoadAllModifiersForEdit(searchTextModExistForEdit,currentPageModExistForEdit,pageSizeModExistForEdit);
                 //SelectAllModifiersExist(); 
             });
-
 
             $("#DeleteItemFormId").on("submit",function(e){
                 e.preventDefault();
@@ -1863,7 +1861,6 @@
                 }
             })  
 
-    
             //add modifier get ajax
             $("#exampleModal-addmodifier").on('show.bs.modal',function(event){
                 $.ajax({
@@ -2019,10 +2016,6 @@
                     }
                 }
             });
-            
-
-
-
 
             //add modifier group post 
             $(document).on("submit","#addModifierGroupModalFormId", function (e) {
@@ -2056,7 +2049,6 @@
                     })
                 }
             })  
-
 
             //Edit modifier group post method
             $(document).on("submit","#EditModifierGroupModalFormId",function(e){
@@ -2173,7 +2165,7 @@
                 }
             })
         }
-
+      
         function GetModGrpListEdit(){
             $.ajax({
                 url:"/Menu/GetModifierGroupList",

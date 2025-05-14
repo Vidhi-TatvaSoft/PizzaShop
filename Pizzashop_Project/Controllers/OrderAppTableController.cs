@@ -96,7 +96,9 @@ public class OrderAppTableController:Controller
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
         bool tableAssignStatus =await _orderAppTableService.Assigntable(Email, TableIds, userId);
-        long custId = await _customerService.GetCustomerIdByTableId(TableIds[0]);
+        // long custId = await _customerService.GetCustomerIdByTableId(TableIds[0]);
+        long customerid= await _customerService.GetCustomerIdByTableId(TableIds[0]);
+        string custId = _userLoginSerivce.Base64Encode(customerid.ToString());
         if(tableAssignStatus){
             return Json(new{ success = true, text = "Table Assigned ", custId = custId});
         }
@@ -107,7 +109,8 @@ public class OrderAppTableController:Controller
     #region  GetCustomerIdByTableId
     public async Task<IActionResult> GetCustomerIdByTableId(long tableId){
         long customerId = await _customerService.GetCustomerIdByTableId(tableId);
-        return Json(new { custId = customerId });
+        string custId = _userLoginSerivce.Base64Encode(customerId.ToString());
+        return Json(new { custId = custId });
 
     }
 

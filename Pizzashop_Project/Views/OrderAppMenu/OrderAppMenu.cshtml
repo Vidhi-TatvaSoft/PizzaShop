@@ -225,7 +225,7 @@
 
         //get orderdetails by customer id (rightside)
         function GetOrderDetailsBycustId() {
-            var custId = document.getElementById("customerId").innerHTML;
+            var custId = parseInt(document.getElementById("customerId").innerHTML);
             console.log("customer id", custId);
             $.ajax({
                 url: "/OrderAppMenu/GetOrderDetailsBycustId",
