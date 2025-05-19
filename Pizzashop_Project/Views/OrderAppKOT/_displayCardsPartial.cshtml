@@ -34,7 +34,7 @@
                     {
                         @foreach (var item in card.ItemsInOneCard)
                         {
-                            if (item.Quantity > 0)
+                            @if (item.Quantity > 0)
                             {
                                 <div class="d-flex justify-content-between">
                                     <div>@item.ItemName</div>
