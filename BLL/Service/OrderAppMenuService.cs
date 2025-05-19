@@ -183,7 +183,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                   CustomerName = o.CustomerName,
                   Phoneno = o.Phoneno,
                   Email = o.Email,
-                  NumberOfPerson =AssignTable.Sum(x => x.NoOfPerson),
+                  NumberOfPerson =AssignTable.FirstOrDefault().NoOfPerson,
                   
 
               }).ToList()[0];

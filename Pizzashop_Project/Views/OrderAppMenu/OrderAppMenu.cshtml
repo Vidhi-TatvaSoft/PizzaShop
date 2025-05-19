@@ -301,6 +301,7 @@
         //backend order items save in array
         function FillAlreadySavedDataInArray(orderDetails) {
             orderDetailsModel = orderDetails;
+            console.log(orderDetailsModel)
             isOrderdAnything = orderDetailsModel.orderId == 0 ? false : true;
             var AllItems = [];
             AllItemsArray = [];
@@ -454,6 +455,7 @@
 
         function Plus(tag, count) {
             if (!IsOrderCompleted) {
+                console.log(orderDetailsModel);
                 isAllItemSaved = false;
                 if (parseInt(tag.previousElementSibling.innerHTML) >= 10) {
                     errorToaster("Can not aorder more than 10 items");

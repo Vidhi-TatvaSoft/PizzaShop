@@ -30,24 +30,30 @@
                     </li>
                 </div>
                 <div class="text-secondary ms-2 me-2" style="overflow: auto; height: 150px;">
-                    @foreach (var item in card.ItemsInOneCard)
+                    @if (card.ItemsInOneCard != null)
                     {
-                        if (item.Quantity > 0)
+                        @foreach (var item in card.ItemsInOneCard)
                         {
-                            <div class="d-flex justify-content-between">
-                                <div>@item.ItemName</div>
-                                <div class="text-dark">@item.Quantity</div>
-                            </div>
-                            @foreach (var modifier in item.ModifiersInItem)
+                            if (item.Quantity > 0)
                             {
-                                <li class="ms-2">@modifier.ModifierName</li>
+                                <div class="d-flex justify-content-between">
+                                    <div>@item.ItemName</div>
+                                    <div class="text-dark">@item.Quantity</div>
+                                </div>
+                                @if (item.ModifiersInItem != null)
+                                {
+                                    @foreach (var modifier in item.ModifiersInItem)
+                                    {
+                                        <li class="ms-2">@modifier.ModifierName</li>
+                                    }
+                                }
+                                @if (item.ItemInstruction != null)
+                                {
+                                    <div class="text-primary">Instruction: <span class="text-dark">@item.ItemInstruction</span></div>
+                                }
                             }
-                            @if (item.ItemInstruction != null)
-                            {
-                                <div class="text-primary">Instruction: <span class="text-dark">@item.ItemInstruction</span></div>
-                            }
-                        }
 
+                        }
                     }
 
                 </div>
@@ -62,7 +68,9 @@
 
     }
     <input type="hidden" value="@Model.TotalCount" id="totalcount">
-}else{
+}
+else
+{
     <div>No Items in KOT.</div>
 }
 

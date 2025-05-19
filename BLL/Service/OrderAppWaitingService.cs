@@ -28,6 +28,8 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     }
     #endregion
 
+    
+
     #region GetWaitingListBySection
     public List<WaitingTokenDetailsViewModel> GetWaitingListBySection(long sectionId)
     {

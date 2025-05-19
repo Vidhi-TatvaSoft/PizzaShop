@@ -74,12 +74,20 @@ public class OrderAppWaitingListController : Controller
             {
                 return Json(new { success = false, text = "This Customer is Already present In waitingList" });
             }
-        }else{
-            bool IsCustomerPresentInWaitingUpdate = await _orderAppTableService.IsCustomerPresentInWaitingUpdate(waitingListvm.waitingTokenDetailsViewModel.Email,waitingListvm.waitingTokenDetailsViewModel.waitingId);
+            
+        }
+        else
+        {
+            bool IsCustomerPresentInWaitingUpdate = await _orderAppTableService.IsCustomerPresentInWaitingUpdate(waitingListvm.waitingTokenDetailsViewModel.Email, waitingListvm.waitingTokenDetailsViewModel.waitingId);
             if (IsCustomerPresentInWaitingUpdate)
             {
                 return Json(new { success = false, text = "This Customer is Already present In waitingList" });
             }
+        }
+        bool isCustomerAlreadyAssigned = _orderAppTableService.IsCustomerAlreadyAssigned(waitingListvm.waitingTokenDetailsViewModel.Email);
+        if (isCustomerAlreadyAssigned)
+        {
+            return Json(new { success = false, text = "Table already Assigned to this customer" });
         }
 
         string token = Request.Cookies["AuthToken"];

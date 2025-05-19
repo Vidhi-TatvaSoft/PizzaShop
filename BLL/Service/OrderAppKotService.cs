@@ -5,6 +5,9 @@ using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Dapper;
+using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace BLL.Service;
 
@@ -17,95 +20,48 @@ public class OrderAppKotService : IOrderAppKotService
         _context = context;
     }
 
-    // public async Task<List<KotCardDetailsViewModel>> GetDetailsByCategory(long categoryId, string status)
-    // {
-    //     var data = await _context.Kots.Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Item).ThenInclude(x => x.Category)
-    //                                 .Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Modifierorders).ThenInclude(x => x.Modifier)
-    //                                 .Include(x => x.Order).ThenInclude(x => x.Assigntables).ThenInclude(x => x.Table).ThenInclude(x => x.Section)
-    //                                 .Where(x => x.Isdelete == false).ToListAsync();
+    #region GetDetailsByCategorypagination
+    public async Task<PaginationViewModel<KotCardDetailsViewModel>> GetDetailsByCategorypaginationSP(long categoryId, string status, int pageNumber, int pageSize = 5)
+    {
+        try
+        {
 
-    //     if (categoryId == 0)
-    //     {
-    //         var kotdetailsall = data.Where(x => x.Isdelete == false)
-    //                     .Select(x => new KotCardDetailsViewModel
-    //                     {
-    //                         OrderId = x.Order.OrderId,
-    //                         orderDate = x.Order.OrderDate,
-    //                         OrderInstruction = x.Order.OtherInstruction,
-    //                         SectionId = x.Order.Table.SectionId,
-    //                         SectionName = x.Order.Table.Section.SectionName,
-    //                         tableList = x.Order.Assigntables
-    //                                     .Select(t => new Table
-    //                                     {
-    //                                         TableId = t.Table.TableId,
-    //                                         TableName = t.Table.TableName,
-    //                                     }).ToList(),
+            using var connection = _context.Database.GetDbConnection();
+            var result = await connection.QuerySingleAsync<string>("SELECT getKotDetails(@inputStatus)", new { inputStatus = status });
 
-    //                         ItemsInOneCard = x.Order.Orderdetails.Where(x => x.Isdelete == false)
-    //                                     .Select(k => new ItemDetailsForKot
-    //                                     {
-    //                                         ItemId = k.ItemId,
-    //                                         OrderDetailId = k.OrderdetailId,
-    //                                         ItemName = k.Item.ItemName,
-    //                                         ItemInstruction = k.ExtraInstruction,
-    //                                         PendingItem = k.Quantity - (int)k.ReadyQuantity,
-    //                                         ReadyItem = (int)k.ReadyQuantity,
-    //                                         Quantity = status == "InProgress" ? (k.Quantity - (int)k.ReadyQuantity) : (int)k.ReadyQuantity,
-    //                                         ModifiersInItem = k.Modifierorders
-    //                                             .Select(m => new ModifiersforItemInKot
-    //                                             {
-    //                                                 ModifierId = m.ModifierId,
-    //                                                 ModifierName = m.Modifier.ModifierName,
-    //                                             }).ToList()
-    //                                     }).ToList()
-    //                     }).ToList();
-    //         return kotdetailsall;
-    //     }
-    //     var kotdetails = data.Where(x => x.Isdelete == false)
-    //                     .Select(x => new KotCardDetailsViewModel
-    //                     {
-    //                         OrderId = x.Order.OrderId,
-    //                         orderDate = x.Order.OrderDate,
-    //                         OrderInstruction = x.Order.OtherInstruction,
-    //                         SectionId = x.Order.Table.SectionId,
-    //                         SectionName = x.Order.Table.Section.SectionName,
-    //                         tableList = x.Order.Assigntables
-    //                                     .Select(t => new Table
-    //                                     {
-    //                                         TableId = t.Table.TableId,
-    //                                         TableName = t.Table.TableName,
-    //                                     }).ToList(),
+            // var json = JsonSerializer.Serialize(result);
+            var paginationViewModel = JsonConvert.DeserializeObject<List<KotCardDetailsViewModel>>(result);
 
-    //                         ItemsInOneCard = x.Order.Orderdetails.Where(x => x.Item.CategoryId == categoryId && x.Isdelete == false)
-    //                                     .Select(k => new ItemDetailsForKot
-    //                                     {
-    //                                         ItemId = k.ItemId,
-    //                                         OrderDetailId = k.OrderdetailId,
-    //                                         ItemName = k.Item.ItemName,
-    //                                         ItemInstruction = k.ExtraInstruction,
-    //                                         PendingItem = k.Quantity - (int)k.ReadyQuantity,
-    //                                         ReadyItem = (int)k.ReadyQuantity,
-    //                                         Quantity = status == "InProgress" ? (k.Quantity - (int)k.ReadyQuantity) : (int)k.ReadyQuantity,
-    //                                         ModifiersInItem = k.Modifierorders
-    //                                             .Select(m => new ModifiersforItemInKot
-    //                                             {
-    //                                                 ModifierId = m.ModifierId,
-    //                                                 ModifierName = m.Modifier.ModifierName,
-    //                                             }).ToList()
-    //                                     }).ToList()
-    //                     }).ToList();
-    //     return kotdetails;
-    // }
+            if (categoryId == 0)
+            {
+                paginationViewModel = paginationViewModel.Where(x => (status == "Ready") ? x.ItemsInOneCard.Any(i => i.ReadyItem > 0) : x.ItemsInOneCard.
+                Any(i => (i.Quantity - i.ReadyItem) > 0)).ToList();
+            }
+            else
+            {
+                paginationViewModel = paginationViewModel.Where(x => x.ItemsInOneCard.Any(x => x.CategoryId == categoryId) && (status == "Ready") ? x.ItemsInOneCard.Any(i => i.ReadyItem > 0) : x.ItemsInOneCard.Any(i => (i.Quantity - i.ReadyItem) > 0)).ToList();
+            }
+            int totalCount = paginationViewModel.Count();
+            var items = paginationViewModel.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            return new PaginationViewModel<KotCardDetailsViewModel>(items, totalCount, pageNumber, pageSize);
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+    #endregion
 
     #region GetDetailsByCategorypagination
     public async Task<PaginationViewModel<KotCardDetailsViewModel>> GetDetailsByCategorypagination(long categoryId, string status, int pageNumber, int pageSize = 5)
     {
         try
         {
+
             List<Kot> data = await _context.Kots.Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Item).ThenInclude(x => x.Category)
                                         .Include(x => x.Order).ThenInclude(x => x.Orderdetails).ThenInclude(x => x.Modifierorders).ThenInclude(x => x.Modifier)
                                         .Include(x => x.Order).ThenInclude(x => x.Assigntables).ThenInclude(x => x.Table).ThenInclude(x => x.Section)
-                                        .Where(x => x.Isdelete == false ).ToListAsync();
+                                        .Where(x => x.Isdelete == false).ToListAsync();
 
             if (categoryId == 0)
             {

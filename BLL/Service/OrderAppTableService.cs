@@ -117,6 +117,13 @@ public class OrderAppTableService : IOrderAppTableService
     }
     #endregion
 
+    #region IsCustomerAlreadyAssigned
+    public bool IsCustomerAlreadyAssigned(string Email)
+    {
+        return _context.Assigntables.Any(at => !at.Isdelete && at.Customer.Email == Email);
+    }
+    #endregion
+
     #region AddEditCustomer
     public async Task<bool> AddEditCustomer(WaitingTokenDetailsViewModel waitingTokenvm, long userId)
     {
