@@ -9,18 +9,21 @@
             <td>
                 <input type="checkbox" class="ItemcheckboxClass" onclick="checkboxClickFunction(this)"
                     checked>&nbsp;&nbsp;@item.ItemName
-                    <div class="d-none">@item.OrderDetailId</div>
-                @foreach (var modifier in item.ModifiersInItem)
+                <div class="d-none">@item.OrderDetailId</div>
+                @if (item.ModifiersInItem != null)
                 {
-                    <li class="ms-2">@modifier.ModifierName</li>
+                    @foreach (var modifier in item.ModifiersInItem)
+                    {
+                        <li class="ms-2">@modifier.ModifierName</li>
+                    }
                 }
             </td>
             <td>
                 <div class="d-flex justify-content-end">
                     <div class="p-2 border border-2 border-primary rounded d-flex " style="max-width: fit-content;">
-                        <div class="me-4" style="cursor: pointer;"  onclick="minusButton(this)">-</div>
+                        <div class="me-4" style="cursor: pointer;" onclick="minusButton(this)">-</div>
                         <span>1</span>
-                        <div class="ms-4" style="cursor: pointer;"  onclick="plusButton(this, @item.Quantity)">+</div>
+                        <div class="ms-4" style="cursor: pointer;" onclick="plusButton(this, @item.Quantity)">+</div>
 
                     </div>
                 </div>

@@ -2,7 +2,9 @@ using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace BLL.Service;
 
@@ -16,25 +18,32 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     }
 
     #region getAllsection
-    public List<OrderAppWLSectionViewModel> GetAllSection()
+    public async Task<List<OrderAppWLSectionViewModel>> GetAllSection()
     {
-        return _context.Sections.Where(x => x.Isdelete == false).OrderBy(x => x.SectionId)
-                .Select(x => new OrderAppWLSectionViewModel
-                {
-                    SectionId = x.SectionId,
-                    SectionName = x.SectionName,
-                    WaitingCount = _context.Waitinglists.Count(w => w.SectionId == x.SectionId && w.Isassign == false && w.Isdelete == false)
-                }).ToList();
+        using var connection = _context.Database.GetDbConnection();
+        var result = await connection.QuerySingleAsync<string>("SELECT GetAllSection()");
+
+        List<OrderAppWLSectionViewModel>? OrderAppWLSectionViewModel = JsonConvert.DeserializeObject<List<OrderAppWLSectionViewModel>>(result);
+        return OrderAppWLSectionViewModel!;
+
+
+        // return _context.Sections.Where(x => x.Isdelete == false).OrderBy(x => x.SectionId)
+        //         .Select(x => new OrderAppWLSectionViewModel
+        //         {
+        //             SectionId = x.SectionId,
+        //             SectionName = x.SectionName,
+        //             WaitingCount = _context.Waitinglists.Count(w => w.SectionId == x.SectionId && w.Isassign == false && w.Isdelete == false)
+        //         }).ToList();
     }
     #endregion
 
-    
 
     #region GetWaitingListBySection
     public List<WaitingTokenDetailsViewModel> GetWaitingListBySection(long sectionId)
     {
         try
         {
+
             var data = _context.Waitinglists.Include(x => x.Customer).Include(x => x.Section)
                         .Where(x => x.Isassign == false && x.Isdelete == false)
                         .OrderBy(x => x.WaitingId).ToList();
@@ -79,6 +88,34 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     }
     #endregion
 
+    #region GetWaitingListBySectionSP
+    public async Task<List<WaitingTokenDetailsViewModel>> GetWaitingListBySectionSP(long sectionId)
+    {
+        try
+        {
+            using var connection = _context.Database.GetDbConnection();
+            var result = await connection.QuerySingleAsync<string>("SELECT GetWaitingListBySection()");
+
+            List<WaitingTokenDetailsViewModel>? waitingList = JsonConvert.DeserializeObject<List<WaitingTokenDetailsViewModel>>(result);
+            if (sectionId == 0)
+            {
+                waitingList = waitingList!.ToList();
+            }
+            else
+            {
+                waitingList = waitingList!.Where(x => x.SectionID == sectionId).ToList();
+            }
+            return waitingList!;
+
+        }
+        catch (Exception e)
+        {
+            return new List<WaitingTokenDetailsViewModel>();
+        }
+    }
+    #endregion
+
+
     #region GetWaitingTokenDetailsById
     public WaitingTokenDetailsViewModel GetWaitingTokenDetailsById(long waitingId)
     {
@@ -107,12 +144,33 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     }
     #endregion
 
+    #region GetWaitingTokenDetailsByIdSP
+    public async Task<WaitingTokenDetailsViewModel> GetWaitingTokenDetailsByIdSP(long waitingId)
+    {
+        try
+        {
+            using var connection = _context.Database.GetDbConnection();
+            var result = await connection.QuerySingleAsync<string>("SELECT GetWaitingTokenDetailsById(@inputWaitingId)", new { inputWaitingId = waitingId });
+            if (string.IsNullOrEmpty(result))
+            {
+                return new WaitingTokenDetailsViewModel();
+            }
+            WaitingTokenDetailsViewModel? tokendetails = JsonConvert.DeserializeObject<WaitingTokenDetailsViewModel>(result);
+            return tokendetails!;
+        }
+        catch (Exception e)
+        {
+            return new WaitingTokenDetailsViewModel();
+        }
+    }
+    #endregion
+
+
     #region DeleteWaitingToken
     public async Task<bool> DeleteWaitingToken(long waitingId, long userId)
     {
         try
         {
-
             Waitinglist? waitingList = await _context.Waitinglists.FirstOrDefaultAsync(x => x.WaitingId == waitingId && x.Isassign == false && x.Isdelete == false);
             if (waitingList != null)
             {
@@ -135,6 +193,27 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     }
     #endregion
 
+   #region DeleteWaitingTokenSP
+    public async Task<bool> DeleteWaitingTokenSP(long waitingId, long userId)
+    {
+        try
+        {
+            if(waitingId == 0)
+            {
+                return false;
+            }
+            using var connection = _context.Database.GetDbConnection();
+            var result = await connection.QuerySingleAsync<bool>("SELECT DeleteWaitingToken(@inputWaitingId, @ModifiedBy)", new { inputWaitingId = waitingId, ModifiedBy = userId });
+            return result!;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+    #endregion
+
+
     #region GetTableBySection
     public List<TableViewModel> GetTableBySection(long sectionID)
     {
@@ -148,6 +227,27 @@ public class OrderAppWaitingService : IOrderAppWaitingService
                         SectionId = t.SectionId,
                         Capacity = t.Capacity,
                     }).ToList();
+        }
+        catch (Exception e)
+        {
+            return new List<TableViewModel>();
+        }
+    }
+    #endregion
+
+    #region GetTableBySectionSP
+    public List<TableViewModel> GetTableBySectionSP(long sectionID)
+    {
+        try
+        {
+             using var connection = _context.Database.GetDbConnection();
+            var result =  connection.QuerySingle<string>("SELECT GetTableBySection(@InputSectionID)", new { InputSectionID = sectionID });
+            if (string.IsNullOrEmpty(result))
+            {
+                return new List<TableViewModel>();
+            }
+            List<TableViewModel>? tablelist = JsonConvert.DeserializeObject<List<TableViewModel>>(result);
+            return tablelist!;
         }
         catch (Exception e)
         {

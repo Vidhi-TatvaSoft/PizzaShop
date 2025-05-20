@@ -228,7 +228,7 @@
 
         // 2. Global AJAX error catcher
         $(document).ajaxComplete(function (event, xhr, settings) {
-            console.log("hiiefszvsdvsd", xhr.getResponseHeader("X-Error"))
+            @* console.log("hiiefszvsdvsd", xhr.getResponseHeader("X-Error")) *@
             if (xhr.getResponseHeader("X-Error") == "true") {
                 const response = xhr.responseJSON;
                 if (response && response.error) {

@@ -20,7 +20,7 @@ public class OrderAppKotService : IOrderAppKotService
         _context = context;
     }
 
-    #region GetDetailsByCategorypagination
+    #region GetDetailsByCategorypaginationSP
     public async Task<PaginationViewModel<KotCardDetailsViewModel>> GetDetailsByCategorypaginationSP(long categoryId, string status, int pageNumber, int pageSize = 5)
     {
         try
@@ -39,7 +39,8 @@ public class OrderAppKotService : IOrderAppKotService
             }
             else
             {
-                paginationViewModel = paginationViewModel.Where(x => x.ItemsInOneCard.Any(x => x.CategoryId == categoryId) && (status == "Ready") ? x.ItemsInOneCard.Any(i => i.ReadyItem > 0) : x.ItemsInOneCard.Any(i => (i.Quantity - i.ReadyItem) > 0)).ToList();
+                paginationViewModel = paginationViewModel.Where(x => x.ItemsInOneCard.Any(y => y.CategoryId == categoryId) && ((status == "Ready") ? x.ItemsInOneCard.Any(i => i.ReadyItem > 0) : x.ItemsInOneCard.Any(i => (i.Quantity - i.ReadyItem) > 0))).ToList();
+                paginationViewModel.ForEach(x => x.ItemsInOneCard = x.ItemsInOneCard.Where(y => y.CategoryId == categoryId).ToList());
             }
             int totalCount = paginationViewModel.Count();
             var items = paginationViewModel.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
@@ -155,7 +156,7 @@ public class OrderAppKotService : IOrderAppKotService
     {
         try
         {
-            PaginationViewModel<KotCardDetailsViewModel> kotcardDetails = await GetDetailsByCategorypagination(catid, status, pageNumber, pageSize);
+            PaginationViewModel<KotCardDetailsViewModel> kotcardDetails = await GetDetailsByCategorypaginationSP(catid, status, pageNumber, pageSize);
             var pericularOrderDetails = kotcardDetails.Items.Where(x => x.OrderId == orderid).FirstOrDefault();
             if (pericularOrderDetails == null)
             {
@@ -175,30 +176,34 @@ public class OrderAppKotService : IOrderAppKotService
         try
         {
             if (orderdetailIdarr.Length != itemquantityarr.Length) return false;
-
-            for (int i = 0; i < orderdetailIdarr.Length; i++)
-            {
-                var orderDetail = _context.Orderdetails.FirstOrDefault(x => x.OrderdetailId == orderdetailIdarr[i] && x.Isdelete == false);
-                if (orderDetail != null)
-                {
-                    if (status == "InProgress")
-                    {
-                        orderDetail.ReadyQuantity += itemquantityarr[i];
-                        orderDetail.ModifiedAt = DateTime.Now;
-                        orderDetail.ModifiedBy = userId;
-                        _context.Update(orderDetail);
-                    }
-                    else
-                    {
-                        orderDetail.ReadyQuantity -= itemquantityarr[i];
-                        orderDetail.ModifiedAt = DateTime.Now;
-                        orderDetail.ModifiedBy = userId;
-                        _context.Update(orderDetail);
-                    }
-                }
-            }
-            await _context.SaveChangesAsync();
-            return true;
+            using var connection = _context.Database.GetDbConnection();
+            var IsUpdated = await connection.QuerySingleAsync<bool>
+            ("SELECT ChangeItemQuantitiesAndStatus(@orderdetailIds, @itemquantity, @inputStatus, @ModifiedBy)",
+             new { orderdetailIds = orderdetailIdarr, itemquantity = itemquantityarr, inputStatus = status, ModifiedBy = userId });
+            return IsUpdated;
+            // for (int i = 0; i < orderdetailIdarr.Length; i++)
+            // {
+            //     var orderDetail = _context.Orderdetails.FirstOrDefault(x => x.OrderdetailId == orderdetailIdarr[i] && x.Isdelete == false);
+            //     if (orderDetail != null)
+            //     {
+            //         if (status == "InProgress")
+            //         {
+            //             orderDetail.ReadyQuantity += itemquantityarr[i];
+            //             orderDetail.ModifiedAt = DateTime.Now;
+            //             orderDetail.ModifiedBy = userId;
+            //             _context.Update(orderDetail);
+            //         }
+            //         else
+            //         {
+            //             orderDetail.ReadyQuantity -= itemquantityarr[i];
+            //             orderDetail.ModifiedAt = DateTime.Now;
+            //             orderDetail.ModifiedBy = userId;
+            //             _context.Update(orderDetail);
+            //         }
+            //     }
+            // }
+            // await _context.SaveChangesAsync();
+            // return true;
         }
         catch (Exception e)
         {

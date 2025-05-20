@@ -1,4 +1,4 @@
-create or replace function getKotDetails()
+create or replace function getKotDetails(inputStatus varchar(50))
 returns JSON  AS $$
 declare 
 	kotlist JSON;
@@ -18,18 +18,33 @@ BEGIN
 					left join sections as ss on ts.section_id = ss.section_id
 					where ats.order_id = o.order_id AND ats.isdelete = false
        				)as tablelist
-				 ) as "tableString",
+				 ) as "tableList",
 				 (select json_agg(row_to_json(itemlist))
 				 from(
 					select odi.item_id as "ItemId",
+							ci.category_id as "CategoryId",
 							odi.orderdetail_id as "OrderDetailId",
 							ii.item_name as "ItemName",
 							odi.extra_instruction as "ItemInstruction",
 							odi.quantity - odi."readyQuantity" as "PendingItem",
-							odi."readyQuantity" as "ReadyItem"
+							odi."readyQuantity" as "ReadyItem",
+							case inputStatus
+								when 'InProgress' then odi.quantity - odi."readyQuantity" 
+								else odi."readyQuantity" 
+							End as "Quantity",
+							(select Json_agg(row_to_json(modlist))
+							from(
+								select mom.modifier_id as "ModifierId",
+										mm.modifier_name as "ModifierName"
+								from modifierorder as mom
+								left join modifier as mm on mm.modifier_id = mom.modifier_id
+								where mom.orderdetail_id = odi.orderdetail_id AND mom.isdelete = false
+							)as modlist
+							)as "ModifiersInItem"
 					from orderdetails as odi
 					left join items as ii on odi.item_id = ii.item_id
-					where odi.order_id = o.order_id
+					left join category as ci on ci.category_id = ii.category_id
+					where odi.order_id = o.order_id AND odi.isdelete = false
 							
 				 )as itemlist
 				 )as "ItemsInOneCard"
@@ -42,9 +57,9 @@ BEGIN
 	END;
 $$ LANGUAGE plpgsql;
 
-DROP FUNCTION getkotdetails()
+DROP FUNCTION getkotdetails(character varying)
 
-select getKotDetails()
+select getKotDetails('Rady')
 
 select * from kot where order_id = 37
 

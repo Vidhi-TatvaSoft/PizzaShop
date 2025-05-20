@@ -118,14 +118,14 @@
                     <p>Are you sure you want to delete this Waiting Token?</p>
                 </div>
             </div>
-            <form id="DeleteWaitingTokenFormId">
+            @* <form id="DeleteWaitingTokenFormId"> *@
                 <input type="hidden" asp-for="@Model.waitingTokenDetailsViewModel.waitingId" id="waitingTokenIdDelete"
                     name="waitingId">
                 <div class="modal-footer d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary">Yes</button>
+                    <button type="submit" class="btn btn-primary" onclick="DeleteWaitingToken()">Yes</button>
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
                 </div>
-            </form>
+            @* </form> *@
         </div>
     </div>
 </div>
@@ -308,13 +308,36 @@
             document.getElementById("waitingTokenIdDelete").value = waitingId;
         }
 
-        $(document).on("submit", "#DeleteWaitingTokenFormId", function (e) {
-            e.preventDefault();
-            let waitingId = $("#waitingTokenIdDelete").val();
+        function DeleteWaitingToken(){
+            let waitingId = document.getElementById("waitingTokenIdDelete").value;
+             console.log("hellooo",waitingId);
             console.log(waitingId)
             $.ajax({
                 url: "/OrderAppWaitingList/DeleteWaitingToken",
-                type: "PoST",
+                type: "POST",
+                data: {waitingId: waitingId },
+                success: function (res) {
+                    if (res.success) {
+                        successToaster(res.text);
+                    } else {
+                        errorToaster(res.text);
+                    }
+                    getAllSection();
+                    getWaitingListBySection(0);
+
+                    $(".btn-close").click();
+                }
+            })
+        }
+
+        @* $(document).on("submit", "#DeleteWaitingTokenFormId", function (e) {
+            e.preventDefault();
+            let waitingId = document.getElementById("waitingTokenIdDelete").value;
+            console.log("hellooo",waitingId);
+            console.log(waitingId)
+            $.ajax({
+                url: "/OrderAppWaitingList/DeleteWaitingToken",
+                type: "POST",
                 contentType: false,
                 processData: false,
                 data: { waitingId },
@@ -330,7 +353,7 @@
                     $(".btn-close").click();
                 }
             })
-        })
+        }) *@
 
 
         //Assign Table modal get

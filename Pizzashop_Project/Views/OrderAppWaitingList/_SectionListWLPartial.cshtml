@@ -1,18 +1,25 @@
 @using DAL.ViewModels;
 @model List<OrderAppWLSectionViewModel>
-
-<div class="allCategory KOTCategorySelect ms-3 me-3  pb-1 fs-5 text-secondary fw-bold  text-wrap-nowrap d-flex align-items-center"
-    style="max-width-content=fit;" onclick="sectionSelected(this)" data-sectionid="0">All
-    <div class="bg-secondary text-white ms-1" style="border-radius: 50% !important; width:22px;">
-            <div class="d-flex justify-content-center align-items-center  allWaitingCount" style="font-size:15px;">@Model.Sum(x => x.WaitingCount)</div>
-        </div> 
-        </div>
-@foreach (var item in Model)
+@if (Model == null)
 {
-    <div class="allCategory ms-3 me-3 pb-1 fs-5  fw-bold text-secondary text-nowrap d-flex align-items-center "
-        style="max-width-content=fit;" onclick="sectionSelected(this)" data-sectionid="@item.SectionId">@item.SectionName
-        <div class="bg-secondary text-white ms-1 text-nowrap" style="border-radius: 50% !important; width:22px;">
-            <div class="d-flex justify-content-center align-items-center" style="font-size:15px;">@item.WaitingCount</div>
+    <div class="text-center text-secondary fw-bold fs-5">No Section Found</div>
+}
+else
+{
+    <div class="allCategory KOTCategorySelect ms-3 me-3  pb-1 fs-5 text-secondary fw-bold  text-wrap-nowrap d-flex align-items-center"
+        style="max-width-content=fit;" onclick="sectionSelected(this)" data-sectionid="0">All
+        <div class="bg-secondary text-white ms-1" style="border-radius: 50% !important; width:22px;">
+            <div class="d-flex justify-content-center align-items-center  allWaitingCount" style="font-size:15px;">
+                @Model.Sum(x => x.WaitingCount)</div>
         </div>
     </div>
+    @foreach (var item in Model)
+    {
+        <div class="allCategory ms-3 me-3 pb-1 fs-5  fw-bold text-secondary text-nowrap d-flex align-items-center "
+            style="max-width-content=fit;" onclick="sectionSelected(this)" data-sectionid="@item.SectionId">@item.SectionName
+            <div class="bg-secondary text-white ms-1 text-nowrap" style="border-radius: 50% !important; width:22px;">
+                <div class="d-flex justify-content-center align-items-center" style="font-size:15px;">@item.WaitingCount</div>
+            </div>
+        </div>
+    }
 }
