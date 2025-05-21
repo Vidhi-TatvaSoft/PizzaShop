@@ -50,8 +50,8 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File(
         path: logFilePath,
         rollingInterval: RollingInterval.Day,
-        retainedFileCountLimit: 7,
-        fileSizeLimitBytes: 10_000_000,
+        retainedFileCountLimit: 10,
+        fileSizeLimitBytes: 20_000_000,
         rollOnFileSizeLimit: true,
         shared: true,
         outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}{NewLine}{NewLine}"

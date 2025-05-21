@@ -9,27 +9,23 @@ BEGIN
 			s.section_name as "SectionName",
 			(
 			select  Count(ti.table_id)  
-				from sections as si
-				left join tables as ti on si.section_id = ti.section_id
-				where  ti.isdelete = false AND ti.status = 'Available'
-				group by(si.section_id)
+				from tables as ti
+				where  ti.isdelete = false AND ti.status = 'Available' AND ti.section_id = s.section_id
 			)as  "AvailableCount",
 			(
-			select  Count(ti.table_id)  
-				from sections as si
-				left join tables as ti on si.section_id = ti.section_id
-				where  ti.isdelete = false AND ti.status = 'Running'
-				group by(si.section_id)
+			select  Count(tm.table_id)  
+				from sections as sm
+				left join tables as tm on sm.section_id = tm.section_id
+				where  tm.isdelete = false AND tm.status = 'Running' AND tm.section_id = s.section_id
 			)as  "RunningCount",
 			(
-			select  Count(ti.table_id)  
-				from sections as si
-				left join tables as ti on si.section_id = ti.section_id
-				where  ti.isdelete = false AND ti.status = 'Assigned'
-				group by(si.section_id)
-			)as  "AssignedCount",
+			select  Count(te.table_id)  
+				from sections as se
+				left join tables as te on se.section_id = te.section_id
+				where  te.isdelete = false AND te.status = 'Assigned' AND te.section_id = s.section_id
+			)as  "AssignedCount"
 			from sections as s
-			left join tables as t on s.section_id = t.secton_id
+			left join tables as t on s.section_id = t.section_id
 			where s.isdelete = false
 			order By s.section_id
 	)list;
@@ -38,4 +34,4 @@ BEGIN
 $$ LANGUAGE plpgsql;
 
 
-select GetAllSection()
+select GetSectionList()
