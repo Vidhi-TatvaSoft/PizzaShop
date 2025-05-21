@@ -1140,6 +1140,20 @@
                     document.getElementById("taxPercentage1").value =data.taxValue;
                     document.getElementById("shortCode1").value=data.shortCode;
                     document.getElementById("description1").value=data.description;
+                    if(data.itemImage != null){
+                        var imagename = data.itemImage.split("_");
+                        var image = "";
+                        for(i=1;i<imagename.length;i++){
+                            if(i==1){
+                                image = imagename[i];
+                            }else{
+                                image = image + "_" + imagename[i];
+                            }
+                        }
+                        document.getElementById("browseFileText-editItem").innerHTML=image;
+                    }else{
+                        document.getElementById("browseFileText-editItem").innerHTML="Browse File";
+                    }
                     if(data.isavailable){
                         document.getElementById("isAvailable1").checked =true;
                     }else{

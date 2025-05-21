@@ -176,8 +176,8 @@ public class OrderAppTableService : IOrderAppTableService
             }
             else
             {
-                Waitinglist waitinglist = await _context.Waitinglists.FirstOrDefaultAsync(x => x.WaitingId == waitingTokenvm.waitingId && x.Isdelete == false && x.Isassign == false);
-                waitinglist.CustomerId = customerId;
+                Waitinglist? waitinglist = await _context.Waitinglists.FirstOrDefaultAsync(x => x.WaitingId == waitingTokenvm.waitingId && x.Isdelete == false && x.Isassign == false);
+                waitinglist!.CustomerId = customerId;
                 waitinglist.NoOfPerson = waitingTokenvm.NoOfPerson;
                 waitinglist.SectionId = waitingTokenvm.SectionID;
                 waitinglist.ModifiedAt = DateTime.Now;

@@ -205,18 +205,19 @@ public class MenuService : IMenuService
         AddItemViewModel editItemvm = new AddItemViewModel()
         {
             CategoryId = items[0].CategoryId,
-            ItemId =items[0].ItemId,
-            ItemName=items[0].ItemName,
+            ItemId = items[0].ItemId,
+            ItemName = items[0].ItemName,
             ItemTypeId = items[0].ItemTypeId,
             Rate = items[0].Rate,
             Quantity = (int)items[0].Quantity,
             Unit = items[0].Unit,
             Isavailable = (bool)items[0].Isavailable,
-            ItemImage=items[0].ItemImage,
-            Isdefaulttax = (bool)items[0].Isdefaulttax,
+            ItemImage = items[0].ItemImage  ,
+            Isdefaulttax = (bool)items[0].Isdefaulttax!,
             TaxValue = items[0].TaxValue,
             ShortCode = items[0].ShortCode,
-            Description=items[0].Description,
+            Description = items[0].Description,
+            
         };
          var data = _context.Itemmodifiergroupmappings
         .Where(e => e.ItemId == itemID  && e.Isdelete==false)

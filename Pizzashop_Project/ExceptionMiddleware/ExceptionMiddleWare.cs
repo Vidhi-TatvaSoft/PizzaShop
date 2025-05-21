@@ -20,26 +20,17 @@ public class ExceptionMiddleWare
         }
         catch (Exception ex)
         {
-            await HandleExceptionAsync(context, ex);
+            await HandleExceptions(context, ex);
         }
     }
 
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private async Task HandleExceptions(HttpContext context, Exception exception)
     {
         HttpStatusCode code;
         string message;
 
-        // switch (exception)
-        // {
-            // case CustomException:
-            //     code = HttpStatusCode.NotFound;
-            //     message = exception.Message;
-            //     break;
-            // default:
                 code = HttpStatusCode.InternalServerError;
-                message = "Something went wrong. Please try after some time.";
-                // break;
-        // }
+                message = "Something went wrong. Please try again later.";
 
         _logger.LogError(exception, "An unhandled exception occurred.");
 
@@ -47,7 +38,6 @@ public class ExceptionMiddleWare
         
         if (isAjax)
         {
-            // For AJAX - return JSON response
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = 200; // Always OK (to avoid redirect issues)
 
@@ -66,7 +56,6 @@ public class ExceptionMiddleWare
         else
         {
             // // For Normal Requests - use TempData for Toastr
-            // context.Response.Redirect($"/Error/HandleErrorWithToaster?message={Uri.EscapeDataString(message)}");
             if (!context.Response.HasStarted)
             {
                 var redirectUrl = $"/ErrorPage/InternalServerError";

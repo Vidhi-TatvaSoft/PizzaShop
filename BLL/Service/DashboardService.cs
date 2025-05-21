@@ -18,7 +18,6 @@ public class DashboardService : IDashboardService
     {
         try
         {
-
             DashboardViewModel dashboardvm = new();
             List<Order> query = _context.Orders.Where(o => !o.Isdelete && o.Status == "Completed").ToList();
             List<Item> itemList = _context.Items.Include(x => x.Orderdetails).Where(x => !x.Isdelete).OrderByDescending(x => x.Orderdetails.Count()).ToList();
@@ -139,13 +138,12 @@ public class DashboardService : IDashboardService
             List<TimeSpan?> dateTimes = waitinglist.Where(x => x.Isassign && !x.Isdelete).Select(x => x.AssignedAt - x.CreatedAt).ToList();
             if (waitinglist.Count != 0 && dateTimes.Count > 0)
             {
-                int AverageMinutes = (int)dateTimes.Average(x => TimeSpan.Parse(x.ToString() != "" ? x.ToString()! : "0.00:00:00.0").Minutes);
-                int AverageSeconds = (int)dateTimes.Average(x => TimeSpan.Parse(x.ToString() != "" ? x.ToString()! : "0.00:00:00.0").Seconds);
-                dashboardvm.AvgWaitingTime = AverageMinutes.ToString() + "min(s) " + AverageSeconds.ToString() + "sec(s)";
+                float AverageMinutes = (float)dateTimes.Average(x => TimeSpan.Parse(x.ToString() != "" ? x.ToString()! : "0.00:00:00.0").Minutes);
+                dashboardvm.AvgWaitingTime = AverageMinutes.ToString() + "mins ";
             }
             else
             {
-                dashboardvm.AvgWaitingTime = "0 min 0 sec";
+                dashboardvm.AvgWaitingTime = "0 min";
             }
             return dashboardvm;
 
