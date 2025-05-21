@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
@@ -193,18 +192,21 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     }
     #endregion
 
-   #region DeleteWaitingTokenSP
+    #region DeleteWaitingTokenSP
     public async Task<bool> DeleteWaitingTokenSP(long waitingId, long userId)
     {
         try
         {
-            if(waitingId == 0)
+            if (waitingId == 0)
             {
                 return false;
             }
+            // using var connection = _context.Database.GetDbConnection();
+            // var result = await connection.QuerySingleAsync<bool>("SELECT DeleteWaitingTokenSP(@inputWaitingId, @ModifiedBy)", new { inputWaitingId = waitingId, ModifiedBy = userId });
+            // return result!;
             using var connection = _context.Database.GetDbConnection();
-            var result = await connection.QuerySingleAsync<bool>("SELECT DeleteWaitingToken(@inputWaitingId, @ModifiedBy)", new { inputWaitingId = waitingId, ModifiedBy = userId });
-            return result!;
+            await connection.ExecuteAsync("CALL DeleteWaitingTokenSP(@inputWaitingId, @ModifiedBy)", new { inputWaitingId = waitingId, ModifiedBy = userId });
+            return true;
         }
         catch (Exception e)
         {
@@ -240,8 +242,8 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     {
         try
         {
-             using var connection = _context.Database.GetDbConnection();
-            var result =  connection.QuerySingle<string>("SELECT GetTableBySection(@InputSectionID)", new { InputSectionID = sectionID });
+            using var connection = _context.Database.GetDbConnection();
+            var result = connection.QuerySingle<string>("SELECT GetTableBySection(@InputSectionID)", new { InputSectionID = sectionID });
             if (string.IsNullOrEmpty(result))
             {
                 return new List<TableViewModel>();
@@ -256,8 +258,9 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     }
     #endregion
 
-    #region GetCustmerIdByEmail
-    public long GetCustmerIdByEmail(long waitingId)
+
+    #region Get CustmerId By waitingID
+    public long GetCustmerIdByWaitingId(long waitingId)
     {
         try
         {
@@ -270,40 +273,46 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     }
     #endregion
 
+
     #region AssignTable
     public async Task<bool> AssignTable(int[] TableIds, long waitingId, long sectionId, long userId)
     {
         try
         {
-            Waitinglist waitinglist = await _context.Waitinglists.Include(x => x.Customer).FirstOrDefaultAsync(x => x.WaitingId == waitingId && x.Isdelete == false && x.Isassign == false);
-            if (waitinglist == null) { return false; }
-            waitinglist.Isassign = true;
-            waitinglist.SectionId = sectionId;
-            waitinglist.AssignedAt = DateTime.Now;
-            waitinglist.ModifiedAt = DateTime.Now;
-            waitinglist.ModifiedBy = userId;
+            using var connection = _context.Database.GetDbConnection();
+            await connection.ExecuteAsync("CALL AssignTable(@inputTableIds, @inputWaitingId, @inputSectionId, @ModifiedBy)", new { inputTableIds = TableIds,inputWaitingId = waitingId, inputSectionId = sectionId,  ModifiedBy = userId });
+            return true; 
 
-            for (int i = 0; i < TableIds.Length; i++)
-            {
-                Assigntable assigntable = new();
-                assigntable.CustomerId = waitinglist.CustomerId;
-                assigntable.TableId = TableIds[i];
-                assigntable.NoOfPerson = waitinglist.NoOfPerson;
-                assigntable.CreatedBy = userId;
-                await _context.AddAsync(assigntable);
 
-                Table table = await _context.Tables.FirstOrDefaultAsync(x => x.TableId == TableIds[i] && x.Isdelete == false);
-                table.Status = "Assigned";
-                table.ModifiedAt = DateTime.Now;
-                table.ModifiedBy = userId;
-                _context.Update(table);
-                await _context.SaveChangesAsync();
-            }
+            // Waitinglist waitinglist = await _context.Waitinglists.Include(x => x.Customer).FirstOrDefaultAsync(x => x.WaitingId == waitingId && x.Isdelete == false && x.Isassign == false);
+            // if (waitinglist == null) { return false; }
+            // waitinglist.Isassign = true;
+            // waitinglist.SectionId = sectionId;
+            // waitinglist.AssignedAt = DateTime.Now;
+            // waitinglist.ModifiedAt = DateTime.Now;
+            // waitinglist.ModifiedBy = userId;
 
-            _context.Update(waitinglist);
-            await _context.SaveChangesAsync();
+            // for (int i = 0; i < TableIds.Length; i++)
+            // {
+            //     Assigntable assigntable = new();
+            //     assigntable.CustomerId = waitinglist.CustomerId;
+            //     assigntable.TableId = TableIds[i];
+            //     assigntable.NoOfPerson = waitinglist.NoOfPerson;
+            //     assigntable.CreatedBy = userId;
+            //     await _context.AddAsync(assigntable);
 
-            return true;
+            //     Table table = await _context.Tables.FirstOrDefaultAsync(x => x.TableId == TableIds[i] && x.Isdelete == false);
+            //     table.Status = "Assigned";
+            //     table.ModifiedAt = DateTime.Now;
+            //     table.ModifiedBy = userId;
+            //     _context.Update(table);
+            //     await _context.SaveChangesAsync();
+            // }
+
+            // _context.Update(waitinglist);
+            // await _context.SaveChangesAsync();
+
+            // return true;
         }
         catch (Exception e)
         {

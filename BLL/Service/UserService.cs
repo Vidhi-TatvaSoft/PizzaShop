@@ -1,12 +1,7 @@
-using System.Threading.Tasks;
 using BLL.Interfaces;
-using BLL.Services;
 using DAL.Models;
 using DAL.ViewModels;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace BLL.Service;
 

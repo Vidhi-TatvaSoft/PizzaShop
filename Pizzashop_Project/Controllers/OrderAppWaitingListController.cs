@@ -158,7 +158,7 @@ public class OrderAppWaitingListController : Controller
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
-        var custId = _orderAppWaitingService.GetCustmerIdByEmail(waitingId);
+        var custId = _orderAppWaitingService.GetCustmerIdByWaitingId(waitingId);
         var customerId = _userLoginSerivce.Base64Encode(custId.ToString());
         bool assignedStatus =await _orderAppWaitingService.AssignTable(tablesArr,waitingId,sectionId,userId);
 

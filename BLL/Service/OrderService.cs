@@ -8,7 +8,6 @@ using OfficeOpenXml.Style;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BLL.Service;
 
@@ -569,7 +568,7 @@ public class OrderService : IOrderService
     #endregion
 
 
-    #region  cpnver to pdf invoice
+    #region  convert to pdf invoice
     public byte[] Compose()
     {
         QuestPDF.Settings.License = LicenseType.Community;

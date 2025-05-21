@@ -1,12 +1,8 @@
-
-
-using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Dapper;
-using System.Text.Json;
 using Newtonsoft.Json;
 
 namespace BLL.Service;
@@ -35,11 +31,11 @@ public class OrderAppKotService : IOrderAppKotService
             if (categoryId == 0)
             {
                 paginationViewModel = paginationViewModel.Where(x => (status == "Ready") ? x.ItemsInOneCard.Any(i => i.ReadyItem > 0) : x.ItemsInOneCard.
-                Any(i => (i.Quantity - i.ReadyItem) > 0)).ToList();
+                Any(i => i.Quantity > 0)).ToList();
             }
             else
             {
-                paginationViewModel = paginationViewModel.Where(x => x.ItemsInOneCard.Any(y => y.CategoryId == categoryId) && ((status == "Ready") ? x.ItemsInOneCard.Any(i => i.ReadyItem > 0) : x.ItemsInOneCard.Any(i => (i.Quantity - i.ReadyItem) > 0))).ToList();
+                paginationViewModel = paginationViewModel.Where(x => x.ItemsInOneCard.Any(y => y.CategoryId == categoryId) && ((status == "Ready") ? x.ItemsInOneCard.Any(i => i.ReadyItem > 0) : x.ItemsInOneCard.Any(i => i.Quantity > 0))).ToList();
                 paginationViewModel.ForEach(x => x.ItemsInOneCard = x.ItemsInOneCard.Where(y => y.CategoryId == categoryId).ToList());
             }
             int totalCount = paginationViewModel.Count();

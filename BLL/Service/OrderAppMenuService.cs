@@ -1,12 +1,8 @@
-using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
-using iText.Layout.Element;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Math.EC.Multiplier;
 
 namespace BLL.Service;
 

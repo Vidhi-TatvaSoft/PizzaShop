@@ -30,7 +30,17 @@ public class OrderAppMenuController : Controller
 
     public IActionResult OrderAppMenu(string customerId = "0")
     {
-        long custId = Convert.ToInt64(_userLoginSerivce.Base64Decode(customerId));
+        long custId;
+        if (string.IsNullOrEmpty(customerId) || customerId == "0")
+        {
+            custId = 0;
+        }
+        else
+        {
+            custId = Convert.ToInt64(_userLoginSerivce.Base64Decode(customerId));
+        }
+        
+        //  custId = Convert.ToInt64(_userLoginSerivce.Base64Decode(customerId));
         OrderAppMenuViewModel menuvm = new();
         menuvm.categoryList = _menuService.GetAllCategories();
         ViewData["orderApp-Active"] = "Menu";

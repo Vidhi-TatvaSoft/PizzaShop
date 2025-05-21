@@ -16,6 +16,6 @@ public interface IOrderAppWaitingService
         public List<TableViewModel> GetTableBySection(long sectionID);
         public List<TableViewModel> GetTableBySectionSP(long sectionID);
 
-        public long GetCustmerIdByEmail(long waitingId);
+        public long GetCustmerIdByWaitingId(long waitingId);
         Task<bool> AssignTable(int[] TableIds, long waitingId, long sectionId, long userId);
 }

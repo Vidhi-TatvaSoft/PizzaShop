@@ -3,8 +3,6 @@ using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using BLL.Interfaces;
-using NuGet.ProjectModel;
-using System.Security.Cryptography.X509Certificates;
 
 namespace BLL.Services
 {

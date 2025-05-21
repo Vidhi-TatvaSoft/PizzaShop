@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
