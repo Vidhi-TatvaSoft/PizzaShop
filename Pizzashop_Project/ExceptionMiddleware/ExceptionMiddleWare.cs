@@ -59,13 +59,13 @@ public class ExceptionMiddleWare
             if (!context.Response.HasStarted)
             {
                 var redirectUrl = $"/ErrorPage/InternalServerError";
-                context.Response.StatusCode = (int)HttpStatusCode.Redirect; // 302
-                context.Response.Headers["Location"] = redirectUrl; // Manual redirect
+                context.Response.StatusCode = (int)HttpStatusCode.Redirect; 
+                context.Response.Headers["Location"] = redirectUrl; 
                 await context.Response.CompleteAsync();
             }
             else
             {
-                _logger.LogWarning("Response already started, cannot redirect.");
+                _logger.LogWarning("Response already started, cannot Redirect.");
                 context.Response.StatusCode = (int)code;
                 await context.Response.WriteAsync(message);
             }
