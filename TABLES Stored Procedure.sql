@@ -83,36 +83,70 @@ select GetTableDetailsBySection(1)
 
 ----------------------------------------------AddEditCustomer ----------------------------------------------
 CREATE OR REPLACE PROCEDURE AddEditCustomer
-	(inpEmail text,
-	inpCustomerName Text,
-	inpCustomerNo bigint,
-	 ModifiedBy bigint)
+    (inpEmail TEXT,
+     inpCustomerName TEXT,
+     inpCustomerNo BIGINT,
+	 ModifiedBy BIGINT)
 LANGUAGE plpgsql
 AS $$
 DECLARE
-IsCustomerPresent BOOLEAN;
-    row_count BIGINT;
+    IsCustomerPresent BOOLEAN;
 BEGIN
-    SELECT COUNT(*) INTO row_count 
-    FROM customers c 
-    WHERE c.email = 'v@vfgbf.com';
-    
-    IF row_count = 0 THEN
-        IsCustomerPresent := FALSE;
+    -- Check if a customer with the given email already exists
+    SELECT EXISTS (
+        SELECT 1 
+        FROM customers c 
+        WHERE c.email = inpEmail
+    ) INTO IsCustomerPresent;
+
+    -- If customer exists, update; otherwise, insert
+    IF IsCustomerPresent THEN
+        UPDATE public.customers
+        SET customer_name = inpCustomerName,
+            phoneno = inpCustomerNo,
+            email = inpEmail,
+            modified_at = NOW(),
+            modified_by = ModifiedBy
+        WHERE email = inpEmail AND isdelete = FALSE;
     ELSE
-        IsCustomerPresent := TRUE;
+        INSERT INTO public.customers (customer_name, phoneno, email, created_by)
+        VALUES (inpCustomerName, inpCustomerNo, inpEmail, ModifiedBy);
     END IF;
-
-
-	case
-		when IsCustomerPresent = true
-		then Insert into  public.customers (customer_name, phoneno, email, created_by)
-			values (inpCustomerName, inpCustomerNo, inpEmail, ModifiedBy)
-		else UPDATE public.customers
-			SET  customer_name=inpCustomerName, phoneno=inpCustomerNo, email=inpEmail,  modified_at=now(), modified_by=ModifiedBy
-			WHERE email=inpEmail AND isdelete = false
-		END;
-		 
 END;
-$$
+$$;
 
+
+------------------------------------- AddEditCustomerToWaitingList -------------------------------------
+create or replace procedure AddEditCustomerToWaitingList
+	(inpEmail TEXT,
+	inpWaitingId BIGINT, 
+     inpNoOfPerson BIGINT,
+     inpSectionId BIGINT,
+	 ModifiedBy BIGINT
+	)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    InpCustomerId BIGINT;
+BEGIN
+	select c.customer_id into InpCustomerId
+	from customers as c 
+	where c.email = inpEmail;
+
+	IF InpCustomerId = 0 THEN
+		INSERT INTO public.waitinglist(
+		 customer_id, assigned_at, no_of_person,  created_by, section_id)
+		VALUES (InpCustomerId, NOW(), inpNoOfPerson, ModifiedBy, inpSectionId);
+	ELSE 
+		 UPDATE public.waitinglist
+        SET customer_id = InpCustomerId,
+			no_of_person = inpNoOfPerson,
+            section_id = inpSectionId,
+            modified_at = NOW(),
+            modified_by = ModifiedBy
+        WHERE waiting_id = inpWaitingId AND isdelete = FALSE AND isassign = FALSE;
+	END IF;
+END;
+$$;
+
+CALL AddEditCustomerToWaitingList('vidhi123@gmail.com',58, 2,2, 36)

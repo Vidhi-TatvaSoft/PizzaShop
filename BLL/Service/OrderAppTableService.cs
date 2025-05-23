@@ -150,7 +150,7 @@ public class OrderAppTableService : IOrderAppTableService
             connection.Open();
             await connection.ExecuteAsync("CALL AddEditCustomer(@inpEmail, @inpCustomerName, @inpCustomerNo, @ModifiedBy)", new { inpEmail = waitingTokenvm.Email, inpCustomerName = waitingTokenvm.Name, inpCustomerNo = waitingTokenvm.Mobileno, ModifiedBy = userId });
             connection.Close();
-            return true; 
+            return true;
 
             // Customer? presentcustomer = await _context.Customers.FirstOrDefaultAsync(x => x.Email == waitingTokenvm.Email && x.Isdelete == false);
             // if (presentcustomer != null)
@@ -174,6 +174,7 @@ public class OrderAppTableService : IOrderAppTableService
 
             // await _context.SaveChangesAsync();
             // return true;
+            
         }
         catch (Exception e)
         {
@@ -187,6 +188,16 @@ public class OrderAppTableService : IOrderAppTableService
     {
         try
         {
+            // NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+            // connection.Open();
+            // await connection.ExecuteAsync("CALL AddEditCustomerToWaitingList(@inpEmail, @inpWaitingId, @inpNoOfPerson, @inpSectionId @ModifiedBy)", new { inpEmail = waitingTokenvm.Email, inpWaitingId = waitingTokenvm.waitingId, inpNoOfPerson = waitingTokenvm.NoOfPerson, inpSectionId = waitingTokenvm.SectionID, ModifiedBy = userId });
+            // connection.Close();
+
+            // using var connection = _context.Database.GetDbConnection();
+            // await connection.ExecuteAsync("CALL AddEditCustomerToWaitingList(@inpEmail, @inpWaitingId, @inpNoOfPerson, @inpSectionId @ModifiedBy)", new { inpEmail = waitingTokenvm.Email, inpWaitingId = waitingTokenvm.waitingId, inpNoOfPerson = waitingTokenvm.NoOfPerson, inpSectionId = waitingTokenvm.SectionID, ModifiedBy = userId });
+            // return true;
+        
+
             long customerId = IsCustomerPresent(waitingTokenvm.Email);
             if (waitingTokenvm.waitingId == 0)
             {
