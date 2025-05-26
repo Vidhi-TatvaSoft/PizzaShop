@@ -46,11 +46,14 @@ public class UserViewModel
 
     public IFormFile ProfileImage { get; set; }
 
-    public long? CountryId { get; set; }
+    [Required(ErrorMessage = "Country is required.")]
+    public long CountryId { get; set; }
+    
+    [Required(ErrorMessage = "State is required.")]
+    public long StateId { get; set; }
 
-    public long? StateId { get; set; }
-
-    public long? CityId { get; set; }
+    [Required(ErrorMessage = "City is required.")]
+    public long CityId { get; set; }
 
     [Required(AllowEmptyStrings = false, ErrorMessage = "Address should not include whitespace")]
     public string? Address { get; set; }

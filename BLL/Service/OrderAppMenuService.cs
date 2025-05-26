@@ -418,6 +418,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                 Order order = new();
                 order.CustomerId = orderDetailsvm.CustomerId;
                 order.Status = "Pending";
+                order.RatingId = 1;
                 order.TotalAmount = orderDetailsvm.TotalAmountOfOrderMain;
                 order.PaymentmethodId = 1;
                 order.PaymentstatusId = 1;

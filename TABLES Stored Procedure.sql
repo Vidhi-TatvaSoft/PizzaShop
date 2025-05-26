@@ -120,7 +120,7 @@ $$;
 create or replace procedure AddEditCustomerToWaitingList
 	(inpEmail TEXT,
 	inpWaitingId BIGINT, 
-     inpNoOfPerson BIGINT,
+     inpNoOfPerson INT,
      inpSectionId BIGINT,
 	 ModifiedBy BIGINT
 	)

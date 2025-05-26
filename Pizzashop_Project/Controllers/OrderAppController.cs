@@ -37,9 +37,9 @@ public class OrderAppController :Controller
             Email = userData[0].Userlogin.Email,
             Phone = userData[0].Phone,
             Image = userData[0].ProfileImage,
-            CountryId = userData[0].CountryId,
-            StateId = userData[0].StateId,
-            CityId = userData[0].CityId,
+            CountryId = (long)userData[0].CountryId,
+            StateId = (long)userData[0].StateId,
+            CityId = (long)userData[0].CityId,
             Address = userData[0].Address,
             Zipcode = userData[0].Zipcode
         };

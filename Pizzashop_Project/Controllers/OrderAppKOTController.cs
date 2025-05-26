@@ -37,7 +37,7 @@ public class OrderAppKOTController : Controller
 
     public async Task<IActionResult> GetDetailsByCategorypagination(long categoryId, string status, int pageNumber = 1, int pageSize = 5){
 
-        PaginationViewModel<KotCardDetailsViewModel> kotCardDetailsvm = await _orderAppKotService.GetDetailsByCategorypaginationSP(categoryId, status, pageNumber, pageSize);
+        PaginationViewModel<KotCardDetailsViewModel> kotCardDetailsvm = await _orderAppKotService.GetDetailsByCategorypagination(categoryId, status, pageNumber, pageSize);
         return PartialView("_displayCardsPartial", kotCardDetailsvm);
     }
 

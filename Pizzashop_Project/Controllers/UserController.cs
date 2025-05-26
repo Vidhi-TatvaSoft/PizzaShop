@@ -67,7 +67,9 @@ public class UserController : Controller
     //    [Authorize(Roles = "Admin")]
     public IActionResult PaginatedData(string search = "", string sortColumn = "", string sortDirection = "", int pageNumber = 1, int pageSize = 5)
     {
-        ViewBag.email = Request.Cookies["email"];
+        string token = Request.Cookies["AuthToken"];
+        var email = _jwttokenService.GetClaimValue(token,"email");
+        ViewBag.email = email;
         var users = _userService.GetUserList(search, sortColumn, sortDirection, pageNumber, pageSize);
         return PartialView("_UserListPartial", users);
     }
@@ -78,6 +80,7 @@ public class UserController : Controller
     [PermissionAuthorize("User.View")]
     public IActionResult MyProfile()
     {
+        // ViewData["sidebar-active"] = "UserList";
         var token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         UserViewModel userViewModel = new UserViewModel()
@@ -91,9 +94,9 @@ public class UserController : Controller
             Email = userData[0].Userlogin.Email,
             Phone = userData[0].Phone,
             Image = userData[0].ProfileImage,
-            CountryId = userData[0].CountryId,
-            StateId = userData[0].StateId,
-            CityId = userData[0].CityId,
+            CountryId = (long)userData[0].CountryId,
+            StateId = (long)userData[0].StateId,
+            CityId = (long)userData[0].CityId,
             Address = userData[0].Address,
             Zipcode = userData[0].Zipcode
         };
@@ -107,6 +110,7 @@ public class UserController : Controller
         return View(userViewModel);
     }
     #endregion
+    
 
     #region Myprofile post
     // post method
@@ -172,7 +176,7 @@ public class UserController : Controller
     [PermissionAuthorize("User.EditAdd")]
     public IActionResult AddUser()
     {
-
+        ViewData["sidebar-active"] = "UserList";
         string token = Request.Cookies["AuthToken"];
         var roleName = _jwttokenService.GetClaimValue(token,"role");
 
@@ -318,6 +322,7 @@ public class UserController : Controller
     [PermissionAuthorize("User.EditAdd")]
     public IActionResult EditUser(string Email)
     {
+        ViewData["sidebar-active"] = "UserList";
             //    throw new ApplicationException();
         // var token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmailWithoutToken(Email);
@@ -329,12 +334,13 @@ public class UserController : Controller
             FirstName = userData[0].FirstName,
             LastName = userData[0].LastName,
             Username = userData[0].Username,
+            Status = userData[0].Status,
             Email = userData[0].Userlogin.Email,
             Phone = userData[0].Phone,
             Image = userData[0].ProfileImage,
-            CountryId = userData[0].CountryId,
-            StateId = userData[0].StateId,
-            CityId = userData[0].CityId,
+            CountryId = (long)userData[0].CountryId,
+            StateId = (long)userData[0].StateId,
+            CityId = (long)userData[0].CityId,
             Address = userData[0].Address,
             Zipcode = userData[0].Zipcode
         };

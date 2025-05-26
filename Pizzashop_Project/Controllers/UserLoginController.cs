@@ -39,7 +39,6 @@ namespace Pizzashop_Project.Controllers
         #endregion
 
         #region  verify user
-        // GET: UserLogin/Create
         public IActionResult VerifyPassword()
         {
             // ViewData["RoleId"] = new SelectList(_userLoginService.Roles, "RoleId", "RoleId");
@@ -195,6 +194,11 @@ namespace Pizzashop_Project.Controllers
 
             var email = _jwtTokenService.GetClaimValue(resetPassToken, "email");
             var newpassword = _jwtTokenService.GetClaimValue(resetPassToken, "password");
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(newpassword) || !_userLoginService.CheckEmailExist(email))
+            {
+                TempData["ErrorMessage"] = "Invalid reset password link";
+                return RedirectToAction("VerifyPassword", "UserLogin");
+            }
             var savedPassword = _userLoginService.GetPassword(email);
 
             if (savedPassword == newpassword)

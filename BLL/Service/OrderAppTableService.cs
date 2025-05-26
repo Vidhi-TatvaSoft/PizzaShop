@@ -22,25 +22,26 @@ public class OrderAppTableService : IOrderAppTableService
     {
         try
         {
-            using var connection = _context.Database.GetDbConnection();
-            var result = connection.QuerySingle<string>("SELECT GetSectionList()");
+            // using var connection = _context.Database.GetDbConnection();
+            // var result = connection.QuerySingle<string>("SELECT GetSectionList()");
 
-            List<SectionViewModelForOrderAppTable>? sectionList = JsonConvert.DeserializeObject<List<SectionViewModelForOrderAppTable>>(result);
-            return sectionList!;
-            // List<SectionViewModelForOrderAppTable> SectionList = _context.Sections.Include(x => x.Tables).Where(x => x.Isdelete == false).OrderBy(x => x.SectionId)
-            //                 .Select(x => new SectionViewModelForOrderAppTable
-            //                 {
-            //                     SectionId = x.SectionId,
-            //                     SectionName = x.SectionName,
-            //                     AvailableCount = x.Tables.Where(t => t.Status == "Available" && t.Isdelete == false).Count(),
-            //                     RunningCount = x.Tables.Where(t => t.Status == "Running" && t.Isdelete == false).Count(),
-            //                     AssignedCount = x.Tables.Where(t => t.Status == "Assigned" && t.Isdelete == false).Count()
-            //                 }).ToList();
-            // if (SectionList != null)
-            // {
-            //     return SectionList;
-            // }
-            // return null;
+            // List<SectionViewModelForOrderAppTable>? sectionList = JsonConvert.DeserializeObject<List<SectionViewModelForOrderAppTable>>(result);
+            // return sectionList!;
+
+            List<SectionViewModelForOrderAppTable> SectionList = _context.Sections.Include(x => x.Tables).Where(x => x.Isdelete == false).OrderBy(x => x.SectionId)
+                            .Select(x => new SectionViewModelForOrderAppTable
+                            {
+                                SectionId = x.SectionId,
+                                SectionName = x.SectionName,
+                                AvailableCount = x.Tables.Where(t => t.Status == "Available" && t.Isdelete == false).Count(),
+                                RunningCount = x.Tables.Where(t => t.Status == "Running" && t.Isdelete == false).Count(),
+                                AssignedCount = x.Tables.Where(t => t.Status == "Assigned" && t.Isdelete == false).Count()
+                            }).ToList();
+            if (SectionList != null)
+            {
+                return SectionList;
+            }
+            return null;
         }
         catch (Exception e)
         {
@@ -54,24 +55,24 @@ public class OrderAppTableService : IOrderAppTableService
     {
         try
         {
-            using var connection = _context.Database.GetDbConnection();
-            var result = connection.QuerySingle<string>("SELECT GetTableDetailsBySection(@inputSectionId)", new{ inputSectionId = SectionId });
-            if(result == null) return null!;
-            List<TableViewModelForOrderAppTable>? tableListBySection = JsonConvert.DeserializeObject<List<TableViewModelForOrderAppTable>>(result);
+            // using var connection = _context.Database.GetDbConnection();
+            // var result = connection.QuerySingle<string>("SELECT GetTableDetailsBySection(@inputSectionId)", new{ inputSectionId = SectionId });
+            // if(result == null) return null!;
+            // List<TableViewModelForOrderAppTable>? tableListBySection = JsonConvert.DeserializeObject<List<TableViewModelForOrderAppTable>>(result);
 
 
 
-            // List<TableViewModelForOrderAppTable> tableListBySection = _context.Tables.Where(x => x.Isdelete == false && x.Section.SectionId == SectionId)
-            //                 .Select(t => new TableViewModelForOrderAppTable
-            //                 {
-            //                     SectionId = t.SectionId,
-            //                     TableId = t.TableId,
-            //                     TableName = t.TableName,
-            //                     Capacity = t.Capacity,
-            //                     Status = t.Status,
-            //                     Totaltime = t.Status == "Running" || t.Status == "Assigned" ? (t.Assigntables.FirstOrDefault(x => !x.Isdelete) != null ? (DateTime)t.Assigntables.FirstOrDefault(x => !x.Isdelete).CreatedAt : DateTime.Now) : DateTime.Now,
-            //                     TotalSpend = t.Status == "Running" ? (t.Assigntables.FirstOrDefault(x => !x.Isdelete) != null ? (t.Assigntables.FirstOrDefault(x => !x.Isdelete).Order != null ? t.Assigntables.FirstOrDefault(x => !x.Isdelete).Order.TotalAmount : 0) : 0) : 0
-            //                 }).ToList();
+            List<TableViewModelForOrderAppTable> tableListBySection = _context.Tables.Where(x => x.Isdelete == false && x.Section.SectionId == SectionId)
+                            .Select(t => new TableViewModelForOrderAppTable
+                            {
+                                SectionId = t.SectionId,
+                                TableId = t.TableId,
+                                TableName = t.TableName,
+                                Capacity = t.Capacity,
+                                Status = t.Status,
+                                Totaltime = t.Status == "Running" || t.Status == "Assigned" ? (t.Assigntables.FirstOrDefault(x => !x.Isdelete) != null ? (DateTime)t.Assigntables.FirstOrDefault(x => !x.Isdelete).CreatedAt : DateTime.Now) : DateTime.Now,
+                                TotalSpend = t.Status == "Running" ? (t.Assigntables.FirstOrDefault(x => !x.Isdelete) != null ? (t.Assigntables.FirstOrDefault(x => !x.Isdelete).Order != null ? t.Assigntables.FirstOrDefault(x => !x.Isdelete).Order.TotalAmount : 0) : 0) : 0
+                            }).ToList();
             if (tableListBySection.Count == 0)
             {
                 return null!;
@@ -146,34 +147,34 @@ public class OrderAppTableService : IOrderAppTableService
         try
         {
             // using var connection = _context.Database.GetDbConnection();
-            NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
-            connection.Open();
-            await connection.ExecuteAsync("CALL AddEditCustomer(@inpEmail, @inpCustomerName, @inpCustomerNo, @ModifiedBy)", new { inpEmail = waitingTokenvm.Email, inpCustomerName = waitingTokenvm.Name, inpCustomerNo = waitingTokenvm.Mobileno, ModifiedBy = userId });
-            connection.Close();
-            return true;
-
-            // Customer? presentcustomer = await _context.Customers.FirstOrDefaultAsync(x => x.Email == waitingTokenvm.Email && x.Isdelete == false);
-            // if (presentcustomer != null)
-            // {
-            //     presentcustomer.CustomerName = waitingTokenvm.Name;
-            //     presentcustomer.Email = waitingTokenvm.Email;
-            //     presentcustomer.Phoneno = waitingTokenvm.Mobileno;
-            //     presentcustomer.ModifiedAt = DateTime.Now;
-            //     presentcustomer.ModifiedBy = userId;
-            //     _context.Update(presentcustomer);
-            // }
-            // else
-            // {
-            //     Customer customer = new();
-            //     customer.CustomerName = waitingTokenvm.Name;
-            //     customer.Email = waitingTokenvm.Email;
-            //     customer.Phoneno = waitingTokenvm.Mobileno;
-            //     customer.CreatedBy = userId;
-            //     await _context.AddAsync(customer);
-            // }
-
-            // await _context.SaveChangesAsync();
+            // NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+            // connection.Open();
+            // await connection.ExecuteAsync("CALL AddEditCustomer(@inpEmail, @inpCustomerName, @inpCustomerNo, @ModifiedBy)", new { inpEmail = waitingTokenvm.Email, inpCustomerName = waitingTokenvm.Name, inpCustomerNo = waitingTokenvm.Mobileno, ModifiedBy = userId });
+            // connection.Close();
             // return true;
+
+            Customer? presentcustomer = await _context.Customers.FirstOrDefaultAsync(x => x.Email == waitingTokenvm.Email && x.Isdelete == false);
+            if (presentcustomer != null)
+            {
+                presentcustomer.CustomerName = waitingTokenvm.Name;
+                presentcustomer.Email = waitingTokenvm.Email;
+                presentcustomer.Phoneno = waitingTokenvm.Mobileno;
+                presentcustomer.ModifiedAt = DateTime.Now;
+                presentcustomer.ModifiedBy = userId;
+                _context.Update(presentcustomer);
+            }
+            else
+            {
+                Customer customer = new();
+                customer.CustomerName = waitingTokenvm.Name;
+                customer.Email = waitingTokenvm.Email;
+                customer.Phoneno = waitingTokenvm.Mobileno;
+                customer.CreatedBy = userId;
+                await _context.AddAsync(customer);
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
             
         }
         catch (Exception e)

@@ -32,6 +32,7 @@ public class RolesPermissionController : Controller
     [PermissionAuthorize("Role.View")]
     public IActionResult Permissions(string name)
     {
+        
         List<RolesPermissionViewModel> permissions = _rolesPermission.permissionByRole(name);
         return View(permissions);
     }

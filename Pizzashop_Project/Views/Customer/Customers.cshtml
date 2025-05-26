@@ -1,6 +1,9 @@
 @using DAL.ViewModels;
 @model DAL.ViewModels.PaginationViewModel<CustomerViewModel>;
 
+@{
+    ViewData["Title"] = "Customers";
+}
 
 <!-- Tax list -->
 <div class="user-list-main-div row  d-md-flex justify-content-between mt-2">
@@ -152,8 +155,7 @@
                         let filename = "Customers.xlsx";
 
                         let disposition = xhr.getResponseHeader('Content-Disposition');
-                        @* console.log("disp", disposition); *@
-                                            if (disposition && disposition.indexOf('attachment') !== -1) {
+                            if (disposition && disposition.indexOf('attachment') !== -1) {
                             let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition); //ExportOrderDataToExcel filename From disposition
                             if (matches && matches[1]) {
                                 filename = matches[1].replace(/['"]/g, ''); // Remove quotes if present
@@ -168,7 +170,6 @@
                         link.click();
                         document.body.removeChild(link);
 
-                        console.log("Export Successfully");
                     }
                 });
         }
@@ -214,14 +215,12 @@
             // Sorting functionality
             $("#sort-name").on("click", function () {
                 sortColumn = $(this).data("column");
-                console.log(sortColumn);
                 sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
                 $(this).attr("data-direction", sortDirection);
                 loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);
             });
             $("#sort-date").on("click", function () {
                 sortColumn = $(this).data("column");
-                console.log(sortColumn);
                 sortDirection = $(this).attr("data-direction") === "asc" ? "desc" : "asc";
                 $(this).attr("data-direction", sortDirection);
                 loadTableForCustomer(currentPage, searchText, sortColumn, sortDirection, pageSize, timePeriod, startDate, endDate);

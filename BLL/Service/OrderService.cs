@@ -138,6 +138,7 @@ public class OrderService : IOrderService
         var query = _context.Orders
               .Include(x => x.Customer)
               .Include(x => x.Paymentmethod)
+              .Include(x => x.Rating)
               .Where(x => x.Isdelete == false)
               .Select(x => new OrderViewModel
               {

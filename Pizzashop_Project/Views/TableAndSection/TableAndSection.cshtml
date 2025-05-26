@@ -226,7 +226,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Delete Conformation</h5>
+                <h5 class="modal-title">Delete confirmation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body ">
@@ -385,7 +385,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Delete Conformation</h5>
+                <h5 class="modal-title">Delete confirmation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body ">
@@ -410,7 +410,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Delete Conformation</h5>
+                <h5 class="modal-title">Delete confirmation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body ">
@@ -688,15 +688,16 @@
                             console.log(res)
                             if (res.success) {
                                 successToaster(res.text);
+                                 SectionID = res.sectionID;
+                                loadSection();
+                                loadSectionTable(res.sectionID, searchText, currentPage, pageSize);
+                                EmptyAddSectionForm();
                             } else {
                                 errorToaster(res.text);
                             }
                             $(".btn-close").click();
-                            console.log("addsec", res.sectionID);
-                            SectionID = res.sectionID;
-                            loadSection();
-                            loadSectionTable(res.sectionID, searchText, currentPage, pageSize);
-                            EmptyAddSectionForm();
+                            
+                           
                         }
                     })
                 }
@@ -719,13 +720,13 @@
                         success: function (res) {
                             if (res.success) {
                                 successToaster(res.text);
+                                SectionID = res.sectionID;
+                                loadSection();
+                                loadSectionTable(SectionID, searchText, currentPage, pageSize);
                             } else {
                                 errorToaster(res.text);
                             }
                             $(".btn-close").click();
-                            SectionID = res.sectionID;
-                            loadSection();
-                            loadSectionTable(SectionID, searchText, currentPage, pageSize);
                         }
                     })
                 }
