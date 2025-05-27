@@ -4,6 +4,8 @@ using DAL.ViewModels;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Npgsql;
+using NuGet.Protocol.Plugins;
 
 namespace BLL.Service;
 
@@ -19,20 +21,21 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     #region getAllsection
     public async Task<List<OrderAppWLSectionViewModel>> GetAllSection()
     {
-        // using var connection = _context.Database.GetDbConnection();
-        // var result = await connection.QuerySingleAsync<string>("SELECT GetAllSection()");
+        NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+        connection.Open();
+        var result = await connection.QuerySingleAsync<string>("SELECT GetAllSection()");
+        List<OrderAppWLSectionViewModel>? OrderAppWLSectionViewModel = JsonConvert.DeserializeObject<List<OrderAppWLSectionViewModel>>(result);
+        connection.Close();
+        return OrderAppWLSectionViewModel!;
 
-        // List<OrderAppWLSectionViewModel>? OrderAppWLSectionViewModel = JsonConvert.DeserializeObject<List<OrderAppWLSectionViewModel>>(result);
-        // return OrderAppWLSectionViewModel!;
 
-
-        return _context.Sections.Where(x => x.Isdelete == false).OrderBy(x => x.SectionId)
-                .Select(x => new OrderAppWLSectionViewModel
-                {
-                    SectionId = x.SectionId,
-                    SectionName = x.SectionName,
-                    WaitingCount = _context.Waitinglists.Count(w => w.SectionId == x.SectionId && w.Isassign == false && w.Isdelete == false)
-                }).ToList();
+        // return _context.Sections.Where(x => x.Isdelete == false).OrderBy(x => x.SectionId)
+        //         .Select(x => new OrderAppWLSectionViewModel
+        //         {
+        //             SectionId = x.SectionId,
+        //             SectionName = x.SectionName,
+        //             WaitingCount = _context.Waitinglists.Count(w => w.SectionId == x.SectionId && w.Isassign == false && w.Isdelete == false)
+        //         }).ToList();
     }
     #endregion
 
@@ -92,9 +95,14 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     {
         try
         {
-            using var connection = _context.Database.GetDbConnection();
+            NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+            connection.Open();
             var result = await connection.QuerySingleAsync<string>("SELECT GetWaitingListBySection()");
-
+            connection.Close();
+            if (string.IsNullOrEmpty(result))
+            {
+                return new List<WaitingTokenDetailsViewModel>();
+            }
             List<WaitingTokenDetailsViewModel>? waitingList = JsonConvert.DeserializeObject<List<WaitingTokenDetailsViewModel>>(result);
             if (sectionId == 0)
             {
@@ -148,12 +156,14 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     {
         try
         {
-            using var connection = _context.Database.GetDbConnection();
+            NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+            connection.Open();
             var result = await connection.QuerySingleAsync<string>("SELECT GetWaitingTokenDetailsById(@inputWaitingId)", new { inputWaitingId = waitingId });
             if (string.IsNullOrEmpty(result))
             {
                 return new WaitingTokenDetailsViewModel();
             }
+            connection.Close();
             WaitingTokenDetailsViewModel? tokendetails = JsonConvert.DeserializeObject<WaitingTokenDetailsViewModel>(result);
             return tokendetails!;
         }
@@ -204,8 +214,11 @@ public class OrderAppWaitingService : IOrderAppWaitingService
             // using var connection = _context.Database.GetDbConnection();
             // var result = await connection.QuerySingleAsync<bool>("SELECT DeleteWaitingTokenSP(@inputWaitingId, @ModifiedBy)", new { inputWaitingId = waitingId, ModifiedBy = userId });
             // return result!;
-            using var connection = _context.Database.GetDbConnection();
+
+            NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+            connection.Open();
             await connection.ExecuteAsync("CALL DeleteWaitingTokenSP(@inputWaitingId, @ModifiedBy)", new { inputWaitingId = waitingId, ModifiedBy = userId });
+            connection.Close();
             return true;
         }
         catch (Exception e)
@@ -242,13 +255,15 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     {
         try
         {
-            using var connection = _context.Database.GetDbConnection();
+            NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+            connection.Open();
             var result = connection.QuerySingle<string>("SELECT GetTableBySection(@InputSectionID)", new { InputSectionID = sectionID });
             if (string.IsNullOrEmpty(result))
             {
                 return new List<TableViewModel>();
             }
             List<TableViewModel>? tablelist = JsonConvert.DeserializeObject<List<TableViewModel>>(result);
+            connection.Close();
             return tablelist!;
         }
         catch (Exception e)
@@ -279,40 +294,49 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     {
         try
         {
-            // using var connection = _context.Database.GetDbConnection();
-            // await connection.ExecuteAsync("CALL AssignTable(@inputTableIds, @inputWaitingId, @inputSectionId, @ModifiedBy)", new { inputTableIds = TableIds,inputWaitingId = waitingId, inputSectionId = sectionId,  ModifiedBy = userId });
-            // return true; 
-
-
-            Waitinglist? waitinglist = await _context.Waitinglists.Include(x => x.Customer).FirstOrDefaultAsync(x => x.WaitingId == waitingId && x.Isdelete == false && x.Isassign == false);
-            if (waitinglist == null) { return false; }
-            waitinglist.Isassign = true;
-            waitinglist.SectionId = sectionId;
-            waitinglist.AssignedAt = DateTime.Now;
-            waitinglist.ModifiedAt = DateTime.Now;
-            waitinglist.ModifiedBy = userId;
-
-            for (int i = 0; i < TableIds.Length; i++)
+            NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+            connection.Open();
+            await connection.ExecuteAsync("CALL AssignTable(@inputTableIds, @inputWaitingId, @inputSectionId, @ModifiedBy)",
+            new
             {
-                Assigntable assigntable = new();
-                assigntable.CustomerId = waitinglist.CustomerId;
-                assigntable.TableId = TableIds[i];
-                assigntable.NoOfPerson = waitinglist.NoOfPerson;
-                assigntable.CreatedBy = userId;
-                await _context.AddAsync(assigntable);
-
-                Table? table = await _context.Tables.FirstOrDefaultAsync(x => x.TableId == TableIds[i] && x.Isdelete == false);
-                table.Status = "Assigned";
-                table.ModifiedAt = DateTime.Now;
-                table.ModifiedBy = userId;
-                _context.Update(table);
-                await _context.SaveChangesAsync();
-            }
-
-            _context.Update(waitinglist);
-            await _context.SaveChangesAsync();
-
+                inputTableIds = TableIds,
+                inputWaitingId = waitingId,
+                inputSectionId = sectionId,
+                ModifiedBy = userId
+            });
+            connection.Close();
             return true;
+
+
+            // Waitinglist? waitinglist = await _context.Waitinglists.Include(x => x.Customer).FirstOrDefaultAsync(x => x.WaitingId == waitingId && x.Isdelete == false && x.Isassign == false);
+            // if (waitinglist == null) { return false; }
+            // waitinglist.Isassign = true;
+            // waitinglist.SectionId = sectionId;
+            // waitinglist.AssignedAt = DateTime.Now;
+            // waitinglist.ModifiedAt = DateTime.Now;
+            // waitinglist.ModifiedBy = userId;
+
+            // for (int i = 0; i < TableIds.Length; i++)
+            // {
+            //     Assigntable assigntable = new();
+            //     assigntable.CustomerId = waitinglist.CustomerId;
+            //     assigntable.TableId = TableIds[i];
+            //     assigntable.NoOfPerson = waitinglist.NoOfPerson;
+            //     assigntable.CreatedBy = userId;
+            //     await _context.AddAsync(assigntable);
+
+            //     Table? table = await _context.Tables.FirstOrDefaultAsync(x => x.TableId == TableIds[i] && x.Isdelete == false);
+            //     table.Status = "Assigned";
+            //     table.ModifiedAt = DateTime.Now;
+            //     table.ModifiedBy = userId;
+            //     _context.Update(table);
+            //     await _context.SaveChangesAsync();
+            // }
+
+            // _context.Update(waitinglist);
+            // await _context.SaveChangesAsync();
+
+            // return true;
         }
         catch (Exception e)
         {

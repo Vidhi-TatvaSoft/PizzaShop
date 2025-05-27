@@ -1,8 +1,10 @@
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 
 namespace BLL.Service;
 
@@ -59,20 +61,32 @@ public class OrderAppMenuService : IOrderAppMenuService
     #region FavouriteItemManage
     public async Task<bool> FavouriteItemManage(long itemId, bool IsFavourite, long userId)
     {
-        Item? item = await _context.Items.FirstOrDefaultAsync(x => x.ItemId == itemId && x.Isdelete == false);
-        if (item != null)
+        NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+        connection.Open();
+        await connection.ExecuteAsync("CALL FavouriteItemManage(@itemId, @IsFavourite, @userId)", new
         {
-            item.IsFavourite = IsFavourite;
-            item.ModifiedAt=DateTime.Now;
-            item.ModifiedBy = userId;
-            _context.Items.Update(item);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+            itemId = itemId,
+            IsFavourite = IsFavourite,
+            userId = userId
+        });
+        connection.Close();
+        return true;
+
+
+        // Item? item = await _context.Items.FirstOrDefaultAsync(x => x.ItemId == itemId && x.Isdelete == false);
+        // if (item != null)
+        // {
+        //     item.IsFavourite = IsFavourite;
+        //     item.ModifiedAt=DateTime.Now;
+        //     item.ModifiedBy = userId;
+        //     _context.Items.Update(item);
+        //     await _context.SaveChangesAsync();
+        //     return true;
+        // }
+        // else
+        // {
+        //     return false;
+        // }
     }
     #endregion
 
@@ -113,28 +127,40 @@ public class OrderAppMenuService : IOrderAppMenuService
     {
         try
         {
-            Customer? customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerId == customerId && !c.Isdelete);
-            customer.CustomerName = name;
-            customer.Phoneno = mobileNo;
-            customer.ModifiedAt = DateTime.Now;
-            customer.ModifiedBy = userId;
-            _context.Update(customer);
-
-            Waitinglist? waitinglist = await _context.Waitinglists.FirstOrDefaultAsync(wl => wl.CustomerId == customerId && wl.Isassign);
-            waitinglist.NoOfPerson = NoofPersons;
-            // waitinglist.ModifiedAt = DateTime.Now;
-            waitinglist.ModifiedBy = userId;
-            _context.Update(waitinglist);
-
-            List<Assigntable> assigntables = _context.Assigntables.Where(at => at.CustomerId == customerId && !at.Isdelete).ToList();
-            foreach (var table in assigntables)
+            NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+            connection.Open();
+             await connection.ExecuteAsync("CALL SaveCustomerDetails(@customerId, @name, @mobileNo, @NoofPersons, @userId)", new
             {
-                table.NoOfPerson = NoofPersons;
-                table.ModifiedAt = DateTime.Now;
-                table.ModifiedBy = userId;
-                _context.Update(table);
-            }
-            await _context.SaveChangesAsync();
+                customerId = customerId,
+                name = name,
+                mobileNo = mobileNo,
+                NoofPersons = NoofPersons,
+                userId = userId
+            });
+            connection.Close();
+
+            // Customer? customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerId == customerId && !c.Isdelete);
+            // customer.CustomerName = name;
+            // customer.Phoneno = mobileNo;
+            // customer.ModifiedAt = DateTime.Now;
+            // customer.ModifiedBy = userId;
+            // _context.Update(customer);
+
+            // Waitinglist? waitinglist = await _context.Waitinglists.FirstOrDefaultAsync(wl => wl.CustomerId == customerId && wl.Isassign);
+            // waitinglist.NoOfPerson = NoofPersons;
+            // // waitinglist.ModifiedAt = DateTime.Now;
+            // waitinglist.ModifiedBy = userId;
+            // _context.Update(waitinglist);
+
+            // List<Assigntable> assigntables = _context.Assigntables.Where(at => at.CustomerId == customerId && !at.Isdelete).ToList();
+            // foreach (var table in assigntables)
+            // {
+            //     table.NoOfPerson = NoofPersons;
+            //     table.ModifiedAt = DateTime.Now;
+            //     table.ModifiedBy = userId;
+            //     _context.Update(table);
+            // }
+            // await _context.SaveChangesAsync();
             return true;
 
         }
@@ -441,7 +467,8 @@ public class OrderAppMenuService : IOrderAppMenuService
                 _context.Update(order);
                 await _context.SaveChangesAsync();
             }
-
+            
+            
             //update orderdetails
             for (int i = 0; i < orderDetailId.Count; i++)
             {
@@ -450,8 +477,8 @@ public class OrderAppMenuService : IOrderAppMenuService
                 {
                     orderdetail.Quantity = orderDetailsvm.ItemsInOrderDetails[i].Quantity;
                     orderdetail.ExtraInstruction = orderDetailsvm.ItemsInOrderDetails[i].SpecialInstruction;
-                    orderdetail.ModifiedAt=DateTime.Now;
-                    orderdetail.ModifiedBy=userId;
+                    orderdetail.ModifiedAt = DateTime.Now;
+                    orderdetail.ModifiedBy = userId;
                     _context.Update(orderdetail);
                     // await _context.SaveChangesAsync();
 
@@ -459,8 +486,8 @@ public class OrderAppMenuService : IOrderAppMenuService
                     modorder.ForEach((mo) =>
                     {
                         mo.ModifierQuantity = orderDetailsvm.ItemsInOrderDetails[i].Quantity;
-                        mo.ModifiedAt=DateTime.Now;
-                        mo.ModifiedBy=userId;
+                        mo.ModifiedAt = DateTime.Now;
+                        mo.ModifiedBy = userId;
                         _context.Update(mo);
                     });
                     // await _context.SaveChangesAsync();

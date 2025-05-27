@@ -120,7 +120,7 @@ $$;
 create or replace procedure AddEditCustomerToWaitingList
 	(inpEmail TEXT,
 	inpWaitingId BIGINT, 
-     inpNoOfPerson INT,
+     inpNoOfPerson INTEGER,
      inpSectionId BIGINT,
 	 ModifiedBy BIGINT
 	)
@@ -133,9 +133,9 @@ BEGIN
 	from customers as c 
 	where c.email = inpEmail;
 
-	IF InpCustomerId = 0 THEN
-		INSERT INTO public.waitinglist(
-		 customer_id, assigned_at, no_of_person,  created_by, section_id)
+	IF inpWaitingId = 0 THEN
+		INSERT INTO public.waitinglist
+		( customer_id, assigned_at, no_of_person,  created_by, section_id)
 		VALUES (InpCustomerId, NOW(), inpNoOfPerson, ModifiedBy, inpSectionId);
 	ELSE 
 		 UPDATE public.waitinglist
@@ -149,4 +149,56 @@ BEGIN
 END;
 $$;
 
-CALL AddEditCustomerToWaitingList('vidhi123@gmail.com',58, 2,2, 36)
+CALL AddEditCustomerToWaitingList('vidhi123@gmail.com',0, 2,2, 36)
+
+
+
+---------------------------------GetListOfCustomerWaiting----------------------------------------
+create or replace function GetListOfCustomerWaiting(inpSectionId bigint )
+returns JSON as $$
+Declare customerWaiting JSON;
+BEGIN
+	select json_agg(row_to_json(list)) into customerWaiting
+	from(
+		select
+		w.waiting_id as "ID",
+		c.customer_name as "Name",
+		w.no_of_person as "NoOfPerson",
+		(
+		select row_to_json(customerDetails)
+		from (
+			select 
+			ci.email as "Email",
+			ci.customer_name as "Name",
+			ci.phoneno as "Mobileno",
+			wi.no_of_person as "NoOfPerson",
+			wi.section_id as "SectionID",
+			si.section_name as "SectionName"
+			from waitinglist as wi
+			left join customers as ci on wi.customer_id = ci.customer_id
+			left join sections as si on si.section_id = wi.section_id
+			WHERE wi.waiting_id = w.waiting_id
+			) customerDetails
+		)as "customerDetails"
+		from waitinglist as w 
+		left join customers as c on w.customer_id = c.customer_id
+		where  w.section_id = inpSectionId AND w.isdelete = FALSE AND w.isassign = FALSE
+	)list;
+	return customerWaiting;
+END;
+$$ LANGUAGE plpgsql;
+
+
+select GetListOfCustomerWaiting(1)
+
+
+
+
+
+
+
+
+
+
+
+

@@ -253,7 +253,14 @@
         }
 
         //save customer details to db
-        $("#CustomerDetailUpdateFormID").on("submit")
+        $(document).on("submit", "#CustomerDetailUpdateFormID", function (e) {
+            e.preventDefault();
+            SaveCustomerDetails();
+        });
+        @* $("#CustomerDetailUpdateFormID").on("submit", function(e){
+            e.preventDefault();
+            SaveCustomerDetails();
+        }) *@
         function SaveCustomerDetails() {
             var NoofPersons = document.getElementById("NoofPersons").value;
             var name = document.getElementById("Name").value;

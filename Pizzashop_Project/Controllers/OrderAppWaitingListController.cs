@@ -51,7 +51,7 @@ public class OrderAppWaitingListController : Controller
     public async Task<IActionResult> GetWaitingListBySection(long sectionId)
     {
         OrderAppWaitingListViewModel orderAppWaitingvm = new();
-        orderAppWaitingvm.waitingList =  _orderAppWaitingService.GetWaitingListBySection(sectionId);
+        orderAppWaitingvm.waitingList = await _orderAppWaitingService.GetWaitingListBySectionSP(sectionId);
         return PartialView("_waitingListTableBySection", orderAppWaitingvm.waitingList);
     }
     #endregion
@@ -122,7 +122,7 @@ public class OrderAppWaitingListController : Controller
     public async Task<IActionResult> GetDetailsByWaitingId(long waitingId)
     {
         OrderAppWaitingListViewModel waitinglistvm = new();
-        waitinglistvm.waitingTokenDetailsViewModel =  _orderAppWaitingService.GetWaitingTokenDetailsById(waitingId);
+        waitinglistvm.waitingTokenDetailsViewModel =  await _orderAppWaitingService.GetWaitingTokenDetailsByIdSP(waitingId);
         return Json(waitinglistvm.waitingTokenDetailsViewModel);
     }
     #endregion
@@ -133,7 +133,7 @@ public class OrderAppWaitingListController : Controller
         string token = Request.Cookies["AuthToken"];
         var userData = _userService.getUserFromEmail(token);
         long userId = _userLoginSerivce.GetUserId(userData[0].Userlogin.Email);
-        bool waitingTokenDeleteStatus =await _orderAppWaitingService.DeleteWaitingToken(waitingId,userId);
+        bool waitingTokenDeleteStatus =await _orderAppWaitingService.DeleteWaitingTokenSP(waitingId,userId);
         if(waitingTokenDeleteStatus){
             return Json(new { success = true, text = "Waiting Token Deleted Successfully" });
         }
@@ -144,7 +144,7 @@ public class OrderAppWaitingListController : Controller
 
     #region GetTableBySection
     public IActionResult GetTableBySection(long sectionID){
-        List<TableViewModel> tableListBySection = _orderAppWaitingService.GetTableBySection(sectionID);
+        List<TableViewModel> tableListBySection = _orderAppWaitingService.GetTableBySectionSP(sectionID);
         return Json(tableListBySection);
     }
     #endregion
