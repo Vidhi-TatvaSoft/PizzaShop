@@ -175,39 +175,42 @@ public class OrderAppKotService : IOrderAppKotService
         try
         {
             if (orderdetailIdarr.Length != itemquantityarr.Length) return false;
-            NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
-            connection.Open();
-            var IsUpdated = await connection.QuerySingleAsync<bool>
-            ("SELECT ChangeItemQuantitiesAndStatus(@orderdetailIds, @itemquantity, @inputStatus, @ModifiedBy)",
-             new { orderdetailIds = orderdetailIdarr, itemquantity = itemquantityarr, inputStatus = status, ModifiedBy = userId });
-            connection.Close();
-            return IsUpdated;
+
+
+            
+            // NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+            // connection.Open();
+            // var IsUpdated = await connection.QuerySingleAsync<bool>
+            // ("SELECT ChangeItemQuantitiesAndStatus(@orderdetailIds, @itemquantity, @inputStatus, @ModifiedBy)",
+            //  new { orderdetailIds = orderdetailIdarr, itemquantity = itemquantityarr, inputStatus = status, ModifiedBy = userId });
+            // connection.Close();
+            // return IsUpdated;
 
 
 
-            // for (int i = 0; i < orderdetailIdarr.Length; i++)
-            // {
-            //     var orderDetail = _context.Orderdetails.FirstOrDefault(x => x.OrderdetailId == orderdetailIdarr[i] && x.Isdelete == false);
-            //     if (orderDetail != null)
-            //     {
-            //         if (status == "InProgress")
-            //         {
-            //             orderDetail.ReadyQuantity += itemquantityarr[i];
-            //             orderDetail.ModifiedAt = DateTime.Now;
-            //             orderDetail.ModifiedBy = userId;
-            //             _context.Update(orderDetail);
-            //         }
-            //         else
-            //         {
-            //             orderDetail.ReadyQuantity -= itemquantityarr[i];
-            //             orderDetail.ModifiedAt = DateTime.Now;
-            //             orderDetail.ModifiedBy = userId;
-            //             _context.Update(orderDetail);
-            //         }
-            //     }
-            // }
-            // await _context.SaveChangesAsync();
-            // return true;
+            for (int i = 0; i < orderdetailIdarr.Length; i++)
+            {
+                var orderDetail = _context.Orderdetails.FirstOrDefault(x => x.OrderdetailId == orderdetailIdarr[i] && x.Isdelete == false);
+                if (orderDetail != null)
+                {
+                    if (status == "InProgress")
+                    {
+                        orderDetail.ReadyQuantity += itemquantityarr[i];
+                        orderDetail.ModifiedAt = DateTime.Now;
+                        orderDetail.ModifiedBy = userId;
+                        _context.Update(orderDetail);
+                    }
+                    else
+                    {
+                        orderDetail.ReadyQuantity -= itemquantityarr[i];
+                        orderDetail.ModifiedAt = DateTime.Now;
+                        orderDetail.ModifiedBy = userId;
+                        _context.Update(orderDetail);
+                    }
+                }
+            }
+            await _context.SaveChangesAsync();
+            return true;
         }
         catch (Exception e)
         {

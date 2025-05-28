@@ -45,10 +45,22 @@ END;
 $$
 
 
-
-DROP FUNCTION FavouriteItemManage( itemId BIGINT,
+-----------------------------SaveRatings-------------------------------------------------------
+CREATE OR REPLACE PROCEDURE FavouriteItemManage(
+    itemId BIGINT,
     IsFavourite BOOLEAN,
-    userId BIGINT)
+    userId BIGINT
+) language plpgsql as $$
+BEGIN
+    UPDATE items
+    SET "IsFavourite" = IsFavourite,
+        modified_at = NOW(),
+        modified_by = userId
+    WHERE item_id = itemId AND isdelete = FALSE;
+
+END;
+$$
+
 
 
 

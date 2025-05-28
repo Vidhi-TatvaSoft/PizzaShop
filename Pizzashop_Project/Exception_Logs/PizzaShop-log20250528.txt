@@ -1,0 +1,449 @@
+[2025-05-28 10:25:44 ERR] An unhandled exception occurred.
+System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at Pizzashop_Project.Controllers.OrderAppKOTController.ChangeItemQuantitiesAndStatus(Int32[] orderdetailIdarr, Int32[] itemquantityarr, String status) in D:\PizzaShop\Pizzashop_Project\Controllers\OrderAppKOTController.cs:line 57
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Pizzashop_Project.ExceptionMiddleware.ExceptionMiddleWare.InvokeAsync(HttpContext context) in D:\PizzaShop\Pizzashop_Project\ExceptionMiddleware\ExceptionMiddleWare.cs:line 19
+
+
+[2025-05-28 10:25:51 ERR] An unhandled exception occurred.
+System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at Pizzashop_Project.Controllers.OrderAppKOTController.ChangeItemQuantitiesAndStatus(Int32[] orderdetailIdarr, Int32[] itemquantityarr, String status) in D:\PizzaShop\Pizzashop_Project\Controllers\OrderAppKOTController.cs:line 57
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Pizzashop_Project.ExceptionMiddleware.ExceptionMiddleWare.InvokeAsync(HttpContext context) in D:\PizzaShop\Pizzashop_Project\ExceptionMiddleware\ExceptionMiddleWare.cs:line 19
+
+
+[2025-05-28 10:49:49 ERR] An unhandled exception occurred.
+System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+ ---> System.NullReferenceException: Object reference not set to an instance of an object.
+   at lambda_method2958(Closure)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Evaluate(Expression expression, Boolean generateParameter)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.VisitBinary(BinaryExpression binaryExpression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitLambda[T](Expression`1 node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitUnary(UnaryExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.ExtractParameters(Expression expression, Boolean clearEvaluatedValues)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.Execute[TResult](Expression query)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryable`1.GetEnumerator()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at BLL.Service.CustomerService.GetCustomerByEmail(String Email) in D:\PizzaShop\BLL\Service\CustomerService.cs:line 445
+   at Pizzashop_Project.Controllers.OrderAppWaitingListController.GetCustomerByEmail(String Email) in D:\PizzaShop\Pizzashop_Project\Controllers\OrderAppWaitingListController.cs:line 61
+   at lambda_method1526(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Pizzashop_Project.ExceptionMiddleware.ExceptionMiddleWare.InvokeAsync(HttpContext context) in D:\PizzaShop\Pizzashop_Project\ExceptionMiddleware\ExceptionMiddleWare.cs:line 19
+
+
+[2025-05-28 10:49:50 ERR] An unhandled exception occurred.
+System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+ ---> System.NullReferenceException: Object reference not set to an instance of an object.
+   at lambda_method2959(Closure)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Evaluate(Expression expression, Boolean generateParameter)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.VisitBinary(BinaryExpression binaryExpression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitLambda[T](Expression`1 node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitUnary(UnaryExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.ExtractParameters(Expression expression, Boolean clearEvaluatedValues)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.Execute[TResult](Expression query)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryable`1.GetEnumerator()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at BLL.Service.CustomerService.GetCustomerByEmail(String Email) in D:\PizzaShop\BLL\Service\CustomerService.cs:line 445
+   at Pizzashop_Project.Controllers.OrderAppWaitingListController.GetCustomerByEmail(String Email) in D:\PizzaShop\Pizzashop_Project\Controllers\OrderAppWaitingListController.cs:line 61
+   at lambda_method1526(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Pizzashop_Project.ExceptionMiddleware.ExceptionMiddleWare.InvokeAsync(HttpContext context) in D:\PizzaShop\Pizzashop_Project\ExceptionMiddleware\ExceptionMiddleWare.cs:line 19
+
+
+[2025-05-28 10:49:50 ERR] An unhandled exception occurred.
+System.InvalidOperationException: An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+ ---> System.NullReferenceException: Object reference not set to an instance of an object.
+   at lambda_method2960(Closure)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.GetValue(Expression expression, String& parameterName)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Evaluate(Expression expression, Boolean generateParameter)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.VisitBinary(BinaryExpression binaryExpression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitLambda[T](Expression`1 node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Linq.Expressions.ExpressionVisitor.VisitUnary(UnaryExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at System.Dynamic.Utils.ExpressionVisitorUtils.VisitArguments(ExpressionVisitor visitor, IArgumentProvider nodes)
+   at System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(MethodCallExpression node)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.Visit(Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.ParameterExtractingExpressionVisitor.ExtractParameters(Expression expression, Boolean clearEvaluatedValues)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.Execute[TResult](Expression query)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryable`1.GetEnumerator()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at BLL.Service.CustomerService.GetCustomerByEmail(String Email) in D:\PizzaShop\BLL\Service\CustomerService.cs:line 445
+   at Pizzashop_Project.Controllers.OrderAppWaitingListController.GetCustomerByEmail(String Email) in D:\PizzaShop\Pizzashop_Project\Controllers\OrderAppWaitingListController.cs:line 61
+   at lambda_method1526(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Pizzashop_Project.ExceptionMiddleware.ExceptionMiddleWare.InvokeAsync(HttpContext context) in D:\PizzaShop\Pizzashop_Project\ExceptionMiddleware\ExceptionMiddleWare.cs:line 19
+
+
+[2025-05-28 17:52:34 ERR] An unhandled exception occurred.
+Npgsql.PostgresException (0x80004005): 42703: column i.is_favourite does not exist
+   at Npgsql.Internal.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|234_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.<ReadMessage>g__ReadMessageSequential|44_0(NpgsqlConnector connector, Boolean async)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Dapper.SqlMapper.ExecuteReaderWithFlagsFallback(IDbCommand cmd, Boolean wasClosed, CommandBehavior behavior) in /_/Dapper/SqlMapper.cs:line 1185
+   at Dapper.SqlMapper.QueryRowImpl[T](IDbConnection cnn, Row row, CommandDefinition& command, Type effectiveType) in /_/Dapper/SqlMapper.cs:line 1306
+   at Dapper.SqlMapper.QuerySingle[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 907
+   at BLL.Service.OrderAppMenuService.GetItemByCategory(Int64 categoryId, String searchText) in D:\PizzaShop\BLL\Service\OrderAppMenuService.cs:line 27
+   at Pizzashop_Project.Controllers.OrderAppMenuController.GetItemByCategory(Int64 categoryId, String searchText) in D:\PizzaShop\Pizzashop_Project\Controllers\OrderAppMenuController.cs:line 63
+   at lambda_method1309(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Pizzashop_Project.ExceptionMiddleware.ExceptionMiddleWare.InvokeAsync(HttpContext context) in D:\PizzaShop\Pizzashop_Project\ExceptionMiddleware\ExceptionMiddleWare.cs:line 19
+  Exception data:
+    Severity: ERROR
+    SqlState: 42703
+    MessageText: column i.is_favourite does not exist
+    Hint: Perhaps you meant to reference the column "i.IsFavourite".
+    InternalPosition: 217
+    InternalQuery: WITH filtered_items AS (
+        SELECT 
+            i.item_id,
+            i.item_name,
+            i.category_id,
+            i.item_type_id,
+            CEIL(i.rate) AS rate,
+            i.item_image,
+            i.is_favourite,
+            i.is_delete
+        FROM items i
+        WHERE 
+            i.is_available = true 
+            AND i.is_delete = false
+            AND (
+                (category_id = -1 AND i.is_favourite = true) OR
+                (category_id = 0) OR
+                (category_id > 0 AND i.category_id = category_id)
+            )
+            AND (search_text = '' OR LOWER(TRIM(i.item_name)) LIKE LOWER(TRIM(search_text || '%')))
+    )
+    SELECT json_agg(
+        json_build_object(
+            'ItemId', item_id,
+            'ItemName', item_name,
+            'CategoryId', category_id,
+            'ItemTypeId', item_type_id,
+            'Rate', rate,
+            'ItemImage', item_image,
+            'IsFavourite', is_favourite,
+            'Isdelete', is_delete
+        )
+    )                 FROM filtered_items
+    Where: PL/pgSQL function get_items_by_category(bigint,text) line 5 at SQL statement
+    File: parse_relation.c
+    Line: 3738
+    Routine: errorMissingColumn
+
+
+[2025-05-28 17:56:47 ERR] An unhandled exception occurred.
+Npgsql.PostgresException (0x80004005): 42703: column i.is_available does not exist
+   at Npgsql.Internal.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|234_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.<ReadMessage>g__ReadMessageSequential|44_0(NpgsqlConnector connector, Boolean async)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Dapper.SqlMapper.ExecuteReaderWithFlagsFallback(IDbCommand cmd, Boolean wasClosed, CommandBehavior behavior) in /_/Dapper/SqlMapper.cs:line 1185
+   at Dapper.SqlMapper.QueryRowImpl[T](IDbConnection cnn, Row row, CommandDefinition& command, Type effectiveType) in /_/Dapper/SqlMapper.cs:line 1306
+   at Dapper.SqlMapper.QuerySingle[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 907
+   at BLL.Service.OrderAppMenuService.GetItemByCategory(Int64 categoryId, String searchText) in D:\PizzaShop\BLL\Service\OrderAppMenuService.cs:line 27
+   at Pizzashop_Project.Controllers.OrderAppMenuController.GetItemByCategory(Int64 categoryId, String searchText) in D:\PizzaShop\Pizzashop_Project\Controllers\OrderAppMenuController.cs:line 63
+   at lambda_method1071(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Pizzashop_Project.ExceptionMiddleware.ExceptionMiddleWare.InvokeAsync(HttpContext context) in D:\PizzaShop\Pizzashop_Project\ExceptionMiddleware\ExceptionMiddleWare.cs:line 19
+  Exception data:
+    Severity: ERROR
+    SqlState: 42703
+    MessageText: column i.is_available does not exist
+    Hint: Perhaps you meant to reference the column "i.isavailable".
+    InternalPosition: 305
+    InternalQuery: WITH filtered_items AS (
+        SELECT 
+            i.item_id,
+            i.item_name,
+            i.category_id,
+            i.item_type_id,
+            CEIL(i.rate) AS rate,
+            i.item_image,
+            i."IsFavourite",
+            i.isdelete
+        FROM items i
+        WHERE 
+            i.is_available = true 
+            AND i.is_delete = false
+            AND (
+                (category_id = -1 AND i."IsFavourite" = true) OR
+                (category_id = 0) OR
+                (category_id > 0 AND i.category_id = category_id)
+            )
+            AND (search_text = '' OR LOWER(TRIM(i.item_name)) LIKE LOWER(TRIM(search_text || '%')))
+    )
+    SELECT json_agg(
+        json_build_object(
+            'ItemId', item_id,
+            'ItemName', item_name,
+            'CategoryId', category_id,
+            'ItemTypeId', item_type_id,
+            'Rate', rate,
+            'ItemImage', item_image,
+            'IsFavourite', "IsFavourite",
+            'Isdelete', isdelete
+        )
+    )                 FROM filtered_items
+    Where: PL/pgSQL function get_items_by_category(bigint,text) line 5 at SQL statement
+    File: parse_relation.c
+    Line: 3738
+    Routine: errorMissingColumn
+
+
+[2025-05-28 17:57:26 ERR] An unhandled exception occurred.
+Npgsql.PostgresException (0x80004005): 42702: column reference "category_id" is ambiguous
+
+DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+   at Npgsql.Internal.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|234_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.<ReadMessage>g__ReadMessageSequential|44_0(NpgsqlConnector connector, Boolean async)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Dapper.SqlMapper.ExecuteReaderWithFlagsFallback(IDbCommand cmd, Boolean wasClosed, CommandBehavior behavior) in /_/Dapper/SqlMapper.cs:line 1185
+   at Dapper.SqlMapper.QueryRowImpl[T](IDbConnection cnn, Row row, CommandDefinition& command, Type effectiveType) in /_/Dapper/SqlMapper.cs:line 1306
+   at Dapper.SqlMapper.QuerySingle[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 907
+   at BLL.Service.OrderAppMenuService.GetItemByCategory(Int64 categoryId, String searchText) in D:\PizzaShop\BLL\Service\OrderAppMenuService.cs:line 27
+   at Pizzashop_Project.Controllers.OrderAppMenuController.GetItemByCategory(Int64 categoryId, String searchText) in D:\PizzaShop\Pizzashop_Project\Controllers\OrderAppMenuController.cs:line 63
+   at lambda_method1071(Closure, Object, Object[])
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Pizzashop_Project.ExceptionMiddleware.ExceptionMiddleWare.InvokeAsync(HttpContext context) in D:\PizzaShop\Pizzashop_Project\ExceptionMiddleware\ExceptionMiddleWare.cs:line 19
+  Exception data:
+    Severity: ERROR
+    SqlState: 42702
+    MessageText: column reference "category_id" is ambiguous
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    InternalPosition: 397
+    InternalQuery: WITH filtered_items AS (
+        SELECT 
+            i.item_id,
+            i.item_name,
+            i.category_id,
+            i.item_type_id,
+            CEIL(i.rate) AS rate,
+            i.item_image,
+            i."IsFavourite",
+            i.isdelete
+        FROM items i
+        WHERE 
+            i.isavailable = true 
+            AND i.isdelete = false
+            AND (
+                (category_id = -1 AND i."IsFavourite" = true) OR
+                (category_id = 0) OR
+                (category_id > 0 AND i.category_id = category_id)
+            )
+            AND (search_text = '' OR LOWER(TRIM(i.item_name)) LIKE LOWER(TRIM(search_text || '%')))
+    )
+    SELECT json_agg(
+        json_build_object(
+            'ItemId', item_id,
+            'ItemName', item_name,
+            'CategoryId', category_id,
+            'ItemTypeId', item_type_id,
+            'Rate', rate,
+            'ItemImage', item_image,
+            'IsFavourite', "IsFavourite",
+            'Isdelete', isdelete
+        )
+    )                 FROM filtered_items
+    Where: PL/pgSQL function get_items_by_category(bigint,text) line 5 at SQL statement
+    File: pl_comp.c
+    Line: 1138
+    Routine: plpgsql_post_column_ref
+
+

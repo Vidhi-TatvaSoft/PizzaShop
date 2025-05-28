@@ -21,21 +21,21 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     #region getAllsection
     public async Task<List<OrderAppWLSectionViewModel>> GetAllSection()
     {
-        NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
-        connection.Open();
-        var result = await connection.QuerySingleAsync<string>("SELECT GetAllSection()");
-        List<OrderAppWLSectionViewModel>? OrderAppWLSectionViewModel = JsonConvert.DeserializeObject<List<OrderAppWLSectionViewModel>>(result);
-        connection.Close();
-        return OrderAppWLSectionViewModel!;
+        // NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+        // connection.Open();
+        // var result = await connection.QuerySingleAsync<string>("SELECT GetAllSection()");
+        // List<OrderAppWLSectionViewModel>? OrderAppWLSectionViewModel = JsonConvert.DeserializeObject<List<OrderAppWLSectionViewModel>>(result);
+        // connection.Close();
+        // return OrderAppWLSectionViewModel!;
 
 
-        // return _context.Sections.Where(x => x.Isdelete == false).OrderBy(x => x.SectionId)
-        //         .Select(x => new OrderAppWLSectionViewModel
-        //         {
-        //             SectionId = x.SectionId,
-        //             SectionName = x.SectionName,
-        //             WaitingCount = _context.Waitinglists.Count(w => w.SectionId == x.SectionId && w.Isassign == false && w.Isdelete == false)
-        //         }).ToList();
+        return _context.Sections.Where(x => x.Isdelete == false).OrderBy(x => x.SectionId)
+                .Select(x => new OrderAppWLSectionViewModel
+                {
+                    SectionId = x.SectionId,
+                    SectionName = x.SectionName,
+                    WaitingCount = _context.Waitinglists.Count(w => w.SectionId == x.SectionId && w.Isassign == false && w.Isdelete == false)
+                }).ToList();
     }
     #endregion
 
@@ -294,49 +294,49 @@ public class OrderAppWaitingService : IOrderAppWaitingService
     {
         try
         {
-            NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
-            connection.Open();
-            await connection.ExecuteAsync("CALL AssignTable(@inputTableIds, @inputWaitingId, @inputSectionId, @ModifiedBy)",
-            new
-            {
-                inputTableIds = TableIds,
-                inputWaitingId = waitingId,
-                inputSectionId = sectionId,
-                ModifiedBy = userId
-            });
-            connection.Close();
-            return true;
-
-
-            // Waitinglist? waitinglist = await _context.Waitinglists.Include(x => x.Customer).FirstOrDefaultAsync(x => x.WaitingId == waitingId && x.Isdelete == false && x.Isassign == false);
-            // if (waitinglist == null) { return false; }
-            // waitinglist.Isassign = true;
-            // waitinglist.SectionId = sectionId;
-            // waitinglist.AssignedAt = DateTime.Now;
-            // waitinglist.ModifiedAt = DateTime.Now;
-            // waitinglist.ModifiedBy = userId;
-
-            // for (int i = 0; i < TableIds.Length; i++)
+            // NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+            // connection.Open();
+            // await connection.ExecuteAsync("CALL AssignTable(@inputTableIds, @inputWaitingId, @inputSectionId, @ModifiedBy)",
+            // new
             // {
-            //     Assigntable assigntable = new();
-            //     assigntable.CustomerId = waitinglist.CustomerId;
-            //     assigntable.TableId = TableIds[i];
-            //     assigntable.NoOfPerson = waitinglist.NoOfPerson;
-            //     assigntable.CreatedBy = userId;
-            //     await _context.AddAsync(assigntable);
-
-            //     Table? table = await _context.Tables.FirstOrDefaultAsync(x => x.TableId == TableIds[i] && x.Isdelete == false);
-            //     table.Status = "Assigned";
-            //     table.ModifiedAt = DateTime.Now;
-            //     table.ModifiedBy = userId;
-            //     _context.Update(table);
-            //     await _context.SaveChangesAsync();
-            // }
-
-            // _context.Update(waitinglist);
-            // await _context.SaveChangesAsync();
-
+            //     inputTableIds = TableIds,
+            //     inputWaitingId = waitingId,
+            //     inputSectionId = sectionId,
+            //     ModifiedBy = userId
+            // });
+            // connection.Close();
             // return true;
+
+
+            Waitinglist? waitinglist = await _context.Waitinglists.Include(x => x.Customer).FirstOrDefaultAsync(x => x.WaitingId == waitingId && x.Isdelete == false && x.Isassign == false);
+            if (waitinglist == null) { return false; }
+            waitinglist.Isassign = true;
+            waitinglist.SectionId = sectionId;
+            waitinglist.AssignedAt = DateTime.Now;
+            waitinglist.ModifiedAt = DateTime.Now;
+            waitinglist.ModifiedBy = userId;
+
+            for (int i = 0; i < TableIds.Length; i++)
+            {
+                Assigntable assigntable = new();
+                assigntable.CustomerId = waitinglist.CustomerId;
+                assigntable.TableId = TableIds[i];
+                assigntable.NoOfPerson = waitinglist.NoOfPerson;
+                assigntable.CreatedBy = userId;
+                await _context.AddAsync(assigntable);
+
+                Table? table = await _context.Tables.FirstOrDefaultAsync(x => x.TableId == TableIds[i] && x.Isdelete == false);
+                table.Status = "Assigned";
+                table.ModifiedAt = DateTime.Now;
+                table.ModifiedBy = userId;
+                _context.Update(table);
+                await _context.SaveChangesAsync();
+            }
+
+            _context.Update(waitinglist);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
         catch (Exception e)
         {
