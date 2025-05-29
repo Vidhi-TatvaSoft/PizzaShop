@@ -22,54 +22,57 @@ public class OrderAppMenuService : IOrderAppMenuService
     #region GetItemByCategory
     public List<ItemsViewModel> GetItemByCategory(long categoryId, string searchText = "")
     {
-        NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
-        connection.Open();
-        var result = connection.QuerySingle<string>("SELECT get_items_by_category(@category_id, @search_text)",
-                                 new
-                                 {
-                                     category_id = categoryId,
-                                     search_text = searchText
-                                 });
-        if (result.IsNullOrEmpty())
-        {
-            return new List<ItemsViewModel>();
-        }
-        List<ItemsViewModel> itemsList = JsonConvert.DeserializeObject<List<ItemsViewModel>>(result)!;
-        return itemsList;
-
-        // var allItems = _context.Items.Where(x => x.Isavailable == true && x.Isdelete == false).ToList();
-
-        // if (categoryId == -1)
+        // NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+        // connection.Open();
+        // var result = connection.QuerySingle<string>("SELECT get_items_by_category(@category_id, @search_text)",
+        //                          new
+        //                          {
+        //                              category_id = categoryId,
+        //                              search_text = searchText
+        //                          });
+        // if (result.IsNullOrEmpty())
         // {
-        //     allItems = allItems.Where(x => x.IsFavourite == true).ToList();
+        //     return new List<ItemsViewModel>();
         // }
-        // else if (categoryId == 0)
-        // {
-        //     allItems = allItems;
-        // }
-        // else
-        // {
-        //     allItems = allItems.Where(x => x.CategoryId == categoryId).ToList();
-        // }
-
-        // if (!searchText.IsNullOrEmpty())
-        // {
-        //     allItems = allItems.Where(x => x.ItemName.ToLower().Trim().Contains(searchText.ToLower().Trim())).ToList();
-        // }
-
-        // List<ItemsViewModel> itemsList = allItems.Select(i => new ItemsViewModel
-        // {
-        //     ItemId = i.ItemId,
-        //     ItemName = i.ItemName,
-        //     CategoryId = i.CategoryId,
-        //     ItemTypeId = i.ItemTypeId,
-        //     Rate = Math.Ceiling(i.Rate),
-        //     ItemImage = i.ItemImage,
-        //     IsFavourite = i.IsFavourite,
-        //     Isdelete = i.Isdelete
-        // }).ToList();
-
+        // List<ItemsViewModel> itemsList = JsonConvert.DeserializeObject<List<ItemsViewModel>>(result)!;
         // return itemsList;
+
+
+
+
+        var allItems = _context.Items.Where(x => x.Isavailable == true && x.Isdelete == false).ToList();
+
+        if (categoryId == -1)
+        {
+            allItems = allItems.Where(x => x.IsFavourite == true).ToList();
+        }
+        else if (categoryId == 0)
+        {
+            allItems = allItems;
+        }
+        else
+        {
+            allItems = allItems.Where(x => x.CategoryId == categoryId).ToList();
+        }
+
+        if (!searchText.IsNullOrEmpty())
+        {
+            allItems = allItems.Where(x => x.ItemName.ToLower().Trim().Contains(searchText.ToLower().Trim())).ToList();
+        }
+
+        List<ItemsViewModel> itemsList = allItems.Select(i => new ItemsViewModel
+        {
+            ItemId = i.ItemId,
+            ItemName = i.ItemName,
+            CategoryId = i.CategoryId,
+            ItemTypeId = i.ItemTypeId,
+            Rate = Math.Ceiling(i.Rate),
+            ItemImage = i.ItemImage,
+            IsFavourite = i.IsFavourite,
+            Isdelete = i.Isdelete
+        }).ToList();
+
+        return itemsList;
 
     }
     #endregion
@@ -109,6 +112,24 @@ public class OrderAppMenuService : IOrderAppMenuService
     #region GetModifiersByItemId
     public List<ModifierGroupForItem> GetModifiersByItemId(long itemId)
     {
+        // NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Database=pizzashopDb;Username=postgres;password=Tatva@123");
+        // connection.Open();
+        // var result = connection.QuerySingle<string>("SELECT get_modifiers_by_item_id(@itemId)",
+        //                          new
+        //                          {
+        //                              itemId = itemId
+        //                          });
+        // if (result.IsNullOrEmpty())
+        // {
+        //     return new List<ModifierGroupForItem>();
+        // }
+        // List<ModifierGroupForItem> modiifersList = JsonConvert.DeserializeObject<List<ModifierGroupForItem>>(result)!;
+        // return modiifersList;
+
+
+
+
+
         Item? itemdata = _context.Items.Include(x => x.Itemmodifiergroupmappings).ThenInclude(x => x.ModifierGrp).ThenInclude(x => x.Modifiers)
                         .FirstOrDefault(x => x.ItemId == itemId && x.Isdelete == false);
         long typeId = itemdata.ItemTypeId;
@@ -456,7 +477,6 @@ public class OrderAppMenuService : IOrderAppMenuService
     {
         try
         {
-
             //update order
             if (orderDetailsvm.OrderId == 0)
             {
@@ -473,7 +493,6 @@ public class OrderAppMenuService : IOrderAppMenuService
                 order.CreatedBy = userId;
                 await _context.AddAsync(order);
                 await _context.SaveChangesAsync();
-
                 orderDetailsvm.OrderId = order.OrderId;
             }
             else
@@ -486,8 +505,6 @@ public class OrderAppMenuService : IOrderAppMenuService
                 _context.Update(order);
                 await _context.SaveChangesAsync();
             }
-
-
             //update orderdetails
             for (int i = 0; i < orderDetailId.Count; i++)
             {
